@@ -5,7 +5,7 @@ import {
   menusRepository, 
   menuPermissionsRepository,
   roleMenusRepository,
-  user_menus_repository
+  userMenusRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -13,97 +13,97 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- Menus Queries ---------------------------------------------------------
 
-export const get_menus = cache((params?: ListParams) => 
+export const getMenus = cache((params?: ListParams) => 
   menusRepository.list(params)
 );
 
-export const get_menu_by_id = cache((id: string | number) => 
+export const getMenuById = cache((id: string | number) => 
   menusRepository.getById(id)
 );
 
-export const get_menu_tree = cache((params?: ListParams) => 
+export const getMenuTree = cache((params?: ListParams) => 
   menusRepository.get_tree(params)
 );
 
-export const get_flat_menu_structure = cache((params?: ListParams) => 
+export const getFlatMenuStructure = cache((params?: ListParams) => 
   menusRepository.get_flat(params)
 );
 
-export const get_root_menus = cache(() => 
+export const getRootMenus = cache(() => 
   menusRepository.get_root_menus()
 );
 
-export const get_menu_children = cache((parentId: string | number) => 
+export const getMenuChildren = cache((parentId: string | number) => 
   menusRepository.get_children(parentId)
 );
 
-export const get_menu_path = cache((menuId: string | number) => 
+export const getMenuPath = cache((menuId: string | number) => 
   menusRepository.get_path(menuId)
 );
 
 // --- IMenu-IPermission Relationships Queries ---------------------------------
 
-export const get_menu_permissions = cache((params?: ListParams) => 
+export const getMenuPermissions = cache((params?: ListParams) => 
   menuPermissionsRepository.list(params)
 );
 
-export const get_menu_permission_by_id = cache((menuId: string | number, permissionId: string | number) => 
+export const getMenuPermissionById = cache((menuId: string | number, permissionId: string | number) => 
   menuPermissionsRepository.getById(menuId, permissionId)
 );
 
-export const get_permissions_by_menu = cache((menuId: string | number) => 
+export const getPermissionsByMenu = cache((menuId: string | number) => 
   menuPermissionsRepository.get_permissions_by_menu(menuId)
 );
 
-export const get_menus_by_permission = cache((permissionId: string | number) => 
+export const getMenusByPermission = cache((permissionId: string | number) => 
   menuPermissionsRepository.get_menus_by_permission(permissionId)
 );
 
 // --- IRole-IMenu Relationships Queries -----------------------------------------
 
-export const get_role_menus = cache((params?: ListParams) => 
+export const getRoleMenus = cache((params?: ListParams) => 
   roleMenusRepository.list(params)
 );
 
-export const get_role_menu_by_id = cache((roleId: string | number, menuId: string | number) => 
+export const getRoleMenuById = cache((roleId: string | number, menuId: string | number) => 
   roleMenusRepository.getById(roleId, menuId)
 );
 
-export const get_menus_by_role = cache((roleId: string | number) => 
-  roleMenusRepository.get_menus_by_role(roleId)
+export const getMenusByRole = cache((roleId: string | number) => 
+  roleMenusRepository.getMenusByRole(roleId)
 );
 
-export const get_roles_by_menu = cache((menuId: string | number) => 
-  roleMenusRepository.get_roles_by_menu(menuId)
+export const getRolesByMenu = cache((menuId: string | number) => 
+  roleMenusRepository.getRolesByMenu(menuId)
 );
 
 // --- IUser-IMenu Relationships Queries -----------------------------------------
 
-export const get_user_menus = cache((params?: ListParams) => 
-  user_menus_repository.list(params)
+export const getUserMenus = cache((params?: ListParams) => 
+  userMenusRepository.list(params)
 );
 
-export const get_user_menu_by_id = cache((userId: string | number, menuId: string | number) => 
-  user_menus_repository.getById(userId, menuId)
+export const getUserMenuById = cache((userId: string | number, menuId: string | number) => 
+  userMenusRepository.getById(userId, menuId)
 );
 
-export const get_menus_by_user = cache((userId: string | number) => 
-  user_menus_repository.get_menus_by_user(userId)
+export const getMenusByUser = cache((userId: string | number) => 
+  userMenusRepository.getMenusByUser(userId)
 );
 
-export const get_users_by_menu = cache((menuId: string | number) => 
-  user_menus_repository.get_users_by_menu(menuId)
+export const getUsersByMenu = cache((menuId: string | number) => 
+  userMenusRepository.getUsersByMenu(menuId)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get menu with all relationships
-export const get_menu_profile = cache(async (menuId: string | number) => {
+export const getMenuProfile = cache(async (menuId: string | number) => {
   const [menu, permissions, roles, users] = await Promise.all([
-    get_menu_by_id(menuId),
-    get_permissions_by_menu(menuId),
-    get_roles_by_menu(menuId),
-    get_users_by_menu(menuId)
+    getMenuById(menuId),
+    getPermissionsByMenu(menuId),
+    getRolesByMenu(menuId),
+    getUsersByMenu(menuId)
   ]);
   
   return {
@@ -115,10 +115,10 @@ export const get_menu_profile = cache(async (menuId: string | number) => {
 });
 
 // Get menu tree with permissions
-export const get_menu_tree_with_permissions = cache(async (params?: ListParams) => {
+export const getMenuTreeWithPermissions = cache(async (params?: ListParams) => {
   const [menuTree, allMenuPermissions] = await Promise.all([
-    get_menu_tree(params),
-    get_menu_permissions()
+    getMenuTree(params),
+    getMenuPermissions()
   ]);
   
   // Attach permissions to each menu in the tree
@@ -146,10 +146,10 @@ export const get_menu_tree_with_permissions = cache(async (params?: ListParams) 
 });
 
 // Get user accessible menu tree
-export const get_user_menu_tree = cache(async (userId: string | number) => {
+export const getUserMenuTree = cache(async (userId: string | number) => {
   const [userMenus, menuTree] = await Promise.all([
-    get_menus_by_user(userId),
-    get_menu_tree()
+    getMenusByUser(userId),
+    getMenuTree()
   ]);
   
   // Filter tree based on user's accessible menus
@@ -170,10 +170,10 @@ export const get_user_menu_tree = cache(async (userId: string | number) => {
 });
 
 // Get role accessible menu tree
-export const get_role_menu_tree = cache(async (roleId: string | number) => {
+export const getRoleMenuTree = cache(async (roleId: string | number) => {
   const [roleMenus, menuTree] = await Promise.all([
-    get_menus_by_role(roleId),
-    get_menu_tree()
+    getMenusByRole(roleId),
+    getMenuTree()
   ]);
   
   // Filter tree based on role's accessible menus
@@ -194,10 +194,10 @@ export const get_role_menu_tree = cache(async (roleId: string | number) => {
 });
 
 // Get menu hierarchy statistics
-export const get_menu_hierarchy_stats = cache(async () => {
+export const getMenuHierarchyStats = cache(async () => {
   const [menuTree, flatMenu] = await Promise.all([
-    get_menu_tree(),
-    get_flat_menu_structure()
+    getMenuTree(),
+    getFlatMenuStructure()
   ]);
   
   return {
@@ -209,12 +209,12 @@ export const get_menu_hierarchy_stats = cache(async () => {
 });
 
 // Get menu usage statistics
-export const get_menu_usage_stats = cache(async (menuId: string | number) => {
+export const getMenuUsageStats = cache(async (menuId: string | number) => {
   const [menu, permissions, roles, users] = await Promise.all([
-    get_menu_by_id(menuId),
-    get_permissions_by_menu(menuId),
-    get_roles_by_menu(menuId),
-    get_users_by_menu(menuId)
+    getMenuById(menuId),
+    getPermissionsByMenu(menuId),
+    getRolesByMenu(menuId),
+    getUsersByMenu(menuId)
   ]);
   
   return {

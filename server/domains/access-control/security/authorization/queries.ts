@@ -3,13 +3,13 @@ import { cache } from 'react';
 
 import { 
   authorizationRepository, 
-  authorization_stats_repository,
-  authorization_audit_repository,
-  authorization_cache_repository,
-  authorization_policy_repository,
-  authorization_performance_repository,
-  authorization_security_repository,
-  authorization_config_repository
+  authorizationStatsRepository,
+  authorizationAuditRepository,
+  authorizationCacheRepository,
+  authorizationPolicyRepository,
+  authorizationPerformanceRepository,
+  authorizationSecurityRepository,
+  authorizationConfigRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -43,111 +43,111 @@ import type {
 
 // --- Authorization Core Queries -----------------------------------------
 
-export const check_authorization = (request: IAuthorizationRequest) => 
+export const checkAuthorization = (request: IAuthorizationRequest) => 
   authorizationRepository.check(request);
 
-export const check_authorization_with_context = (request: IAuthorizationRequest, context: IAuthorizationContext) => 
-  authorizationRepository.check_with_context(request, context);
+export const checkAuthorizationWithContext = (request: IAuthorizationRequest, context: IAuthorizationContext) => 
+  authorizationRepository.checkWithContext(request, context);
 
-export const batch_check_authorization = (requests: IAuthorizationRequest[]) => 
+export const batchCheckAuthorization = (requests: IAuthorizationRequest[]) => 
   authorizationRepository.batch_check(requests);
 
 // --- Authorization Statistics Queries ---------------------------------
 
-export const get_authorization_stats = cache((params?: { startDate?: string; endDate?: string }) => 
-  authorization_stats_repository.getStats(params)
+export const getAuthorizationStats = cache((params?: { startDate?: string; endDate?: string }) => 
+  authorizationStatsRepository.getStats(params)
 );
 
-export const get_user_authorization_stats = cache((userId: string | number, params?: { startDate?: string; endDate?: string }) => 
-  authorization_stats_repository.get_user_stats(userId, params)
+export const getUserAuthorizationStats = cache((userId: string | number, params?: { startDate?: string; endDate?: string }) => 
+  authorizationStatsRepository.getUserStats(userId, params)
 );
 
-export const get_all_user_authorization_stats = cache((params?: ListParams) => 
-  authorization_stats_repository.get_all_user_stats(params)
+export const getAllUserAuthorizationStats = cache((params?: ListParams) => 
+  authorizationStatsRepository.getAllUserStats(params)
 );
 
 // --- Authorization Audit Queries ---------------------------------
 
-export const get_authorization_audit = cache((params?: ListParams & IAuditFilter) => 
-  authorization_audit_repository.list(params)
+export const getAuthorizationAudit = cache((params?: ListParams & IAuditFilter) => 
+  authorizationAuditRepository.list(params)
 );
 
-export const get_authorization_audit_by_id = cache((id: string) => 
-  authorization_audit_repository.getById(id)
+export const getAuthorizationAuditById = cache((id: string) => 
+  authorizationAuditRepository.getById(id)
 );
 
-export const get_authorization_audit_by_user = cache((userId: string | number, params?: ListParams) => 
-  authorization_audit_repository.get_by_user(userId, params)
+export const getAuthorizationAuditByUser = cache((userId: string | number, params?: ListParams) => 
+  authorizationAuditRepository.getByUser(userId, params)
 );
 
 // --- Authorization Cache Queries ---------------------------------
 
-export const get_authorization_cache = cache((params?: ListParams) => 
-  authorization_cache_repository.list(params)
+export const getAuthorizationCache = cache((params?: ListParams) => 
+  authorizationCacheRepository.list(params)
 );
 
-export const get_authorization_cache_by_key = cache((key: string) => 
-  authorization_cache_repository.get_by_key(key)
+export const getAuthorizationCacheByKey = cache((key: string) => 
+  authorizationCacheRepository.get_by_key(key)
 );
 
-export const get_authorization_cache_by_user = cache((userId: string | number, params?: ListParams) => 
-  authorization_cache_repository.get_by_user(userId, params)
+export const getAuthorizationCacheByUser = cache((userId: string | number, params?: ListParams) => 
+  authorizationCacheRepository.get_by_user(userId, params)
 );
 
 // --- Authorization Policy Queries ---------------------------------
 
-export const get_authorization_policies = cache((params?: ListParams) => 
-  authorization_policy_repository.list(params)
+export const getAuthorizationPolicies = cache((params?: ListParams) => 
+  authorizationPolicyRepository.list(params)
 );
 
-export const get_authorization_policy_by_id = cache((id: string) => 
-  authorization_policy_repository.getById(id)
+export const getAuthorizationPolicyById = cache((id: string) => 
+  authorizationPolicyRepository.getById(id)
 );
 
 // --- Authorization Performance Queries ---------------------------------
 
-export const get_authorization_performance_metrics = cache((params?: { startDate?: string; endDate?: string }) => 
-  authorization_performance_repository.get_metrics(params)
+export const getAuthorizationPerformanceMetrics = cache((params?: { startDate?: string; endDate?: string }) => 
+  authorizationPerformanceRepository.get_metrics(params)
 );
 
-export const get_authorization_resource_performance = cache((params?: ListParams) => 
-  authorization_performance_repository.get_resource_performance(params)
+export const getAuthorizationResourcePerformance = cache((params?: ListParams) => 
+  authorizationPerformanceRepository.get_resource_performance(params)
 );
 
-export const get_authorization_user_performance = cache((params?: ListParams) => 
-  authorization_performance_repository.get_user_performance(params)
+export const getAuthorizationUserPerformance = cache((params?: ListParams) => 
+  authorizationPerformanceRepository.get_user_performance(params)
 );
 
 // --- Authorization Security Queries ---------------------------------
 
-export const get_authorization_security_alerts = cache((params?: ListParams) => 
-  authorization_security_repository.list(params)
+export const getAuthorizationSecurityAlerts = cache((params?: ListParams) => 
+  authorizationSecurityRepository.list(params)
 );
 
-export const get_authorization_security_alert_by_id = cache((id: string) => 
-  authorization_security_repository.getById(id)
+export const getAuthorizationSecurityAlertById = cache((id: string) => 
+  authorizationSecurityRepository.getById(id)
 );
 
-export const get_authorization_security_rules = cache((params?: ListParams) => 
-  authorization_security_repository.list_rules(params)
+export const getAuthorizationSecurityRules = cache((params?: ListParams) => 
+  authorizationSecurityRepository.list_rules(params)
 );
 
 // --- Authorization Configuration Queries -----------------------------
 
-export const get_authorization_config = cache(() => 
-  authorization_config_repository.get()
+export const getAuthorizationConfig = cache(() => 
+  authorizationConfigRepository.get()
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get comprehensive authorization dashboard
-export const get_authorization_dashboard = cache(async (params?: { startDate?: string; endDate?: string }) => {
+export const getAuthorizationDashboard = cache(async (params?: { startDate?: string; endDate?: string }) => {
   const [stats, recentAudits, securityAlerts, performanceMetrics, config] = await Promise.all([
-    get_authorization_stats(params),
-    get_authorization_audit({ per_page: 10 }),
-    get_authorization_security_alerts({ per_page: 10 }),
-    get_authorization_performance_metrics(params),
-    get_authorization_config()
+    getAuthorizationStats(params),
+    getAuthorizationAudit({ per_page: 10 }),
+    getAuthorizationSecurityAlerts({ per_page: 10 }),
+    getAuthorizationPerformanceMetrics(params),
+    getAuthorizationConfig()
   ]);
   
   return {
@@ -161,12 +161,12 @@ export const get_authorization_dashboard = cache(async (params?: { startDate?: s
 });
 
 // Get user authorization overview
-export const get_user_authorization_overview = cache(async (userId: string | number, params?: { startDate?: string; endDate?: string }) => {
+export const getUserAuthorizationOverview = cache(async (userId: string | number, params?: { startDate?: string; endDate?: string }) => {
   const [userStats, recentAudits, userPerformance, userCache] = await Promise.all([
-    get_user_authorization_stats(userId, params),
-    get_authorization_audit_by_user(userId, { per_page: 10 }),
-    get_authorization_user_performance({ params: { userId: userId } }),
-    get_authorization_cache_by_user(userId, { per_page: 20 })
+    getUserAuthorizationStats(userId, params),
+    getAuthorizationAuditByUser(userId, { per_page: 10 }),
+    getAuthorizationUserPerformance({ params: { userId: userId } }),
+    getAuthorizationCacheByUser(userId, { per_page: 20 })
   ]);
   
   return {
@@ -180,10 +180,10 @@ export const get_user_authorization_overview = cache(async (userId: string | num
 });
 
 // Get resource authorization analysis
-export const get_resource_authorization_analysis = cache(async (resource: string, params?: { startDate?: string; endDate?: string }) => {
+export const getResourceAuthorizationAnalysis = cache(async (resource: string, params?: { startDate?: string; endDate?: string }) => {
   const [resourcePerformance, relatedAudits] = await Promise.all([
-    get_authorization_resource_performance({ params: { resource } }),
-    get_authorization_audit({ params: { resource, ...params } })
+    getAuthorizationResourcePerformance({ params: { resource } }),
+    getAuthorizationAudit({ params: { resource, ...params } })
   ]);
   
   const resourceData = resourcePerformance.data.find(rp => rp.resource === resource);
@@ -207,11 +207,11 @@ export const get_resource_authorization_analysis = cache(async (resource: string
 });
 
 // Get authorization security overview
-export const get_authorization_security_overview = cache(async () => {
+export const getAuthorizationSecurityOverview = cache(async () => {
   const [securityAlerts, securityRules, recentAudits] = await Promise.all([
-    get_authorization_security_alerts({ per_page: 100 }),
-    get_authorization_security_rules({ per_page: 100 }),
-    get_authorization_audit({ per_page: 50 })
+    getAuthorizationSecurityAlerts({ per_page: 100 }),
+    getAuthorizationSecurityRules({ per_page: 100 }),
+    getAuthorizationAudit({ per_page: 50 })
   ]);
   
   const alertsBySeverity = securityAlerts.data.reduce((acc, alert) => {
@@ -237,11 +237,11 @@ export const get_authorization_security_overview = cache(async () => {
 });
 
 // Get authorization performance analysis
-export const get_authorization_performance_analysis = cache(async (params?: { startDate?: string; endDate?: string }) => {
+export const getAuthorizationPerformanceAnalysis = cache(async (params?: { startDate?: string; endDate?: string }) => {
   const [performanceMetrics, resourcePerformance, userPerformance] = await Promise.all([
-    get_authorization_performance_metrics(params),
-    get_authorization_resource_performance({ per_page: 100 }),
-    get_authorization_user_performance({ per_page: 100 })
+    getAuthorizationPerformanceMetrics(params),
+    getAuthorizationResourcePerformance({ per_page: 100 }),
+    getAuthorizationUserPerformance({ per_page: 100 })
   ]);
   
   // Analyze slow requests
@@ -273,10 +273,10 @@ export const get_authorization_performance_analysis = cache(async (params?: { st
 });
 
 // Get authorization cache analysis
-export const get_authorization_cache_analysis = cache(async () => {
+export const getAuthorizationCacheAnalysis = cache(async () => {
   const [cacheEntries, config] = await Promise.all([
-    get_authorization_cache({ per_page: 1000 }),
-    get_authorization_config()
+    getAuthorizationCache({ per_page: 1000 }),
+    getAuthorizationConfig()
   ]);
   
   // Analyze cache efficiency

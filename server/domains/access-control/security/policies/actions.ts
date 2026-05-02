@@ -4,8 +4,8 @@ import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
   policiesRepository, 
-  user_policies_repository,
-  policy_evaluation_repository
+  userPoliciesRepository,
+  policyEvaluationRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -121,7 +121,7 @@ export const delete_policy_action = async (id: string | number): Promise<ActionR
 
 export const create_user_policy_action = async (userId: string | number, policyId: string | number, payload: ICreateUserPolicyPayload): Promise<ActionResultType<any>> => {
   try {
-    const userPolicy = await user_policies_repository.create(userId, policyId, payload);
+    const userPolicy = await userPoliciesRepository.create(userId, policyId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userPolicies());
@@ -154,7 +154,7 @@ export const create_user_policy_action = async (userId: string | number, policyI
 
 export const update_user_policy_action = async (userId: string | number, policyId: string | number, payload: IUpdateUserPolicyPayload): Promise<ActionResultType<any>> => {
   try {
-    const userPolicy = await user_policies_repository.update(userId, policyId, payload);
+    const userPolicy = await userPoliciesRepository.update(userId, policyId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userPolicies());
@@ -185,7 +185,7 @@ export const update_user_policy_action = async (userId: string | number, policyI
 
 export const delete_user_policy_action = async (userId: string | number, policyId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await user_policies_repository.delete(userId, policyId);
+    await userPoliciesRepository.delete(userId, policyId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userPolicies());
@@ -218,7 +218,7 @@ export const delete_user_policy_action = async (userId: string | number, policyI
 
 export const evaluate_policy_action = async (payload: IPolicyEvaluationRequest): Promise<ActionResultType<IPolicyEvaluationResponse>> => {
   try {
-    const response = await policy_evaluation_repository.evaluate(payload);
+    const response = await policyEvaluationRepository.evaluate(payload);
     
     return { success: true, data: response };
   } catch (error) {
@@ -245,7 +245,7 @@ export const evaluate_policy_action = async (payload: IPolicyEvaluationRequest):
 
 export const bulk_evaluate_policies_action = async (payload: IBulkPolicyEvaluationRequest): Promise<ActionResultType<IBulkPolicyEvaluationResponse>> => {
   try {
-    const response = await policy_evaluation_repository.bulk_evaluate(payload);
+    const response = await policyEvaluationRepository.bulkEvaluate(payload);
     
     return { success: true, data: response };
   } catch (error) {

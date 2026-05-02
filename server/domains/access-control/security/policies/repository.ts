@@ -56,7 +56,7 @@ export const policiesRepository = {
 
 // --- IUser-IPolicy Relationships Repository -------------------------------------
 
-export const user_policies_repository = {
+export const userPoliciesRepository = {
   // List user-policies
   list: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IUserPolicy>>('/api/access_control/user-policies', {
@@ -121,14 +121,14 @@ export const policyEvaluationRepository = {
     }),
 
   // Get active policies for user
-  get_active_policies_for_user: (userId: string | number) => 
+  getActivePoliciesForUser: (userId: string | number) => 
     serverFetch.get<IPolicy[]>(`/api/access_control/policies/user/${userId}/active`, {
       revalidate: 60,
       tags: [accessControlTags.user(userId)],
     }),
 
   // Get policy evaluation history
-  get_evaluation_history: (userId: string | number, params?: ListParams) => 
+  getEvaluationHistory: (userId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<any>>(`/api/access_control/policies/user/${userId}/history`, {
       params,
       revalidate: 300,

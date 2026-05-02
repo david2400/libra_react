@@ -2,12 +2,12 @@
 import { cache } from 'react';
 
 import { 
-  modules_repository, 
-  module_applications_repository,
-  module_stats_repository,
-  module_config_repository,
-  module_activity_repository,
-  module_health_repository
+  modulesRepository, 
+  moduleApplicationsRepository,
+  moduleStatsRepository,
+  moduleConfigRepository,
+  moduleActivityRepository,
+  moduleHealthRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -27,103 +27,103 @@ import type {
 
 // --- Modules Queries ---------------------------------------------------------
 
-export const get_modules = cache((params?: ListParams) => 
-  modules_repository.list(params)
+export const getModules = cache((params?: ListParams) => 
+  modulesRepository.list(params)
 );
 
-export const get_module_by_id = cache((id: string | number) => 
-  modules_repository.getById(id)
+export const getModuleById = cache((id: string | number) => 
+  modulesRepository.getById(id)
 );
 
-export const get_active_modules = cache(() => 
-  modules_repository.getActive()
+export const getActiveModules = cache(() => 
+  modulesRepository.getActive()
 );
 
 // --- IModule-IApplication Relationships Queries ---------------------------------
 
-export const get_module_applications = cache((params?: ListParams) => 
-  module_applications_repository.list(params)
+export const getModuleApplications = cache((params?: ListParams) => 
+  moduleApplicationsRepository.list(params)
 );
 
-export const get_module_application_by_id = cache((moduleId: string | number, applicationId: string | number) => 
-  module_applications_repository.getById(moduleId, applicationId)
+export const getModuleApplicationById = cache((moduleId: string | number, applicationId: string | number) => 
+  moduleApplicationsRepository.getById(moduleId, applicationId)
 );
 
-export const get_applications_by_module = cache((moduleId: string | number) => 
-  module_applications_repository.get_applications_by_module(moduleId)
+export const getApplicationsByModule = cache((moduleId: string | number) => 
+  moduleApplicationsRepository.getApplicationsByModule(moduleId)
 );
 
-export const get_modules_by_application = cache((applicationId: string | number) => 
-  module_applications_repository.get_modules_by_application(applicationId)
+export const getModulesByApplication = cache((applicationId: string | number) => 
+  moduleApplicationsRepository.getModulesByApplication(applicationId)
 );
 
-export const get_active_applications_for_module = cache((moduleId: string | number) => 
-  module_applications_repository.get_active_applications(moduleId)
+export const getActiveApplicationsForModule = cache((moduleId: string | number) => 
+  moduleApplicationsRepository.getActiveApplications(moduleId)
 );
 
 // --- IModule Statistics Queries ---------------------------------------------
 
-export const get_module_stats = cache((moduleId: string | number) => 
-  module_stats_repository.getStats(moduleId)
+export const getModuleStats = cache((moduleId: string | number) => 
+  moduleStatsRepository.getStats(moduleId)
 );
 
-export const get_all_modules_stats = cache(() => 
-  module_stats_repository.get_all_stats()
+export const getAllModulesStats = cache(() => 
+  moduleStatsRepository.getAllStats()
 );
 
-export const get_module_overview = cache((moduleId: string | number) => 
-  module_stats_repository.getOverview(moduleId)
+export const getModuleOverview = cache((moduleId: string | number) => 
+  moduleStatsRepository.getOverview(moduleId)
 );
 
 // --- IModule Configuration Queries -----------------------------------------
 
-export const get_module_configs = cache((moduleId: string | number, applicationId?: string | number, params?: ListParams) => 
-  module_config_repository.list(moduleId, applicationId, params)
+export const getModuleConfigs = cache((moduleId: string | number, applicationId?: string | number, params?: ListParams) => 
+  moduleConfigRepository.list(moduleId, applicationId, params)
 );
 
-export const get_module_config_by_key = cache((moduleId: string | number, applicationId: string | number, key: string) => 
-  module_config_repository.get_by_key(moduleId, applicationId, key)
+export const getModuleConfigByKey = cache((moduleId: string | number, applicationId: string | number, key: string) => 
+  moduleConfigRepository.getByKey(moduleId, applicationId, key)
 );
 
 // --- IModule Activity Queries ---------------------------------------------
 
-export const get_module_activities = cache((params?: ListParams) => 
-  module_activity_repository.list(params)
+export const getModuleActivities = cache((params?: ListParams) => 
+  moduleActivityRepository.list(params)
 );
 
-export const get_activities_by_module = cache((moduleId: string | number, params?: ListParams) => 
-  module_activity_repository.get_by_module(moduleId, params)
+export const getActivitiesByModule = cache((moduleId: string | number, params?: ListParams) => 
+  moduleActivityRepository.getByModule(moduleId, params)
 );
 
-export const get_recent_module_activities = cache((moduleId: string | number, limit?: number) => 
-  module_activity_repository.getRecent(moduleId, limit)
+export const getRecentModuleActivities = cache((moduleId: string | number, limit?: number) => 
+  moduleActivityRepository.getRecent(moduleId, limit)
 );
 
 // --- IModule Health Queries ---------------------------------------------
 
-export const check_module_health = cache((moduleId: string | number) => 
-  module_health_repository.check_health(moduleId)
+export const checkModuleHealth = cache((moduleId: string | number) => 
+  moduleHealthRepository.checkHealth(moduleId)
 );
 
-export const check_all_modules_health = cache(() => 
-  module_health_repository.check_all_health()
+export const checkAllModulesHealth = cache(() => 
+  moduleHealthRepository.checkAllHealth()
 );
 
-export const get_module_health_history = cache((moduleId: string | number, params?: ListParams) => 
-  module_health_repository.get_health_history(moduleId, params)
+export const getModuleHealthHistory = cache((moduleId: string | number, params?: ListParams) => 
+  moduleHealthRepository.getHealthHistory(moduleId, params)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get module with all relationships
-export const get_module_profile = cache(async (moduleId: string | number) => {
+export const getModuleProfile = cache(async (moduleId: string | number) => {
   const [module, applications, stats, activeApplications, recentActivities, configs] = await Promise.all([
-    get_module_by_id(moduleId),
-    get_applications_by_module(moduleId),
-    get_module_stats(moduleId),
-    get_active_applications_for_module(moduleId),
-    get_recent_module_activities(moduleId, 5),
-    get_module_configs(moduleId)
+    getModuleById(moduleId),
+    getApplicationsByModule(moduleId),
+    getModuleStats(moduleId),
+    getActiveApplicationsForModule(moduleId),
+    getRecentModuleActivities(moduleId, 5),
+    getModuleConfigs(moduleId)
   ]);
   
   return {
@@ -138,11 +138,11 @@ export const get_module_profile = cache(async (moduleId: string | number) => {
 });
 
 // Get modules dashboard data
-export const get_modules_dashboard = cache(async () => {
+export const getModulesDashboard = cache(async () => {
   const [modules, allStats, allHealth] = await Promise.all([
-    get_modules({ per_page: 100 }),
-    get_all_modules_stats(),
-    check_all_modules_health()
+    getModules({ per_page: 100 }),
+    getAllModulesStats(),
+    checkAllModulesHealth()
   ]);
   
   // Combine data for dashboard
@@ -178,9 +178,9 @@ export const get_modules_dashboard = cache(async () => {
 });
 
 // Get module activity trends
-export const get_module_activity_trends = cache(async (moduleId: string | number, days: number = 7) => {
+export const getModuleActivityTrends = cache(async (moduleId: string | number, days: number = 7) => {
   const [activities] = await Promise.all([
-    get_activities_by_module(moduleId, { per_page: days * 24 }) // Assuming hourly checks
+    getActivitiesByModule(moduleId, { per_page: days * 24 }) // Assuming hourly checks
   ]);
   
   // Process activity data for trends
@@ -213,8 +213,8 @@ export const get_module_activity_trends = cache(async (moduleId: string | number
 });
 
 // Get modules by category
-export const get_modules_by_category = cache(async (category: string) => {
-  const modules = await get_modules({ per_page: 100 });
+export const getModulesByCategory = cache(async (category: string) => {
+  const modules = await getModules({ per_page: 100 });
   
   const filteredModules = modules.data.filter(module => module.category === category);
   
@@ -226,10 +226,10 @@ export const get_modules_by_category = cache(async (category: string) => {
 });
 
 // Get applications by module with details
-export const get_applications_by_module_with_details = cache(async (moduleId: string | number) => {
+export const getApplicationsByModuleWithDetails = cache(async (moduleId: string | number) => {
   const [applications, moduleApplications] = await Promise.all([
-    get_applications_by_module(moduleId),
-    get_module_applications({ params: { moduleId: moduleId } })
+    getApplicationsByModule(moduleId),
+    getModuleApplications({ params: { moduleId: moduleId } })
   ]);
   
   // Combine application data with relationship info
@@ -254,12 +254,12 @@ export const get_applications_by_module_with_details = cache(async (moduleId: st
 });
 
 // Get module performance metrics
-export const get_module_performance_metrics = cache(async (moduleId: string | number) => {
+export const getModulePerformanceMetrics = cache(async (moduleId: string | number) => {
   const [module, stats, health, activities] = await Promise.all([
-    get_module_by_id(moduleId),
-    get_module_stats(moduleId),
-    check_module_health(moduleId),
-    get_activities_by_module(moduleId, { per_page: 100 })
+    getModuleById(moduleId),
+    getModuleStats(moduleId),
+    checkModuleHealth(moduleId),
+    getActivitiesByModule(moduleId, { per_page: 100 })
   ]);
   
   // Calculate performance metrics
@@ -287,11 +287,11 @@ export const get_module_performance_metrics = cache(async (moduleId: string | nu
 });
 
 // Get modules with health issues
-export const get_modules_with_health_issues = cache(async () => {
+export const getModulesWithHealthIssues = cache(async () => {
   const [modules, allStats, allHealth] = await Promise.all([
-    get_modules({ per_page: 100 }),
-    get_all_modules_stats(),
-    check_all_modules_health()
+    getModules({ per_page: 100 }),
+    getAllModulesStats(),
+    checkAllModulesHealth()
   ]);
   
   const modulesWithHealth = modules.data.map(module => {

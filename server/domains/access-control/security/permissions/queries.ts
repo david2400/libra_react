@@ -5,7 +5,7 @@ import {
   permissionsRepository, 
   menuPermissionsRepository,
   rolePermissionsRepository,
-  user_permissions_repository
+  userPermissionsRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -21,77 +21,77 @@ import type {
 
 // --- Permissions Queries ---------------------------------------------------------
 
-export const get_permissions = cache((params?: ListParams) => 
+export const getPermissions = cache((params?: ListParams) => 
   permissionsRepository.list(params)
 );
 
-export const get_permission_by_id = cache((id: string | number) => 
+export const getPermissionById = cache((id: string | number) => 
   permissionsRepository.getById(id)
 );
 
 // --- IMenu-IPermission Relationships Queries ---------------------------------
 
-export const get_menu_permissions = cache((params?: ListParams) => 
+export const getMenuPermissions = cache((params?: ListParams) => 
   menuPermissionsRepository.list(params)
 );
 
-export const get_menu_permission_by_id = cache((menuId: string | number, permissionId: string | number) => 
+export const getMenuPermissionById = cache((menuId: string | number, permissionId: string | number) => 
   menuPermissionsRepository.getById(menuId, permissionId)
 );
 
-export const get_permissions_by_menu = cache((menuId: string | number) => 
-  menuPermissionsRepository.get_permissions_by_menu(menuId)
+export const getPermissionsByMenu = cache((menuId: string | number) => 
+  menuPermissionsRepository.getPermissionsByMenu(menuId)
 );
 
-export const get_menus_by_permission = cache((permissionId: string | number) => 
-  menuPermissionsRepository.get_menus_by_permission(permissionId)
+export const getMenusByPermission = cache((permissionId: string | number) => 
+  menuPermissionsRepository.getMenusByPermission(permissionId)
 );
 
 // --- IRole-IPermission Relationships Queries -----------------------------------
 
-export const get_role_permissions = cache((params?: ListParams) => 
+export const getRolePermissions = cache((params?: ListParams) => 
   rolePermissionsRepository.list(params)
 );
 
-export const get_role_permission_by_id = cache((roleId: string | number, permissionId: string | number) => 
+export const getRolePermissionById = cache((roleId: string | number, permissionId: string | number) => 
   rolePermissionsRepository.getById(roleId, permissionId)
 );
 
-export const get_permissions_by_role = cache((roleId: string | number) => 
-  rolePermissionsRepository.get_permissions_by_role(roleId)
+export const getPermissionsByRole = cache((roleId: string | number) => 
+  rolePermissionsRepository.getPermissionsByRole(roleId)
 );
 
-export const get_roles_by_permission = cache((permissionId: string | number) => 
-  rolePermissionsRepository.get_roles_by_permission(permissionId)
+export const getRolesByPermission = cache((permissionId: string | number) => 
+  rolePermissionsRepository.getRolesByPermission(permissionId)
 );
 
 // --- IUser-IPermission Relationships Queries -----------------------------------
 
-export const get_user_permissions = cache((params?: ListParams) => 
-  user_permissions_repository.list(params)
+export const getUserPermissions = cache((params?: ListParams) => 
+  userPermissionsRepository.list(params)
 );
 
-export const get_user_permission_by_id = cache((userId: string | number, permissionId: string | number) => 
-  user_permissions_repository.getById(userId, permissionId)
+export const getUserPermissionById = cache((userId: string | number, permissionId: string | number) => 
+  userPermissionsRepository.getById(userId, permissionId)
 );
 
-export const get_permissions_by_user = cache((userId: string | number) => 
-  user_permissions_repository.get_permissions_by_user(userId)
+export const getPermissionsByUser = cache((userId: string | number) => 
+  userPermissionsRepository.getPermissionsByUser(userId)
 );
 
-export const get_users_by_permission = cache((permissionId: string | number) => 
-  user_permissions_repository.get_users_by_permission(permissionId)
+export const getUsersByPermission = cache((permissionId: string | number) => 
+  userPermissionsRepository.getUsersByPermission(permissionId)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get permission with all relationships
-export const get_permission_profile = cache(async (permissionId: string | number) => {
+export const getPermissionProfile = cache(async (permissionId: string | number) => {
   const [permission, menus, roles, users] = await Promise.all([
-    get_permission_by_id(permissionId),
-    get_menus_by_permission(permissionId),
-    get_roles_by_permission(permissionId),
-    get_users_by_permission(permissionId)
+    getPermissionById(permissionId),
+    getMenusByPermission(permissionId),
+    getRolesByPermission(permissionId),
+    getUsersByPermission(permissionId)
   ]);
   
   return {
@@ -103,11 +103,11 @@ export const get_permission_profile = cache(async (permissionId: string | number
 });
 
 // Get permission usage statistics
-export const get_permission_usage_stats = cache(async (permissionId: string | number) => {
+export const getPermissionUsageStats = cache(async (permissionId: string | number) => {
   const [menus, roles, users] = await Promise.all([
-    get_menus_by_permission(permissionId),
-    get_roles_by_permission(permissionId),
-    get_users_by_permission(permissionId)
+    getMenusByPermission(permissionId),
+    getRolesByPermission(permissionId),
+    getUsersByPermission(permissionId)
   ]);
   
   return {
@@ -119,13 +119,13 @@ export const get_permission_usage_stats = cache(async (permissionId: string | nu
 });
 
 // Get all permissions with their relationships
-export const get_permissions_with_usage = cache(async (params?: ListParams) => {
-  const permissions = await get_permissions(params);
+export const getPermissionsWithUsage = cache(async (params?: ListParams) => {
+  const permissions = await getPermissions(params);
   
   // For each permission, get usage stats (this could be optimized with batch queries)
   const permissionsWithStats = await Promise.all(
     permissions.data.map(async (permission) => {
-      const stats = await get_permission_usage_stats(permission.id);
+      const stats = await getPermissionUsageStats(permission.id);
       return {
         ...permission,
         usage_stats: stats

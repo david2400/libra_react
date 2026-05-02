@@ -3,10 +3,10 @@ import { cache } from 'react';
 
 import { 
   profilesRepository, 
-  profile_preferences_repository,
-  profile_activity_repository,
-  profile_stats_repository,
-  profile_security_repository
+  profilePreferencesRepository,
+  profileActivityRepository,
+  profileStatsRepository,
+  profileSecurityRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -23,68 +23,68 @@ import type {
 
 // --- Profiles Queries ---------------------------------------------------------
 
-export const get_profiles = cache((params?: ListParams) => 
+export const getProfiles = cache((params?: ListParams) => 
   profilesRepository.list(params)
 );
 
-export const get_profile_by_id = cache((id: string | number) => 
+export const getProfileById = cache((id: string | number) => 
   profilesRepository.getById(id)
 );
 
-export const get_profile_by_user_id = cache((userId: string | number) => 
-  profilesRepository.get_by_user_id(userId)
+export const getProfileByUserId = cache((userId: string | number) => 
+  profilesRepository.getByUserId(userId)
 );
 
 // --- IProfile Preferences Queries ---------------------------------------------
 
-export const get_profile_preferences = cache((profileId: string | number) => 
-  profile_preferences_repository.get(profileId)
+export const getProfilePreferences = cache((profileId: string | number) => 
+  profilePreferencesRepository.get(profileId)
 );
 
 // --- IProfile Activity Queries ---------------------------------------------
 
-export const get_profile_activities = cache((params?: ListParams) => 
-  profile_activity_repository.list(params)
+export const getProfileActivities = cache((params?: ListParams) => 
+  profileActivityRepository.list(params)
 );
 
-export const get_activities_by_profile = cache((profileId: string | number, params?: ListParams) => 
-  profile_activity_repository.get_by_profile(profileId, params)
+export const getActivitiesByProfile = cache((profileId: string | number, params?: ListParams) => 
+  profileActivityRepository.getByProfile(profileId, params)
 );
 
-export const get_recent_profile_activities = cache((profileId: string | number, limit?: number) => 
-  profile_activity_repository.getRecent(profileId, limit)
+export const getRecentProfileActivities = cache((profileId: string | number, limit?: number) => 
+  profileActivityRepository.getRecent(profileId, limit)
 );
 
 // --- IProfile Statistics Queries ---------------------------------------------
 
-export const get_profile_stats = cache((profileId: string | number) => 
-  profile_stats_repository.getStats(profileId)
+export const getProfileStats = cache((profileId: string | number) => 
+  profileStatsRepository.getStats(profileId)
 );
 
-export const get_all_profiles_stats = cache(() => 
-  profile_stats_repository.get_all_stats()
+export const getAllProfilesStats = cache(() => 
+  profileStatsRepository.getAllStats()
 );
 
-export const get_profile_overview = cache((profileId: string | number) => 
-  profile_stats_repository.getOverview(profileId)
+export const getProfileOverview = cache((profileId: string | number) => 
+  profileStatsRepository.getOverview(profileId)
 );
 
 // --- IProfile Security Queries ---------------------------------------------
 
-export const get_profile_security = cache((profileId: string | number) => 
-  profile_security_repository.get_security(profileId)
+export const getProfileSecurity = cache((profileId: string | number) => 
+  profileSecurityRepository.getSecurity(profileId)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get profile with all related data
-export const get_complete_profile = cache(async (profileId: string | number) => {
+export const getCompleteProfile = cache(async (profileId: string | number) => {
   const [profile, preferences, stats, security, recentActivities] = await Promise.all([
-    get_profile_by_id(profileId),
-    get_profile_preferences(profileId),
-    get_profile_stats(profileId),
-    get_profile_security(profileId),
-    get_recent_profile_activities(profileId, 10)
+    getProfileById(profileId),
+    getProfilePreferences(profileId),
+    getProfileStats(profileId),
+    getProfileSecurity(profileId),
+    getRecentProfileActivities(profileId, 10)
   ]);
   
   return {
@@ -97,13 +97,13 @@ export const get_complete_profile = cache(async (profileId: string | number) => 
 });
 
 // Get profile by user with all related data
-export const get_complete_profile_by_user = cache(async (userId: string | number) => {
+export const getCompleteProfileByUser = cache(async (userId: string | number) => {
   const [profile, preferences, stats, security, recentActivities] = await Promise.all([
-    get_profile_by_user_id(userId),
-    get_profile_by_user_id(userId).then(p => p ? get_profile_preferences(p.id) : null),
-    get_profile_by_user_id(userId).then(p => p ? get_profile_stats(p.id) : null),
-    get_profile_by_user_id(userId).then(p => p ? get_profile_security(p.id) : null),
-    get_profile_by_user_id(userId).then(p => p ? get_recent_profile_activities(p.id, 10) : [])
+    getProfileByUserId(userId),
+    getProfileByUserId(userId).then(p => p ? getProfilePreferences(p.id) : null),
+    getProfileByUserId(userId).then(p => p ? getProfileStats(p.id) : null),
+    getProfileByUserId(userId).then(p => p ? getProfileSecurity(p.id) : null),
+    getProfileByUserId(userId).then(p => p ? getRecentProfileActivities(p.id, 10) : [])
   ]);
   
   if (!profile) {
@@ -120,10 +120,10 @@ export const get_complete_profile_by_user = cache(async (userId: string | number
 });
 
 // Get profiles dashboard data
-export const get_profiles_dashboard = cache(async () => {
+export const getProfilesDashboard = cache(async () => {
   const [profiles, allStats] = await Promise.all([
-    get_profiles({ per_page: 100 }),
-    get_all_profiles_stats()
+    getProfiles({ per_page: 100 }),
+    getAllProfilesStats()
   ]);
   
   // Combine data for dashboard
@@ -155,9 +155,9 @@ export const get_profiles_dashboard = cache(async () => {
 });
 
 // Get profile activity trends
-export const get_profile_activity_trends = cache(async (profileId: string | number, days: number = 7) => {
+export const getProfileActivityTrends = cache(async (profileId: string | number, days: number = 7) => {
   const [activities] = await Promise.all([
-    get_activities_by_profile(profileId, { per_page: days * 24 }) // Assuming hourly checks
+    getActivitiesByProfile(profileId, { per_page: days * 24 }) // Assuming hourly checks
   ]);
   
   // Process activity data for trends
@@ -190,8 +190,8 @@ export const get_profile_activity_trends = cache(async (profileId: string | numb
 });
 
 // Get profiles by theme preference
-export const get_profiles_by_theme = cache(async (theme: 'light' | 'dark' | 'auto') => {
-  const profiles = await get_profiles({ per_page: 100 });
+export const getProfilesByTheme = cache(async (theme: 'light' | 'dark' | 'auto') => {
+  const profiles = await getProfiles({ per_page: 100 });
   
   const filteredProfiles = profiles.data.filter(profile => profile.theme === theme);
   
@@ -203,8 +203,8 @@ export const get_profiles_by_theme = cache(async (theme: 'light' | 'dark' | 'aut
 });
 
 // Get profiles by language preference
-export const get_profiles_by_language = cache(async (language: string) => {
-  const profiles = await get_profiles({ per_page: 100 });
+export const getProfilesByLanguage = cache(async (language: string) => {
+  const profiles = await getProfiles({ per_page: 100 });
   
   const filteredProfiles = profiles.data.filter(profile => profile.language === language);
   
@@ -216,11 +216,11 @@ export const get_profiles_by_language = cache(async (language: string) => {
 });
 
 // Get profile security overview
-export const get_profile_security_overview = cache(async (profileId: string | number) => {
+export const getProfileSecurityOverview = cache(async (profileId: string | number) => {
   const [profile, security, stats] = await Promise.all([
-    get_profile_by_id(profileId),
-    get_profile_security(profileId),
-    get_profile_stats(profileId)
+    getProfileById(profileId),
+    getProfileSecurity(profileId),
+    getProfileStats(profileId)
   ]);
   
   return {
@@ -239,12 +239,12 @@ export const get_profile_security_overview = cache(async (profileId: string | nu
       lastLogin: stats.lastLogin,
       profile_updates: stats.profile_updates
     },
-    security_score: calculate_security_score(security, stats)
+    security_score: calculateSecurityScore(security, stats)
   };
 });
 
 // Helper function to calculate security score
-function calculate_security_score(security: IProfileSecurity, stats: IProfileStats): number {
+function calculateSecurityScore(security: IProfileSecurity, stats: IProfileStats): number {
   let score = 0;
   
   // Two-factor authentication (30 points)
@@ -271,17 +271,17 @@ function calculate_security_score(security: IProfileSecurity, stats: IProfileSta
 }
 
 // Get profiles with security issues
-export const get_profiles_with_security_issues = cache(async () => {
+export const getProfilesWithSecurityIssues = cache(async () => {
   const [profiles, allStats] = await Promise.all([
-    get_profiles({ per_page: 100 }),
-    get_all_profiles_stats()
+    getProfiles({ per_page: 100 }),
+    getAllProfilesStats()
   ]);
   
   const profilesWithSecurity = await Promise.all(
     profiles.data.map(async (profile) => {
       const [security, stats] = await Promise.all([
-        get_profile_security(profile.id),
-        get_profile_stats(profile.id)
+        getProfileSecurity(profile.id),
+        getProfileStats(profile.id)
       ]);
       
       const issues = [];
@@ -306,7 +306,7 @@ export const get_profiles_with_security_issues = cache(async () => {
       return {
         ...profile,
         security_issues: issues,
-        security_score: calculate_security_score(security, stats)
+        security_score: calculateSecurityScore(security, stats)
       };
     })
   );

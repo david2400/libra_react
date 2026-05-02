@@ -3,8 +3,8 @@ import { cache } from 'react';
 
 import { 
   policiesRepository, 
-  user_policies_repository,
-  policy_evaluation_repository
+  userPoliciesRepository,
+  policyEvaluationRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -20,55 +20,55 @@ import type {
 
 // --- Policies Queries ---------------------------------------------------------
 
-export const get_policies = cache((params?: ListParams) => 
+export const getPolicies = cache((params?: ListParams) => 
   policiesRepository.list(params)
 );
 
-export const get_policy_by_id = cache((id: string | number) => 
+export const getPolicyById = cache((id: string | number) => 
   policiesRepository.getById(id)
 );
 
 // --- IUser-Policy Relationships Queries -------------------------------------
 
-export const get_user_policies = cache((params?: ListParams) => 
-  user_policies_repository.list(params)
+export const getUserPolicies = cache((params?: ListParams) => 
+  userPoliciesRepository.list(params)
 );
 
-export const get_user_policy_by_id = cache((userId: string | number, policyId: string | number) => 
-  user_policies_repository.getById(userId, policyId)
+export const getUserPolicyById = cache((userId: string | number, policyId: string | number) => 
+  userPoliciesRepository.getById(userId, policyId)
 );
 
-export const get_policies_by_user = cache((userId: string | number) => 
-  user_policies_repository.get_policies_by_user(userId)
+export const getPoliciesByUser = cache((userId: string | number) => 
+  userPoliciesRepository.getPoliciesByUser(userId)
 );
 
-export const get_users_by_policy = cache((policyId: string | number) => 
-  user_policies_repository.get_users_by_policy(policyId)
+export const getUsersByPolicy = cache((policyId: string | number) => 
+  userPoliciesRepository.getUsersByPolicy(policyId)
 );
 
 // --- Policy Evaluation Queries ---------------------------------------------
 
-export const evaluate_policy = (payload: IPolicyEvaluationRequest) => 
-  policy_evaluation_repository.evaluate(payload);
+export const evaluatePolicy = (payload: IPolicyEvaluationRequest) => 
+  policyEvaluationRepository.evaluate(payload);
 
-export const bulk_evaluate_policies = (payload: IBulkPolicyEvaluationRequest) => 
-  policy_evaluation_repository.bulk_evaluate(payload);
+export const bulkEvaluatePolicies = (payload: IBulkPolicyEvaluationRequest) => 
+  policyEvaluationRepository.bulkEvaluate(payload);
 
-export const get_active_policies_for_user = cache((userId: string | number) => 
-  policy_evaluation_repository.get_active_policies_for_user(userId)
+export const getActivePoliciesForUser = cache((userId: string | number) => 
+  policyEvaluationRepository.getActivePoliciesForUser(userId)
 );
 
-export const get_evaluation_history = cache((userId: string | number, params?: ListParams) => 
-  policy_evaluation_repository.get_evaluation_history(userId, params)
+export const getEvaluationHistory = cache((userId: string | number, params?: ListParams) => 
+  policyEvaluationRepository.getEvaluationHistory(userId, params)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get policy with all user relationships
-export const get_policy_profile = cache(async (policyId: string | number) => {
+export const getPolicyProfile = cache(async (policyId: string | number) => {
   const [policy, users] = await Promise.all([
-    get_policy_by_id(policyId),
-    get_users_by_policy(policyId)
+    getPolicyById(policyId),
+    getUsersByPolicy(policyId)
   ]);
   
   return {
@@ -78,10 +78,10 @@ export const get_policy_profile = cache(async (policyId: string | number) => {
 });
 
 // Get user with all active policies
-export const get_user_policy_profile = cache(async (userId: string | number) => {
+export const getUserPolicyProfile = cache(async (userId: string | number) => {
   const [policies, activePolicies] = await Promise.all([
-    get_policies_by_user(userId),
-    get_active_policies_for_user(userId)
+    getPoliciesByUser(userId),
+    getActivePoliciesForUser(userId)
   ]);
   
   return {
@@ -93,11 +93,11 @@ export const get_user_policy_profile = cache(async (userId: string | number) => 
 });
 
 // Get policy effectiveness metrics
-export const get_policy_metrics = cache(async (policyId: string | number) => {
+export const getPolicyMetrics = cache(async (policyId: string | number) => {
   const [policy, users, evaluationHistory] = await Promise.all([
-    get_policy_by_id(policyId),
-    get_users_by_policy(policyId),
-    get_evaluation_history(policyId, { per_page: 100 })
+    getPolicyById(policyId),
+    getUsersByPolicy(policyId),
+    getEvaluationHistory(policyId, { per_page: 100 })
   ]);
   
   // Calculate metrics from evaluation history
@@ -116,14 +116,14 @@ export const get_policy_metrics = cache(async (policyId: string | number) => {
 });
 
 // Get comprehensive policy overview
-export const get_policies_overview = cache(async (params?: ListParams) => {
-  const policies = await get_policies(params);
+export const getPoliciesOverview = cache(async (params?: ListParams) => {
+  const policies = await getPolicies(params);
   
   // Get metrics for each policy (this could be optimized with batch queries)
   const policiesWithMetrics = await Promise.all(
     policies.data.map(async (policy) => {
       const [users] = await Promise.all([
-        get_users_by_policy(policy.id)
+        getUsersByPolicy(policy.id)
       ]);
       
       return {

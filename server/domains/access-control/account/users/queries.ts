@@ -15,20 +15,20 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- Users Queries -------------------------------------------------
 
-export const get_users = cache((params?: IUserListParams) => 
+export const getUsers = cache((params?: IUserListParams) => 
   usersRepository.list(params)
 );
 
-export const get_user_by_id = cache((id: number) => 
+export const getUserById = cache((id: number) => 
   usersRepository.getById(id)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get user with status
-export const get_user_with_status = cache(async (id: number) => {
+export const getUserWithStatus = cache(async (id: number) => {
   const [user] = await Promise.all([
-    get_user_by_id(id)
+    getUserById(id)
   ]);
   
   return {
@@ -40,9 +40,9 @@ export const get_user_with_status = cache(async (id: number) => {
 });
 
 // Get users list with summary
-export const get_users_with_summary = cache(async (params?: IUserListParams) => {
+export const getUsersWithSummary = cache(async (params?: IUserListParams) => {
   const [users] = await Promise.all([
-    get_users(params)
+    getUsers(params)
   ]);
   
   // Process users data

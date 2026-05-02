@@ -6,8 +6,8 @@ import type { ICreateMenuPayload, IUpdateMenuPayload } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import { IMenu } from '@/modules/navigation/menus/models/menu.interface';
 import { IUser } from '@/modules/account/users/models/user.interface';
-import { IUserMenu } from '../..';
 import { IRoleMenu } from '@/modules/navigation/role-menus/models/role-menu.interface';
+import { IMenuPermission, IPermission } from '@/modules/navigation/menu-permissions/models/menu-permission.interface';
 
 // --- Menus Repository ---------------------------------------------------------
 

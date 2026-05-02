@@ -3,10 +3,10 @@ import { cache } from 'react';
 
 import { 
   applicationsRepository, 
-  application_modules_repository,
-  application_health_repository,
-  application_config_repository,
-  application_stats_repository
+  applicationModulesRepository,
+  applicationHealthRepository,
+  applicationConfigRepository,
+  applicationStatsRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -24,84 +24,84 @@ import type {
 
 // --- Applications Queries -----------------------------------------------------
 
-export const get_applications = cache((params?: ListParams) => 
+export const getApplications = cache((params?: ListParams) => 
   applicationsRepository.list(params)
 );
 
-export const get_application_by_id = cache((id: string | number) => 
+export const getApplicationById = cache((id: string | number) => 
   applicationsRepository.getById(id)
 );
 
-export const get_active_applications = cache(() => 
+export const getActiveApplications = cache(() => 
   applicationsRepository.getActive()
 );
 
 // --- IApplication-IModule Relationships Queries ---------------------------------
 
-export const get_application_modules = cache((params?: ListParams) => 
-  application_modules_repository.list(params)
+export const getApplicationModules = cache((params?: ListParams) => 
+  applicationModulesRepository.list(params)
 );
 
-export const get_application_module_by_id = cache((applicationId: string | number, moduleId: string | number) => 
-  application_modules_repository.getById(applicationId, moduleId)
+export const getApplicationModuleById = cache((applicationId: string | number, moduleId: string | number) => 
+  applicationModulesRepository.getById(applicationId, moduleId)
 );
 
-export const get_modules_by_application = cache((applicationId: string | number) => 
-  application_modules_repository.get_modules_by_application(applicationId)
+export const getModulesByApplication = cache((applicationId: string | number) => 
+  applicationModulesRepository.getModulesByApplication(applicationId)
 );
 
-export const get_applications_by_module = cache((moduleId: string | number) => 
-  application_modules_repository.get_applications_by_module(moduleId)
+export const getApplicationsByModule = cache((moduleId: string | number) => 
+  applicationModulesRepository.getApplicationsByModule(moduleId)
 );
 
 // --- IApplication Health Queries ---------------------------------------------
 
-export const check_application_health = cache((applicationId: string | number) => 
-  application_health_repository.check_health(applicationId)
+export const checkApplicationHealth = cache((applicationId: string | number) => 
+  applicationHealthRepository.checkHealth(applicationId)
 );
 
-export const check_all_applications_health = cache(() => 
-  application_health_repository.check_all_health()
+export const checkAllApplicationsHealth = cache(() => 
+  applicationHealthRepository.checkAllHealth()
 );
 
-export const get_health_history = cache((applicationId: string | number, params?: ListParams) => 
-  application_health_repository.get_health_history(applicationId, params)
+export const getHealthHistory = cache((applicationId: string | number, params?: ListParams) => 
+  applicationHealthRepository.getHealthHistory(applicationId, params)
 );
 
 // --- IApplication Configuration Queries -------------------------------------
 
-export const get_application_configs = cache((applicationId: string | number, params?: ListParams) => 
-  application_config_repository.list(applicationId, params)
+export const getApplicationConfigs = cache((applicationId: string | number, params?: ListParams) => 
+  applicationConfigRepository.list(applicationId, params)
 );
 
-export const get_application_config_by_key = cache((applicationId: string | number, key: string) => 
-  application_config_repository.get_by_key(applicationId, key)
+export const getApplicationConfigByKey = cache((applicationId: string | number, key: string) => 
+  applicationConfigRepository.getByKey(applicationId, key)
 );
 
 // --- IApplication Statistics Queries -----------------------------------------
 
-export const get_application_stats = cache((applicationId: string | number) => 
-  application_stats_repository.getStats(applicationId)
+export const getApplicationStats = cache((applicationId: string | number) => 
+  applicationStatsRepository.getStats(applicationId)
 );
 
-export const get_all_applications_stats = cache(() => 
-  application_stats_repository.get_all_stats()
+export const getAllApplicationsStats = cache(() => 
+  applicationStatsRepository.getAllStats()
 );
 
-export const get_application_overview = cache((applicationId: string | number) => 
-  application_stats_repository.getOverview(applicationId)
+export const getApplicationOverview = cache((applicationId: string | number) => 
+  applicationStatsRepository.getOverview(applicationId)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get application with all relationships
-export const get_application_profile = cache(async (applicationId: string | number) => {
+export const getApplicationProfile = cache(async (applicationId: string | number) => {
   const [application, modules, health, stats, configs] = await Promise.all([
-    get_application_by_id(applicationId),
-    get_modules_by_application(applicationId),
-    check_application_health(applicationId),
-    get_application_stats(applicationId),
-    get_application_configs(applicationId)
+    getApplicationById(applicationId),
+    getModulesByApplication(applicationId),
+    checkApplicationHealth(applicationId),
+    getApplicationStats(applicationId),
+    getApplicationConfigs(applicationId)
   ]);
   
   return {
@@ -115,11 +115,11 @@ export const get_application_profile = cache(async (applicationId: string | numb
 });
 
 // Get applications dashboard data
-export const get_applications_dashboard = cache(async () => {
+export const getApplicationsDashboard = cache(async () => {
   const [applications, allHealth, allStats] = await Promise.all([
-    get_applications({ per_page: 100 }),
-    check_all_applications_health(),
-    get_all_applications_stats()
+    getApplications({ per_page: 100 }),
+    checkAllApplicationsHealth(),
+    getAllApplicationsStats()
   ]);
   
   // Combine data for dashboard
@@ -147,9 +147,9 @@ export const get_applications_dashboard = cache(async () => {
 });
 
 // Get application health trends
-export const get_application_health_trends = cache(async (applicationId: string | number, days: number = 7) => {
+export const getApplicationHealthTrends = cache(async (applicationId: string | number, days: number = 7) => {
   const [healthHistory] = await Promise.all([
-    get_health_history(applicationId, { per_page: days * 24 }) // Assuming hourly checks
+    getHealthHistory(applicationId, { per_page: days * 24 }) // Assuming hourly checks
   ]);
   
   // Process health data for trends
@@ -173,8 +173,8 @@ export const get_application_health_trends = cache(async (applicationId: string 
 });
 
 // Get applications by status
-export const get_applications_by_status = cache(async (status: 'active' | 'inactive' | 'maintenance') => {
-  const applications = await get_applications({ per_page: 100 });
+export const getApplicationsByStatus = cache(async (status: 'active' | 'inactive' | 'maintenance') => {
+  const applications = await getApplications({ per_page: 100 });
   
   const filteredApps = applications.data.filter(app => app.status === status);
   

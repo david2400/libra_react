@@ -195,7 +195,7 @@ export const companyConfigRepository = {
     }),
 
   // Get config by key
-  get_by_key: (companyId: string | number, key: string) => 
+  getByKey: (companyId: string | number, key: string) => 
     serverFetch.get<ICompanyConfig>(`/api/access_control/companies/${companyId}/config/${key}`, {
       revalidate: 300,
       tags: [accessControlTags.company(companyId)],

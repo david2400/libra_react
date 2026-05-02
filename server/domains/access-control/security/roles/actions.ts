@@ -21,7 +21,7 @@ import type {
 
 // --- Roles Actions -----------------------------------------------------------
 
-export const create_role_action = async (payload: ICreateRolePayload): Promise<ActionResultType<any>> => {
+export const createRoleAction = async (payload: ICreateRolePayload): Promise<ActionResultType<any>> => {
   try {
     const role = await rolesRepository.create(payload);
     
@@ -54,7 +54,7 @@ export const create_role_action = async (payload: ICreateRolePayload): Promise<A
   }
 };
 
-export const update_role_action = async (id: string | number, payload: IUpdateRolePayload): Promise<ActionResultType<any>> => {
+export const updateRoleAction = async (id: string | number, payload: IUpdateRolePayload): Promise<ActionResultType<any>> => {
   try {
     const role = await rolesRepository.update(id, payload);
     
@@ -85,7 +85,7 @@ export const update_role_action = async (id: string | number, payload: IUpdateRo
   }
 };
 
-export const delete_role_action = async (id: string | number): Promise<ActionResultType<void>> => {
+export const deleteRoleAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
     await rolesRepository.delete(id);
     
@@ -118,7 +118,7 @@ export const delete_role_action = async (id: string | number): Promise<ActionRes
 
 // --- IRole-IMenu Relationships Actions -----------------------------------------
 
-export const create_role_menu_action = async (roleId: string | number, menuId: string | number, payload: ICreateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const createRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: ICreateRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
     const roleMenu = await roleMenusRepository.create(roleId, menuId, payload);
     
@@ -151,7 +151,7 @@ export const create_role_menu_action = async (roleId: string | number, menuId: s
   }
 };
 
-export const update_role_menu_action = async (roleId: string | number, menuId: string | number, payload: IUpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const updateRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: IUpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
     const roleMenu = await roleMenusRepository.update(roleId, menuId, payload);
     
@@ -182,7 +182,7 @@ export const update_role_menu_action = async (roleId: string | number, menuId: s
   }
 };
 
-export const delete_role_menu_action = async (roleId: string | number, menuId: string | number): Promise<ActionResultType<void>> => {
+export const deleteRoleMenuAction = async (roleId: string | number, menuId: string | number): Promise<ActionResultType<void>> => {
   try {
     await roleMenusRepository.delete(roleId, menuId);
     
@@ -213,9 +213,9 @@ export const delete_role_menu_action = async (roleId: string | number, menuId: s
   }
 };
 
-export const bulk_assign_role_menus_action = async (payload: IBulkRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const bulkAssignRoleMenusAction = async (payload: IBulkRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
-    const roleMenus = await roleMenusRepository.bulk_assign(payload);
+    const roleMenus = await roleMenusRepository.bulkAssign(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.roleMenus());
@@ -246,7 +246,7 @@ export const bulk_assign_role_menus_action = async (payload: IBulkRoleMenuPayloa
 
 // --- IRole-IPermission Relationships Actions -----------------------------------
 
-export const create_role_permission_action = async (roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const createRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const rolePermission = await rolePermissionsRepository.create(roleId, permissionId, payload);
     
@@ -279,7 +279,7 @@ export const create_role_permission_action = async (roleId: string | number, per
   }
 };
 
-export const update_role_permission_action = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const updateRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const rolePermission = await rolePermissionsRepository.update(roleId, permissionId, payload);
     
@@ -310,7 +310,7 @@ export const update_role_permission_action = async (roleId: string | number, per
   }
 };
 
-export const delete_role_permission_action = async (roleId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
+export const deleteRolePermissionAction = async (roleId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
   try {
     await rolePermissionsRepository.delete(roleId, permissionId);
     

@@ -34,77 +34,77 @@ import type {
 
 // --- IMenu-IPermission Relationships Queries ---------------------------------
 
-export const get_menu_permissions = cache((params?: ListParams) => 
+export const getMenuPermissions = cache((params?: ListParams) => 
   menuPermissionsRepository.list(params)
 );
 
-export const get_menu_permission_by_id = cache((menuId: string | number, permissionId: string | number) => 
+export const getMenuPermissionById = cache((menuId: string | number, permissionId: string | number) => 
   menuPermissionsRepository.getById(menuId, permissionId)
 );
 
-export const get_permissions_by_menu = cache((menuId: string | number) => 
+export const getPermissionsByMenu = cache((menuId: string | number) => 
   menuPermissionsRepository.get_permissions_by_menu(menuId)
 );
 
-export const get_menus_by_permission = cache((permissionId: string | number) => 
+export const getMenusByPermission = cache((permissionId: string | number) => 
   menuPermissionsRepository.get_menus_by_permission(permissionId)
 );
 
-export const get_active_permissions_for_menu = cache((menuId: string | number) => 
+export const getActivePermissionsForMenu = cache((menuId: string | number) => 
   menuPermissionsRepository.get_active_permissions(menuId)
 );
 
 // --- IMenu-IPermission Statistics Queries ---------------------------------
 
-export const get_menu_permission_stats = cache((menuId: string | number, permissionId: string | number) => 
+export const getMenuPermissionStats = cache((menuId: string | number, permissionId: string | number) => 
   menuPermissionStatsRepository.getStats(menuId, permissionId)
 );
 
-export const get_all_menu_permission_stats = cache(() => 
+export const getAllMenuPermissionStats = cache(() => 
   menuPermissionStatsRepository.get_all_stats()
 );
 
-export const get_menu_permission_overview = cache((menuId: string | number, permissionId: string | number) => 
+export const getMenuPermissionOverview = cache((menuId: string | number, permissionId: string | number) => 
   menuPermissionStatsRepository.getOverview(menuId, permissionId)
 );
 
 // --- IMenu-IPermission Inheritance Queries ---------------------------------
 
-export const get_inherited_permissions_for_menu = cache((menuId: string | number) => 
+export const getInheritedPermissionsForMenu = cache((menuId: string | number) => 
   menuPermissionInheritanceRepository.get_inherited_permissions(menuId)
 );
 
-export const get_menu_permission_inheritance_tree = cache((menuId: string | number) => 
+export const getMenuPermissionInheritanceTree = cache((menuId: string | number) => 
   menuPermissionInheritanceRepository.get_inheritance_tree(menuId)
 );
 
 // --- IMenu-IPermission Activity Queries ---------------------------------
 
-export const get_menu_permission_activities = cache((params?: ListParams) => 
+export const getMenuPermissionActivities = cache((params?: ListParams) => 
   menuPermissionActivityRepository.list(params)
 );
 
-export const get_activities_by_menu = cache((menuId: string | number, params?: ListParams) => 
+export const getActivitiesByMenu = cache((menuId: string | number, params?: ListParams) => 
   menuPermissionActivityRepository.get_by_menu(menuId, params)
 );
 
-export const get_activities_by_permission = cache((permissionId: string | number, params?: ListParams) => 
+export const getActivitiesByPermission = cache((permissionId: string | number, params?: ListParams) => 
   menuPermissionActivityRepository.get_by_permission(permissionId, params)
 );
 
-export const get_recent_menu_permission_activities = cache((menuId: string | number, limit?: number) => 
+export const getRecentMenuPermissionActivities = cache((menuId: string | number, limit?: number) => 
   menuPermissionActivityRepository.getRecent(menuId, limit)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get menu with all permission relationships
-export const get_menu_with_permissions = cache(async (menuId: string | number) => {
+export const getMenuWithPermissions = cache(async (menuId: string | number) => {
   const [permissions, activePermissions, inheritedPermissions, recentActivities] = await Promise.all([
-    get_permissions_by_menu(menuId),
-    get_active_permissions_for_menu(menuId),
-    get_inherited_permissions_for_menu(menuId),
-    get_recent_menu_permission_activities(menuId, 10)
+    getPermissionsByMenu(menuId),
+    getActivePermissionsForMenu(menuId),
+    getInheritedPermissionsForMenu(menuId),
+    getRecentMenuPermissionActivities(menuId, 10)
   ]);
   
   return {
@@ -120,10 +120,10 @@ export const get_menu_with_permissions = cache(async (menuId: string | number) =
 });
 
 // Get permission with all menu relationships
-export const get_permission_with_menus = cache(async (permissionId: string | number) => {
+export const getPermissionWithMenus = cache(async (permissionId: string | number) => {
   const [menus, recentActivities] = await Promise.all([
-    get_menus_by_permission(permissionId),
-    get_activities_by_permission(permissionId, { per_page: 10 })
+    getMenusByPermission(permissionId),
+    getActivitiesByPermission(permissionId, { per_page: 10 })
   ]);
   
   return {
@@ -135,10 +135,10 @@ export const get_permission_with_menus = cache(async (permissionId: string | num
 });
 
 // Get menu permission dashboard data
-export const get_menu_permission_dashboard = cache(async () => {
+export const getMenuPermissionDashboard = cache(async () => {
   const [menuPermissions, allStats] = await Promise.all([
-    get_menu_permissions({ per_page: 100 }),
-    get_all_menu_permission_stats()
+    getMenuPermissions({ per_page: 100 }),
+    getAllMenuPermissionStats()
   ]);
   
   // Combine data for dashboard
@@ -167,11 +167,11 @@ export const get_menu_permission_dashboard = cache(async () => {
 });
 
 // Get menu permission usage patterns
-export const get_menu_permission_usage_patterns = cache(async (menuId: string | number, days: number = 30) => {
+export const getMenuPermissionUsagePatterns = cache(async (menuId: string | number, days: number = 30) => {
   const [permissions, activities, stats] = await Promise.all([
-    get_permissions_by_menu(menuId),
-    get_activities_by_menu(menuId, { per_page: days * 24 }), // Assuming hourly checks
-    get_all_menu_permission_stats().then(allStats => 
+    getPermissionsByMenu(menuId),
+    getActivitiesByMenu(menuId, { per_page: days * 24 }), // Assuming hourly checks
+    getAllMenuPermissionStats().then(allStats => 
       allStats.filter(s => s.menuId === menuId)
     )
   ]);
@@ -211,10 +211,10 @@ export const get_menu_permission_usage_patterns = cache(async (menuId: string | 
 });
 
 // Get menu permission inheritance analysis
-export const get_menu_permission_inheritance_analysis = cache(async (menuId: string | number) => {
+export const getMenuPermissionInheritanceAnalysis = cache(async (menuId: string | number) => {
   const [inheritanceTree, directPermissions] = await Promise.all([
-    get_menu_permission_inheritance_tree(menuId),
-    get_permissions_by_menu(menuId)
+    getMenuPermissionInheritanceTree(menuId),
+    getPermissionsByMenu(menuId)
   ]);
   
   // Analyze inheritance
@@ -249,9 +249,9 @@ export const get_menu_permission_inheritance_analysis = cache(async (menuId: str
 });
 
 // Get menu permission conflict analysis
-export const get_menu_permission_conflict_analysis = cache(async (menuId: string | number) => {
+export const getMenuPermissionConflictAnalysis = cache(async (menuId: string | number) => {
   const [conflicts] = await Promise.all([
-    menuPermissionConflictRepository.detect_conflicts(menuId)
+    menuPermissionConflictRepository.detectConflicts(menuId)
   ]);
   
   // Analyze conflicts
@@ -282,7 +282,7 @@ export const get_menu_permission_conflict_analysis = cache(async (menuId: string
 });
 
 // Get menu permission validation summary
-export const get_menu_permission_validation_summary = cache(async (menuId: string | number) => {
+export const getMenuPermissionValidationSummary = cache(async (menuId: string | number) => {
   const [validationResults] = await Promise.all([
     // This would call the validation repository
     Promise.resolve([] as IMenuPermissionValidationResult[])

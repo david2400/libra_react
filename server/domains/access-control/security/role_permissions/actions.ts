@@ -4,13 +4,13 @@ import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
   rolePermissionsRepository, 
-  role_permission_stats_repository,
-  role_permission_bulk_repository,
-  role_permission_validation_repository,
-  role_permission_activity_repository,
-  role_permission_inheritance_repository,
-  role_permission_conflict_repository,
-  role_permission_export_repository
+  rolePermissionStatsRepository,
+  rolePermissionBulkRepository,
+  rolePermissionValidationRepository,
+  rolePermissionActivityRepository,
+  rolePermissionInheritanceRepository,
+  rolePermissionConflictRepository,
+  rolePermissionExportRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -25,7 +25,7 @@ import type {
 
 // --- IRole-IPermission Relationships Actions ---------------------------------
 
-export const create_role_permission_action = async (roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const createRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const rolePermission = await rolePermissionsRepository.create(roleId, permissionId, payload);
     
@@ -36,7 +36,7 @@ export const create_role_permission_action = async (roleId: string | number, per
     await revalidateCacheTag(accessControlTags.permission(permissionId));
     
     // Log activity
-    await role_permission_activity_repository.create({
+    await rolePermissionActivityRepository.create({
       roleId: roleId,
       permissionId: permissionId,
       activityType: 'permission_granted',
@@ -67,7 +67,7 @@ export const create_role_permission_action = async (roleId: string | number, per
   }
 };
 
-export const update_role_permission_action = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const updateRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const rolePermission = await rolePermissionsRepository.update(roleId, permissionId, payload);
     
@@ -77,7 +77,7 @@ export const update_role_permission_action = async (roleId: string | number, per
     await revalidateCacheTag(accessControlTags.role(roleId));
     
     // Log activity
-    await role_permission_activity_repository.create({
+    await rolePermissionActivityRepository.create({
       roleId: roleId,
       permissionId: permissionId,
       activityType: 'permission_updated',
@@ -108,7 +108,7 @@ export const update_role_permission_action = async (roleId: string | number, per
   }
 };
 
-export const delete_role_permission_action = async (roleId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
+export const deleteRolePermissionAction = async (roleId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
   try {
     await rolePermissionsRepository.delete(roleId, permissionId);
     
@@ -119,7 +119,7 @@ export const delete_role_permission_action = async (roleId: string | number, per
     await revalidateCacheTag(accessControlTags.permission(permissionId));
     
     // Log activity
-    await role_permission_activity_repository.create({
+    await rolePermissionActivityRepository.create({
       roleId: roleId,
       permissionId: permissionId,
       activityType: 'permission_revoked',
@@ -151,9 +151,9 @@ export const delete_role_permission_action = async (roleId: string | number, per
 
 // --- IRole-IPermission Bulk Operations Actions -----------------------------
 
-export const bulk_assign_role_permissions_action = async (payload: IBulkRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const bulkAssignRolePermissionsAction = async (payload: IBulkRolePermissionPayload): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_permission_bulk_repository.bulk_assign(payload);
+    const result = await rolePermissionBulkRepository.bulkAssign(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
@@ -161,7 +161,7 @@ export const bulk_assign_role_permissions_action = async (payload: IBulkRolePerm
     
     // Log activity for successful assignments
     for (const rolePermission of result.successful) {
-      await role_permission_activity_repository.create({
+      await rolePermissionActivityRepository.create({
         roleId: payload.roleId,
         permissionId: rolePermission.permissionId,
         activityType: 'permission_granted',
@@ -193,9 +193,9 @@ export const bulk_assign_role_permissions_action = async (payload: IBulkRolePerm
   }
 };
 
-export const bulk_remove_role_permissions_action = async (roleId: string | number, permissionIds: (string | number)[]): Promise<ActionResultType<any>> => {
+export const bulkRemoveRolePermissionsAction = async (roleId: string | number, permissionIds: (string | number)[]): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_permission_bulk_repository.bulk_remove(roleId, permissionIds);
+    const result = await rolePermissionBulkRepository.bulkRemove(roleId, permissionIds);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
@@ -203,7 +203,7 @@ export const bulk_remove_role_permissions_action = async (roleId: string | numbe
     
     // Log activity for successful removals
     for (const rolePermission of result.successful) {
-      await role_permission_activity_repository.create({
+      await rolePermissionActivityRepository.create({
         roleId: roleId,
         permissionId: rolePermission.permissionId,
         activityType: 'permission_revoked',
@@ -235,9 +235,9 @@ export const bulk_remove_role_permissions_action = async (roleId: string | numbe
   }
 };
 
-export const bulk_update_role_permissions_action = async (roleId: string | number, permissionIds: (string | number)[], payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const bulkUpdateRolePermissionsAction = async (roleId: string | number, permissionIds: (string | number)[], payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_permission_bulk_repository.bulk_update(roleId, permissionIds, payload);
+    const result = await rolePermissionBulkRepository.bulkUpdate(roleId, permissionIds, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
@@ -245,7 +245,7 @@ export const bulk_update_role_permissions_action = async (roleId: string | numbe
     
     // Log activity for successful updates
     for (const rolePermission of result.successful) {
-      await role_permission_activity_repository.create({
+      await rolePermissionActivityRepository.create({
         roleId: roleId,
         permissionId: rolePermission.permissionId,
         activityType: 'permission_updated',
@@ -279,9 +279,9 @@ export const bulk_update_role_permissions_action = async (roleId: string | numbe
 
 // --- IRole-IPermission Activity Actions ---------------------------------
 
-export const create_role_permission_activity_action = async (activity: Omit<IRolePermissionActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
+export const createRolePermissionActivityAction = async (activity: Omit<IRolePermissionActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
   try {
-    const createdActivity = await role_permission_activity_repository.create(activity);
+    const createdActivity = await rolePermissionActivityRepository.create(activity);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
@@ -313,9 +313,9 @@ export const create_role_permission_activity_action = async (activity: Omit<IRol
 
 // --- IRole-IPermission Validation Actions ---------------------------------
 
-export const validate_role_permission_action = async (request: IRolePermissionValidationRequest): Promise<ActionResultType<any>> => {
+export const validateRolePermissionAction = async (request: IRolePermissionValidationRequest): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_permission_validation_repository.validate(request);
+    const result = await rolePermissionValidationRepository.validate(request);
     
     return { success: true, data: result };
   } catch (error) {
@@ -340,12 +340,12 @@ export const validate_role_permission_action = async (request: IRolePermissionVa
   }
 };
 
-export const validate_role_permission_tree_action = async (roleId: string | number): Promise<ActionResultType<any>> => {
+export const validateRolePermissionTreeAction = async (roleId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const results = await role_permission_validation_repository.validate_tree(roleId);
+    const results = await rolePermissionValidationRepository.validate_tree(roleId);
     
     // Log validation activity
-    await role_permission_activity_repository.create({
+    await rolePermissionActivityRepository.create({
       roleId: roleId,
       permissionId: 'system', // System activity
       activityType: 'other',
@@ -380,12 +380,12 @@ export const validate_role_permission_tree_action = async (roleId: string | numb
   }
 };
 
-export const validate_all_role_permissions_action = async (): Promise<ActionResultType<any>> => {
+export const validateAllRolePermissionsAction = async (): Promise<ActionResultType<any>> => {
   try {
-    const results = await role_permission_validation_repository.validate_all();
+    const results = await rolePermissionValidationRepository.validate_all();
     
     // Log validation activity
-    await role_permission_activity_repository.create({
+    await rolePermissionActivityRepository.create({
       roleId: 'system', // System activity
       permissionId: 'system',
       activityType: 'other',
@@ -422,16 +422,16 @@ export const validate_all_role_permissions_action = async (): Promise<ActionResu
 
 // --- IRole-IPermission Inheritance Actions ---------------------------------
 
-export const calculate_role_permission_inheritance_action = async (roleId: string | number): Promise<ActionResultType<any>> => {
+export const calculateRolePermissionInheritanceAction = async (roleId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_permission_inheritance_repository.calculate_inheritance(roleId);
+    const result = await rolePermissionInheritanceRepository.calculate_inheritance(roleId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
     await revalidateCacheTag(accessControlTags.role(roleId));
     
     // Log inheritance calculation activity
-    await role_permission_activity_repository.create({
+    await rolePermissionActivityRepository.create({
       roleId: roleId,
       permissionId: 'system',
       activityType: 'other',
@@ -466,16 +466,16 @@ export const calculate_role_permission_inheritance_action = async (roleId: strin
 
 // --- IRole-IPermission Conflict Actions ---------------------------------
 
-export const resolve_role_permission_conflicts_action = async (roleId: string | number, conflictIds: string[]): Promise<ActionResultType<any>> => {
+export const resolveRolePermissionConflictsAction = async (roleId: string | number, conflictIds: string[]): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_permission_conflict_repository.resolve_conflicts(roleId, conflictIds);
+    const result = await rolePermissionConflictRepository.resolve_conflicts(roleId, conflictIds);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
     await revalidateCacheTag(accessControlTags.role(roleId));
     
     // Log conflict resolution activity
-    await role_permission_activity_repository.create({
+    await rolePermissionActivityRepository.create({
       roleId: roleId,
       permissionId: 'system',
       activityType: 'other',
@@ -511,12 +511,12 @@ export const resolve_role_permission_conflicts_action = async (roleId: string | 
 
 // --- IRole-IPermission Export Actions ---------------------------------
 
-export const export_role_permissions_action = async (request: IRolePermissionExportRequest): Promise<ActionResultType<any>> => {
+export const exportRolePermissionsAction = async (request: IRolePermissionExportRequest): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_permission_export_repository.export(request);
+    const result = await rolePermissionExportRepository.export(request);
     
     // Log export activity
-    await role_permission_activity_repository.create({
+    await rolePermissionActivityRepository.create({
       roleId: 'system', // System activity
       permissionId: 'system',
       activityType: 'other',

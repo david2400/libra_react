@@ -140,13 +140,13 @@ export const menuPermissionValidationRepository = {
     }),
 
   // Validate menu permission tree
-  validate_tree: (menuId: string | number) => 
+  validateTree: (menuId: string | number) => 
     serverFetch.post<Array<IMenuPermissionValidationResult>>(`/api/access_control/menu-permissions/menu/${menuId}/validate-tree`, {}, {
       revalidate: false,
     }),
 
   // Validate all menu-permission relationships
-  validate_all: () => 
+  validateAll: () => 
     serverFetch.post<Array<IMenuPermissionValidationResult>>('/api/access_control/menu-permissions/validate-all', {}, {
       revalidate: false,
     }),
@@ -164,7 +164,7 @@ export const menuPermissionActivityRepository = {
     }),
 
   // Get activities by menu
-  get_by_menu: (menuId: string | number, params?: ListParams) => 
+  getByMenu: (menuId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IMenuPermissionActivity>>(`/api/access_control/menu-permission-activities/menu/${menuId}`, {
       params,
       revalidate: 120,
@@ -172,7 +172,7 @@ export const menuPermissionActivityRepository = {
     }),
 
   // Get activities by permission
-  get_by_permission: (permissionId: string | number, params?: ListParams) => 
+  getByPermission: (permissionId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IMenuPermissionActivity>>(`/api/access_control/menu-permission-activities/permission/${permissionId}`, {
       params,
       revalidate: 120,
@@ -198,21 +198,21 @@ export const menuPermissionActivityRepository = {
 
 export const menuPermissionInheritanceRepository = {
   // Get inherited permissions for menu
-  get_inherited_permissions: (menuId: string | number) => 
+  getInheritedPermissions: (menuId: string | number) => 
     serverFetch.get<IMenuPermissionInheritance[]>(`/api/access_control/menu-permissions/menu/${menuId}/inherited`, {
       revalidate: 120,
       tags: [accessControlTags.menu(menuId)],
     }),
 
   // Get inheritance tree for menu
-  get_inheritance_tree: (menuId: string | number) => 
+  getInheritanceTree: (menuId: string | number) => 
     serverFetch.get<IMenuPermissionInheritanceTree>(`/api/access_control/menu-permissions/menu/${menuId}/inheritance-tree`, {
       revalidate: 120,
       tags: [accessControlTags.menu(menuId)],
     }),
 
   // Calculate inheritance for menu tree
-  calculate_inheritance: (menuId: string | number) => 
+  calculateInheritance: (menuId: string | number) => 
     serverFetch.post<Array<IMenuPermissionInheritance>>(`/api/access_control/menu-permissions/menu/${menuId}/calculate-inheritance`, {}, {
       revalidate: false,
     }),
@@ -222,21 +222,21 @@ export const menuPermissionInheritanceRepository = {
 
 export const menuPermissionConflictRepository = {
   // Detect conflicts for menu
-  detect_conflicts: (menuId: string | number) => 
+  detectConflicts: (menuId: string | number) => 
     serverFetch.get<IMenuPermissionConflict[]>(`/api/access_control/menu-permissions/menu/${menuId}/conflicts`, {
       revalidate: 300,
       tags: [accessControlTags.menu(menuId)],
     }),
 
   // Detect conflicts for all menus
-  detect_all_conflicts: () => 
+  detectAllConflicts: () => 
     serverFetch.get<Array<{ menuId: string | number; conflicts: IMenuPermissionConflict[] }>>('/api/access_control/menu-permissions/conflicts/detect-all', {
       revalidate: 300,
       tags: [accessControlTags.menuPermissions()],
     }),
 
   // Resolve conflicts
-  resolve_conflicts: (menuId: string | number, conflictIds: string[]) => 
+  resolveConflicts: (menuId: string | number, conflictIds: string[]) => 
     serverFetch.post<IMenuPermissionConflictResolution>(`/api/access_control/menu-permissions/menu/${menuId}/resolve-conflicts`, { conflict_ids: conflictIds }, {
       revalidate: false,
     }),
@@ -252,7 +252,7 @@ export const menuPermissionExportRepository = {
     }),
 
   // Get export history
-  get_export_history: (params?: ListParams) => 
+  getExportHistory: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<any>>('/api/access_control/menu-permissions/export/history', {
       params,
       revalidate: 300,

@@ -39,7 +39,7 @@ export const profilesRepository = {
     }),
 
   // Get profile by user ID
-  get_by_user_id: (userId: string | number) => 
+  getByUserId: (userId: string | number) => 
     serverFetch.get<IProfile>(`/api/access_control/profiles/user/${userId}`, {
       revalidate: 300,
       tags: [accessControlTags.user(userId)],
@@ -99,7 +99,7 @@ export const profileActivityRepository = {
     }),
 
   // Get activities by profile
-  get_by_profile: (profileId: string | number, params?: ListParams) => 
+  getByProfile: (profileId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IProfileActivity>>(`/api/access_control/profile-activities/profile/${profileId}`, {
       params,
       revalidate: 120,

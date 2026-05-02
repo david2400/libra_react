@@ -18,64 +18,64 @@ import type {
 
 // --- Roles Queries -----------------------------------------------------------
 
-export const get_roles = cache((params?: ListParams) => 
+export const getRoles = cache((params?: ListParams) => 
   rolesRepository.list(params)
 );
 
-export const get_role_by_id = cache((id: string | number) => 
+export const getRoleById = cache((id: string | number) => 
   rolesRepository.getById(id)
 );
 
 // Composite query: Get role with permissions and menus
-export const get_role_with_details = cache(async (id: string | number) => {
-  const role = await get_role_by_id(id);
+export const getRoleWithDetails = cache(async (id: string | number) => {
+  const role = await getRoleById(id);
   return role;
 });
 
 // --- IRole-IMenu Relationships Queries -----------------------------------------
 
-export const get_role_menus = cache((params?: ListParams) => 
+export const getRoleMenus = cache((params?: ListParams) => 
   roleMenusRepository.list(params)
 );
 
-export const get_role_menu_by_id = cache((roleId: string | number, menuId: string | number) => 
+export const getRoleMenuById = cache((roleId: string | number, menuId: string | number) => 
   roleMenusRepository.getById(roleId, menuId)
 );
 
-export const get_menus_by_role = cache((roleId: string | number) => 
-  roleMenusRepository.get_menus_by_role(roleId)
+export const getMenusByRole = cache((roleId: string | number) => 
+  roleMenusRepository.getMenusByRole(roleId)
 );
 
-export const get_role_by_menu = cache((menuId: string | number) => 
-  roleMenusRepository.get_role_by_menu(menuId)
+export const getRoleByMenu = cache((menuId: string | number) => 
+  roleMenusRepository.getRoleByMenu(menuId)
 );
 
 // --- IRole-IPermission Relationships Queries -----------------------------------
 
-export const get_role_permissions = cache((params?: ListParams) => 
+export const getRolePermissions = cache((params?: ListParams) => 
   rolePermissionsRepository.list(params)
 );
 
-export const get_role_permission_by_id = cache((roleId: string | number, permissionId: string | number) => 
+export const getRolePermissionById = cache((roleId: string | number, permissionId: string | number) => 
   rolePermissionsRepository.getById(roleId, permissionId)
 );
 
-export const get_permissions_by_role = cache((roleId: string | number) => 
-  rolePermissionsRepository.get_permissions_by_role(roleId)
+export const getPermissionsByRole = cache((roleId: string | number) => 
+  rolePermissionsRepository.getPermissionsByRole(roleId)
 );
 
-export const get_role_by_permission = cache((permissionId: string | number) => 
-  rolePermissionsRepository.get_role_by_permission(permissionId)
+export const getRoleByPermission = cache((permissionId: string | number) => 
+  rolePermissionsRepository.getRoleByPermission(permissionId)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get role with all permissions and menus
-export const get_role_profile = cache(async (roleId: string | number) => {
+export const getRoleProfile = cache(async (roleId: string | number) => {
   const [role, roleMenus, rolePermissions] = await Promise.all([
-    get_role_by_id(roleId),
-    get_menus_by_role(roleId),
-    get_role_permissions({ params: { roleId } })
+    getRoleById(roleId),
+    getMenusByRole(roleId),
+    getRolePermissions({ params: { roleId } })
   ]);
   
   return {
@@ -86,11 +86,11 @@ export const get_role_profile = cache(async (roleId: string | number) => {
 });
 
 // Get complete role access profile
-export const get_role_access_profile = cache(async (roleId: string | number) => {
+export const getRoleAccessProfile = cache(async (roleId: string | number) => {
   const [role, roleMenus, rolePermissions] = await Promise.all([
-    get_role_by_id(roleId),
-    get_menus_by_role(roleId),
-    get_permissions_by_role(roleId)
+    getRoleById(roleId),
+    getMenusByRole(roleId),
+    getPermissionsByRole(roleId)
   ]);
   
   return {

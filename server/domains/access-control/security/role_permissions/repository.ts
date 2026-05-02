@@ -134,7 +134,7 @@ export const rolePermissionBulkRepository = {
 
 // --- IRole-IPermission Validation Repository ---------------------------------
 
-export const role_permission_validation_repository = {
+export const rolePermissionValidationRepository = {
   // Validate role-permission relationship
   validate: (request: IRolePermissionValidationRequest) => 
     serverFetch.post<IRolePermissionValidationResult>('/api/access_control/role-permissions/validate', request, {
@@ -156,7 +156,7 @@ export const role_permission_validation_repository = {
 
 // --- IRole-IPermission Activity Repository ---------------------------------
 
-export const role_permission_activity_repository = {
+export const rolePermissionActivityRepository = {
   // List role-permission activities
   list: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IRolePermissionActivity>>('/api/access_control/role-permission-activities', {
@@ -198,7 +198,7 @@ export const role_permission_activity_repository = {
 
 // --- IRole-IPermission Inheritance Repository -----------------------------
 
-export const role_permission_inheritance_repository = {
+export const rolePermissionInheritanceRepository = {
   // Get inherited permissions for role
   get_inherited_permissions: (roleId: string | number) => 
     serverFetch.get<IRolePermissionInheritance[]>(`/api/access_control/role-permissions/role/${roleId}/inherited`, {
@@ -222,7 +222,7 @@ export const role_permission_inheritance_repository = {
 
 // --- IRole-IPermission Conflict Repository ---------------------------------
 
-export const role_permission_conflict_repository = {
+export const rolePermissionConflictRepository = {
   // Detect conflicts for role
   detect_conflicts: (roleId: string | number) => 
     serverFetch.get<IRolePermissionConflict[]>(`/api/access_control/role-permissions/role/${roleId}/conflicts`, {
@@ -272,7 +272,7 @@ export const role_permission_conflict_repository = {
 
 // --- IRole-IPermission Export Repository ---------------------------------
 
-export const role_permission_export_repository = {
+export const rolePermissionExportRepository = {
   // Export role-permission data
   export: (request: IRolePermissionExportRequest) => 
     serverFetch.post<IRolePermissionExportResponse>('/api/access_control/role-permissions/export', request, {

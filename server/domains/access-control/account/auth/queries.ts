@@ -2,10 +2,10 @@
 import { cache } from 'react';
 
 import { 
-  authentication_repository,
-  employee_authentication_repository,
-  client_authentication_repository,
-  internal_authentication_repository
+  authenticationRepository,
+  employeeAuthenticationRepository,
+  clientAuthenticationRepository,
+  internalAuthenticationRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { 
@@ -28,38 +28,38 @@ import type {
 
 // --- Authentication Queries -----------------------------------------
 
-export const validate_token = (request: ITokenValidationRequest) => 
-  authentication_repository.validate_token(request);
+export const validateToken = (request: ITokenValidationRequest) => 
+  authenticationRepository.validateToken(request);
 
 export const refreshToken = (request: ITokenRefreshRequest) => 
-  authentication_repository.refreshToken(request);
+  authenticationRepository.refreshToken(request);
 
 // --- Employee Authentication Queries -----------------------------
 
-export const get_employee_health = cache(() => 
-  employee_authentication_repository.health()
+export const getEmployeeHealth = cache(() => 
+  employeeAuthenticationRepository.health()
 );
 
 // --- Client Authentication Queries -----------------------------
 
-export const get_client_health = cache(() => 
-  client_authentication_repository.health()
+export const getClientHealth = cache(() => 
+  clientAuthenticationRepository.health()
 );
 
 // --- Internal Authentication Queries -----------------------------
 
-export const get_internal_health = cache(() => 
-  internal_authentication_repository.health()
+export const getInternalHealth = cache(() => 
+  internalAuthenticationRepository.health()
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get authentication service status
-export const get_authentication_service_status = cache(async () => {
+export const getAuthenticationServiceStatus = cache(async () => {
   const [employeeHealth, clientHealth, internalHealth] = await Promise.all([
-    get_employee_health(),
-    get_client_health(),
-    get_internal_health()
+    getEmployeeHealth(),
+    getClientHealth(),
+    getInternalHealth()
   ]);
   
   return {
@@ -81,8 +81,8 @@ export const get_authentication_service_status = cache(async () => {
 });
 
 // Get token validation with user info
-export const get_token_validation_with_user_info = async (request: ITokenValidationRequest) => {
-  const validation = await validate_token(request);
+export const getTokenValidationWithUserInfo = async (request: ITokenValidationRequest) => {
+  const validation = await validateToken(request);
   
   if (validation.valid && validation.userId) {
     // This would typically fetch additional user info
@@ -100,9 +100,9 @@ export const get_token_validation_with_user_info = async (request: ITokenValidat
 };
 
 // Get authentication metrics (mock implementation)
-export const get_authentication_metrics = cache(async () => {
+export const getAuthenticationMetrics = cache(async () => {
   const [serviceStatus] = await Promise.all([
-    get_authentication_service_status()
+    getAuthenticationServiceStatus()
   ]);
   
   return {

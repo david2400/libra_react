@@ -3,12 +3,12 @@ import { cache } from 'react';
 
 import { 
   roleMenusRepository, 
-  role_menu_stats_repository,
-  role_menu_bulk_repository,
-  role_menu_tree_repository,
-  role_menu_activity_repository,
-  role_menu_validation_repository,
-  role_menu_export_repository
+  roleMenuStatsRepository,
+  roleMenuBulkRepository,
+  roleMenuTreeRepository,
+  roleMenuActivityRepository,
+  roleMenuValidationRepository,
+  roleMenuExportRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -31,77 +31,77 @@ import type {
 
 // --- IRole-IMenu Relationships Queries -----------------------------------------
 
-export const get_role_menus = cache((params?: ListParams) => 
+export const getRoleMenus = cache((params?: ListParams) => 
   roleMenusRepository.list(params)
 );
 
-export const get_role_menu_by_id = cache((roleId: string | number, menuId: string | number) => 
+export const getRoleMenuById = cache((roleId: string | number, menuId: string | number) => 
   roleMenusRepository.getById(roleId, menuId)
 );
 
-export const get_menus_by_role = cache((roleId: string | number) => 
+export const getMenusByRole = cache((roleId: string | number) => 
   roleMenusRepository.get_menus_by_role(roleId)
 );
 
-export const get_roles_by_menu = cache((menuId: string | number) => 
+export const getRolesByMenu = cache((menuId: string | number) => 
   roleMenusRepository.get_roles_by_menu(menuId)
 );
 
-export const get_active_menus_for_role = cache((roleId: string | number) => 
+export const getActiveMenusForRole = cache((roleId: string | number) => 
   roleMenusRepository.get_active_menus(roleId)
 );
 
 // --- IRole-IMenu Statistics Queries -----------------------------------------
 
-export const get_role_menu_stats = cache((roleId: string | number, menuId: string | number) => 
-  role_menu_stats_repository.getStats(roleId, menuId)
+export const getRoleMenuStats = cache((roleId: string | number, menuId: string | number) => 
+  roleMenuStatsRepository.getStats(roleId, menuId)
 );
 
-export const get_all_role_menu_stats = cache(() => 
-  role_menu_stats_repository.get_all_stats()
+export const getAllRoleMenuStats = cache(() => 
+  roleMenuStatsRepository.getAllStats()
 );
 
-export const get_role_menu_overview = cache((roleId: string | number, menuId: string | number) => 
-  role_menu_stats_repository.getOverview(roleId, menuId)
+export const getRoleMenuOverview = cache((roleId: string | number, menuId: string | number) => 
+  roleMenuStatsRepository.getOverview(roleId, menuId)
 );
 
 // --- IRole-IMenu Tree Queries ---------------------------------------------
 
-export const get_role_menu_tree = cache((roleId: string | number) => 
-  role_menu_tree_repository.get_tree(roleId)
+export const getRoleMenuTree = cache((roleId: string | number) => 
+  roleMenuTreeRepository.getTree(roleId)
 );
 
-export const get_flat_role_menu_structure = cache((roleId: string | number) => 
-  role_menu_tree_repository.get_flat(roleId)
+export const getFlatRoleMenuStructure = cache((roleId: string | number) => 
+  roleMenuTreeRepository.getFlat(roleId)
 );
 
 // --- IRole-IMenu Activity Queries -----------------------------------------
 
-export const get_role_menu_activities = cache((params?: ListParams) => 
-  role_menu_activity_repository.list(params)
+export const getRoleMenuActivities = cache((params?: ListParams) => 
+  roleMenuActivityRepository.list(params)
 );
 
-export const get_activities_by_role = cache((roleId: string | number, params?: ListParams) => 
-  role_menu_activity_repository.get_by_role(roleId, params)
+export const getActivitiesByRole = cache((roleId: string | number, params?: ListParams) => 
+  roleMenuActivityRepository.getByRole(roleId, params)
 );
 
-export const get_activities_by_menu = cache((menuId: string | number, params?: ListParams) => 
-  role_menu_activity_repository.get_by_menu(menuId, params)
+export const getActivitiesByMenu = cache((menuId: string | number, params?: ListParams) => 
+  roleMenuActivityRepository.getByMenu(menuId, params)
 );
 
-export const get_recent_role_menu_activities = cache((roleId: string | number, limit?: number) => 
-  role_menu_activity_repository.getRecent(roleId, limit)
+export const getRecentRoleMenuActivities = cache((roleId: string | number, limit?: number) => 
+  roleMenuActivityRepository.getRecent(roleId, limit)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get role with all menu relationships
-export const get_role_with_menus = cache(async (roleId: string | number) => {
+export const getRoleWithMenus = cache(async (roleId: string | number) => {
   const [role, menus, activeMenus, recentActivities] = await Promise.all([
     // We would need to import role repository here, for now using roleId
-    get_menus_by_role(roleId),
-    get_active_menus_for_role(roleId),
-    get_recent_role_menu_activities(roleId, 10)
+    getMenusByRole(roleId),
+    getActiveMenusForRole(roleId),
+    getRecentRoleMenuActivities(roleId, 10)
   ]);
   
   return {
@@ -115,11 +115,11 @@ export const get_role_with_menus = cache(async (roleId: string | number) => {
 });
 
 // Get menu with all role relationships
-export const get_menu_with_roles = cache(async (menuId: string | number) => {
+export const getMenuWithRoles = cache(async (menuId: string | number) => {
   const [menu, roles, recentActivities] = await Promise.all([
     // We would need to import menu repository here, for now using menuId
-    get_roles_by_menu(menuId),
-    get_activities_by_menu(menuId, { per_page: 10 })
+    getRolesByMenu(menuId),
+    getActivitiesByMenu(menuId, { per_page: 10 })
   ]);
   
   return {
@@ -131,10 +131,10 @@ export const get_menu_with_roles = cache(async (menuId: string | number) => {
 });
 
 // Get role menu dashboard data
-export const get_role_menu_dashboard = cache(async () => {
+export const getRoleMenuDashboard = cache(async () => {
   const [roleMenus, allStats] = await Promise.all([
-    get_role_menus({ per_page: 100 }),
-    get_all_role_menu_stats()
+    getRoleMenus({ per_page: 100 }),
+    getAllRoleMenuStats()
   ]);
   
   // Combine data for dashboard
@@ -163,10 +163,10 @@ export const get_role_menu_dashboard = cache(async () => {
 });
 
 // Get role menu access patterns
-export const get_role_menu_access_patterns = cache(async (roleId: string | number, days: number = 30) => {
+export const getRoleMenuAccessPatterns = cache(async (roleId: string | number, days: number = 30) => {
   const [menus, activities] = await Promise.all([
-    get_menus_by_role(roleId),
-    get_activities_by_role(roleId, { per_page: days * 24 }) // Assuming hourly checks
+    getMenusByRole(roleId),
+    getActivitiesByRole(roleId, { per_page: days * 24 }) // Assuming hourly checks
   ]);
   
   // Process access data
@@ -203,10 +203,10 @@ export const get_role_menu_access_patterns = cache(async (roleId: string | numbe
 });
 
 // Get role menu hierarchy analysis
-export const get_role_menu_hierarchy_analysis = cache(async (roleId: string | number) => {
+export const getRoleMenuHierarchyAnalysis = cache(async (roleId: string | number) => {
   const [menuTree, flatStructure] = await Promise.all([
-    get_role_menu_tree(roleId),
-    get_flat_role_menu_structure(roleId)
+    getRoleMenuTree(roleId),
+    getFlatRoleMenuStructure(roleId)
   ]);
   
   // Analyze hierarchy
@@ -239,7 +239,7 @@ export const get_role_menu_hierarchy_analysis = cache(async (roleId: string | nu
 });
 
 // Get role menu validation summary
-export const get_role_menu_validation_summary = cache(async (roleId: string | number) => {
+export const getRoleMenuValidationSummary = cache(async (roleId: string | number) => {
   const [validationResults] = await Promise.all([
     // This would call the validation repository
     Promise.resolve([] as IRoleMenuValidationResult[])
@@ -261,10 +261,10 @@ export const get_role_menu_validation_summary = cache(async (roleId: string | nu
 });
 
 // Get role menu usage statistics
-export const get_role_menu_usage_stats = cache(async (roleId: string | number) => {
+export const getRoleMenuUsageStats = cache(async (roleId: string | number) => {
   const [menus, stats] = await Promise.all([
-    get_menus_by_role(roleId),
-    get_all_role_menu_stats().then(allStats => 
+    getMenusByRole(roleId),
+    getAllRoleMenuStats().then(allStats => 
       allStats.filter(s => s.roleId === roleId)
     )
   ]);
