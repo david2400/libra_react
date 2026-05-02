@@ -1,0 +1,41 @@
+[?9001h[?1004h[?25l[2J[m[2;1H> libra@0.1.0 build C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverkid\apps\libra
+> next build[6;1H]0;C:\WINDOWS\system32\cmd.exe[?25h[31m[1m⨯[m Failed to load next.config.ts, see more info here https://nextjs.org/docs/messages/next-config-error
+[31m
+> Build error occurred[m
+Error: Cannot find module 'next-intl/plugin'
+Require stack:
+- C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverkid\apps\libra\next.config.compiled.js
+- C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverkid\apps\libra\node_modules\.pnpm\next@16.2.4_@babel+core@7.2_c8206e0b14d95065a91ef00b15159908\node_mod
+[14;77Hdules\next\dist\build\next-config-ts\transpile-config.js
+- C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverkid\apps\libra\node_module
+[14;77Hes\.pnpm\next@16.2.4_@babel+core@7.2_c8206e0b14d95065a91ef00b15159908\node_mod
+[14;77Hdules\next\dist\server\config.js
+- C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverkid\apps\libra\node_module
+[14;77Hes\.pnpm\next@16.2.4_@babel+core@7.2_c8206e0b14d95065a91ef00b15159908\node_mod
+[14;77Hdules\next\dist\cli\next-test.js
+- C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverkid\apps\libra\node_module
+[14;77Hes\.pnpm\next@16.2.4_@babel+core@7.2_c8206e0b14d95065a91ef00b15159908\node_mod
+[14;77Hdules\next\dist\bin\next
+    at Object.<anonymous> [90m(C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverk[m
+[90m[14;77Hkid\apps\libra\[mnext.config.compiled.js:11:56[90m) [m{[K
+  code: [32m'MODULE_NOT_FOUND'[m,[K
+  requireStack: [
+    [32m'C:\\Users\\davi4\\Documents\\Proyectos\\JS\\NEXT\\kleverkid\\apps\\libra[m
+[32m[14;77Ha\\next.config.compiled.js'[m,[K
+    [32m'C:\\Users\\davi4\\Documents\\Proyectos\\JS\\NEXT\\kleverkid\\apps\\libra[m
+[32m[14;77Ha\\node_modules\\.pnpm\\next@16.2.4_@babel+core@7.2_c8206e0b14d95065a91ef00b15[m
+[32m[14;77H5159908\\node_modules\\next\\dist\\build\\next-config-ts\\transpile-config.js'[m
+[32m[14;77H'[m,
+    [32m'C:\\Users\\davi4\\Documents\\Proyectos\\JS\\NEXT\\kleverkid\\apps\\libra[m
+[32m[14;77Ha\\node_modules\\.pnpm\\next@16.2.4_@babel+core@7.2_c8206e0b14d95065a91ef00b15[m
+[32m[14;77H5159908\\node_modules\\next\\dist\\server\\config.js'[m,[K
+    [32m'C:\\Users\\davi4\\Documents\\Proyectos\\JS\\NEXT\\kleverkid\\apps\\libra[m
+[32m[14;77Ha\\node_modules\\.pnpm\\next@16.2.4_@babel+core@7.2_c8206e0b14d95065a91ef00b15[m
+[32m[14;77H5159908\\node_modules\\next\\dist\\cli\\next-test.js'[m,[K
+    [32m'C:\\Users\\davi4\\Documents\\Proyectos\\JS\\NEXT\\kleverkid\\apps\\libra[m
+[32m[14;77Ha\\node_modules\\.pnpm\\next@16.2.4_@babel+core@7.2_c8206e0b14d95065a91ef00b15[m
+[32m[14;77H5159908\\node_modules\\next\\dist\\bin\\next'[m
+  ]
+}
+[30m[41m ELIFECYCLE [m [31mCommand failed with exit code 1.[m
+[?9001l[?1004l
