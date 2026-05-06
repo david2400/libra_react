@@ -4,9 +4,9 @@ import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
   companiesRepository, 
-  company_clients_repository,
-  company_activity_repository,
-  company_config_repository
+  companyClientsRepository,
+  companyActivityRepository,
+  companyConfigRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -22,7 +22,7 @@ import type {
 
 // --- Companies Actions ---------------------------------------------------------
 
-export const create_company_action = async (payload: ICreateCompanyPayload): Promise<ActionResultType<any>> => {
+export const createCompanyAction = async (payload: ICreateCompanyPayload): Promise<ActionResultType<any>> => {
   try {
     const company = await companiesRepository.create(payload);
     
@@ -33,7 +33,7 @@ export const create_company_action = async (payload: ICreateCompanyPayload): Pro
     }
     
     // Log activity
-    await company_activity_repository.create({
+    await companyActivityRepository.create({
       companyId: company.id,
       activityType: 'profile_update',
       description: 'ICompany created',
@@ -63,7 +63,7 @@ export const create_company_action = async (payload: ICreateCompanyPayload): Pro
   }
 };
 
-export const update_company_action = async (id: string | number, payload: IUpdateCompanyPayload): Promise<ActionResultType<any>> => {
+export const updateCompanyAction = async (id: string | number, payload: IUpdateCompanyPayload): Promise<ActionResultType<any>> => {
   try {
     const company = await companiesRepository.update(id, payload);
     
@@ -72,7 +72,7 @@ export const update_company_action = async (id: string | number, payload: IUpdat
     await revalidateCacheTag(accessControlTags.company(id));
     
     // Log activity
-    await company_activity_repository.create({
+    await companyActivityRepository.create({
       companyId: id,
       activityType: 'profile_update',
       description: 'ICompany profile updated',
@@ -102,7 +102,7 @@ export const update_company_action = async (id: string | number, payload: IUpdat
   }
 };
 
-export const delete_company_action = async (id: string | number): Promise<ActionResultType<void>> => {
+export const deleteCompanyAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
     await companiesRepository.delete(id);
     
@@ -137,7 +137,7 @@ export const delete_company_action = async (id: string | number): Promise<Action
 
 export const create_company_client_action = async (companyId: string | number, clientId: string | number, payload: ICreateCompanyClientPayload): Promise<ActionResultType<any>> => {
   try {
-    const companyClient = await company_clients_repository.create(companyId, clientId, payload);
+    const companyClient = await companyClientsRepository.create(companyId, clientId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());
@@ -145,7 +145,7 @@ export const create_company_client_action = async (companyId: string | number, c
     await revalidateCacheTag(accessControlTags.client(clientId));
     
     // Log activity
-    await company_activity_repository.create({
+    await companyActivityRepository.create({
       companyId: companyId,
       activityType: 'client_added',
       description: `Client added to company (Client ID: ${clientId})`,
@@ -181,14 +181,14 @@ export const create_company_client_action = async (companyId: string | number, c
 
 export const update_company_client_action = async (companyId: string | number, clientId: string | number, payload: IUpdateCompanyClientPayload): Promise<ActionResultType<any>> => {
   try {
-    const companyClient = await company_clients_repository.update(companyId, clientId, payload);
+    const companyClient = await companyClientsRepository.update(companyId, clientId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());
     await revalidateCacheTag(accessControlTags.company(companyId));
     
     // Log activity
-    await company_activity_repository.create({
+    await companyActivityRepository.create({
       companyId: companyId,
       activityType: 'profile_update',
       description: `ICompany-client relationship updated (Client ID: ${clientId})`,
@@ -223,7 +223,7 @@ export const update_company_client_action = async (companyId: string | number, c
 
 export const delete_company_client_action = async (companyId: string | number, clientId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await company_clients_repository.delete(companyId, clientId);
+    await companyClientsRepository.delete(companyId, clientId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());
@@ -231,7 +231,7 @@ export const delete_company_client_action = async (companyId: string | number, c
     await revalidateCacheTag(accessControlTags.client(clientId));
     
     // Log activity
-    await company_activity_repository.create({
+    await companyActivityRepository.create({
       companyId: companyId,
       activityType: 'client_removed',
       description: `Client removed from company (Client ID: ${clientId})`,
@@ -265,14 +265,14 @@ export const delete_company_client_action = async (companyId: string | number, c
 
 export const create_company_config_action = async (companyId: string | number, payload: ICreateCompanyConfigPayload): Promise<ActionResultType<any>> => {
   try {
-    const config = await company_config_repository.create(companyId, payload);
+    const config = await companyConfigRepository.create(companyId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());
     await revalidateCacheTag(accessControlTags.company(companyId));
     
     // Log activity
-    await company_activity_repository.create({
+    await companyActivityRepository.create({
       companyId: companyId,
       activityType: 'profile_update',
       description: `ICompany configuration added (Key: ${payload.key})`,
@@ -307,14 +307,14 @@ export const create_company_config_action = async (companyId: string | number, p
 
 export const update_company_config_action = async (companyId: string | number, key: string, payload: IUpdateCompanyConfigPayload): Promise<ActionResultType<any>> => {
   try {
-    const config = await company_config_repository.update(companyId, key, payload);
+    const config = await companyConfigRepository.update(companyId, key, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());
     await revalidateCacheTag(accessControlTags.company(companyId));
     
     // Log activity
-    await company_activity_repository.create({
+    await companyActivityRepository.create({
       companyId: companyId,
       activityType: 'profile_update',
       description: `ICompany configuration updated (Key: ${key})`,
@@ -349,14 +349,14 @@ export const update_company_config_action = async (companyId: string | number, k
 
 export const delete_company_config_action = async (companyId: string | number, key: string): Promise<ActionResultType<void>> => {
   try {
-    await company_config_repository.delete(companyId, key);
+    await companyConfigRepository.delete(companyId, key);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());
     await revalidateCacheTag(accessControlTags.company(companyId));
     
     // Log activity
-    await company_activity_repository.create({
+    await companyActivityRepository.create({
       companyId: companyId,
       activityType: 'profile_update',
       description: `ICompany configuration deleted (Key: ${key})`,
@@ -390,7 +390,7 @@ export const delete_company_config_action = async (companyId: string | number, k
 
 export const create_company_activity_action = async (activity: Omit<ICompanyActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
   try {
-    const createdActivity = await company_activity_repository.create(activity);
+    const createdActivity = await companyActivityRepository.create(activity);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());

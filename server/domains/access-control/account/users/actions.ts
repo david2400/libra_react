@@ -14,7 +14,7 @@ import type {
 
 // --- Users Actions -------------------------------------------------
 
-export const create_user_action = async (payload: ICreateUserPayload): Promise<ActionResultType<any>> => {
+export const createUserAction = async (payload: ICreateUserPayload): Promise<ActionResultType<any>> => {
   try {
     const user = await usersRepository.create(payload);
     
@@ -44,7 +44,7 @@ export const create_user_action = async (payload: ICreateUserPayload): Promise<A
   }
 };
 
-export const update_user_action = async (id: number, payload: IUpdateUserPayload): Promise<ActionResultType<any>> => {
+export const updateUserAction = async (id: number, payload: IUpdateUserPayload): Promise<ActionResultType<any>> => {
   try {
     const user = await usersRepository.update(id, payload);
     
@@ -75,7 +75,7 @@ export const update_user_action = async (id: number, payload: IUpdateUserPayload
   }
 };
 
-export const delete_user_action = async (id: number): Promise<ActionResultType<void>> => {
+export const deleteUserAction = async (id: number): Promise<ActionResultType<void>> => {
   try {
     await usersRepository.delete(id);
     

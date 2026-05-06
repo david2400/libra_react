@@ -25,7 +25,7 @@ import type {
 
 // --- IMenu-IPermission Relationships Actions ---------------------------------
 
-export const create_menu_permission_action = async (menuId: string | number, permissionId: string | number, payload: ICreateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const createMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: ICreateMenuPermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const menuPermission = await menuPermissionsRepository.create(menuId, permissionId, payload);
     
@@ -67,7 +67,7 @@ export const create_menu_permission_action = async (menuId: string | number, per
   }
 };
 
-export const update_menu_permission_action = async (menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const updateMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const menuPermission = await menuPermissionsRepository.update(menuId, permissionId, payload);
     
@@ -108,7 +108,7 @@ export const update_menu_permission_action = async (menuId: string | number, per
   }
 };
 
-export const delete_menu_permission_action = async (menuId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
+export const deleteMenuPermissionAction = async (menuId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
   try {
     await menuPermissionsRepository.delete(menuId, permissionId);
     
@@ -151,9 +151,9 @@ export const delete_menu_permission_action = async (menuId: string | number, per
 
 // --- IMenu-IPermission Bulk Operations Actions -----------------------------
 
-export const bulk_assign_menu_permissions_action = async (payload: IBulkMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const bulkAssignMenuPermissionsAction = async (payload: IBulkMenuPermissionPayload): Promise<ActionResultType<any>> => {
   try {
-    const result = await menuPermissionBulkRepository.bulk_assign(payload);
+    const result = await menuPermissionBulkRepository.bulkAssign(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.menuPermissions());
@@ -193,9 +193,9 @@ export const bulk_assign_menu_permissions_action = async (payload: IBulkMenuPerm
   }
 };
 
-export const bulk_remove_menu_permissions_action = async (menuId: string | number, permissionIds: (string | number)[]): Promise<ActionResultType<any>> => {
+export const bulkRemoveMenuPermissionsAction = async (menuId: string | number, permissionIds: (string | number)[]): Promise<ActionResultType<any>> => {
   try {
-    const result = await menuPermissionBulkRepository.bulk_remove(menuId, permissionIds);
+    const result = await menuPermissionBulkRepository.bulkRemove(menuId, permissionIds);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.menuPermissions());
@@ -235,9 +235,9 @@ export const bulk_remove_menu_permissions_action = async (menuId: string | numbe
   }
 };
 
-export const bulk_update_menu_permissions_action = async (menuId: string | number, permissionIds: (string | number)[], payload: IUpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const bulkUpdateMenuPermissionsAction = async (menuId: string | number, permissionIds: (string | number)[], payload: IUpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
   try {
-    const result = await menuPermissionBulkRepository.bulk_update(menuId, permissionIds, payload);
+    const result = await menuPermissionBulkRepository.bulkUpdate(menuId, permissionIds, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.menuPermissions());
@@ -279,7 +279,7 @@ export const bulk_update_menu_permissions_action = async (menuId: string | numbe
 
 // --- IMenu-IPermission Activity Actions ---------------------------------
 
-export const create_menu_permission_activity_action = async (activity: Omit<IMenuPermissionActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
+export const createMenuPermissionActivityAction = async (activity: Omit<IMenuPermissionActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
   try {
     const createdActivity = await menuPermissionActivityRepository.create(activity);
     
@@ -313,7 +313,7 @@ export const create_menu_permission_activity_action = async (activity: Omit<IMen
 
 // --- IMenu-IPermission Validation Actions ---------------------------------
 
-export const validate_menu_permission_action = async (request: IMenuPermissionValidationRequest): Promise<ActionResultType<any>> => {
+export const validateMenuPermissionAction = async (request: IMenuPermissionValidationRequest): Promise<ActionResultType<any>> => {
   try {
     const result = await menuPermissionValidationRepository.validate(request);
     
@@ -340,9 +340,9 @@ export const validate_menu_permission_action = async (request: IMenuPermissionVa
   }
 };
 
-export const validate_menu_permission_tree_action = async (menuId: string | number): Promise<ActionResultType<any>> => {
+export const validateMenuPermissionTreeAction = async (menuId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const results = await menuPermissionValidationRepository.validate_tree(menuId);
+    const results = await menuPermissionValidationRepository.validateTree(menuId);
     
     // Log validation activity
     await menuPermissionActivityRepository.create({
@@ -380,9 +380,9 @@ export const validate_menu_permission_tree_action = async (menuId: string | numb
   }
 };
 
-export const validate_all_menu_permissions_action = async (): Promise<ActionResultType<any>> => {
+export const validateAllMenuPermissionsAction = async (): Promise<ActionResultType<any>> => {
   try {
-    const results = await menuPermissionValidationRepository.validate_all();
+    const results = await menuPermissionValidationRepository.validateAll();
     
     // Log validation activity
     await menuPermissionActivityRepository.create({
@@ -422,9 +422,9 @@ export const validate_all_menu_permissions_action = async (): Promise<ActionResu
 
 // --- IMenu-IPermission Inheritance Actions ---------------------------------
 
-export const calculate_menu_permission_inheritance_action = async (menuId: string | number): Promise<ActionResultType<any>> => {
+export const calculateMenuPermissionInheritanceAction = async (menuId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const result = await menuPermissionInheritanceRepository.calculate_inheritance(menuId);
+    const result = await menuPermissionInheritanceRepository.calculateInheritance(menuId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.menuPermissions());
@@ -466,9 +466,9 @@ export const calculate_menu_permission_inheritance_action = async (menuId: strin
 
 // --- IMenu-IPermission Conflict Actions ---------------------------------
 
-export const resolve_menu_permission_conflicts_action = async (menuId: string | number, conflictIds: string[]): Promise<ActionResultType<any>> => {
+export const resolveMenuPermissionConflictsAction = async (menuId: string | number, conflictIds: string[]): Promise<ActionResultType<any>> => {
   try {
-    const result = await menuPermissionConflictRepository.resolve_conflicts(menuId, conflictIds);
+    const result = await menuPermissionConflictRepository.resolveConflicts(menuId, conflictIds);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.menuPermissions());
@@ -511,7 +511,7 @@ export const resolve_menu_permission_conflicts_action = async (menuId: string | 
 
 // --- IMenu-IPermission Export Actions ---------------------------------
 
-export const export_menu_permissions_action = async (request: IMenuPermissionExportRequest): Promise<ActionResultType<any>> => {
+export const exportMenuPermissionsAction = async (request: IMenuPermissionExportRequest): Promise<ActionResultType<any>> => {
   try {
     const result = await menuPermissionExportRepository.export(request);
     

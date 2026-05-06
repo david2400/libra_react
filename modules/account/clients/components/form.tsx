@@ -7,7 +7,7 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormClient } from "../scenes/formClient";
 import { validationClient } from "../schemas/client.schema";
 import { IClientCreateRequest, IClientUpdateRequest } from "../models/client.interface";
-import { clients } from "@/server/domains/access-control/account";
+import { clientsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -25,9 +25,9 @@ export const RegisterClient = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IClientCreateRequest> = async (values) => {
-    const result = await clients.create_client_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await clientsApi.create(values);
+      
       Swal.fire({
         title: "Cliente creado exitosamente",
         icon: "success",
@@ -35,10 +35,10 @@ export const RegisterClient = ({}: IFormAddProps = {}) => {
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -53,9 +53,9 @@ export const UpdateClient = ({ initialValues }: IFormUpdateProps<IClientUpdateRe
   const handleSubmit: SubmitHandler<IClientUpdateRequest> = async (values) => {
     if (!values.id) return;
     
-    const result = await clients.update_client_action(values.id, values);
-    
-    if (result.success) {
+    try {
+      const result = await clientsApi.update(values.id, values);
+      
       Swal.fire({
         title: "Cliente actualizado exitosamente",
         icon: "success",
@@ -63,10 +63,10 @@ export const UpdateClient = ({ initialValues }: IFormUpdateProps<IClientUpdateRe
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

@@ -14,7 +14,7 @@ import {
   IPolicyCreateRequest,
   IPolicyUpdateRequest,
 } from "../models/policy.interface";
-import { policies } from "@/server/domains/access-control/security";
+import { policiesApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -42,9 +42,9 @@ export const RegisterPolicy = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IPolicyCreateRequest> = async (values) => {
-    const result = await policies.create_policy_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await policiesApi.create(values);
+      
       Swal.fire({
         title: "Política creada exitosamente",
         icon: "success",
@@ -54,10 +54,10 @@ export const RegisterPolicy = ({}: IFormAddProps = {}) => {
           router.refresh();
         },
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -80,9 +80,9 @@ export const UpdatePolicy = ({
   const handleSubmit: SubmitHandler<IPolicyUpdateRequest> = async (values) => {
     if (!values.id) return;
     
-    const result = await policies.update_policy_action(values.id, values);
-    
-    if (result.success) {
+    try {
+      const result = await policiesApi.update(values.id, values);
+      
       Swal.fire({
         title: "Política actualizada exitosamente",
         icon: "success",
@@ -92,10 +92,10 @@ export const UpdatePolicy = ({
           router.refresh();
         },
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

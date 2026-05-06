@@ -7,7 +7,7 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormRolePermission } from "../scenes/formRolePermission";
 import { validationRolePermission } from "../schemas/role-permission.schema";
 import { IRolePermissionCreateRequest, IRolePermissionUpdateRequest } from "../models/role-permission.interface";
-import { rolePermissions } from "@/server/domains/access-control/security";
+import { rolePermissionsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -25,9 +25,9 @@ export const RegisterRolePermission = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IRolePermissionCreateRequest> = async (values) => {
-    const result = await rolePermissions.create_role_permission_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await rolePermissionsApi.create(values.roleId, values.permissionId, values);
+      
       Swal.fire({
         title: "Asignación creada exitosamente",
         icon: "success",
@@ -35,10 +35,10 @@ export const RegisterRolePermission = ({}: IFormAddProps = {}) => {
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -53,9 +53,9 @@ export const UpdateRolePermission = ({ initialValues }: IFormUpdateProps<IRolePe
   const handleSubmit: SubmitHandler<IRolePermissionUpdateRequest> = async (values) => {
     if (!values.roleId || !values.permissionId) return;
     
-    const result = await rolePermissions.update_role_permission_action(values.roleId, values.permissionId, values);
-    
-    if (result.success) {
+    try {
+      const result = await rolePermissionsApi.update(values.roleId, values.permissionId, values);
+      
       Swal.fire({
         title: "Asignación actualizada exitosamente",
         icon: "success",
@@ -63,10 +63,10 @@ export const UpdateRolePermission = ({ initialValues }: IFormUpdateProps<IRolePe
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

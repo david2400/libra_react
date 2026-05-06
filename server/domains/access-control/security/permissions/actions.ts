@@ -6,7 +6,7 @@ import {
   permissionsRepository, 
   menuPermissionsRepository,
   rolePermissionsRepository,
-  user_permissions_repository
+  userPermissionsRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -23,7 +23,7 @@ import type {
 
 // --- Permissions Actions ---------------------------------------------------------
 
-export const create_permission_action = async (payload: ICreatePermissionPayload): Promise<ActionResultType<any>> => {
+export const createPermissionAction = async (payload: ICreatePermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const permission = await permissionsRepository.create(payload);
     
@@ -56,7 +56,7 @@ export const create_permission_action = async (payload: ICreatePermissionPayload
   }
 };
 
-export const update_permission_action = async (id: string | number, payload: IUpdatePermissionPayload): Promise<ActionResultType<any>> => {
+export const updatePermissionAction = async (id: string | number, payload: IUpdatePermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const permission = await permissionsRepository.update(id, payload);
     
@@ -87,7 +87,7 @@ export const update_permission_action = async (id: string | number, payload: IUp
   }
 };
 
-export const delete_permission_action = async (id: string | number): Promise<ActionResultType<void>> => {
+export const deletePermissionAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
     await permissionsRepository.delete(id);
     
@@ -120,7 +120,7 @@ export const delete_permission_action = async (id: string | number): Promise<Act
 
 // --- IMenu-IPermission Relationships Actions ---------------------------------
 
-export const create_menu_permission_action = async (menuId: string | number, permissionId: string | number, payload: ICreateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const createMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: ICreateMenuPermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const menuPermission = await menuPermissionsRepository.create(menuId, permissionId, payload);
     
@@ -153,7 +153,7 @@ export const create_menu_permission_action = async (menuId: string | number, per
   }
 };
 
-export const update_menu_permission_action = async (menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const updateMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const menuPermission = await menuPermissionsRepository.update(menuId, permissionId, payload);
     
@@ -184,7 +184,7 @@ export const update_menu_permission_action = async (menuId: string | number, per
   }
 };
 
-export const delete_menu_permission_action = async (menuId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
+export const deleteMenuPermissionAction = async (menuId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
   try {
     await menuPermissionsRepository.delete(menuId, permissionId);
     
@@ -217,7 +217,7 @@ export const delete_menu_permission_action = async (menuId: string | number, per
 
 // --- IRole-IPermission Relationships Actions -----------------------------------
 
-export const create_role_permission_action = async (roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const createRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const rolePermission = await rolePermissionsRepository.create(roleId, permissionId, payload);
     
@@ -250,7 +250,7 @@ export const create_role_permission_action = async (roleId: string | number, per
   }
 };
 
-export const update_role_permission_action = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const updateRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const rolePermission = await rolePermissionsRepository.update(roleId, permissionId, payload);
     
@@ -281,7 +281,7 @@ export const update_role_permission_action = async (roleId: string | number, per
   }
 };
 
-export const delete_role_permission_action = async (roleId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
+export const deleteRolePermissionAction = async (roleId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
   try {
     await rolePermissionsRepository.delete(roleId, permissionId);
     
@@ -314,9 +314,9 @@ export const delete_role_permission_action = async (roleId: string | number, per
 
 // --- IUser-IPermission Relationships Actions -----------------------------------
 
-export const create_user_permission_action = async (userId: string | number, permissionId: string | number, payload: ICreateUserPermissionPayload): Promise<ActionResultType<any>> => {
+export const createUserPermissionAction = async (userId: string | number, permissionId: string | number, payload: ICreateUserPermissionPayload): Promise<ActionResultType<any>> => {
   try {
-    const userPermission = await user_permissions_repository.create(userId, permissionId, payload);
+    const userPermission = await userPermissionsRepository.create(userId, permissionId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userPermissions());
@@ -347,9 +347,9 @@ export const create_user_permission_action = async (userId: string | number, per
   }
 };
 
-export const update_user_permission_action = async (userId: string | number, permissionId: string | number, payload: IUpdateUserPermissionPayload): Promise<ActionResultType<any>> => {
+export const updateUserPermissionAction = async (userId: string | number, permissionId: string | number, payload: IUpdateUserPermissionPayload): Promise<ActionResultType<any>> => {
   try {
-    const userPermission = await user_permissions_repository.update(userId, permissionId, payload);
+    const userPermission = await userPermissionsRepository.update(userId, permissionId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userPermissions());
@@ -378,9 +378,9 @@ export const update_user_permission_action = async (userId: string | number, per
   }
 };
 
-export const delete_user_permission_action = async (userId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
+export const deleteUserPermissionAction = async (userId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await user_permissions_repository.delete(userId, permissionId);
+    await userPermissionsRepository.delete(userId, permissionId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userPermissions());

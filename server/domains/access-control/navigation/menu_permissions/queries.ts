@@ -43,15 +43,15 @@ export const getMenuPermissionById = cache((menuId: string | number, permissionI
 );
 
 export const getPermissionsByMenu = cache((menuId: string | number) => 
-  menuPermissionsRepository.get_permissions_by_menu(menuId)
+  menuPermissionsRepository.getPermissionsByMenu(menuId)
 );
 
 export const getMenusByPermission = cache((permissionId: string | number) => 
-  menuPermissionsRepository.get_menus_by_permission(permissionId)
+  menuPermissionsRepository.getMenusByPermission(permissionId)
 );
 
 export const getActivePermissionsForMenu = cache((menuId: string | number) => 
-  menuPermissionsRepository.get_active_permissions(menuId)
+  menuPermissionsRepository.getActivePermissions(menuId)
 );
 
 // --- IMenu-IPermission Statistics Queries ---------------------------------
@@ -61,7 +61,7 @@ export const getMenuPermissionStats = cache((menuId: string | number, permission
 );
 
 export const getAllMenuPermissionStats = cache(() => 
-  menuPermissionStatsRepository.get_all_stats()
+  menuPermissionStatsRepository.getAllStats()
 );
 
 export const getMenuPermissionOverview = cache((menuId: string | number, permissionId: string | number) => 
@@ -71,11 +71,11 @@ export const getMenuPermissionOverview = cache((menuId: string | number, permiss
 // --- IMenu-IPermission Inheritance Queries ---------------------------------
 
 export const getInheritedPermissionsForMenu = cache((menuId: string | number) => 
-  menuPermissionInheritanceRepository.get_inherited_permissions(menuId)
+  menuPermissionInheritanceRepository.getInheritedPermissions(menuId)
 );
 
 export const getMenuPermissionInheritanceTree = cache((menuId: string | number) => 
-  menuPermissionInheritanceRepository.get_inheritance_tree(menuId)
+  menuPermissionInheritanceRepository.getInheritanceTree(menuId)
 );
 
 // --- IMenu-IPermission Activity Queries ---------------------------------
@@ -85,11 +85,11 @@ export const getMenuPermissionActivities = cache((params?: ListParams) =>
 );
 
 export const getActivitiesByMenu = cache((menuId: string | number, params?: ListParams) => 
-  menuPermissionActivityRepository.get_by_menu(menuId, params)
+  menuPermissionActivityRepository.getByMenu(menuId, params)
 );
 
 export const getActivitiesByPermission = cache((permissionId: string | number, params?: ListParams) => 
-  menuPermissionActivityRepository.get_by_permission(permissionId, params)
+  menuPermissionActivityRepository.getByPermission(permissionId, params)
 );
 
 export const getRecentMenuPermissionActivities = cache((menuId: string | number, limit?: number) => 

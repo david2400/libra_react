@@ -40,15 +40,15 @@ export const getRoleMenuById = cache((roleId: string | number, menuId: string | 
 );
 
 export const getMenusByRole = cache((roleId: string | number) => 
-  roleMenusRepository.get_menus_by_role(roleId)
+  roleMenusRepository.getMenusByRole(roleId)
 );
 
 export const getRolesByMenu = cache((menuId: string | number) => 
-  roleMenusRepository.get_roles_by_menu(menuId)
+  roleMenusRepository.getRolesByMenu(menuId)
 );
 
 export const getActiveMenusForRole = cache((roleId: string | number) => 
-  roleMenusRepository.get_active_menus(roleId)
+  roleMenusRepository.getActiveMenus(roleId)
 );
 
 // --- IRole-IMenu Statistics Queries -----------------------------------------

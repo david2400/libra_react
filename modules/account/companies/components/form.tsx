@@ -7,9 +7,9 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormCompany } from "../scenes/formCompany";
 import { validationCompany } from "../schemas/company.schema";
 import { ICompanyCreateRequest, ICompanyUpdateRequest } from "../models/company.interface";
-import { companies } from "@/server/domains/access-control/account";
+import { companiesApi } from "@/lib/api";
 import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@repo/ui/shared/i18n/routing";
 
 const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
   return <FormCompany initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
@@ -25,9 +25,9 @@ export const RegisterCompany = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<ICompanyCreateRequest> = async (values) => {
-    const result = await companies.createCompanyAction(values);
-    
-    if (result.success) {
+    try {
+      const result = await companiesApi.create(values);
+      
       Swal.fire({
         title: "Empresa creada exitosamente",
         icon: "success",
@@ -35,10 +35,10 @@ export const RegisterCompany = ({}: IFormAddProps = {}) => {
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -53,9 +53,9 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<ICompanyUpdate
   const handleSubmit: SubmitHandler<ICompanyUpdateRequest> = async (values) => {
     if (!values.id) return;
     
-    const result = await companies.updateCompanyAction(values.id, values);
-    
-    if (result.success) {
+    try {
+      const result = await companiesApi.update(values.id, values);
+      
       Swal.fire({
         title: "Empresa actualizada exitosamente",
         icon: "success",
@@ -63,10 +63,10 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<ICompanyUpdate
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

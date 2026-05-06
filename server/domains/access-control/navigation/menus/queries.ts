@@ -22,23 +22,23 @@ export const getMenuById = cache((id: string | number) =>
 );
 
 export const getMenuTree = cache((params?: ListParams) => 
-  menusRepository.get_tree(params)
+  menusRepository.getTree(params)
 );
 
 export const getFlatMenuStructure = cache((params?: ListParams) => 
-  menusRepository.get_flat(params)
+  menusRepository.getFlat(params)
 );
 
 export const getRootMenus = cache(() => 
-  menusRepository.get_root_menus()
+  menusRepository.getRootMenus()
 );
 
 export const getMenuChildren = cache((parentId: string | number) => 
-  menusRepository.get_children(parentId)
+  menusRepository.getChildren(parentId)
 );
 
 export const getMenuPath = cache((menuId: string | number) => 
-  menusRepository.get_path(menuId)
+  menusRepository.getPath(menuId)
 );
 
 // --- IMenu-IPermission Relationships Queries ---------------------------------
@@ -52,11 +52,11 @@ export const getMenuPermissionById = cache((menuId: string | number, permissionI
 );
 
 export const getPermissionsByMenu = cache((menuId: string | number) => 
-  menuPermissionsRepository.get_permissions_by_menu(menuId)
+  menuPermissionsRepository.getPermissionsByMenu(menuId)
 );
 
 export const getMenusByPermission = cache((permissionId: string | number) => 
-  menuPermissionsRepository.get_menus_by_permission(permissionId)
+  menuPermissionsRepository.getMenusByPermission(permissionId)
 );
 
 // --- IRole-IMenu Relationships Queries -----------------------------------------

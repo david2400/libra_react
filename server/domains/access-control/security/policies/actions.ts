@@ -22,7 +22,7 @@ import type {
 
 // --- Policies Actions ---------------------------------------------------------
 
-export const create_policy_action = async (payload: ICreatePolicyPayload): Promise<ActionResultType<any>> => {
+export const createPolicyAction = async (payload: ICreatePolicyPayload): Promise<ActionResultType<any>> => {
   try {
     const policy = await policiesRepository.create(payload);
     
@@ -55,7 +55,7 @@ export const create_policy_action = async (payload: ICreatePolicyPayload): Promi
   }
 };
 
-export const update_policy_action = async (id: string | number, payload: IUpdatePolicyPayload): Promise<ActionResultType<any>> => {
+export const updatePolicyAction = async (id: string | number, payload: IUpdatePolicyPayload): Promise<ActionResultType<any>> => {
   try {
     const policy = await policiesRepository.update(id, payload);
     
@@ -86,7 +86,7 @@ export const update_policy_action = async (id: string | number, payload: IUpdate
   }
 };
 
-export const delete_policy_action = async (id: string | number): Promise<ActionResultType<void>> => {
+export const deletePolicyAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
     await policiesRepository.delete(id);
     
@@ -119,7 +119,7 @@ export const delete_policy_action = async (id: string | number): Promise<ActionR
 
 // --- IUser-Policy Relationships Actions -------------------------------------
 
-export const create_user_policy_action = async (userId: string | number, policyId: string | number, payload: ICreateUserPolicyPayload): Promise<ActionResultType<any>> => {
+export const createUserPolicyAction = async (userId: string | number, policyId: string | number, payload: ICreateUserPolicyPayload): Promise<ActionResultType<any>> => {
   try {
     const userPolicy = await userPoliciesRepository.create(userId, policyId, payload);
     
@@ -152,7 +152,7 @@ export const create_user_policy_action = async (userId: string | number, policyI
   }
 };
 
-export const update_user_policy_action = async (userId: string | number, policyId: string | number, payload: IUpdateUserPolicyPayload): Promise<ActionResultType<any>> => {
+export const updateUserPolicyAction = async (userId: string | number, policyId: string | number, payload: IUpdateUserPolicyPayload): Promise<ActionResultType<any>> => {
   try {
     const userPolicy = await userPoliciesRepository.update(userId, policyId, payload);
     
@@ -183,7 +183,7 @@ export const update_user_policy_action = async (userId: string | number, policyI
   }
 };
 
-export const delete_user_policy_action = async (userId: string | number, policyId: string | number): Promise<ActionResultType<void>> => {
+export const deleteUserPolicyAction = async (userId: string | number, policyId: string | number): Promise<ActionResultType<void>> => {
   try {
     await userPoliciesRepository.delete(userId, policyId);
     
@@ -216,7 +216,7 @@ export const delete_user_policy_action = async (userId: string | number, policyI
 
 // --- Policy Evaluation Actions ---------------------------------------------
 
-export const evaluate_policy_action = async (payload: IPolicyEvaluationRequest): Promise<ActionResultType<IPolicyEvaluationResponse>> => {
+export const evaluatePolicyAction = async (payload: IPolicyEvaluationRequest): Promise<ActionResultType<IPolicyEvaluationResponse>> => {
   try {
     const response = await policyEvaluationRepository.evaluate(payload);
     
@@ -243,7 +243,7 @@ export const evaluate_policy_action = async (payload: IPolicyEvaluationRequest):
   }
 };
 
-export const bulk_evaluate_policies_action = async (payload: IBulkPolicyEvaluationRequest): Promise<ActionResultType<IBulkPolicyEvaluationResponse>> => {
+export const bulkEvaluatePoliciesAction = async (payload: IBulkPolicyEvaluationRequest): Promise<ActionResultType<IBulkPolicyEvaluationResponse>> => {
   try {
     const response = await policyEvaluationRepository.bulkEvaluate(payload);
     

@@ -4,10 +4,10 @@ import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
   profilesRepository, 
-  profile_preferences_repository,
-  profile_activity_repository,
-  profile_stats_repository,
-  profile_security_repository
+  profilePreferencesRepository,
+  profileActivityRepository,
+  profileStatsRepository,
+  profileSecurityRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -23,7 +23,7 @@ import type {
 
 // --- Profiles Actions ---------------------------------------------------------
 
-export const create_profile_action = async (payload: ICreateProfilePayload): Promise<ActionResultType<any>> => {
+export const createProfileAction = async (payload: ICreateProfilePayload): Promise<ActionResultType<any>> => {
   try {
     const profile = await profilesRepository.create(payload);
     
@@ -35,7 +35,7 @@ export const create_profile_action = async (payload: ICreateProfilePayload): Pro
     }
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profile.id,
       activityType: 'profile_update',
       description: 'IProfile created'
@@ -64,7 +64,7 @@ export const create_profile_action = async (payload: ICreateProfilePayload): Pro
   }
 };
 
-export const update_profile_action = async (id: string | number, payload: IUpdateProfilePayload): Promise<ActionResultType<any>> => {
+export const updateProfileAction = async (id: string | number, payload: IUpdateProfilePayload): Promise<ActionResultType<any>> => {
   try {
     const profile = await profilesRepository.update(id, payload);
     
@@ -73,7 +73,7 @@ export const update_profile_action = async (id: string | number, payload: IUpdat
     await revalidateCacheTag(accessControlTags.profile(id));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: id,
       activityType: 'profile_update',
       description: 'IProfile updated',
@@ -103,7 +103,7 @@ export const update_profile_action = async (id: string | number, payload: IUpdat
   }
 };
 
-export const delete_profile_action = async (id: string | number): Promise<ActionResultType<void>> => {
+export const deleteProfileAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
     await profilesRepository.delete(id);
     
@@ -136,16 +136,16 @@ export const delete_profile_action = async (id: string | number): Promise<Action
 
 // --- IProfile Preferences Actions ---------------------------------------------
 
-export const update_profile_preferences_action = async (profileId: string | number, payload: IUpdateProfilePreferencesPayload): Promise<ActionResultType<any>> => {
+export const updateProfilePreferencesAction = async (profileId: string | number, payload: IUpdateProfilePreferencesPayload): Promise<ActionResultType<any>> => {
   try {
-    const preferences = await profile_preferences_repository.update(profileId, payload);
+    const preferences = await profilePreferencesRepository.update(profileId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'preference_update',
       description: 'IProfile preferences updated',
@@ -175,16 +175,16 @@ export const update_profile_preferences_action = async (profileId: string | numb
   }
 };
 
-export const reset_profile_preferences_action = async (profileId: string | number): Promise<ActionResultType<any>> => {
+export const resetProfilePreferencesAction = async (profileId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const preferences = await profile_preferences_repository.reset(profileId);
+    const preferences = await profilePreferencesRepository.reset(profileId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'preference_update',
       description: 'IProfile preferences reset to defaults'
@@ -215,9 +215,9 @@ export const reset_profile_preferences_action = async (profileId: string | numbe
 
 // --- IProfile Activity Actions ---------------------------------------------
 
-export const create_profile_activity_action = async (activity: Omit<IProfileActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
+export const createProfileActivityAction = async (activity: Omit<IProfileActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
   try {
-    const createdActivity = await profile_activity_repository.create(activity);
+    const createdActivity = await profileActivityRepository.create(activity);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
@@ -248,16 +248,16 @@ export const create_profile_activity_action = async (activity: Omit<IProfileActi
 
 // --- IProfile Security Actions ---------------------------------------------
 
-export const enable_two_factor_action = async (profileId: string | number, payload: IEnableTwoFactorPayload): Promise<ActionResultType<void>> => {
+export const enableTwoFactorAction = async (profileId: string | number, payload: IEnableTwoFactorPayload): Promise<ActionResultType<void>> => {
   try {
-    await profile_security_repository.enable_two_factor(profileId, payload);
+    await profileSecurityRepository.enableTwoFactor(profileId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: 'Two-factor authentication enabled'
@@ -286,12 +286,12 @@ export const enable_two_factor_action = async (profileId: string | number, paylo
   }
 };
 
-export const verify_two_factor_action = async (profileId: string | number, payload: IVerifyTwoFactorPayload): Promise<ActionResultType<any>> => {
+export const verifyTwoFactorAction = async (profileId: string | number, payload: IVerifyTwoFactorPayload): Promise<ActionResultType<any>> => {
   try {
-    const result = await profile_security_repository.verify_two_factor(profileId, payload);
+    const result = await profileSecurityRepository.verifyTwoFactor(profileId, payload);
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: result.verified ? 'Two-factor authentication verified' : 'Two-factor authentication verification failed',
@@ -321,16 +321,16 @@ export const verify_two_factor_action = async (profileId: string | number, paylo
   }
 };
 
-export const disable_two_factor_action = async (profileId: string | number): Promise<ActionResultType<void>> => {
+export const disableTwoFactorAction = async (profileId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await profile_security_repository.disable_two_factor(profileId);
+    await profileSecurityRepository.disableTwoFactor(profileId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: 'Two-factor authentication disabled'
@@ -359,16 +359,16 @@ export const disable_two_factor_action = async (profileId: string | number): Pro
   }
 };
 
-export const generate_backup_codes_action = async (profileId: string | number): Promise<ActionResultType<any>> => {
+export const generateBackupCodesAction = async (profileId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const result = await profile_security_repository.generate_backup_codes(profileId);
+    const result = await profileSecurityRepository.generateBackupCodes(profileId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: 'New backup codes generated'
@@ -397,16 +397,16 @@ export const generate_backup_codes_action = async (profileId: string | number): 
   }
 };
 
-export const add_trusted_device_action = async (profileId: string | number, payload: IAddTrustedDevicePayload): Promise<ActionResultType<void>> => {
+export const addTrustedDeviceAction = async (profileId: string | number, payload: IAddTrustedDevicePayload): Promise<ActionResultType<void>> => {
   try {
-    await profile_security_repository.add_trusted_device(profileId, payload);
+    await profileSecurityRepository.addTrustedDevice(profileId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: 'Trusted device added',
@@ -436,16 +436,16 @@ export const add_trusted_device_action = async (profileId: string | number, payl
   }
 };
 
-export const remove_trusted_device_action = async (profileId: string | number, deviceId: string): Promise<ActionResultType<void>> => {
+export const removeTrustedDeviceAction = async (profileId: string | number, deviceId: string): Promise<ActionResultType<void>> => {
   try {
-    await profile_security_repository.remove_trusted_device(profileId, deviceId);
+    await profileSecurityRepository.removeTrustedDevice(profileId, deviceId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: 'Trusted device removed',
@@ -475,16 +475,16 @@ export const remove_trusted_device_action = async (profileId: string | number, d
   }
 };
 
-export const update_password_change_action = async (profileId: string | number): Promise<ActionResultType<void>> => {
+export const updatePasswordChangeAction = async (profileId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await profile_security_repository.update_password_change(profileId);
+    await profileSecurityRepository.updatePasswordChange(profileId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'password_change',
       description: 'Password changed'
@@ -513,16 +513,16 @@ export const update_password_change_action = async (profileId: string | number):
   }
 };
 
-export const reset_failed_attempts_action = async (profileId: string | number): Promise<ActionResultType<void>> => {
+export const resetFailedAttemptsAction = async (profileId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await profile_security_repository.reset_failed_attempts(profileId);
+    await profileSecurityRepository.resetFailedAttempts(profileId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: 'Failed login attempts reset'
@@ -551,16 +551,16 @@ export const reset_failed_attempts_action = async (profileId: string | number): 
   }
 };
 
-export const lock_profile_account_action = async (profileId: string | number, durationHours: number = 24): Promise<ActionResultType<void>> => {
+export const lockProfileAccountAction = async (profileId: string | number, durationHours: number = 24): Promise<ActionResultType<void>> => {
   try {
-    await profile_security_repository.lock_account(profileId, durationHours);
+    await profileSecurityRepository.lockAccount(profileId, durationHours);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: `Account locked for ${durationHours} hours`
@@ -589,16 +589,16 @@ export const lock_profile_account_action = async (profileId: string | number, du
   }
 };
 
-export const unlock_profile_account_action = async (profileId: string | number): Promise<ActionResultType<void>> => {
+export const unlockProfileAccountAction = async (profileId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await profile_security_repository.unlock_account(profileId);
+    await profileSecurityRepository.unlockAccount(profileId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
     await revalidateCacheTag(accessControlTags.profile(profileId));
     
     // Log activity
-    await profile_activity_repository.create({
+    await profileActivityRepository.create({
       profile_id: profileId,
       activityType: 'profile_update',
       description: 'Account unlocked'

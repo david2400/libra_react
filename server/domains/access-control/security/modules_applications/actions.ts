@@ -3,10 +3,10 @@
 import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
-  modules_repository, 
-  module_applications_repository,
-  module_config_repository,
-  module_activity_repository
+  modulesRepository, 
+  moduleApplicationsRepository,
+  moduleConfigRepository,
+  moduleActivityRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -22,9 +22,9 @@ import type {
 
 // --- Modules Actions ---------------------------------------------------------
 
-export const create_module_action = async (payload: ICreateModulePayload): Promise<ActionResultType<any>> => {
+export const createModuleAction = async (payload: ICreateModulePayload): Promise<ActionResultType<any>> => {
   try {
-    const module = await modules_repository.create(payload);
+    const module = await modulesRepository.create(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications()); // Using existing tags
@@ -33,7 +33,7 @@ export const create_module_action = async (payload: ICreateModulePayload): Promi
     }
     
     // Log activity
-    await module_activity_repository.create({
+    await moduleActivityRepository.create({
       moduleId: module.id,
       activityType: 'module_created',
       description: 'IModule created',
@@ -63,16 +63,16 @@ export const create_module_action = async (payload: ICreateModulePayload): Promi
   }
 };
 
-export const update_module_action = async (id: string | number, payload: IUpdateModulePayload): Promise<ActionResultType<any>> => {
+export const updateModuleAction = async (id: string | number, payload: IUpdateModulePayload): Promise<ActionResultType<any>> => {
   try {
-    const module = await modules_repository.update(id, payload);
+    const module = await modulesRepository.update(id, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
     await revalidateCacheTag(accessControlTags.application(id));
     
     // Log activity
-    await module_activity_repository.create({
+    await moduleActivityRepository.create({
       moduleId: id,
       activityType: 'module_updated',
       description: 'IModule updated',
@@ -102,9 +102,9 @@ export const update_module_action = async (id: string | number, payload: IUpdate
   }
 };
 
-export const delete_module_action = async (id: string | number): Promise<ActionResultType<void>> => {
+export const deleteModuleAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
-    await modules_repository.delete(id);
+    await modulesRepository.delete(id);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
@@ -135,9 +135,9 @@ export const delete_module_action = async (id: string | number): Promise<ActionR
 
 // --- IModule-IApplication Relationships Actions ---------------------------------
 
-export const create_module_application_action = async (moduleId: string | number, applicationId: string | number, payload: ICreateModuleApplicationPayload): Promise<ActionResultType<any>> => {
+export const createModuleApplicationAction = async (moduleId: string | number, applicationId: string | number, payload: ICreateModuleApplicationPayload): Promise<ActionResultType<any>> => {
   try {
-    const moduleApplication = await module_applications_repository.create(moduleId, applicationId, payload);
+    const moduleApplication = await moduleApplicationsRepository.create(moduleId, applicationId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
@@ -145,7 +145,7 @@ export const create_module_application_action = async (moduleId: string | number
     await revalidateCacheTag(accessControlTags.application(applicationId));
     
     // Log activity
-    await module_activity_repository.create({
+    await moduleActivityRepository.create({
       moduleId: moduleId,
       applicationId: applicationId,
       activityType: 'application_assigned',
@@ -180,16 +180,16 @@ export const create_module_application_action = async (moduleId: string | number
   }
 };
 
-export const update_module_application_action = async (moduleId: string | number, applicationId: string | number, payload: IUpdateModuleApplicationPayload): Promise<ActionResultType<any>> => {
+export const updateModuleApplicationAction = async (moduleId: string | number, applicationId: string | number, payload: IUpdateModuleApplicationPayload): Promise<ActionResultType<any>> => {
   try {
-    const moduleApplication = await module_applications_repository.update(moduleId, applicationId, payload);
+    const moduleApplication = await moduleApplicationsRepository.update(moduleId, applicationId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
     await revalidateCacheTag(accessControlTags.application(moduleId));
     
     // Log activity
-    await module_activity_repository.create({
+    await moduleActivityRepository.create({
       moduleId: moduleId,
       applicationId: applicationId,
       activityType: 'config_updated',
@@ -223,9 +223,9 @@ export const update_module_application_action = async (moduleId: string | number
   }
 };
 
-export const delete_module_application_action = async (moduleId: string | number, applicationId: string | number): Promise<ActionResultType<void>> => {
+export const deleteModuleApplicationAction = async (moduleId: string | number, applicationId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await module_applications_repository.delete(moduleId, applicationId);
+    await moduleApplicationsRepository.delete(moduleId, applicationId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
@@ -233,7 +233,7 @@ export const delete_module_application_action = async (moduleId: string | number
     await revalidateCacheTag(accessControlTags.application(applicationId));
     
     // Log activity
-    await module_activity_repository.create({
+    await moduleActivityRepository.create({
       moduleId: moduleId,
       applicationId: applicationId,
       activityType: 'application_unassigned',
@@ -266,16 +266,16 @@ export const delete_module_application_action = async (moduleId: string | number
 
 // --- IModule Configuration Actions -----------------------------------------
 
-export const create_module_config_action = async (moduleId: string | number, applicationId: string | number, payload: ICreateModuleConfigPayload): Promise<ActionResultType<any>> => {
+export const createModuleConfigAction = async (moduleId: string | number, applicationId: string | number, payload: ICreateModuleConfigPayload): Promise<ActionResultType<any>> => {
   try {
-    const config = await module_config_repository.create(moduleId, applicationId, payload);
+    const config = await moduleConfigRepository.create(moduleId, applicationId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
     await revalidateCacheTag(accessControlTags.application(moduleId));
     
     // Log activity
-    await module_activity_repository.create({
+    await moduleActivityRepository.create({
       moduleId: moduleId,
       applicationId: applicationId,
       activityType: 'config_updated',
@@ -309,16 +309,16 @@ export const create_module_config_action = async (moduleId: string | number, app
   }
 };
 
-export const update_module_config_action = async (moduleId: string | number, applicationId: string | number, key: string, payload: IUpdateModuleConfigPayload): Promise<ActionResultType<any>> => {
+export const updateModuleConfigAction = async (moduleId: string | number, applicationId: string | number, key: string, payload: IUpdateModuleConfigPayload): Promise<ActionResultType<any>> => {
   try {
-    const config = await module_config_repository.update(moduleId, applicationId, key, payload);
+    const config = await moduleConfigRepository.update(moduleId, applicationId, key, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
     await revalidateCacheTag(accessControlTags.application(moduleId));
     
     // Log activity
-    await module_activity_repository.create({
+    await moduleActivityRepository.create({
       moduleId: moduleId,
       applicationId: applicationId,
       activityType: 'config_updated',
@@ -352,16 +352,16 @@ export const update_module_config_action = async (moduleId: string | number, app
   }
 };
 
-export const delete_module_config_action = async (moduleId: string | number, applicationId: string | number, key: string): Promise<ActionResultType<void>> => {
+export const deleteModuleConfigAction = async (moduleId: string | number, applicationId: string | number, key: string): Promise<ActionResultType<void>> => {
   try {
-    await module_config_repository.delete(moduleId, applicationId, key);
+    await moduleConfigRepository.delete(moduleId, applicationId, key);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
     await revalidateCacheTag(accessControlTags.application(moduleId));
     
     // Log activity
-    await module_activity_repository.create({
+    await moduleActivityRepository.create({
       moduleId: moduleId,
       applicationId: applicationId,
       activityType: 'config_updated',
@@ -394,9 +394,9 @@ export const delete_module_config_action = async (moduleId: string | number, app
 
 // --- IModule Activity Actions ---------------------------------------------
 
-export const create_module_activity_action = async (activity: Omit<IModuleActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
+export const createModuleActivityAction = async (activity: Omit<IModuleActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
   try {
-    const createdActivity = await module_activity_repository.create(activity);
+    const createdActivity = await moduleActivityRepository.create(activity);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());

@@ -1,0 +1,85 @@
+@import "tailwindcss";
+@source "../../**/*.{ts,tsx}";
+@source "../../../../packages/ui/src/**/*.{ts,tsx}";
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+:root {
+  color-scheme: light;
+  --background: 220 35% 97%;
+  --foreground: 224 21% 18%;
+  --muted: 215 31% 92%;
+  --muted-foreground: 223 13% 40%;
+  --card: 0 0% 100%;
+  --card-foreground: 225 20% 16%;
+  --border: 214 31% 90%;
+  --input: 214 31% 90%;
+  --ring: 221 44% 46%;
+  --accent: 221 65% 97%;
+  --accent-foreground: 225 25% 20%;
+  --primary: 221 74% 58%;
+  --primary-foreground: 0 0% 100%;
+  --primary-border: 221 74% 40%;
+  --secondary: 220 18% 95%;
+  --secondary-foreground: 223 15% 32%;
+  --secondary-border: 220 18% 70%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-border: 0 84% 42%;
+  --radius: 0.9rem;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: 220 15% 10%;
+  --foreground: 216 15% 88%;
+  --muted: 218 15% 17%;
+  --muted-foreground: 222 12% 66%;
+  --card: 220 15% 12%;
+  --card-foreground: 216 15% 88%;
+  --border: 220 15% 18%;
+  --input: 220 15% 18%;
+  --ring: 221 60% 60%;
+  --accent: 220 15% 18%;
+  --accent-foreground: 0 0% 100%;
+  --primary: 221 68% 58%;
+  --primary-foreground: 0 0% 100%;
+  --primary-border: 221 68% 42%;
+  --secondary: 218 18% 20%;
+  --secondary-foreground: 218 15% 82%;
+  --secondary-border: 218 18% 12%;
+  --destructive: 0 62% 40%;
+  --destructive-foreground: 0 0% 100%;
+  --destructive-border: 0 62% 26%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  background: radial-gradient(circle at top left, hsla(var(--primary), 0.12), transparent 55%),
+    hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-feature-settings: 'cv03', 'cv04', 'ss01';
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+.main-content {
+  padding-top: 1rem;
+  min-height: calc(100vh - 5rem);
+}
+
+.menu-content {
+  z-index: 10 !important;
+}
+
+/* Collapse icon rotation */
+.collapse-icon {
+  transition: transform 200ms ease-in-out !important;
+}
+
+.collapse-icon.open {
+  transform: rotate(180deg) !important;
+}

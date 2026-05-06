@@ -7,7 +7,7 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormModuleApplication } from "../scenes/formModuleApplication";
 import { validationModuleApplication } from "../schemas/module-application.schema";
 import { IModuleApplicationCreateRequest, IModuleApplicationUpdateRequest } from "../models/module-application.interface";
-import { modulesApplications } from "@/server/domains/access-control/security";
+import { modulesApplicationsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -25,9 +25,9 @@ export const RegisterModuleApplication = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IModuleApplicationCreateRequest> = async (values) => {
-    const result = await modulesApplications.create_module_application_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await modulesApplicationsApi.create(values.moduleId, values.applicationId, values);
+      
       Swal.fire({
         title: "Módulo asignado exitosamente",
         icon: "success",
@@ -35,10 +35,10 @@ export const RegisterModuleApplication = ({}: IFormAddProps = {}) => {
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -53,9 +53,9 @@ export const UpdateModuleApplication = ({ initialValues }: IFormUpdateProps<IMod
   const handleSubmit: SubmitHandler<IModuleApplicationUpdateRequest> = async (values) => {
     if (!values.moduleId || !values.applicationId) return;
     
-    const result = await modulesApplications.update_module_application_action(values.moduleId, values.applicationId, values);
-    
-    if (result.success) {
+    try {
+      const result = await modulesApplicationsApi.update(values.moduleId, values.applicationId, values);
+      
       Swal.fire({
         title: "Asignación actualizada exitosamente",
         icon: "success",
@@ -63,10 +63,10 @@ export const UpdateModuleApplication = ({ initialValues }: IFormUpdateProps<IMod
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

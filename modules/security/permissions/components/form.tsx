@@ -15,7 +15,7 @@ import {
   IPermissionUpdateRequest,
   IPermission,
 } from "../models/permission.interface";
-import { permissions } from "@/server/domains/access-control/security";
+import { permissionsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -44,9 +44,9 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IPermissionCreateRequest> = async (values) => {
-    const result = await permissions.create_permission_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await permissionsApi.create(values);
+      
       Swal.fire({
         title: "Permiso creado exitosamente",
         icon: "success",
@@ -56,10 +56,10 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
           router.refresh();
         },
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -82,9 +82,9 @@ export const UpdatePermission = ({
   const handleSubmit: SubmitHandler<IPermissionUpdateRequest> = async (values) => {
     if (!values.id) return;
     
-    const result = await permissions.update_permission_action(values.id, values);
-    
-    if (result.success) {
+    try {
+      const result = await permissionsApi.update(values.id, values);
+      
       Swal.fire({
         title: "Permiso actualizado exitosamente",
         icon: "success",
@@ -94,10 +94,10 @@ export const UpdatePermission = ({
           router.refresh();
         },
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

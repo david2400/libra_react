@@ -4,10 +4,10 @@ import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
   applicationsRepository, 
-  application_modules_repository,
-  application_health_repository,
-  application_config_repository,
-  application_stats_repository
+  applicationModulesRepository,
+  applicationHealthRepository,
+  applicationConfigRepository,
+  applicationStatsRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -22,7 +22,7 @@ import type {
 
 // --- Applications Actions -----------------------------------------------------
 
-export const create_application_action = async (payload: ICreateApplicationPayload): Promise<ActionResultType<any>> => {
+export const createApplicationAction = async (payload: ICreateApplicationPayload): Promise<ActionResultType<any>> => {
   try {
     const application = await applicationsRepository.create(payload);
     
@@ -55,7 +55,7 @@ export const create_application_action = async (payload: ICreateApplicationPaylo
   }
 };
 
-export const update_application_action = async (id: string | number, payload: IUpdateApplicationPayload): Promise<ActionResultType<any>> => {
+export const updateApplicationAction = async (id: string | number, payload: IUpdateApplicationPayload): Promise<ActionResultType<any>> => {
   try {
     const application = await applicationsRepository.update(id, payload);
     
@@ -86,7 +86,7 @@ export const update_application_action = async (id: string | number, payload: IU
   }
 };
 
-export const delete_application_action = async (id: string | number): Promise<ActionResultType<void>> => {
+export const deleteApplicationAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
     await applicationsRepository.delete(id);
     
@@ -119,9 +119,9 @@ export const delete_application_action = async (id: string | number): Promise<Ac
 
 // --- IApplication-IModule Relationships Actions ---------------------------------
 
-export const create_application_module_action = async (applicationId: string | number, moduleId: string | number, payload: ICreateApplicationModulePayload): Promise<ActionResultType<any>> => {
+export const createApplicationModuleAction = async (applicationId: string | number, moduleId: string | number, payload: ICreateApplicationModulePayload): Promise<ActionResultType<any>> => {
   try {
-    const applicationModule = await application_modules_repository.create(applicationId, moduleId, payload);
+    const applicationModule = await applicationModulesRepository.create(applicationId, moduleId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
@@ -150,9 +150,9 @@ export const create_application_module_action = async (applicationId: string | n
   }
 };
 
-export const update_application_module_action = async (applicationId: string | number, moduleId: string | number, payload: IUpdateApplicationModulePayload): Promise<ActionResultType<any>> => {
+export const updateApplicationModuleAction = async (applicationId: string | number, moduleId: string | number, payload: IUpdateApplicationModulePayload): Promise<ActionResultType<any>> => {
   try {
-    const applicationModule = await application_modules_repository.update(applicationId, moduleId, payload);
+    const applicationModule = await applicationModulesRepository.update(applicationId, moduleId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
@@ -181,9 +181,9 @@ export const update_application_module_action = async (applicationId: string | n
   }
 };
 
-export const delete_application_module_action = async (applicationId: string | number, moduleId: string | number): Promise<ActionResultType<void>> => {
+export const deleteApplicationModuleAction = async (applicationId: string | number, moduleId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await application_modules_repository.delete(applicationId, moduleId);
+    await applicationModulesRepository.delete(applicationId, moduleId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
@@ -214,9 +214,9 @@ export const delete_application_module_action = async (applicationId: string | n
 
 // --- IApplication Configuration Actions -------------------------------------
 
-export const create_application_config_action = async (applicationId: string | number, payload: ICreateApplicationConfigPayload): Promise<ActionResultType<any>> => {
+export const createApplicationConfigAction = async (applicationId: string | number, payload: ICreateApplicationConfigPayload): Promise<ActionResultType<any>> => {
   try {
-    const config = await application_config_repository.create(applicationId, payload);
+    const config = await applicationConfigRepository.create(applicationId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
@@ -245,9 +245,9 @@ export const create_application_config_action = async (applicationId: string | n
   }
 };
 
-export const update_application_config_action = async (applicationId: string | number, key: string, payload: IUpdateApplicationConfigPayload): Promise<ActionResultType<any>> => {
+export const updateApplicationConfigAction = async (applicationId: string | number, key: string, payload: IUpdateApplicationConfigPayload): Promise<ActionResultType<any>> => {
   try {
-    const config = await application_config_repository.update(applicationId, key, payload);
+    const config = await applicationConfigRepository.update(applicationId, key, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
@@ -276,9 +276,9 @@ export const update_application_config_action = async (applicationId: string | n
   }
 };
 
-export const delete_application_config_action = async (applicationId: string | number, key: string): Promise<ActionResultType<void>> => {
+export const deleteApplicationConfigAction = async (applicationId: string | number, key: string): Promise<ActionResultType<void>> => {
   try {
-    await application_config_repository.delete(applicationId, key);
+    await applicationConfigRepository.delete(applicationId, key);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());

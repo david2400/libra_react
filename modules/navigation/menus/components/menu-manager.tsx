@@ -8,7 +8,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
 import { Buttons } from "@repo/ui/buttons/scenes";
 import { RegisterMenu, UpdateMenu } from "./form";
-import { HiOutlineMenu, HiOutlinePlusCircle } from "react-icons/hi2";
+import { HiOutlineListBullet, HiOutlinePlusCircle } from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
 import { IMenu } from "../models/menu.interface";
 
@@ -130,19 +130,19 @@ export const MenuManager = ({ initialData }: IMenuManagerProps) => {
 
   const summaryCards = [
     {
-      icon: HiOutlineMenu,
+      icon: HiOutlineListBullet,
       label: "Total de menús",
       value: metrics.totalMenus,
       accent: "from-indigo-500/40 to-violet-500/40 text-indigo-700",
     },
     {
-      icon: HiOutlineMenu,
+      icon: HiOutlineListBullet,
       label: "Menús activos",
       value: metrics.activeMenus,
       accent: "from-emerald-500/40 to-teal-500/40 text-emerald-700",
     },
     {
-      icon: HiOutlineMenu,
+      icon: HiOutlineListBullet,
       label: "Menús raíz",
       value: metrics.rootMenus,
       accent: "from-amber-500/40 to-orange-500/40 text-amber-700",

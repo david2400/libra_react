@@ -43,15 +43,15 @@ export const getRolePermissionById = cache((roleId: string | number, permissionI
 );
 
 export const getPermissionsByRole = cache((roleId: string | number) => 
-  rolePermissionsRepository.get_permissions_by_role(roleId)
+  rolePermissionsRepository.getPermissionsByRole(roleId)
 );
 
 export const getRolesByPermission = cache((permissionId: string | number) => 
-  rolePermissionsRepository.get_roles_by_permission(permissionId)
+  rolePermissionsRepository.getRolesByPermission(permissionId)
 );
 
 export const getActivePermissionsForRole = cache((roleId: string | number) => 
-  rolePermissionsRepository.get_active_permissions(roleId)
+  rolePermissionsRepository.getActivePermissions(roleId)
 );
 
 // --- IRole-IPermission Statistics Queries ---------------------------------
@@ -71,11 +71,11 @@ export const getRolePermissionOverview = cache((roleId: string | number, permiss
 // --- IRole-IPermission Inheritance Queries ---------------------------------
 
 export const getInheritedPermissionsForRole = cache((roleId: string | number) => 
-  rolePermissionInheritanceRepository.getInheritedPermissions(roleId)
+  rolePermissionInheritanceRepository.get_inherited_permissions(roleId)
 );
 
 export const getRolePermissionInheritanceTree = cache((roleId: string | number) => 
-  rolePermissionInheritanceRepository.getInheritanceTree(roleId)
+  rolePermissionInheritanceRepository.get_inheritance_tree(roleId)
 );
 
 // --- IRole-IPermission Activity Queries ---------------------------------
@@ -85,11 +85,11 @@ export const getRolePermissionActivities = cache((params?: ListParams) =>
 );
 
 export const getActivitiesByRole = cache((roleId: string | number, params?: ListParams) => 
-  rolePermissionActivityRepository.getByRole(roleId, params)
+  rolePermissionActivityRepository.get_by_role(roleId, params)
 );
 
 export const getActivitiesByPermission = cache((permissionId: string | number, params?: ListParams) => 
-  rolePermissionActivityRepository.getByPermission(permissionId, params)
+  rolePermissionActivityRepository.get_by_permission(permissionId, params)
 );
 
 export const getRecentRolePermissionActivities = cache((roleId: string | number, limit?: number) => 
@@ -265,7 +265,7 @@ export const getRolePermissionInheritanceAnalysis = cache(async (roleId: string 
 // Get role permission conflict analysis
 export const getRolePermissionConflictAnalysis = cache(async (roleId: string | number) => {
   const [conflicts] = await Promise.all([
-    rolePermissionConflictRepository.detectConflicts(roleId)
+    rolePermissionConflictRepository.detect_conflicts(roleId)
   ]);
   
   // Analyze conflicts

@@ -6,7 +6,7 @@ import {
   menusRepository, 
   menuPermissionsRepository,
   roleMenusRepository,
-  user_menus_repository
+  userMenusRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -23,7 +23,7 @@ import type {
 
 // --- Menus Actions ---------------------------------------------------------
 
-export const create_menu_action = async (payload: CreateMenuPayload): Promise<ActionResultType<any>> => {
+export const createMenuAction = async (payload: CreateMenuPayload): Promise<ActionResultType<any>> => {
   try {
     const menu = await menusRepository.create(payload);
     
@@ -56,7 +56,7 @@ export const create_menu_action = async (payload: CreateMenuPayload): Promise<Ac
   }
 };
 
-export const update_menu_action = async (id: string | number, payload: UpdateMenuPayload): Promise<ActionResultType<any>> => {
+export const updateMenuAction = async (id: string | number, payload: UpdateMenuPayload): Promise<ActionResultType<any>> => {
   try {
     const menu = await menusRepository.update(id, payload);
     
@@ -87,7 +87,7 @@ export const update_menu_action = async (id: string | number, payload: UpdateMen
   }
 };
 
-export const delete_menu_action = async (id: string | number): Promise<ActionResultType<void>> => {
+export const deleteMenuAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
     await menusRepository.delete(id);
     
@@ -120,7 +120,7 @@ export const delete_menu_action = async (id: string | number): Promise<ActionRes
 
 // --- IMenu-IPermission Relationships Actions ---------------------------------
 
-export const create_menu_permission_action = async (menuId: string | number, permissionId: string | number, payload: CreateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const createMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: CreateMenuPermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const menuPermission = await menuPermissionsRepository.create(menuId, permissionId, payload);
     
@@ -153,7 +153,7 @@ export const create_menu_permission_action = async (menuId: string | number, per
   }
 };
 
-export const update_menu_permission_action = async (menuId: string | number, permissionId: string | number, payload: UpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const updateMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: UpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
   try {
     const menuPermission = await menuPermissionsRepository.update(menuId, permissionId, payload);
     
@@ -184,7 +184,7 @@ export const update_menu_permission_action = async (menuId: string | number, per
   }
 };
 
-export const delete_menu_permission_action = async (menuId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
+export const deleteMenuPermissionAction = async (menuId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
   try {
     await menuPermissionsRepository.delete(menuId, permissionId);
     
@@ -217,7 +217,7 @@ export const delete_menu_permission_action = async (menuId: string | number, per
 
 // --- IRole-IMenu Relationships Actions -----------------------------------------
 
-export const create_role_menu_action = async (roleId: string | number, menuId: string | number, payload: CreateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const createRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: CreateRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
     const roleMenu = await roleMenusRepository.create(roleId, menuId, payload);
     
@@ -250,7 +250,7 @@ export const create_role_menu_action = async (roleId: string | number, menuId: s
   }
 };
 
-export const update_role_menu_action = async (roleId: string | number, menuId: string | number, payload: UpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const updateRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: UpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
     const roleMenu = await roleMenusRepository.update(roleId, menuId, payload);
     
@@ -281,7 +281,7 @@ export const update_role_menu_action = async (roleId: string | number, menuId: s
   }
 };
 
-export const delete_role_menu_action = async (roleId: string | number, menuId: string | number): Promise<ActionResultType<void>> => {
+export const deleteRoleMenuAction = async (roleId: string | number, menuId: string | number): Promise<ActionResultType<void>> => {
   try {
     await roleMenusRepository.delete(roleId, menuId);
     
@@ -314,9 +314,9 @@ export const delete_role_menu_action = async (roleId: string | number, menuId: s
 
 // --- IUser-IMenu Relationships Actions -----------------------------------------
 
-export const create_user_menu_action = async (userId: string | number, menuId: string | number, payload: CreateUserMenuPayload): Promise<ActionResultType<any>> => {
+export const createUserMenuAction = async (userId: string | number, menuId: string | number, payload: CreateUserMenuPayload): Promise<ActionResultType<any>> => {
   try {
-    const userMenu = await user_menus_repository.create(userId, menuId, payload);
+    const userMenu = await userMenusRepository.create(userId, menuId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userMenus());
@@ -347,9 +347,9 @@ export const create_user_menu_action = async (userId: string | number, menuId: s
   }
 };
 
-export const update_user_menu_action = async (userId: string | number, menuId: string | number, payload: UpdateUserMenuPayload): Promise<ActionResultType<any>> => {
+export const updateUserMenuAction = async (userId: string | number, menuId: string | number, payload: UpdateUserMenuPayload): Promise<ActionResultType<any>> => {
   try {
-    const userMenu = await user_menus_repository.update(userId, menuId, payload);
+    const userMenu = await userMenusRepository.update(userId, menuId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userMenus());
@@ -378,9 +378,9 @@ export const update_user_menu_action = async (userId: string | number, menuId: s
   }
 };
 
-export const delete_user_menu_action = async (userId: string | number, menuId: string | number): Promise<ActionResultType<void>> => {
+export const deleteUserMenuAction = async (userId: string | number, menuId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await user_menus_repository.delete(userId, menuId);
+    await userMenusRepository.delete(userId, menuId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userMenus());

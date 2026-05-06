@@ -158,7 +158,7 @@ export const roleMenuActivityRepository = {
     }),
 
   // Get activities by role
-  get_by_role: (roleId: string | number, params?: ListParams) => 
+  getByRole: (roleId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IRoleMenuActivity>>(`/api/access_control/role-menu-activities/role/${roleId}`, {
       params,
       revalidate: 120,
@@ -166,7 +166,7 @@ export const roleMenuActivityRepository = {
     }),
 
   // Get activities by menu
-  get_by_menu: (menuId: string | number, params?: ListParams) => 
+  getByMenu: (menuId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IRoleMenuActivity>>(`/api/access_control/role-menu-activities/menu/${menuId}`, {
       params,
       revalidate: 120,
@@ -198,13 +198,13 @@ export const roleMenuValidationRepository = {
     }),
 
   // Validate role menu tree
-  validate_tree: (roleId: string | number) => 
+  validateTree: (roleId: string | number) => 
     serverFetch.post<Array<IRoleMenuValidationResult>>(`/api/access_control/role-menus/role/${roleId}/validate-tree`, {}, {
       revalidate: false,
     }),
 
   // Validate all role-menu relationships
-  validate_all: () => 
+  validateAll: () => 
     serverFetch.post<Array<IRoleMenuValidationResult>>('/api/access_control/role-menus/validate-all', {}, {
       revalidate: false,
     }),
@@ -220,7 +220,7 @@ export const roleMenuExportRepository = {
     }),
 
   // Get export history
-  get_export_history: (params?: ListParams) => 
+  getExportHistory: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<any>>('/api/access_control/role-menus/export/history', {
       params,
       revalidate: 300,

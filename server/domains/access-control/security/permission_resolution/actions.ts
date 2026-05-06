@@ -3,20 +3,20 @@
 import { revalidateCacheTag } from '@/server/lib/cache-tags';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
-import { permission_resolution_repository } from './repository';
+import { permissionResolutionRepository } from './repository';
 
 // --- IPermission Resolution Actions ---------------------------------------------
 
 // Note: IPermission resolution is primarily read-only, but we include actions
 // for operations that might trigger cache invalidation or logging
 
-export const check_permission_action = async (
+export const checkPermissionAction = async (
   userId: number, 
   permissionCode: string, 
   requiredLevel: string
 ): Promise<ActionResultType<boolean>> => {
   try {
-    const hasPermission = await permission_resolution_repository.has_permission(
+    const hasPermission = await permissionResolutionRepository.hasPermission(
       userId, 
       permissionCode, 
       requiredLevel
@@ -45,12 +45,12 @@ export const check_permission_action = async (
   }
 };
 
-export const check_any_permission_action = async (
+export const checkAnyPermissionAction = async (
   userId: number, 
   permissionCodes: string[]
 ): Promise<ActionResultType<boolean>> => {
   try {
-    const hasAny = await permission_resolution_repository.has_any_permission(
+    const hasAny = await permissionResolutionRepository.hasAnyPermission(
       userId, 
       permissionCodes
     );
@@ -78,12 +78,12 @@ export const check_any_permission_action = async (
   }
 };
 
-export const check_all_permissions_action = async (
+export const checkAllPermissionsAction = async (
   userId: number, 
   permissionCodes: string[]
 ): Promise<ActionResultType<boolean>> => {
   try {
-    const hasAll = await permission_resolution_repository.has_all_permissions(
+    const hasAll = await permissionResolutionRepository.hasAllPermissions(
       userId, 
       permissionCodes
     );
@@ -112,7 +112,7 @@ export const check_all_permissions_action = async (
 };
 
 // Action to refresh permission cache for a user
-export const refresh_user_permissions_action = async (userId: number): Promise<ActionResultType<void>> => {
+export const refreshUserPermissionsAction = async (userId: number): Promise<ActionResultType<void>> => {
   try {
     // Revalidate all permission-related cache tags for this user
     await revalidateCacheTag(accessControlTags.user(userId));

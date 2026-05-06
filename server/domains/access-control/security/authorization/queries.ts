@@ -50,7 +50,7 @@ export const checkAuthorizationWithContext = (request: IAuthorizationRequest, co
   authorizationRepository.checkWithContext(request, context);
 
 export const batchCheckAuthorization = (requests: IAuthorizationRequest[]) => 
-  authorizationRepository.batch_check(requests);
+  authorizationRepository.batchCheck(requests);
 
 // --- Authorization Statistics Queries ---------------------------------
 
@@ -87,11 +87,11 @@ export const getAuthorizationCache = cache((params?: ListParams) =>
 );
 
 export const getAuthorizationCacheByKey = cache((key: string) => 
-  authorizationCacheRepository.get_by_key(key)
+  authorizationCacheRepository.getByKey(key)
 );
 
 export const getAuthorizationCacheByUser = cache((userId: string | number, params?: ListParams) => 
-  authorizationCacheRepository.get_by_user(userId, params)
+  authorizationCacheRepository.getByUser(userId, params)
 );
 
 // --- Authorization Policy Queries ---------------------------------
@@ -107,15 +107,15 @@ export const getAuthorizationPolicyById = cache((id: string) =>
 // --- Authorization Performance Queries ---------------------------------
 
 export const getAuthorizationPerformanceMetrics = cache((params?: { startDate?: string; endDate?: string }) => 
-  authorizationPerformanceRepository.get_metrics(params)
+  authorizationPerformanceRepository.getMetrics(params)
 );
 
 export const getAuthorizationResourcePerformance = cache((params?: ListParams) => 
-  authorizationPerformanceRepository.get_resource_performance(params)
+  authorizationPerformanceRepository.getResourcePerformance(params)
 );
 
 export const getAuthorizationUserPerformance = cache((params?: ListParams) => 
-  authorizationPerformanceRepository.get_user_performance(params)
+  authorizationPerformanceRepository.getUserPerformance(params)
 );
 
 // --- Authorization Security Queries ---------------------------------
@@ -129,7 +129,7 @@ export const getAuthorizationSecurityAlertById = cache((id: string) =>
 );
 
 export const getAuthorizationSecurityRules = cache((params?: ListParams) => 
-  authorizationSecurityRepository.list_rules(params)
+  authorizationSecurityRepository.listRules(params)
 );
 
 // --- Authorization Configuration Queries -----------------------------

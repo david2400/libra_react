@@ -15,7 +15,7 @@ import {
   IRoleUpdateRequest,
   IRole,
 } from "../models/role.interface";
-import { roles } from "@/server/domains/access-control/security";
+import { rolesApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -44,9 +44,9 @@ export const RegisterRole = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IRoleCreateRequest> = async (values) => {
-    const result = await roles.create_role_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await rolesApi.create(values);
+      
       Swal.fire({
         title: "Rol creado exitosamente",
         icon: "success",
@@ -56,10 +56,10 @@ export const RegisterRole = ({}: IFormAddProps = {}) => {
           router.refresh();
         },
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -82,9 +82,9 @@ export const UpdateRole = ({
   const handleSubmit: SubmitHandler<IRoleUpdateRequest> = async (values) => {
     if (!values.id) return;
     
-    const result = await roles.update_role_action(values.id, values);
-    
-    if (result.success) {
+    try {
+      const result = await rolesApi.update(values.id, values);
+      
       Swal.fire({
         title: "Rol actualizado exitosamente",
         icon: "success",
@@ -94,10 +94,10 @@ export const UpdateRole = ({
           router.refresh();
         },
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

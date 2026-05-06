@@ -8,7 +8,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
 import { Buttons } from "@repo/ui/buttons/scenes";
 import { RegisterCompany, UpdateCompany } from "./form";
-import { HiOutlineOfficeBuilding, HiOutlinePlusCircle } from "react-icons/hi2";
+import { HiOutlineBuildingOffice, HiOutlinePlusCircle } from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
 import { ICompany } from "../models/company.interface";
 
@@ -108,19 +108,19 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
 
   const summaryCards = [
     {
-      icon: HiOutlineOfficeBuilding,
+      icon: HiOutlineBuildingOffice,
       label: "Total de empresas",
       value: metrics.totalCompanies,
       accent: "from-slate-500/40 to-gray-500/40 text-slate-700",
     },
     {
-      icon: HiOutlineOfficeBuilding,
+      icon: HiOutlineBuildingOffice,
       label: "Empresas activas",
       value: metrics.activeCompanies,
       accent: "from-zinc-500/40 to-stone-500/40 text-zinc-700",
     },
     {
-      icon: HiOutlineOfficeBuilding,
+      icon: HiOutlineBuildingOffice,
       label: "Industrias únicas",
       value: metrics.uniqueIndustries,
       accent: "from-gray-500/40 to-neutral-500/40 text-gray-700",

@@ -7,7 +7,7 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormMenuPermission } from "../scenes/formMenuPermission";
 import { validationMenuPermission } from "../schemas/menu-permission.schema";
 import { IMenuPermissionCreateRequest, IMenuPermissionUpdateRequest } from "../models/menu-permission.interface";
-import { menuPermissions } from "@/server/domains/access-control/navigation";
+import { menuPermissionsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -25,9 +25,9 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IMenuPermissionCreateRequest> = async (values) => {
-    const result = await menuPermissions.create_menu_permission_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await menuPermissionsApi.create(values.menuId, values.permissionId, values);
+      
       Swal.fire({
         title: "Permiso asignado exitosamente",
         icon: "success",
@@ -35,10 +35,10 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -53,9 +53,9 @@ export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPe
   const handleSubmit: SubmitHandler<IMenuPermissionUpdateRequest> = async (values) => {
     if (!values.menuId || !values.permissionId) return;
     
-    const result = await menuPermissions.update_menu_permission_action(values.menuId, values.permissionId, values);
-    
-    if (result.success) {
+    try {
+      const result = await menuPermissionsApi.update(values.menuId, values.permissionId, values);
+      
       Swal.fire({
         title: "Permiso actualizado exitosamente",
         icon: "success",
@@ -63,10 +63,10 @@ export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPe
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

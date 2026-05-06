@@ -16,7 +16,7 @@ export interface IMenu {
   permissions?: IPermission[];
   createdAt?: string;
   updatedAt?: string;
-}
+} 
 
 export interface ICreateMenuPayload {
   name: string;

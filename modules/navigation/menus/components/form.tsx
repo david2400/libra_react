@@ -15,7 +15,7 @@ import {
   IMenuUpdateRequest,
   IMenu,
 } from "../models/menu.interface";
-import { menus } from "@/server/domains/access-control/navigation";
+import { menusApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -39,7 +39,7 @@ interface IRegisterMenuProps extends IFormAddProps {
   availableMenus?: IMenu[];
 }
 
-export const RegisterMenu = ({ availableMenus }: RegisterMenuProps = {}) => {
+export const RegisterMenu = ({ availableMenus }: IRegisterMenuProps = {}) => {
   const router = useRouter();
 
   const defaultValues: IMenuCreateRequest = {
@@ -52,9 +52,9 @@ export const RegisterMenu = ({ availableMenus }: RegisterMenuProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IMenuCreateRequest> = async (values) => {
-    const result = await menus.create_menu_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await menusApi.create(values);
+      
       Swal.fire({
         title: "Menú creado exitosamente",
         icon: "success",
@@ -64,10 +64,10 @@ export const RegisterMenu = ({ availableMenus }: RegisterMenuProps = {}) => {
           router.refresh();
         },
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -90,15 +90,15 @@ interface IUpdateMenuProps extends IFormUpdateProps<IMenuUpdateRequest> {
 export const UpdateMenu = ({
   initialValues,
   availableMenus,
-}: UpdateMenuProps) => {
+}: IUpdateMenuProps) => {
   const router = useRouter();
 
   const handleSubmit: SubmitHandler<IMenuUpdateRequest> = async (values) => {
     if (!values.id) return;
     
-    const result = await menus.update_menu_action(values.id, values);
-    
-    if (result.success) {
+    try {
+      const result = await menusApi.update(values.id, values);
+      
       Swal.fire({
         title: "Menú actualizado exitosamente",
         icon: "success",
@@ -108,10 +108,10 @@ export const UpdateMenu = ({
           router.refresh();
         },
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

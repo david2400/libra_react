@@ -4,12 +4,12 @@ import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
   roleMenusRepository, 
-  role_menu_stats_repository,
-  role_menu_bulk_repository,
-  role_menu_tree_repository,
-  role_menu_activity_repository,
-  role_menu_validation_repository,
-  role_menu_export_repository
+  roleMenuStatsRepository,
+  roleMenuBulkRepository,
+  roleMenuTreeRepository,
+  roleMenuActivityRepository,
+  roleMenuValidationRepository,
+  roleMenuExportRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -24,7 +24,7 @@ import type {
 
 // --- IRole-IMenu Relationships Actions -----------------------------------------
 
-export const create_role_menu_action = async (roleId: string | number, menuId: string | number, payload: CreateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const createRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: ICreateRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
     const roleMenu = await roleMenusRepository.create(roleId, menuId, payload);
     
@@ -35,7 +35,7 @@ export const create_role_menu_action = async (roleId: string | number, menuId: s
     await revalidateCacheTag(accessControlTags.menu(menuId));
     
     // Log activity
-    await role_menu_activity_repository.create({
+    await roleMenuActivityRepository.create({
       roleId: roleId,
       menuId: menuId,
       activityType: 'access_granted',
@@ -66,7 +66,7 @@ export const create_role_menu_action = async (roleId: string | number, menuId: s
   }
 };
 
-export const update_role_menu_action = async (roleId: string | number, menuId: string | number, payload: IUpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const updateRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: IUpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
     const roleMenu = await roleMenusRepository.update(roleId, menuId, payload);
     
@@ -76,7 +76,7 @@ export const update_role_menu_action = async (roleId: string | number, menuId: s
     await revalidateCacheTag(accessControlTags.role(roleId));
     
     // Log activity
-    await role_menu_activity_repository.create({
+    await roleMenuActivityRepository.create({
       roleId: roleId,
       menuId: menuId,
       activityType: 'access_updated',
@@ -107,7 +107,7 @@ export const update_role_menu_action = async (roleId: string | number, menuId: s
   }
 };
 
-export const delete_role_menu_action = async (roleId: string | number, menuId: string | number): Promise<ActionResultType<void>> => {
+export const deleteRoleMenuAction = async (roleId: string | number, menuId: string | number): Promise<ActionResultType<void>> => {
   try {
     await roleMenusRepository.delete(roleId, menuId);
     
@@ -118,7 +118,7 @@ export const delete_role_menu_action = async (roleId: string | number, menuId: s
     await revalidateCacheTag(accessControlTags.menu(menuId));
     
     // Log activity
-    await role_menu_activity_repository.create({
+    await roleMenuActivityRepository.create({
       roleId: roleId,
       menuId: menuId,
       activityType: 'access_revoked',
@@ -150,9 +150,9 @@ export const delete_role_menu_action = async (roleId: string | number, menuId: s
 
 // --- IRole-IMenu Bulk Operations Actions -------------------------------------
 
-export const bulk_assign_role_menus_action = async (payload: IBulkRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const bulkAssignRoleMenusAction = async (payload: IBulkRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_menu_bulk_repository.bulk_assign(payload);
+    const result = await roleMenuBulkRepository.bulkAssign(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.roleMenus());
@@ -160,7 +160,7 @@ export const bulk_assign_role_menus_action = async (payload: IBulkRoleMenuPayloa
     
     // Log activity for successful assignments
     for (const roleMenu of result.successful) {
-      await role_menu_activity_repository.create({
+      await roleMenuActivityRepository.create({
         roleId: payload.roleId,
         menuId: roleMenu.menuId,
         activityType: 'access_granted',
@@ -192,9 +192,9 @@ export const bulk_assign_role_menus_action = async (payload: IBulkRoleMenuPayloa
   }
 };
 
-export const bulk_remove_role_menus_action = async (roleId: string | number, menuIds: (string | number)[]): Promise<ActionResultType<any>> => {
+export const bulkRemoveRoleMenusAction = async (roleId: string | number, menuIds: (string | number)[]): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_menu_bulk_repository.bulk_remove(roleId, menuIds);
+    const result = await roleMenuBulkRepository.bulkRemove(roleId, menuIds);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.roleMenus());
@@ -202,7 +202,7 @@ export const bulk_remove_role_menus_action = async (roleId: string | number, men
     
     // Log activity for successful removals
     for (const roleMenu of result.successful) {
-      await role_menu_activity_repository.create({
+      await roleMenuActivityRepository.create({
         roleId: roleId,
         menuId: roleMenu.menuId,
         activityType: 'access_revoked',
@@ -234,9 +234,9 @@ export const bulk_remove_role_menus_action = async (roleId: string | number, men
   }
 };
 
-export const bulk_update_role_menus_action = async (roleId: string | number, menuIds: (string | number)[], payload: UpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const bulkUpdateRoleMenusAction = async (roleId: string | number, menuIds: (string | number)[], payload: IUpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_menu_bulk_repository.bulk_update(roleId, menuIds, payload);
+    const result = await roleMenuBulkRepository.bulkUpdate(roleId, menuIds, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.roleMenus());
@@ -244,7 +244,7 @@ export const bulk_update_role_menus_action = async (roleId: string | number, men
     
     // Log activity for successful updates
     for (const roleMenu of result.successful) {
-      await role_menu_activity_repository.create({
+      await roleMenuActivityRepository.create({
         roleId: roleId,
         menuId: roleMenu.menuId,
         activityType: 'access_updated',
@@ -278,9 +278,9 @@ export const bulk_update_role_menus_action = async (roleId: string | number, men
 
 // --- IRole-IMenu Activity Actions -----------------------------------------
 
-export const create_role_menu_activity_action = async (activity: Omit<IRoleMenuActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
+export const createRoleMenuActivityAction = async (activity: Omit<IRoleMenuActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
   try {
-    const createdActivity = await role_menu_activity_repository.create(activity);
+    const createdActivity = await roleMenuActivityRepository.create(activity);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.roleMenus());
@@ -314,9 +314,9 @@ export const create_role_menu_activity_action = async (activity: Omit<IRoleMenuA
 
 // --- IRole-IMenu Validation Actions -----------------------------------------
 
-export const validate_role_menu_action = async (request: IRoleMenuValidationRequest): Promise<ActionResultType<any>> => {
+export const validateRoleMenuAction = async (request: IRoleMenuValidationRequest): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_menu_validation_repository.validate(request);
+    const result = await roleMenuValidationRepository.validate(request);
     
     return { success: true, data: result };
   } catch (error) {
@@ -341,12 +341,12 @@ export const validate_role_menu_action = async (request: IRoleMenuValidationRequ
   }
 };
 
-export const validate_role_menu_tree_action = async (roleId: string | number): Promise<ActionResultType<any>> => {
+export const validateRoleMenuTreeAction = async (roleId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const results = await role_menu_validation_repository.validate_tree(roleId);
+    const results = await roleMenuValidationRepository.validateTree(roleId);
     
     // Log validation activity
-    await role_menu_activity_repository.create({
+    await roleMenuActivityRepository.create({
       roleId: roleId,
       activityType: 'other',
       description: 'IRole menu tree validation performed',
@@ -380,12 +380,12 @@ export const validate_role_menu_tree_action = async (roleId: string | number): P
   }
 };
 
-export const validate_all_role_menus_action = async (): Promise<ActionResultType<any>> => {
+export const validateAllRoleMenusAction = async (): Promise<ActionResultType<any>> => {
   try {
-    const results = await role_menu_validation_repository.validate_all();
+    const results = await roleMenuValidationRepository.validateAll();
     
     // Log validation activity
-    await role_menu_activity_repository.create({
+    await roleMenuActivityRepository.create({
       roleId: 'system', // System activity
       activityType: 'other',
       description: 'All role-menu relationships validation performed',
@@ -421,12 +421,12 @@ export const validate_all_role_menus_action = async (): Promise<ActionResultType
 
 // --- IRole-IMenu Export Actions -----------------------------------------
 
-export const export_role_menus_action = async (request: IRoleMenuExportRequest): Promise<ActionResultType<any>> => {
+export const exportRoleMenusAction = async (request: IRoleMenuExportRequest): Promise<ActionResultType<any>> => {
   try {
-    const result = await role_menu_export_repository.export(request);
+    const result = await roleMenuExportRepository.export(request);
     
     // Log export activity
-    await role_menu_activity_repository.create({
+    await roleMenuActivityRepository.create({
       roleId: 'system', // System activity
       activityType: 'other',
       description: 'IRole-menu data exported',

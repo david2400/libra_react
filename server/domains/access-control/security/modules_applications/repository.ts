@@ -25,7 +25,7 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- Modules Repository -----------------------------------------------------
 
-export const modules_repository = {
+export const modulesRepository = {
   // List modules
   list: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IModule>>('/api/access_control/modules', {
@@ -69,7 +69,7 @@ export const modules_repository = {
 
 // --- IModule-IApplication Relationships Repository -----------------------------
 
-export const module_applications_repository = {
+export const moduleApplicationsRepository = {
   // List module-applications
   list: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IModuleApplication>>('/api/access_control/module-applications', {
@@ -152,7 +152,7 @@ export const moduleStatsRepository = {
 
 // --- IModule Configuration Repository -----------------------------------------
 
-export const module_config_repository = {
+export const moduleConfigRepository = {
   // List module configs
   list: (moduleId: string | number, applicationId?: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IModuleConfig>>(
@@ -167,7 +167,7 @@ export const module_config_repository = {
     ),
 
   // Get config by key
-  get_by_key: (moduleId: string | number, applicationId: string | number, key: string) => 
+  getByKey: (moduleId: string | number, applicationId: string | number, key: string) => 
     serverFetch.get<IModuleConfig>(`/api/access_control/modules/${moduleId}/applications/${applicationId}/config/${key}`, {
       revalidate: 300,
       tags: [accessControlTags.module(moduleId)],
@@ -194,7 +194,7 @@ export const module_config_repository = {
 
 // --- IModule Activity Repository ---------------------------------------------
 
-export const module_activity_repository = {
+export const moduleActivityRepository = {
   // List module activities
   list: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IModuleActivity>>('/api/access_control/module-activities', {
@@ -204,7 +204,7 @@ export const module_activity_repository = {
     }),
 
   // Get activities by module
-  get_by_module: (moduleId: string | number, params?: ListParams) => 
+  getByModule: (moduleId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IModuleActivity>>(`/api/access_control/module-activities/module/${moduleId}`, {
       params,
       revalidate: 120,
@@ -244,7 +244,7 @@ export const moduleHealthRepository = {
     }),
 
   // Get health history
-  get_health_history: (moduleId: string | number, params?: ListParams) => 
+  getHealthHistory: (moduleId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IModuleHealth>>(`/api/access_control/modules/${moduleId}/health/history`, {
       params,
       revalidate: 300,

@@ -46,7 +46,7 @@ export const menusRepository = {
     }),
 
   // Get menu tree
-  get_tree: (params?: ListParams) => 
+  getTree: (params?: ListParams) => 
     serverFetch.get<IMenuTreeResponse>('/api/access_control/menus/tree', {
       params,
       revalidate: 120,
@@ -54,7 +54,7 @@ export const menusRepository = {
     }),
 
   // Get flat menu structure
-  get_flat: (params?: ListParams) => 
+  getFlat: (params?: ListParams) => 
     serverFetch.get<FlatMenuResponse>('/api/access_control/menus/flat', {
       params,
       revalidate: 120,
@@ -62,21 +62,21 @@ export const menusRepository = {
     }),
 
   // Get root menus
-  get_root_menus: () => 
+  getRootMenus: () => 
     serverFetch.get<IMenu[]>('/api/access_control/menus/root', {
       revalidate: 120,
       tags: [accessControlTags.menus()],
     }),
 
   // Get menu children
-  get_children: (parentId: string | number) => 
+  getChildren: (parentId: string | number) => 
     serverFetch.get<IMenu[]>(`/api/access_control/menus/${parentId}/children`, {
       revalidate: 120,
       tags: [accessControlTags.menu(parentId)],
     }),
 
   // Get menu path
-  get_path: (menuId: string | number) => 
+  getPath: (menuId: string | number) => 
     serverFetch.get<IMenu[]>(`/api/access_control/menus/${menuId}/path`, {
       revalidate: 300,
       tags: [accessControlTags.menu(menuId)],

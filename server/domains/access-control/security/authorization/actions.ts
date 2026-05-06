@@ -4,13 +4,13 @@ import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
   authorizationRepository, 
-  authorization_stats_repository,
-  authorization_audit_repository,
-  authorization_cache_repository,
-  authorization_policy_repository,
-  authorization_performance_repository,
-  authorization_security_repository,
-  authorization_config_repository
+  authorizationStatsRepository,
+  authorizationAuditRepository,
+  authorizationCacheRepository,
+  authorizationPolicyRepository,
+  authorizationPerformanceRepository,
+  authorizationSecurityRepository,
+  authorizationConfigRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -27,12 +27,12 @@ import type {
 
 // --- Authorization Core Actions -----------------------------------------
 
-export const check_authorization_action = async (request: IAuthorizationRequest): Promise<ActionResultType<any>> => {
+export const checkAuthorizationAction = async (request: IAuthorizationRequest): Promise<ActionResultType<any>> => {
   try {
     const response = await authorizationRepository.check(request);
     
     // Create audit entry
-    await authorization_audit_repository.create({
+    await authorizationAuditRepository.create({
       userId: request.userId,
       resource: request.resource,
       action: request.action,
@@ -71,12 +71,12 @@ export const check_authorization_action = async (request: IAuthorizationRequest)
   }
 };
 
-export const check_authorization_with_context_action = async (request: AuthorizationRequest, context: AuthorizationContext): Promise<ActionResultType<any>> => {
+export const checkAuthorizationWithContextAction = async (request: IAuthorizationRequest, context: IAuthorizationContext): Promise<ActionResultType<any>> => {
   try {
-    const response = await authorizationRepository.check_with_context(request, context);
+    const response = await authorizationRepository.checkWithContext(request, context);
     
     // Create audit entry with enhanced context
-    await authorization_audit_repository.create({
+    await authorizationAuditRepository.create({
       userId: request.userId,
       resource: request.resource,
       action: request.action,
@@ -111,16 +111,16 @@ export const check_authorization_with_context_action = async (request: Authoriza
   }
 };
 
-export const batch_check_authorization_action = async (requests: IAuthorizationRequest[]): Promise<ActionResultType<any>> => {
+export const batchCheckAuthorizationAction = async (requests: IAuthorizationRequest[]): Promise<ActionResultType<any>> => {
   try {
-    const responses = await authorizationRepository.batch_check(requests);
+    const responses = await authorizationRepository.batchCheck(requests);
     
     // Create audit entries for each request
     for (let i = 0; i < requests.length; i++) {
       const request = requests[i];
       const response = responses[i];
       
-      await authorization_audit_repository.create({
+      await authorizationAuditRepository.create({
         userId: request.userId,
         resource: request.resource,
         action: request.action,
@@ -162,9 +162,9 @@ export const batch_check_authorization_action = async (requests: IAuthorizationR
 
 // --- Authorization Cache Management Actions ---------------------------------
 
-export const manage_authorization_cache_action = async (request: ICacheManagementRequest): Promise<ActionResultType<any>> => {
+export const manageAuthorizationCacheAction = async (request: ICacheManagementRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await authorization_cache_repository.manage(request);
+    const response = await authorizationCacheRepository.manage(request);
     
     // Revalidate cache tags
     if (request.clear_all_cache) {
@@ -197,9 +197,9 @@ export const manage_authorization_cache_action = async (request: ICacheManagemen
   }
 };
 
-export const clear_expired_cache_action = async (): Promise<ActionResultType<any>> => {
+export const clearExpiredCacheAction = async (): Promise<ActionResultType<any>> => {
   try {
-    const response = await authorization_cache_repository.clear_expired();
+    const response = await authorizationCacheRepository.clear_expired();
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -229,9 +229,9 @@ export const clear_expired_cache_action = async (): Promise<ActionResultType<any
 
 // --- Authorization Policy Actions -----------------------------------------
 
-export const create_authorization_policy_action = async (policy: Omit<IAuthorizationPolicy, 'id' | 'createdAt' | 'updatedAt'>): Promise<ActionResultType<any>> => {
+export const createAuthorizationPolicyAction = async (policy: Omit<IAuthorizationPolicy, 'id' | 'createdAt' | 'updatedAt'>): Promise<ActionResultType<any>> => {
   try {
-    const createdPolicy = await authorization_policy_repository.create(policy);
+    const createdPolicy = await authorizationPolicyRepository.create(policy);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -259,9 +259,9 @@ export const create_authorization_policy_action = async (policy: Omit<IAuthoriza
   }
 };
 
-export const update_authorization_policy_action = async (id: string, policy: Partial<IAuthorizationPolicy>): Promise<ActionResultType<any>> => {
+export const updateAuthorizationPolicyAction = async (id: string, policy: Partial<IAuthorizationPolicy>): Promise<ActionResultType<any>> => {
   try {
-    const updatedPolicy = await authorization_policy_repository.update(id, policy);
+    const updatedPolicy = await authorizationPolicyRepository.update(id, policy);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -289,9 +289,9 @@ export const update_authorization_policy_action = async (id: string, policy: Par
   }
 };
 
-export const delete_authorization_policy_action = async (id: string): Promise<ActionResultType<void>> => {
+export const deleteAuthorizationPolicyAction = async (id: string): Promise<ActionResultType<void>> => {
   try {
-    await authorization_policy_repository.delete(id);
+    await authorizationPolicyRepository.delete(id);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -321,9 +321,9 @@ export const delete_authorization_policy_action = async (id: string): Promise<Ac
 
 // --- Authorization Security Actions ---------------------------------
 
-export const create_security_alert_action = async (alert: Omit<ISecurityAlert, 'id' | 'detected_at'>): Promise<ActionResultType<any>> => {
+export const createSecurityAlertAction = async (alert: Omit<ISecurityAlert, 'id' | 'detected_at'>): Promise<ActionResultType<any>> => {
   try {
-    const createdAlert = await authorization_security_repository.create(alert);
+    const createdAlert = await authorizationSecurityRepository.create(alert);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -351,9 +351,9 @@ export const create_security_alert_action = async (alert: Omit<ISecurityAlert, '
   }
 };
 
-export const resolve_security_alert_action = async (id: string, resolvedBy: string | number): Promise<ActionResultType<any>> => {
+export const resolveSecurityAlertAction = async (id: string, resolvedBy: string | number): Promise<ActionResultType<any>> => {
   try {
-    const resolvedAlert = await authorization_security_repository.resolve(id, resolvedBy);
+    const resolvedAlert = await authorizationSecurityRepository.resolve(id, resolvedBy);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -383,7 +383,7 @@ export const resolve_security_alert_action = async (id: string, resolvedBy: stri
 
 export const create_security_rule_action = async (rule: Omit<ISecurityRule, 'id' | 'createdAt' | 'updatedAt'>): Promise<ActionResultType<any>> => {
   try {
-    const createdRule = await authorization_security_repository.create_rule(rule);
+    const createdRule = await authorizationSecurityRepository.create_rule(rule);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -413,7 +413,7 @@ export const create_security_rule_action = async (rule: Omit<ISecurityRule, 'id'
 
 export const update_security_rule_action = async (id: string, rule: Partial<ISecurityRule>): Promise<ActionResultType<any>> => {
   try {
-    const updatedRule = await authorization_security_repository.update_rule(id, rule);
+    const updatedRule = await authorizationSecurityRepository.update_rule(id, rule);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -443,7 +443,7 @@ export const update_security_rule_action = async (id: string, rule: Partial<ISec
 
 export const delete_security_rule_action = async (id: string): Promise<ActionResultType<void>> => {
   try {
-    await authorization_security_repository.delete_rule(id);
+    await authorizationSecurityRepository.delete_rule(id);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -473,9 +473,9 @@ export const delete_security_rule_action = async (id: string): Promise<ActionRes
 
 // --- Authorization Configuration Actions -----------------------------
 
-export const update_authorization_config_action = async (config: IConfigUpdateRequest): Promise<ActionResultType<any>> => {
+export const updateAuthorizationConfigAction = async (config: IConfigUpdateRequest): Promise<ActionResultType<any>> => {
   try {
-    const updatedConfig = await authorization_config_repository.update(config);
+    const updatedConfig = await authorizationConfigRepository.update(config);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -503,9 +503,9 @@ export const update_authorization_config_action = async (config: IConfigUpdateRe
   }
 };
 
-export const reset_authorization_config_action = async (): Promise<ActionResultType<any>> => {
+export const resetAuthorizationConfigAction = async (): Promise<ActionResultType<any>> => {
   try {
-    const resetConfig = await authorization_config_repository.reset();
+    const resetConfig = await authorizationConfigRepository.reset();
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -535,9 +535,9 @@ export const reset_authorization_config_action = async (): Promise<ActionResultT
 
 // --- Authorization Audit Export Actions ---------------------------------
 
-export const export_authorization_audit_action = async (request: IAuditExportRequest): Promise<ActionResultType<any>> => {
+export const exportAuthorizationAuditAction = async (request: IAuditExportRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await authorization_audit_repository.export(request);
+    const response = await authorizationAuditRepository.export(request);
     
     return { success: true, data: response };
   } catch (error) {

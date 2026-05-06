@@ -7,7 +7,7 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormRoleMenu } from "../scenes/formRoleMenu";
 import { validationRoleMenu } from "../schemas/role-menu.schema";
 import { IRoleMenuCreateRequest, IRoleMenuUpdateRequest } from "../models/role-menu.interface";
-import { roleMenus } from "@/server/domains/access-control/navigation";
+import { roleMenusApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -27,9 +27,9 @@ export const RegisterRoleMenu = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IRoleMenuCreateRequest> = async (values) => {
-    const result = await roleMenus.create_role_menu_action(values);
-    
-    if (result.success) {
+    try {
+      const result = await roleMenusApi.create(values.roleId, values.menuId, values);
+      
       Swal.fire({
         title: "Menú asignado exitosamente",
         icon: "success",
@@ -37,10 +37,10 @@ export const RegisterRoleMenu = ({}: IFormAddProps = {}) => {
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }
@@ -55,9 +55,9 @@ export const UpdateRoleMenu = ({ initialValues }: IFormUpdateProps<IRoleMenuUpda
   const handleSubmit: SubmitHandler<IRoleMenuUpdateRequest> = async (values) => {
     if (!values.roleId || !values.menuId) return;
     
-    const result = await roleMenus.update_role_menu_action(values.roleId, values.menuId, values);
-    
-    if (result.success) {
+    try {
+      const result = await roleMenusApi.update(values.roleId, values.menuId, values);
+      
       Swal.fire({
         title: "Asignación actualizada exitosamente",
         icon: "success",
@@ -65,10 +65,10 @@ export const UpdateRoleMenu = ({ initialValues }: IFormUpdateProps<IRoleMenuUpda
         showConfirmButton: false,
         willClose: () => router.refresh(),
       });
-    } else {
+    } catch (error) {
       Swal.fire({
         title: "Error!",
-        text: result.error?.message || "Ocurrió un error inesperado",
+        text: (error as any)?.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

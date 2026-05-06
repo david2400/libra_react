@@ -48,7 +48,7 @@ export const authorizationRepository = {
     }),
 
   // Batch authorization check
-  batch_check: (requests: IAuthorizationRequest[]) => 
+  batchCheck: (requests: IAuthorizationRequest[]) => 
     serverFetch.post<IAuthorizationResponse[]>('/api/access_control/authorization/batch-check', { requests }, {
       revalidate: false,
     }),
@@ -56,7 +56,7 @@ export const authorizationRepository = {
 
 // --- Authorization Statistics Repository ---------------------------------
 
-export const authorization_stats_repository = {
+export const authorizationStatsRepository = {
   // Get authorization statistics
   getStats: (params?: { startDate?: string; endDate?: string }) => 
     serverFetch.get<IAuthorizationStats>('/api/access_control/authorization/stats', {
@@ -84,7 +84,7 @@ export const authorization_stats_repository = {
 
 // --- Authorization Audit Repository -------------------------------------
 
-export const authorization_audit_repository = {
+export const authorizationAuditRepository = {
   // List audit entries
   list: (params?: ListParams & IAuditFilter) => 
     serverFetch.get<IPaginatedResponse<IAuthorizationAudit>>('/api/access_control/authorization/audit', {
@@ -101,7 +101,7 @@ export const authorization_audit_repository = {
     }),
 
   // Get audit by user
-  get_by_user: (userId: string | number, params?: ListParams) => 
+  getByUser: (userId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IAuthorizationAudit>>(`/api/access_control/authorization/audit/user/${userId}`, {
       params,
       revalidate: 120,
@@ -123,7 +123,7 @@ export const authorization_audit_repository = {
 
 // --- Authorization Cache Repository -------------------------------------
 
-export const authorization_cache_repository = {
+export const authorizationCacheRepository = {
   // Get cache entries
   list: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IAuthorizationCacheEntry>>('/api/access_control/authorization/cache', {
@@ -133,14 +133,14 @@ export const authorization_cache_repository = {
     }),
 
   // Get cache entry by key
-  get_by_key: (key: string) => 
+  getByKey: (key: string) => 
     serverFetch.get<IAuthorizationCacheEntry>(`/api/access_control/authorization/cache/${key}`, {
       revalidate: 60,
       tags: [accessControlTags.authSession()],
     }),
 
   // Get cache entries by user
-  get_by_user: (userId: string | number, params?: ListParams) => 
+  getByUser: (userId: string | number, params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IAuthorizationCacheEntry>>(`/api/access_control/authorization/cache/user/${userId}`, {
       params,
       revalidate: 60,
@@ -154,7 +154,7 @@ export const authorization_cache_repository = {
     }),
 
   // Clear expired entries
-  clear_expired: () => 
+  clearExpired: () => 
     serverFetch.post<{ cleared_entries: number }>('/api/access_control/authorization/cache/clear-expired', {}, {
       revalidate: false,
     }),
@@ -162,7 +162,7 @@ export const authorization_cache_repository = {
 
 // --- Authorization Policy Repository -------------------------------------
 
-export const authorization_policy_repository = {
+export const authorizationPolicyRepository = {
   // List policies
   list: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IAuthorizationPolicy>>('/api/access_control/authorization/policies', {
@@ -205,9 +205,9 @@ export const authorization_policy_repository = {
 
 // --- Authorization Performance Repository -----------------------------
 
-export const authorization_performance_repository = {
+export const authorizationPerformanceRepository = {
   // Get performance metrics
-  get_metrics: (params?: { startDate?: string; endDate?: string }) => 
+  getMetrics: (params?: { startDate?: string; endDate?: string }) => 
     serverFetch.get<IPerformanceMetrics>('/api/access_control/authorization/performance/metrics', {
       params,
       revalidate: 60,
@@ -215,7 +215,7 @@ export const authorization_performance_repository = {
     }),
 
   // Get resource performance
-  get_resource_performance: (params?: ListParams) => 
+  getResourcePerformance: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IResourcePerformance>>('/api/access_control/authorization/performance/resources', {
       params,
       revalidate: 60,
@@ -223,7 +223,7 @@ export const authorization_performance_repository = {
     }),
 
   // Get user performance
-  get_user_performance: (params?: ListParams) => 
+  getUserPerformance: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<IUserPerformance>>('/api/access_control/authorization/performance/users', {
       params,
       revalidate: 60,
@@ -233,7 +233,7 @@ export const authorization_performance_repository = {
 
 // --- Authorization Security Repository ---------------------------------
 
-export const authorization_security_repository = {
+export const authorizationSecurityRepository = {
   // List security alerts
   list: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<ISecurityAlert>>('/api/access_control/authorization/security/alerts', {
@@ -262,7 +262,7 @@ export const authorization_security_repository = {
     }),
 
   // List security rules
-  list_rules: (params?: ListParams) => 
+  listRules: (params?: ListParams) => 
     serverFetch.get<IPaginatedResponse<ISecurityRule>>('/api/access_control/authorization/security/rules', {
       params,
       revalidate: 300,
