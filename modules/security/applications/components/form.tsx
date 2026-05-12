@@ -34,6 +34,9 @@ const FormBase = ({
 
 export const RegisterApplication = ({}: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('security.applications.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: IApplicationCreateRequest = {
     name: "",
@@ -48,7 +51,7 @@ export const RegisterApplication = ({}: IFormAddProps = {}) => {
       const result = await applicationsApi.create(values);
       
       Swal.fire({
-        title: "Aplicación creada exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -58,8 +61,8 @@ export const RegisterApplication = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'aplicación' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -78,6 +81,9 @@ export const UpdateApplication = ({
   initialValues,
 }: IFormUpdateProps<IApplicationUpdateRequest>) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('security.applications.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<IApplicationUpdateRequest> = async (values) => {
     if (!values.id) return;
@@ -86,7 +92,7 @@ export const UpdateApplication = ({
       const result = await applicationsApi.update(values.id, values);
       
       Swal.fire({
-        title: "Aplicación actualizada exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -96,8 +102,8 @@ export const UpdateApplication = ({
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'aplicación' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

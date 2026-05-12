@@ -1,14 +1,14 @@
-import { useTranslations } from 'next-intl';
 import { z } from 'zod';
+import { useValidationMessages } from '@/lib/i18n';
 
 export const validationApplication = () => {
-  const intl = useTranslations('Form');
+  const v = useValidationMessages();
 
   return z.object({
-    name: z.string().min(1, { message: intl('requiredField') }),
+    name: z.string().min(1, { message: v.required }),
     description: z.string().optional(),
     version: z.string().optional(),
     status: z.enum(['active', 'inactive', 'maintenance']).optional(),
-    baseUrl: z.string().url().optional().or(z.literal('')),
+    baseUrl: z.string().url({ message: v.invalidUrl }).optional().or(z.literal('')),
   });
 };

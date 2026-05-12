@@ -134,10 +134,10 @@ export const getProfilesDashboard = cache(async () => {
       ...profile,
       stats: stats || {
         profile_id: profile.id,
-        loginCount: 0,
+        login_count: 0,
         profile_updates: 0,
         preference_changes: 0,
-        createdAt: profile.createdAt || ''
+        created_at: profile.created_at || ''
       }
     };
   });
@@ -146,10 +146,10 @@ export const getProfilesDashboard = cache(async () => {
     profiles: dashboardData,
     summary: {
       total_profiles: profiles.meta.total,
-      total_logins: allStats.reduce((sum, s) => sum + s.loginCount, 0),
+      total_logins: allStats.reduce((sum, s) => sum + s.login_count, 0),
       total_profile_updates: allStats.reduce((sum, s) => sum + s.profile_updates, 0),
       total_preference_changes: allStats.reduce((sum, s) => sum + s.preference_changes, 0),
-      active_profiles: dashboardData.filter(p => p.isActive).length
+      active_profiles: dashboardData.filter(p => p.is_active).length
     }
   };
 });
@@ -162,18 +162,18 @@ export const getProfileActivityTrends = cache(async (profileId: string | number,
   
   // Process activity data for trends
   const trends = activities.data.map(activity => ({
-    timestamp: activity.createdAt,
-    activityType: activity.activityType,
+    timestamp: activity.created_at,
+    activity_type: activity.activity_type,
     description: activity.description,
     metadata: activity.metadata
   }));
   
   // Group by activity type
   const groupedTrends = trends.reduce((acc, trend) => {
-    if (!acc[trend.activityType]) {
-      acc[trend.activityType] = [];
+    if (!acc[trend.activity_type]) {
+      acc[trend.activity_type] = [];
     }
-    acc[trend.activityType].push(trend);
+    acc[trend.activity_type].push(trend);
     return acc;
   }, {} as Record<string, typeof trends>);
   
@@ -225,7 +225,7 @@ export const getProfileSecurityOverview = cache(async (profileId: string | numbe
   
   return {
     profile_id: profileId,
-    profile_name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || profile.user_name || 'Unknown',
+    profile_name: `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Unknown',
     security: {
       two_factor_enabled: security.two_factor_enabled,
       trusted_devices_count: security.trusted_devices.length,
@@ -235,8 +235,8 @@ export const getProfileSecurityOverview = cache(async (profileId: string | numbe
       password_strength: 'medium' // This would be calculated based on actual password
     },
     stats: {
-      loginCount: stats.loginCount,
-      lastLogin: stats.lastLogin,
+      login_count: stats.login_count,
+      last_login: stats.last_login,
       profile_updates: stats.profile_updates
     },
     security_score: calculateSecurityScore(security, stats)

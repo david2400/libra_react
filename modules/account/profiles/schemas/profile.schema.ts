@@ -1,15 +1,15 @@
-import { useTranslations } from 'next-intl';
 import { z } from 'zod';
+import { useValidationMessages } from '@/lib/i18n';
 
 export const validationProfile = () => {
-  const intl = useTranslations('Form');
+  const v = useValidationMessages();
 
   return z.object({
     userId: z.coerce.number().or(z.string()),
     first_name: z.string().optional(),
     last_name: z.string().optional(),
     display_name: z.string().optional(),
-    avatar_url: z.string().url().optional().or(z.literal('')),
+    avatar_url: z.string().url({ message: v.invalidUrl }).optional().or(z.literal('')),
     bio: z.string().optional(),
     phone: z.string().optional(),
     timezone: z.string().optional(),

@@ -15,8 +15,6 @@ import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import type { 
   IRolePermission, 
-  IRole,
-  IPermission,
   IRolePermissionStats,
   IRolePermissionOverview,
   IBulkRolePermissionPayload,
@@ -122,10 +120,10 @@ export const getRoleWithPermissions = cache(async (roleId: string | number) => {
   ]);
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     permissions,
     active_permissions: activePermissions,
-    inherited_permissions,
+    inherited_permissions: inheritedPermissions,
     recent_activities: recentActivities,
     total_permissions: permissions.length,
     active_count: activePermissions.length,
@@ -141,7 +139,7 @@ export const getPermissionWithRoles = cache(async (permissionId: string | number
   ]);
   
   return {
-    permissionId: permissionId,
+    permission_id: permissionId,
     roles,
     recent_activities: recentActivities.data,
     total_roles: roles.length
@@ -157,15 +155,15 @@ export const getRolePermissionDashboard = cache(async () => {
   
   // Combine data for dashboard
   const dashboardData = rolePermissions.data.map(rolePermission => {
-    const stats = allStats.find(s => s.roleId === rolePermission.roleId && s.permissionId === rolePermission.permissionId);
+    const stats = allStats.find(s => s.role_id === rolePermission.role_id && s.permission_id === rolePermission.permission_id);
     
     return {
       ...rolePermission,
       stats: stats || {
-        roleId: rolePermission.roleId,
-        permissionId: rolePermission.permissionId,
+        role_id: rolePermission.role_id,
+        permission_id: rolePermission.permission_id,
         usage_count: 0,
-        createdAt: rolePermission.createdAt || ''
+        created_at: rolePermission.created_at || ''
       }
     };
   });
@@ -175,7 +173,7 @@ export const getRolePermissionDashboard = cache(async () => {
     summary: {
       total_relationships: rolePermissions.meta.total,
       total_usage: allStats.reduce((sum, s) => sum + s.usage_count, 0),
-      active_relationships: dashboardData.filter(rp => rp.isActive).length
+      active_relationships: dashboardData.filter(rp => rp.is_active).length
     }
   };
 });
@@ -186,24 +184,24 @@ export const getRolePermissionUsagePatterns = cache(async (roleId: string | numb
     getPermissionsByRole(roleId),
     getActivitiesByRole(roleId, { per_page: days * 24 }), // Assuming hourly checks
     getAllRolePermissionStats().then(allStats => 
-      allStats.filter(s => s.roleId === roleId)
+      allStats.filter(s => s.role_id === roleId)
     )
   ]);
   
   // Process usage data
   const usagePatterns = activities.data
-    .filter(activity => activity.activityType === 'permission_used')
+    .filter(activity => activity.activity_type === 'permission_used')
     .map(activity => ({
-      timestamp: activity.createdAt,
-      permissionId: activity.permissionId,
+      timestamp: activity.created_at,
+      permission_id: activity.permission_id,
       description: activity.description,
       metadata: activity.metadata
     }));
   
   // Group by permission
   const permissionUsagePatterns = permissions.map(permission => {
-    const permissionActivities = usagePatterns.filter(up => up.permissionId === permission.id);
-    const permissionStats = stats.find(s => s.permissionId === permission.id);
+    const permissionActivities = usagePatterns.filter(up => up.permission_id === permission.id);
+    const permissionStats = stats.find(s => s.permission_id === permission.id);
     
     return {
       permission,
@@ -214,7 +212,7 @@ export const getRolePermissionUsagePatterns = cache(async (roleId: string | numb
   });
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     patterns: permissionUsagePatterns.sort((a, b) => b.usage_count - a.usage_count),
     summary: {
       total_uses: usagePatterns.length,
@@ -252,11 +250,11 @@ export const getRolePermissionInheritanceAnalysis = cache(async (roleId: string 
   };
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     inheritance_tree: inheritanceTree,
     analysis,
     inheritance_sources: Object.entries(analysis.inheritance_sources).map(([sourceId, count]) => ({
-      roleId: sourceId,
+      role_id: sourceId,
       inherited_count: count
     }))
   };
@@ -287,11 +285,11 @@ export const getRolePermissionConflictAnalysis = cache(async (roleId: string | n
   };
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     conflicts,
     analysis: conflictAnalysis,
-    has_critical_conflicts: conflictAnalysis.critical > 0,
-    requires_attention: conflictAnalysis.high + conflictAnalysis.critical > 0
+    has_critical_conflicts: conflictAnalysis.by_severity.critical > 0,
+    requires_immediate_attention: conflictAnalysis.by_severity.high > 0 || conflictAnalysis.by_severity.critical > 0
   };
 });
 
@@ -311,7 +309,7 @@ export const getRolePermissionValidationSummary = cache(async (roleId: string | 
   };
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     validation_results: validationResults,
     summary,
     is_healthy: summary.invalid_count === 0 && summary.error_count === 0
@@ -321,7 +319,7 @@ export const getRolePermissionValidationSummary = cache(async (roleId: string | 
 // Get role permission matrix analysis
 export const getRolePermissionMatrixAnalysis = cache(async () => {
   const [matrix] = await Promise.all([
-    get_role_permission_matrix({ per_page: 1000 }) // Get comprehensive matrix
+    getRolePermissionMatrixAnalysis({ per_page: 1000 }) // Get comprehensive matrix
   ]);
   
   // Analyze matrix data

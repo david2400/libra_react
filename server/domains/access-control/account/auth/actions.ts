@@ -3,10 +3,10 @@
 import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
 import { 
-  authentication_repository,
-  employee_authentication_repository,
-  client_authentication_repository,
-  internal_authentication_repository
+  authenticationRepository,
+  employeeAuthenticationRepository,
+  clientAuthenticationRepository,
+  internalAuthenticationRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
@@ -22,9 +22,9 @@ import type {
 
 // --- Authentication Actions -----------------------------------------
 
-export const login_action = async (request: ILoginRequest): Promise<ActionResultType<any>> => {
+export const loginAction = async (request: ILoginRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await authentication_repository.login(request);
+    const response = await authenticationRepository.login(request);
     
     // Revalidate cache tags for the user
     if (response.user.id) {
@@ -54,9 +54,9 @@ export const login_action = async (request: ILoginRequest): Promise<ActionResult
   }
 };
 
-export const validate_token_action = async (request: ITokenValidationRequest): Promise<ActionResultType<any>> => {
+export const validateTokenAction = async (request: ITokenValidationRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await authentication_repository.validate_token(request);
+    const response = await authenticationRepository.validateToken(request);
     
     return { success: true, data: response };
   } catch (error) {
@@ -81,9 +81,9 @@ export const validate_token_action = async (request: ITokenValidationRequest): P
   }
 };
 
-export const refresh_token_action = async (request: ITokenRefreshRequest): Promise<ActionResultType<any>> => {
+export const refreshTokenAction = async (request: ITokenRefreshRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await authentication_repository.refreshToken(request);
+    const response = await authenticationRepository.refreshToken(request);
     
     return { success: true, data: response };
   } catch (error) {
@@ -110,9 +110,9 @@ export const refresh_token_action = async (request: ITokenRefreshRequest): Promi
 
 // --- Employee Authentication Actions -----------------------------
 
-export const employee_login_action = async (request: IEmployeeLoginRequest): Promise<ActionResultType<any>> => {
+export const employeeLoginAction = async (request: IEmployeeLoginRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await employee_authentication_repository.login(request);
+    const response = await employeeAuthenticationRepository.login(request);
     
     // Revalidate cache tags for the user
     if (response.user.id) {
@@ -144,9 +144,9 @@ export const employee_login_action = async (request: IEmployeeLoginRequest): Pro
 
 // --- Client Authentication Actions -----------------------------
 
-export const client_login_action = async (request: IClientLoginRequest): Promise<ActionResultType<any>> => {
+export const clientLoginAction = async (request: IClientLoginRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await client_authentication_repository.login(request);
+    const response = await clientAuthenticationRepository.login(request);
     
     // Revalidate cache tags for the user
     if (response.user.id) {
@@ -178,9 +178,9 @@ export const client_login_action = async (request: IClientLoginRequest): Promise
 
 // --- Internal Authentication Actions -----------------------------
 
-export const internal_login_action = async (request: IInternalLoginRequest): Promise<ActionResultType<any>> => {
+export const internalLoginAction = async (request: IInternalLoginRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await internal_authentication_repository.login(request);
+    const response = await internalAuthenticationRepository.login(request);
     
     // Revalidate cache tags for the user
     if (response.user.id) {
@@ -210,9 +210,9 @@ export const internal_login_action = async (request: IInternalLoginRequest): Pro
   }
 };
 
-export const validate_credentials_action = async (request: ICredentialsValidationRequest): Promise<ActionResultType<any>> => {
+export const validateCredentialsAction = async (request: ICredentialsValidationRequest): Promise<ActionResultType<any>> => {
   try {
-    const response = await internal_authentication_repository.validate_credentials(request);
+    const response = await internalAuthenticationRepository.validateCredentials(request);
     
     return { success: true, data: response };
   } catch (error) {

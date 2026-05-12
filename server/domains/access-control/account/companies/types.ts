@@ -15,9 +15,9 @@ export interface ICompany {
   country?: string;
   phone?: string;
   email?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateCompanyPayload {
@@ -44,7 +44,7 @@ export interface IUpdateCompanyPayload {
   country?: string;
   phone?: string;
   email?: string;
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
 // --- Client Types (for company management) -----------------------------------
@@ -54,50 +54,52 @@ export interface IClient {
   name: string;
   email?: string;
   phone?: string;
-  companyName?: string;
-  contactPerson?: string;
+  company_name?: string;
+  contact_person?: string;
   address?: string;
   city?: string;
   country?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // --- ICompany-Client Relationships Types -----------------------------------
 
 export interface ICompanyClient {
-  companyId: string | number;
-  clientId: string | number;
-  isPrimary?: boolean;
-  relationshipType?: string;
+  company_id: string | number;
+  client_id: string | number;
+  is_primary?: boolean;
+  relationship_type?: string;
   company?: ICompany;
   client?: IClient;
 }
 
 export interface ICreateCompanyClientPayload {
-  companyId: string | number;
-  clientId: string | number;
-  isPrimary?: boolean;
-  relationshipType?: string;
+  company_id: string | number;
+  client_id: string | number;
+  is_primary?: boolean;
+  relationship_type?: string;
 }
 
 export interface IUpdateCompanyClientPayload {
-  isPrimary?: boolean;
-  relationshipType?: string;
+  company_id?: string | number;
+  client_id?: string | number;
+  is_primary?: boolean;
+  relationship_type?: string;
 }
 
 // --- ICompany Statistics Types ---------------------------------------------
 
 export interface ICompanyStats {
-  companyId: string | number;
+  company_id: string | number;
   total_clients: number;
   active_clients: number;
-  totalUsers: number;
-  activeSessions: number;
+  total_users: number;
+  active_sessions: number;
   revenue?: number;
-  lastActivity: string;
-  createdAt?: string;
+  last_activity: string;
+  created_at?: string;
 }
 
 export interface ICompanyOverview {
@@ -111,34 +113,34 @@ export interface ICompanyOverview {
 
 export interface ICompanyActivity {
   id: string | number;
-  companyId: string | number;
-  activityType: 'client_added' | 'client_removed' | 'profile_update' | 'other';
+  company_id: string | number;
+  activity_type: 'client_added' | 'client_removed' | 'profile_update' | 'other';
   description?: string;
   metadata?: Record<string, unknown>;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface ICompanyActivityFilter {
-  companyId?: string | number;
-  activityType?: string;
-  startDate?: string;
-  endDate?: string;
+  company_id?: string | number;
+  activity_type?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 // --- ICompany Configuration Types ---------------------------------------------
 
 export interface ICompanyConfig {
-  companyId: string | number;
+  company_id: string | number;
   key: string;
   value: string | number | boolean;
   description?: string;
   is_encrypted?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateCompanyConfigPayload {
-  companyId: string | number;
+  company_id: string | number;
   key: string;
   value: string | number | boolean;
   description?: string;
@@ -154,7 +156,7 @@ export interface IUpdateCompanyConfigPayload {
 // --- ICompany Health Types -------------------------------------------------
 
 export interface ICompanyHealth {
-  companyId: string | number;
+  company_id: string | number;
   status: 'healthy' | 'warning' | 'critical';
   metrics: {
     client_activity_rate: number;

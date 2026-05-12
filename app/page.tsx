@@ -1,19 +1,8 @@
 /** @format */
 
-import { ReactNode } from "react";
-// import "@repo/ui/styles.css";
-import "./style/globals.css";
+import { redirect } from "next/navigation";
+import { routing } from "@/i18n/routing";
 
-type Props = {
-  children: ReactNode;
-};
-
-// Since we have a `not-found.tsx` page on the root, a layout file
-// is required, even if it's just passing children through.
-export default function RootLayout({ children }: Props) {
-  return (
-    <html lang='en'>
-      <body suppressHydrationWarning>{children}</body>
-    </html>
-  );
+export default function RootPage() {
+  redirect(`/${routing.defaultLocale}`);
 }

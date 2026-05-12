@@ -20,7 +20,6 @@ import type {
   IRoleMenuOverview,
   IBulkRoleMenuPayload,
   IBulkRoleMenuResponse,
-  IRoleMenuTreeResponse,
   IRoleMenuActivity,
   IRoleMenuActivityFilter,
   IRoleMenuValidationResult,
@@ -105,7 +104,7 @@ export const getRoleWithMenus = cache(async (roleId: string | number) => {
   ]);
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     menus,
     active_menus: activeMenus,
     recent_activities: recentActivities,
@@ -123,7 +122,7 @@ export const getMenuWithRoles = cache(async (menuId: string | number) => {
   ]);
   
   return {
-    menuId: menuId,
+    menu_id: menuId,
     roles,
     recent_activities: recentActivities,
     total_roles: roles.length
@@ -139,15 +138,15 @@ export const getRoleMenuDashboard = cache(async () => {
   
   // Combine data for dashboard
   const dashboardData = roleMenus.data.map(roleMenu => {
-    const stats = allStats.find(s => s.roleId === roleMenu.roleId && s.menuId === roleMenu.menuId);
+    const stats = allStats.find(s => s.role_id === roleMenu.role_id && s.menu_id === roleMenu.menu_id);
     
     return {
       ...roleMenu,
       stats: stats || {
-        roleId: roleMenu.roleId,
-        menuId: roleMenu.menuId,
+        role_id: roleMenu.role_id,
+        menu_id: roleMenu.menu_id,
         access_count: 0,
-        createdAt: roleMenu.createdAt || ''
+        created_at: roleMenu.created_at || ''
       }
     };
   });
@@ -157,7 +156,7 @@ export const getRoleMenuDashboard = cache(async () => {
     summary: {
       total_relationships: roleMenus.meta.total,
       total_access_count: allStats.reduce((sum, s) => sum + s.access_count, 0),
-      active_relationships: dashboardData.filter(rm => rm.isActive).length
+      active_relationships: dashboardData.filter(rm => rm.is_active).length
     }
   };
 });
@@ -171,17 +170,17 @@ export const getRoleMenuAccessPatterns = cache(async (roleId: string | number, d
   
   // Process access data
   const accessPatterns = activities.data
-    .filter(activity => activity.activityType === 'menu_accessed')
+    .filter(activity => activity.activity_type === 'menu_accessed')
     .map(activity => ({
-      timestamp: activity.createdAt,
-      menuId: activity.menuId,
+      timestamp: activity.created_at,
+      menu_id: activity.menu_id,
       description: activity.description,
       metadata: activity.metadata
     }));
   
   // Group by menu
   const menuAccessPatterns = menus.map(menu => {
-    const menuActivities = accessPatterns.filter(ap => ap.menuId === menu.id);
+    const menuActivities = accessPatterns.filter(ap => ap.menu_id === menu.id);
     
     return {
       menu,
@@ -192,7 +191,7 @@ export const getRoleMenuAccessPatterns = cache(async (roleId: string | number, d
   });
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     patterns: menuAccessPatterns.sort((a, b) => b.access_count - a.access_count),
     summary: {
       total_accesses: accessPatterns.length,
@@ -226,7 +225,7 @@ export const getRoleMenuHierarchyAnalysis = cache(async (roleId: string | number
   }));
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     tree: menuTree,
     hierarchy_stats: {
       total_nodes: menuTree.total_nodes,
@@ -254,7 +253,7 @@ export const getRoleMenuValidationSummary = cache(async (roleId: string | number
   };
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     validation_results: validationResults,
     summary
   };
@@ -265,12 +264,12 @@ export const getRoleMenuUsageStats = cache(async (roleId: string | number) => {
   const [menus, stats] = await Promise.all([
     getMenusByRole(roleId),
     getAllRoleMenuStats().then(allStats => 
-      allStats.filter(s => s.roleId === roleId)
+      allStats.filter(s => s.role_id === roleId)
     )
   ]);
   
   const menuStats = menus.map(menu => {
-    const stat = stats.find(s => s.menuId === menu.id);
+    const stat = stats.find(s => s.menu_id === menu.id);
     
     return {
       menu,
@@ -281,7 +280,7 @@ export const getRoleMenuUsageStats = cache(async (roleId: string | number) => {
   });
   
   return {
-    roleId: roleId,
+    role_id: roleId,
     menu_stats: menuStats.sort((a, b) => b.access_count - a.access_count),
     summary: {
       total_menus: menus.length,

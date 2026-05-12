@@ -34,10 +34,10 @@ export const createCompanyAction = async (payload: ICreateCompanyPayload): Promi
     
     // Log activity
     await companyActivityRepository.create({
-      companyId: company.id,
-      activityType: 'profile_update',
+      company_id: company.id,
+      activity_type: 'profile_update',
       description: 'ICompany created',
-      metadata: { companyName: company.name }
+      metadata: { company_name: company.name }
     });
     
     return { success: true, data: company };
@@ -73,10 +73,10 @@ export const updateCompanyAction = async (id: string | number, payload: IUpdateC
     
     // Log activity
     await companyActivityRepository.create({
-      companyId: id,
-      activityType: 'profile_update',
+      company_id: id,
+      activity_type: 'profile_update',
       description: 'ICompany profile updated',
-      metadata: { updated_fields: Object.keys(payload) }
+      metadata: { updatedFields: Object.keys(payload) }
     });
     
     return { success: true, data: company };
@@ -135,7 +135,7 @@ export const deleteCompanyAction = async (id: string | number): Promise<ActionRe
 
 // --- ICompany-Client Relationships Actions ---------------------------------
 
-export const create_company_client_action = async (companyId: string | number, clientId: string | number, payload: ICreateCompanyClientPayload): Promise<ActionResultType<any>> => {
+export const createCompanyClientAction = async (companyId: string | number, clientId: string | number, payload: ICreateCompanyClientPayload): Promise<ActionResultType<any>> => {
   try {
     const companyClient = await companyClientsRepository.create(companyId, clientId, payload);
     
@@ -146,13 +146,13 @@ export const create_company_client_action = async (companyId: string | number, c
     
     // Log activity
     await companyActivityRepository.create({
-      companyId: companyId,
-      activityType: 'client_added',
+      company_id: companyId,
+      activity_type: 'client_added',
       description: `Client added to company (Client ID: ${clientId})`,
       metadata: { 
-        clientId: clientId, 
-        isPrimary: payload.isPrimary,
-        relationshipType: payload.relationshipType 
+        client_id: clientId, 
+        is_primary: payload.is_primary,
+        relationship_type: payload.relationship_type 
       }
     });
     
@@ -179,7 +179,7 @@ export const create_company_client_action = async (companyId: string | number, c
   }
 };
 
-export const update_company_client_action = async (companyId: string | number, clientId: string | number, payload: IUpdateCompanyClientPayload): Promise<ActionResultType<any>> => {
+export const updateCompanyClientAction = async (companyId: string | number, clientId: string | number, payload: IUpdateCompanyClientPayload): Promise<ActionResultType<any>> => {
   try {
     const companyClient = await companyClientsRepository.update(companyId, clientId, payload);
     
@@ -189,11 +189,11 @@ export const update_company_client_action = async (companyId: string | number, c
     
     // Log activity
     await companyActivityRepository.create({
-      companyId: companyId,
-      activityType: 'profile_update',
+      company_id: companyId,
+      activity_type: 'profile_update',
       description: `ICompany-client relationship updated (Client ID: ${clientId})`,
       metadata: { 
-        clientId: clientId, 
+        client_id: clientId, 
         updated_fields: Object.keys(payload)
       }
     });
@@ -221,7 +221,7 @@ export const update_company_client_action = async (companyId: string | number, c
   }
 };
 
-export const delete_company_client_action = async (companyId: string | number, clientId: string | number): Promise<ActionResultType<void>> => {
+export const deleteCompanyClientAction = async (companyId: string | number, clientId: string | number): Promise<ActionResultType<void>> => {
   try {
     await companyClientsRepository.delete(companyId, clientId);
     
@@ -232,10 +232,10 @@ export const delete_company_client_action = async (companyId: string | number, c
     
     // Log activity
     await companyActivityRepository.create({
-      companyId: companyId,
-      activityType: 'client_removed',
+      company_id: companyId,
+      activity_type: 'client_removed',
       description: `Client removed from company (Client ID: ${clientId})`,
-      metadata: { clientId: clientId }
+      metadata: { client_id: clientId }
     });
     
     return { success: true, data: undefined };
@@ -263,7 +263,7 @@ export const delete_company_client_action = async (companyId: string | number, c
 
 // --- ICompany Configuration Actions -----------------------------------------
 
-export const create_company_config_action = async (companyId: string | number, payload: ICreateCompanyConfigPayload): Promise<ActionResultType<any>> => {
+export const createCompanyConfigAction = async (companyId: string | number, payload: ICreateCompanyConfigPayload): Promise<ActionResultType<any>> => {
   try {
     const config = await companyConfigRepository.create(companyId, payload);
     
@@ -273,12 +273,12 @@ export const create_company_config_action = async (companyId: string | number, p
     
     // Log activity
     await companyActivityRepository.create({
-      companyId: companyId,
-      activityType: 'profile_update',
+      company_id: companyId,
+      activity_type: 'profile_update',
       description: `ICompany configuration added (Key: ${payload.key})`,
       metadata: { 
-        config_key: payload.key,
-        is_encrypted: payload.is_encrypted
+        configKey: payload.key,
+        isEncrypted: payload.is_encrypted
       }
     });
     
@@ -305,7 +305,7 @@ export const create_company_config_action = async (companyId: string | number, p
   }
 };
 
-export const update_company_config_action = async (companyId: string | number, key: string, payload: IUpdateCompanyConfigPayload): Promise<ActionResultType<any>> => {
+export const updateCompanyConfigAction = async (companyId: string | number, key: string, payload: IUpdateCompanyConfigPayload): Promise<ActionResultType<any>> => {
   try {
     const config = await companyConfigRepository.update(companyId, key, payload);
     
@@ -315,12 +315,12 @@ export const update_company_config_action = async (companyId: string | number, k
     
     // Log activity
     await companyActivityRepository.create({
-      companyId: companyId,
-      activityType: 'profile_update',
+      company_id: companyId,
+      activity_type: 'profile_update',
       description: `ICompany configuration updated (Key: ${key})`,
       metadata: { 
-        config_key: key,
-        updated_fields: Object.keys(payload)
+        configKey: key,
+        updatedFields: Object.keys(payload)
       }
     });
     
@@ -347,7 +347,7 @@ export const update_company_config_action = async (companyId: string | number, k
   }
 };
 
-export const delete_company_config_action = async (companyId: string | number, key: string): Promise<ActionResultType<void>> => {
+export const deleteCompanyConfigAction = async (companyId: string | number, key: string): Promise<ActionResultType<void>> => {
   try {
     await companyConfigRepository.delete(companyId, key);
     
@@ -357,10 +357,10 @@ export const delete_company_config_action = async (companyId: string | number, k
     
     // Log activity
     await companyActivityRepository.create({
-      companyId: companyId,
-      activityType: 'profile_update',
+      company_id: companyId,
+      activity_type: 'profile_update',
       description: `ICompany configuration deleted (Key: ${key})`,
-      metadata: { config_key: key }
+      metadata: { configKey: key }
     });
     
     return { success: true, data: undefined };
@@ -388,13 +388,13 @@ export const delete_company_config_action = async (companyId: string | number, k
 
 // --- ICompany Activity Actions ---------------------------------------------
 
-export const create_company_activity_action = async (activity: Omit<ICompanyActivity, 'id' | 'createdAt'>): Promise<ActionResultType<any>> => {
+export const createCompanyActivityAction = async (activity: Omit<ICompanyActivity, 'id' | 'created_at'>): Promise<ActionResultType<any>> => {
   try {
     const createdActivity = await companyActivityRepository.create(activity);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());
-    await revalidateCacheTag(accessControlTags.company(activity.companyId));
+    await revalidateCacheTag(accessControlTags.company(activity.company_id));
     
     return { success: true, data: createdActivity };
   } catch (error) {

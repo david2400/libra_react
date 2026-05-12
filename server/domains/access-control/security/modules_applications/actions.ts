@@ -17,7 +17,6 @@ import type {
   IUpdateModuleApplicationPayload,
   ICreateModuleConfigPayload,
   IUpdateModuleConfigPayload,
-  IModuleActivity
 } from './types';
 
 // --- Modules Actions ---------------------------------------------------------
@@ -34,8 +33,8 @@ export const createModuleAction = async (payload: ICreateModulePayload): Promise
     
     // Log activity
     await moduleActivityRepository.create({
-      moduleId: module.id,
-      activityType: 'module_created',
+      module_id: module.id,
+      activity_type: 'module_created',
       description: 'IModule created',
       metadata: { module_name: module.name }
     });
@@ -73,8 +72,8 @@ export const updateModuleAction = async (id: string | number, payload: IUpdateMo
     
     // Log activity
     await moduleActivityRepository.create({
-      moduleId: id,
-      activityType: 'module_updated',
+      module_id: id,
+      activity_type: 'module_updated',
       description: 'IModule updated',
       metadata: { updated_fields: Object.keys(payload) }
     });
@@ -146,13 +145,13 @@ export const createModuleApplicationAction = async (moduleId: string | number, a
     
     // Log activity
     await moduleActivityRepository.create({
-      moduleId: moduleId,
-      applicationId: applicationId,
-      activityType: 'application_assigned',
+      module_id: moduleId,
+      application_id: applicationId,
+      activity_type: 'application_assigned',
       description: `IApplication assigned to module (IApplication ID: ${applicationId})`,
       metadata: { 
-        applicationId: applicationId, 
-        isActive: payload.isActive,
+        application_id: applicationId, 
+        is_active: payload.is_active,
         configuration: payload.configuration
       }
     });
@@ -190,12 +189,12 @@ export const updateModuleApplicationAction = async (moduleId: string | number, a
     
     // Log activity
     await moduleActivityRepository.create({
-      moduleId: moduleId,
-      applicationId: applicationId,
-      activityType: 'config_updated',
+      module_id: moduleId,
+      application_id: applicationId,
+      activity_type: 'config_updated',
       description: `IModule-application relationship updated (IApplication ID: ${applicationId})`,
       metadata: { 
-        applicationId: applicationId, 
+        application_id: applicationId, 
         updated_fields: Object.keys(payload)
       }
     });
@@ -234,11 +233,11 @@ export const deleteModuleApplicationAction = async (moduleId: string | number, a
     
     // Log activity
     await moduleActivityRepository.create({
-      moduleId: moduleId,
-      applicationId: applicationId,
-      activityType: 'application_unassigned',
+      module_id: moduleId,
+      application_id: applicationId,
+      activity_type: 'application_unassigned',
       description: `IApplication unassigned from module (IApplication ID: ${applicationId})`,
-      metadata: { applicationId: applicationId }
+      metadata: { application_id: applicationId }
     });
     
     return { success: true, data: undefined };
@@ -276,9 +275,9 @@ export const createModuleConfigAction = async (moduleId: string | number, applic
     
     // Log activity
     await moduleActivityRepository.create({
-      moduleId: moduleId,
-      applicationId: applicationId,
-      activityType: 'config_updated',
+      module_id: moduleId,
+      application_id: applicationId,
+      activity_type: 'config_updated',
       description: `IModule configuration added (Key: ${payload.key})`,
       metadata: { 
         config_key: payload.key,
@@ -319,9 +318,9 @@ export const updateModuleConfigAction = async (moduleId: string | number, applic
     
     // Log activity
     await moduleActivityRepository.create({
-      moduleId: moduleId,
-      applicationId: applicationId,
-      activityType: 'config_updated',
+      module_id: moduleId,
+      application_id: applicationId,
+      activity_type: 'config_updated',
       description: `IModule configuration updated (Key: ${key})`,
       metadata: { 
         config_key: key,
@@ -362,9 +361,9 @@ export const deleteModuleConfigAction = async (moduleId: string | number, applic
     
     // Log activity
     await moduleActivityRepository.create({
-      moduleId: moduleId,
-      applicationId: applicationId,
-      activityType: 'config_updated',
+      module_id: moduleId,
+      application_id: applicationId,
+      activity_type: 'config_updated',
       description: `IModule configuration deleted (Key: ${key})`,
       metadata: { config_key: key }
     });

@@ -17,6 +17,9 @@ const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>
 
 export const RegisterCompany = ({}: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('account.companies.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: ICompanyCreateRequest = {
     name: "",
@@ -29,7 +32,7 @@ export const RegisterCompany = ({}: IFormAddProps = {}) => {
       const result = await companiesApi.create(values);
       
       Swal.fire({
-        title: "Empresa creada exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -37,8 +40,8 @@ export const RegisterCompany = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'empresa' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -49,6 +52,9 @@ export const RegisterCompany = ({}: IFormAddProps = {}) => {
 
 export const UpdateCompany = ({ initialValues }: IFormUpdateProps<ICompanyUpdateRequest>) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('account.companies.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<ICompanyUpdateRequest> = async (values) => {
     if (!values.id) return;
@@ -57,7 +63,7 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<ICompanyUpdate
       const result = await companiesApi.update(values.id, values);
       
       Swal.fire({
-        title: "Empresa actualizada exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -65,8 +71,8 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<ICompanyUpdate
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'empresa' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

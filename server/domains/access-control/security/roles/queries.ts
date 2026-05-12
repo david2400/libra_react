@@ -3,18 +3,11 @@ import { cache } from 'react';
 
 import { 
   rolesRepository, 
-  roleMenusRepository,
-  rolePermissionsRepository
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  IRole, 
-  IPermission,
-  IMenu,
-  IRoleMenu,
-  IRolePermission
-} from './types';
+import { getPermissionsByRole, getRolePermissions, rolePermissionsRepository } from '../role_permissions';
+import { getMenusByRole } from '../../navigation/role_menus';
 
 // --- Roles Queries -----------------------------------------------------------
 
@@ -32,41 +25,7 @@ export const getRoleWithDetails = cache(async (id: string | number) => {
   return role;
 });
 
-// --- IRole-IMenu Relationships Queries -----------------------------------------
 
-export const getRoleMenus = cache((params?: ListParams) => 
-  roleMenusRepository.list(params)
-);
-
-export const getRoleMenuById = cache((roleId: string | number, menuId: string | number) => 
-  roleMenusRepository.getById(roleId, menuId)
-);
-
-export const getMenusByRole = cache((roleId: string | number) => 
-  roleMenusRepository.getMenusByRole(roleId)
-);
-
-export const getRoleByMenu = cache((menuId: string | number) => 
-  roleMenusRepository.getRoleByMenu(menuId)
-);
-
-// --- IRole-IPermission Relationships Queries -----------------------------------
-
-export const getRolePermissions = cache((params?: ListParams) => 
-  rolePermissionsRepository.list(params)
-);
-
-export const getRolePermissionById = cache((roleId: string | number, permissionId: string | number) => 
-  rolePermissionsRepository.getById(roleId, permissionId)
-);
-
-export const getPermissionsByRole = cache((roleId: string | number) => 
-  rolePermissionsRepository.getPermissionsByRole(roleId)
-);
-
-export const getRoleByPermission = cache((permissionId: string | number) => 
-  rolePermissionsRepository.getRoleByPermission(permissionId)
-);
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 

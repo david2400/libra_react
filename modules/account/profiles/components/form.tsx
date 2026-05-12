@@ -17,6 +17,9 @@ const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>
 
 export const RegisterProfile = ({}: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('account.profiles.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: IProfileCreateRequest = {
     userId: 0,
@@ -29,7 +32,7 @@ export const RegisterProfile = ({}: IFormAddProps = {}) => {
       const result = await profilesApi.create(values);
       
       Swal.fire({
-        title: "Perfil creado exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -37,8 +40,8 @@ export const RegisterProfile = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'perfil' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -49,6 +52,9 @@ export const RegisterProfile = ({}: IFormAddProps = {}) => {
 
 export const UpdateProfile = ({ initialValues }: IFormUpdateProps<IProfileUpdateRequest>) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('account.profiles.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<IProfileUpdateRequest> = async (values) => {
     if (!values.id) return;
@@ -57,7 +63,7 @@ export const UpdateProfile = ({ initialValues }: IFormUpdateProps<IProfileUpdate
       const result = await profilesApi.update(values.id, values);
       
       Swal.fire({
-        title: "Perfil actualizado exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -65,8 +71,8 @@ export const UpdateProfile = ({ initialValues }: IFormUpdateProps<IProfileUpdate
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'perfil' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

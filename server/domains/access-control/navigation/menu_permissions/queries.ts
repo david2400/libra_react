@@ -15,8 +15,6 @@ import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import type { 
   IMenuPermission, 
-  IMenu,
-  IPermission,
   IMenuPermissionStats,
   IMenuPermissionOverview,
   IBulkMenuPermissionPayload,
@@ -108,10 +106,10 @@ export const getMenuWithPermissions = cache(async (menuId: string | number) => {
   ]);
   
   return {
-    menuId: menuId,
+    menu_id: menuId,
     permissions,
     active_permissions: activePermissions,
-    inherited_permissions,
+    inherited_permissions: inheritedPermissions,
     recent_activities: recentActivities,
     total_permissions: permissions.length,
     active_count: activePermissions.length,
@@ -127,7 +125,7 @@ export const getPermissionWithMenus = cache(async (permissionId: string | number
   ]);
   
   return {
-    permissionId: permissionId,
+    permission_id: permissionId,
     menus,
     recent_activities: recentActivities.data,
     total_menus: menus.length
@@ -143,15 +141,15 @@ export const getMenuPermissionDashboard = cache(async () => {
   
   // Combine data for dashboard
   const dashboardData = menuPermissions.data.map(menuPermission => {
-    const stats = allStats.find(s => s.menuId === menuPermission.menuId && s.permissionId === menuPermission.permissionId);
+    const stats = allStats.find(s => s.menu_id === menuPermission.menu_id && s.permission_id === menuPermission.permission_id);
     
     return {
       ...menuPermission,
       stats: stats || {
-        menuId: menuPermission.menuId,
-        permissionId: menuPermission.permissionId,
+        menu_id: menuPermission.menu_id,
+        permission_id: menuPermission.permission_id,
         usage_count: 0,
-        createdAt: menuPermission.createdAt || ''
+        created_at: menuPermission.created_at || ''
       }
     };
   });
@@ -161,7 +159,7 @@ export const getMenuPermissionDashboard = cache(async () => {
     summary: {
       total_relationships: menuPermissions.meta.total,
       total_usage: allStats.reduce((sum, s) => sum + s.usage_count, 0),
-      active_relationships: dashboardData.filter(mp => mp.isActive).length
+      active_relationships: dashboardData.filter(mp => mp.is_active).length
     }
   };
 });
@@ -172,24 +170,24 @@ export const getMenuPermissionUsagePatterns = cache(async (menuId: string | numb
     getPermissionsByMenu(menuId),
     getActivitiesByMenu(menuId, { per_page: days * 24 }), // Assuming hourly checks
     getAllMenuPermissionStats().then(allStats => 
-      allStats.filter(s => s.menuId === menuId)
+      allStats.filter(s => s.menu_id === menuId)
     )
   ]);
   
   // Process usage data
   const usagePatterns = activities.data
-    .filter(activity => activity.activityType === 'permission_used')
+    .filter(activity => activity.activity_type === 'permission_used')
     .map(activity => ({
-      timestamp: activity.createdAt,
-      permissionId: activity.permissionId,
+      timestamp: activity.created_at,
+      permission_id: activity.permission_id,
       description: activity.description,
       metadata: activity.metadata
     }));
   
   // Group by permission
   const permissionUsagePatterns = permissions.map(permission => {
-    const permissionActivities = usagePatterns.filter(up => up.permissionId === permission.id);
-    const permissionStats = stats.find(s => s.permissionId === permission.id);
+    const permissionActivities = usagePatterns.filter(up => up.permission_id === permission.id);
+    const permissionStats = stats.find(s => s.permission_id === permission.id);
     
     return {
       permission,
@@ -242,7 +240,7 @@ export const getMenuPermissionInheritanceAnalysis = cache(async (menuId: string 
     inheritance_tree: inheritanceTree,
     analysis,
     inheritance_sources: Object.entries(analysis.inheritance_sources).map(([sourceId, count]) => ({
-      menuId: sourceId,
+      menu_id: sourceId,
       inherited_count: count
     }))
   };
@@ -273,11 +271,11 @@ export const getMenuPermissionConflictAnalysis = cache(async (menuId: string | n
   };
   
   return {
-    menuId: menuId,
+    menu_id: menuId,
     conflicts,
     analysis: conflictAnalysis,
-    has_critical_conflicts: conflictAnalysis.critical > 0,
-    requires_attention: conflictAnalysis.high + conflictAnalysis.critical > 0
+    has_critical_conflicts: conflictAnalysis.by_severity.critical > 0,
+    requires_attention: conflictAnalysis.by_severity.high + conflictAnalysis.by_severity.critical > 0
   };
 });
 

@@ -16,8 +16,8 @@ export const FormCompany = ({
   validationSchema,
   onSubmit,
 }: IFormProps<any>) => {
-  const intl = useTranslations("AccessControl.account.companies");
-  const intlActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("account.companies");
+  const tCommon = useTranslations("common");
   type CompanyInputs = z.infer<typeof validationSchema>;
 
   const {
@@ -30,10 +30,10 @@ export const FormCompany = ({
   });
 
   const sizeOptions = [
-    { value: "small", label: "Pequeña" },
-    { value: "medium", label: "Mediana" },
-    { value: "large", label: "Grande" },
-    { value: "enterprise", label: "Empresa" },
+    { value: "small", label: t("fields.sizeOptions.small") },
+    { value: "medium", label: t("fields.sizeOptions.medium") },
+    { value: "large", label: t("fields.sizeOptions.large") },
+    { value: "enterprise", label: t("fields.sizeOptions.enterprise") },
   ];
 
   return (
@@ -41,69 +41,69 @@ export const FormCompany = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={intl("fields.name")}
+          label={t("fields.name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "industry" }}
-          label={intl("fields.industry")}
+          label={t("fields.industry")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "size" }}
-          label={intl("fields.size")}
+          label={t("fields.size"))
           options={sizeOptions}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "website" }}
-          label={intl("fields.website")}
+          label={t("fields.website"))
           type='url'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "email" }}
-          label={intl("fields.email")}
+          label={t("fields.email"))
           type='email'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "phone" }}
-          label={intl("fields.phone")}
+          label={t("fields.phone"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "city" }}
-          label={intl("fields.city")}
+          label={t("fields.city"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "country" }}
-          label={intl("fields.country")}
+          label={t("fields.country"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "address" }}
-          label={intl("fields.address")}
+          label={t("fields.address"))
           className='col-span-12'
         />
 
         <FormField
           controller={{ control, name: "description" }}
-          label={intl("fields.description")}
+          label={t("fields.description"))
           className='col-span-12'
         />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
-        {intlActions("saveCompany")}
+        {tCommon("save")}
       </Buttons>
     </form>
   );

@@ -16,8 +16,8 @@ export const FormApplication = ({
   validationSchema,
   onSubmit,
 }: IFormProps<any>) => {
-  const intl = useTranslations("AccessControl.security.applications");
-  const intlActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("security.applications");
+  const tCommon = useTranslations("common");
   type ApplicationInputs = z.infer<typeof validationSchema>;
 
   const {
@@ -30,9 +30,9 @@ export const FormApplication = ({
   });
 
   const statusOptions = [
-    { id: "active", value: "active", label: "Activo" },
-    { id: "inactive", value: "inactive", label: "Inactivo" },
-    { id: "maintenance", value: "maintenance", label: "Mantenimiento" },
+    { id: "active", value: "active", label: t("fields.statusOptions.active") },
+    { id: "inactive", value: "inactive", label: t("fields.statusOptions.inactive") },
+    { id: "maintenance", value: "maintenance", label: t("fields.statusOptions.maintenance") },
   ];
 
   return (
@@ -40,39 +40,39 @@ export const FormApplication = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={intl("fields.name")}
+          label={t("fields.name"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "version" }}
-          label={intl("fields.version")}
+          label={t("fields.version"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "description" }}
-          label={intl("fields.description")}
+          label={t("fields.description"))
           className='col-span-12'
         />
 
         <FormField
           controller={{ control, name: "baseUrl" }}
-          label={intl("fields.baseUrl")}
+          label={t("fields.baseUrl"))
           type='url'
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "status" }}
-          label={intl("fields.status")}
+          label={t("fields.status"))
           data={statusOptions}
           placeholder='Seleccionar estado...'
           className='w-full col-span-12 md:col-span-6'
         />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
-        {intlActions("saveApplication")}
+        {tCommon("save")}
       </Buttons>
     </form>
   );

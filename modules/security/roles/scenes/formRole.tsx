@@ -15,8 +15,8 @@ export const FormRole = ({
   validationSchema,
   onSubmit,
 }: IFormProps<any>) => {
-  const intl = useTranslations("AccessControl.security.roles");
-  const intlActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("security.roles");
+  const tCommon = useTranslations("common");
   type RoleInputs = z.infer<typeof validationSchema>;
 
   const {
@@ -33,18 +33,18 @@ export const FormRole = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={intl("fields.name")}
+          label={t("fields.name"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "description" }}
-          label={intl("fields.description")}
+          label={t("fields.description"))
           className='col-span-12'
         />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
-        {intlActions("saveRole")}
+        {tCommon("save")}
       </Buttons>
     </form>
   );

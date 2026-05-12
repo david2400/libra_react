@@ -146,18 +146,19 @@ export const getCompaniesDashboard = cache(async () => {
   
   // Combine data for dashboard
   const dashboardData = companies.data.map(company => {
-    const stats = allStats.find(s => s.companyId === company.id);
+    const stats = allStats.find(s => s.company_id === company.id);
     const health = allHealth.find(h => h.company.id === company.id);
     
     return {
       ...company,
       stats: stats || {
-        companyId: company.id,
+        company_id: company.id,
         total_clients: 0,
         active_clients: 0,
-        totalUsers: 0,
-        activeSessions: 0,
-        lastActivity: company.createdAt || ''
+        total_users: 0,
+        active_sessions: 0,
+        last_activity: company.created_at || '',
+        created_at: company.created_at || ''
       },
       health: health?.health
     };
@@ -168,7 +169,7 @@ export const getCompaniesDashboard = cache(async () => {
     summary: {
       total_companies: companies.meta.total,
       total_clients: allStats.reduce((sum, s) => sum + s.total_clients, 0),
-      totalUsers: allStats.reduce((sum, s) => sum + s.totalUsers, 0),
+      total_users: allStats.reduce((sum, s) => sum + s.total_users, 0),
       healthy_companies: allHealth.filter(h => h.health.status === 'healthy').length,
       warning_companies: allHealth.filter(h => h.health.status === 'warning').length,
       critical_companies: allHealth.filter(h => h.health.status === 'critical').length
@@ -179,23 +180,23 @@ export const getCompaniesDashboard = cache(async () => {
 // Get company activity trends
 export const getCompanyActivityTrends = cache(async (companyId: string | number, days: number = 7) => {
   const [activities] = await Promise.all([
-    getActivitiesByCompany(companyId, { per_page: days * 24 }) // Assuming hourly checks
+    getActivitiesByCompany(companyId, { perPage: days * 24 }) // Assuming hourly checks
   ]);
   
   // Process activity data for trends
   const trends = activities.data.map(activity => ({
-    timestamp: activity.createdAt,
-    activityType: activity.activityType,
+    timestamp: activity.created_at,
+    activity_type: activity.activity_type,
     description: activity.description,
     metadata: activity.metadata
   }));
   
   // Group by activity type
   const groupedTrends = trends.reduce((acc, trend) => {
-    if (!acc[trend.activityType]) {
-      acc[trend.activityType] = [];
+    if (!acc[trend.activity_type]) {
+      acc[trend.activity_type] = [];
     }
-    acc[trend.activityType].push(trend);
+    acc[trend.activity_type].push(trend);
     return acc;
   }, {} as Record<string, typeof trends>);
   
@@ -213,7 +214,7 @@ export const getCompanyActivityTrends = cache(async (companyId: string | number,
 
 // Get companies by industry
 export const getCompaniesByIndustry = cache(async (industry: string) => {
-  const companies = await getCompanies({ per_page: 100 });
+  const companies = await getCompanies({ perPage: 100 });
   
   const filteredCompanies = companies.data.filter(company => company.industry === industry);
   
@@ -226,7 +227,7 @@ export const getCompaniesByIndustry = cache(async (industry: string) => {
 
 // Get companies by size
 export const getCompaniesBySize = cache(async (size: 'small' | 'medium' | 'large' | 'enterprise') => {
-  const companies = await getCompanies({ per_page: 100 });
+  const companies = await getCompanies({ perPage: 100 });
   
   const filteredCompanies = companies.data.filter(company => company.size === size);
   
@@ -243,23 +244,23 @@ export const getCompanyPerformanceMetrics = cache(async (companyId: string | num
     getCompanyById(companyId),
     getCompanyStats(companyId),
     checkCompanyHealth(companyId),
-    getActivitiesByCompany(companyId, { per_page: 100 })
+    getActivitiesByCompany(companyId, { perPage: 100 })
   ]);
   
   // Calculate performance metrics
   const clientGrowthRate = stats.total_clients > 0 ? (stats.active_clients / stats.total_clients) * 100 : 0;
-  const userEngagementRate = stats.totalUsers > 0 ? (stats.activeSessions / stats.totalUsers) * 100 : 0;
+  const userEngagementRate = stats.total_users > 0 ? (stats.active_sessions / stats.total_users) * 100 : 0;
   
   const recentActivities = activities.data.filter(a => {
-    const activityDate = new Date(a.createdAt);
+    const activityDate = new Date(a.created_at);
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     return activityDate >= thirtyDaysAgo;
   });
   
   return {
-    companyId: companyId,
-    companyName: company.name,
+    company_id: companyId,
+    company_name: company.name,
     metrics: {
       client_growth_rate: clientGrowthRate,
       user_engagement_rate: userEngagementRate,

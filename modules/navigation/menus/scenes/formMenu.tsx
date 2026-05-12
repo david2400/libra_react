@@ -23,9 +23,8 @@ export const FormMenu = ({
   onSubmit,
   availableMenus = [],
 }: FormMenuProps) => {
-  const intl = useTranslations("AccessControl.navigation.menus");
-  const intlOptions = useTranslations("AccessControl.options");
-  const intlActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("navigation.menus");
+  const tCommon = useTranslations("common");
   type MenuInputs = z.infer<typeof validationSchema>;
 
   const {
@@ -74,31 +73,31 @@ export const FormMenu = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={intl("fields.name")}
+          label={t("fields.name"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "label" }}
-          label={intl("fields.label")}
+          label={t("fields.label"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "icon" }}
-          label={intl("fields.icon")}
+          label={t("fields.icon"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "path" }}
-          label={intl("fields.path")}
+          label={t("fields.path"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "parentId" }}
-          label={intl("fields.parentId")}
+          label={t("fields.parentId"))
           data={opcionesMenus}
           placeholder='Seleccionar menú padre...'
           disabled={menusData.loading || !!menusData.error}
@@ -109,13 +108,13 @@ export const FormMenu = ({
 
         <FormField
           controller={{ control, name: "order" }}
-          label={intl("fields.order")}
+          label={t("fields.order"))
           type='number'
           className='col-span-12 md:col-span-6'
         />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
-        {intlActions("saveMenu")}
+        {tCommon("save")}
       </Buttons>
     </form>
   );

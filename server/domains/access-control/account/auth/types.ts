@@ -9,7 +9,7 @@ export interface ILoginRequest {
 
 export interface ILoginResponse {
   access_token: string;
-  refreshToken?: string;
+  refresh_token?: string;
   token_type: string;
   expires_at: string;
   user: IUserInfo;
@@ -19,7 +19,7 @@ export interface IUserInfo {
   id: number;
   username: string;
   email?: string;
-  companyId?: number;
+  company_id?: number;
   status: string;
   roles: string[];
   permissions: string[];
@@ -33,10 +33,10 @@ export interface ITokenValidationRequest {
 
 export interface ITokenValidationResponse {
   valid: boolean;
-  userId?: number;
+  user_id?: number;
   username?: string;
   email?: string;
-  companyId?: number;
+  company_id?: number;
   status?: string;
   roles?: string[];
   permissions?: string[];
@@ -47,12 +47,12 @@ export interface ITokenValidationResponse {
 // --- Token Refresh Types -----------------------------------------
 
 export interface ITokenRefreshRequest {
-  refreshToken: string;
+  refresh_token: string;
 }
 
 export interface ITokenRefreshResponse {
   access_token: string;
-  refreshToken?: string;
+  refresh_token?: string;
   token_type: string;
   expires_at: string;
 }
@@ -68,7 +68,7 @@ export interface IEmployeeLoginRequest {
 
 export interface IEmployeeLoginResponse {
   access_token: string;
-  refreshToken?: string;
+  refresh_token?: string;
   token_type: string;
   expires_at: string;
   user: IUserInfo;
@@ -84,7 +84,7 @@ export interface IClientLoginRequest {
 
 export interface IClientLoginResponse {
   access_token: string;
-  refreshToken?: string;
+  refresh_token?: string;
   token_type: string;
   expires_at: string;
   user: IUserInfo;
@@ -107,7 +107,7 @@ export interface IInternalLoginRequest {
 
 export interface IInternalLoginResponse {
   access_token: string;
-  refreshToken?: string;
+  refresh_token?: string;
   token_type: string;
   expires_at: string;
   user: IUserInfo;
@@ -120,7 +120,7 @@ export interface ICredentialsValidationRequest {
 
 export interface ICredentialsValidationResponse {
   valid: boolean;
-  userId?: number;
+  user_id?: number;
   username?: string;
   status?: string;
   error?: string;

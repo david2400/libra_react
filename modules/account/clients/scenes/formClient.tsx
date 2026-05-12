@@ -15,8 +15,8 @@ export const FormClient = ({
   validationSchema,
   onSubmit,
 }: IFormProps<any>) => {
-  const intl = useTranslations("AccessControl.account.clients");
-  const intlActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("account.clients");
+  const tCommon = useTranslations("common");
   type ClientInputs = z.infer<typeof validationSchema>;
 
   const {
@@ -33,49 +33,49 @@ export const FormClient = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={intl("fields.name")}
+          label={t("fields.name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "email" }}
-          label={intl("fields.email")}
+          label={t("fields.email")}
           type='email'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "phone" }}
-          label={intl("fields.phone")}
+          label={t("fields.phone")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "companyName" }}
-          label={intl("fields.companyName")}
+          label={t("fields.companyName")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "contactPerson" }}
-          label={intl("fields.contactPerson")}
+          label={t("fields.contactPerson")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "city" }}
-          label={intl("fields.city")}
+          label={t("fields.city")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "address" }}
-          label={intl("fields.address")}
+          label={t("fields.address")}
           className='col-span-12'
         />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
-        {intlActions("saveClient")}
+        {tCommon("save")}
       </Buttons>
     </form>
   );

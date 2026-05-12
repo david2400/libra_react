@@ -1,69 +1,41 @@
 ﻿import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IPermission } from '../../security/permissions';
+import { IMenu } from '../menus';
 
 // --- IMenu-IPermission Relationship Types -------------------------------------
 
 export interface IMenuPermission {
-  menuId: string | number;
-  permissionId: string | number;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  menu_id: string | number;
+  permission_id: string | number;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
-export interface ICreateMenuPermissionPayload {
-  menuId: string | number;
-  permissionId: string | number;
-  isActive?: boolean;
+export interface ICreateMenuPermission {
+  menu_id: string | number;
+  permission_id: string | number;
+  is_active?: boolean;
 }
 
-export interface IUpdateMenuPermissionPayload {
-  isActive?: boolean;
+export interface IUpdateMenuPermission extends ICreateMenuPermission {
 }
 
-// --- IMenu Types (for menu-permission management) -----------------------------
-
-export interface IMenu {
-  id: string | number;
-  name: string;
-  label?: string;
-  icon?: string;
-  path?: string;
-  parentId?: string | number;
-  order?: number;
-  isActive?: boolean;
-  children?: IMenu[];
-  permissions?: IPermission[];
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// --- IPermission Types (for menu-permission management) -------------------------
-
-export interface IPermission {
-  id: string | number;
-  name: string;
-  description?: string;
-  resource?: string;
-  action?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
 
 // --- IMenu-IPermission Statistics Types -------------------------------------
 
 export interface IMenuPermissionStats {
-  menuId: string | number;
-  permissionId: string | number;
-  usageCount: number;
-  lastUsed?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  menu_id: string | number;
+  permission_id: string | number;
+  usage_count: number;
+  last_used?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IMenuPermissionOverview {
-  menuPermission: IMenuPermission;
+  menu_permission: IMenuPermission;
   menu: IMenu;
   permission: IPermission;
   stats: IMenuPermissionStats;
@@ -72,15 +44,15 @@ export interface IMenuPermissionOverview {
 // --- Bulk Operations Types -------------------------------------------------
 
 export interface IBulkMenuPermissionPayload {
-  menuId: string | number;
-  permissionIds: (string | number)[];
-  isActive?: boolean;
+  menu_id: string | number;
+  permission_ids: (string | number)[];
+  is_active?: boolean;
 }
 
 export interface IBulkMenuPermissionResponse {
   successful: IMenuPermission[];
   failed: Array<{
-    permissionId: string | number;
+    permission_id: string | number;
     error: string;
   }>;
   summary: {
@@ -93,91 +65,91 @@ export interface IBulkMenuPermissionResponse {
 // --- IMenu-IPermission Validation Types -------------------------------------
 
 export interface IMenuPermissionValidationResult {
-  isValid: boolean;
+  is_valid: boolean;
   errors: string[];
   warnings: string[];
-  menuId: string | number;
-  permissionId: string | number;
+  menu_id: string | number;
+  permission_id: string | number;
 }
 
 export interface IMenuPermissionValidationRequest {
-  menuId: string | number;
-  permissionId: string | number;
-  validateCompatibility?: boolean;
-  validateHierarchy?: boolean;
+  menu_id: string | number;
+  permission_id: string | number;
+  validate_compatibility?: boolean;
+  validate_hierarchy?: boolean;
 }
 
 // --- IMenu-IPermission Activity Types -------------------------------------
 
 export interface IMenuPermissionActivity {
   id: string | number;
-  menuId: string | number;
-  permissionId: string | number;
-  activityType: 'permission_granted' | 'permission_revoked' | 'permission_updated' | 'permission_used' | 'other';
+  menu_id: string | number;
+  permission_id: string | number;
+  activity_type: 'permission_granted' | 'permission_revoked' | 'permission_updated' | 'permission_used' | 'other';
   description?: string;
   metadata?: Record<string, unknown>;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface IMenuPermissionActivityFilter {
-  menuId?: string | number;
-  permissionId?: string | number;
-  activityType?: string;
-  startDate?: string;
-  endDate?: string;
+  menu_id?: string | number;
+  permission_id?: string | number;
+  activity_type?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 // --- IMenu-IPermission Export Types -------------------------------------
 
 export interface IMenuPermissionExportRequest {
-  menuIds?: (string | number)[];
-  permissionIds?: (string | number)[];
+  menu_ids?: (string | number)[];
+  permission_ids?: (string | number)[];
   format?: 'json' | 'csv' | 'xlsx';
-  includeStats?: boolean;
-  includeActivity?: boolean;
+  include_stats?: boolean;
+  include_activity?: boolean;
 }
 
 export interface IMenuPermissionExportResponse {
-  fileUrl: string;
-  fileName: string;
-  fileSize: number;
-  exportDate: string;
-  recordCount: number;
+  file_url: string;
+  file_name: string;
+  file_size: number;
+  export_date: string;
+  record_count: number;
 }
 
 // --- IMenu-IPermission Inheritance Types -------------------------------------
 
 export interface IMenuPermissionInheritance {
-  menuId: string | number;
-  permissionId: string | number;
-  inheritedFromMenuId?: string | number;
-  inheritanceLevel: number;
-  isActive?: boolean;
+  menu_id: string | number;
+  permission_id: string | number;
+  inherited_from_menu_id?: string | number;
+  inheritance_level: number;
+  is_active?: boolean;
 }
 
 export interface IMenuPermissionInheritanceTree {
   menu: IMenu;
-  inheritedPermissions: Array<{
+  inherited_permissions: Array<{
     permission: IPermission;
-    inheritedFrom: IMenu;
-    inheritanceLevel: number;
+    inherited_from: IMenu;
+    inheritance_level: number;
   }>;
-  totalInherited: number;
+  total_inherited: number;
 }
 
 // --- IMenu-IPermission Conflict Types -------------------------------------
 
 export interface IMenuPermissionConflict {
-  menuId: string | number;
-  permissionId: string | number;
-  conflictType: 'duplicate' | 'incompatible' | 'hierarchy' | 'other';
+  menu_id: string | number;
+  permission_id: string | number;
+  conflict_type: 'duplicate' | 'incompatible' | 'hierarchy' | 'other';
   description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  resolutionSuggestion?: string;
+  resolution_suggestion?: string;
 }
 
 export interface IMenuPermissionConflictResolution {
   conflicts: IMenuPermissionConflict[];
-  resolutionCount: number;
-  unresolvedCount: number;
+  resolution_count: number;
+  unresolved_count: number;
 }

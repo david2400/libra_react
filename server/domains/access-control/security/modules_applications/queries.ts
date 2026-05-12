@@ -18,11 +18,11 @@ import type {
   IModuleStats,
   IModuleOverview,
   IModuleConfig,
-  IModuleActivity,
-  IModuleActivityFilter,
-  IModuleHealth,
-  IModuleHealthResponse,
-  IBulkModuleHealthResponse
+  // IModuleActivity,
+  // IModuleActivityFilter,
+  // IModuleHealth,
+  // IModuleHealthResponse,
+  // IBulkModuleHealthResponse
 } from './types';
 
 // --- Modules Queries ---------------------------------------------------------
@@ -147,17 +147,17 @@ export const getModulesDashboard = cache(async () => {
   
   // Combine data for dashboard
   const dashboardData = modules.data.map(module => {
-    const stats = allStats.find(s => s.moduleId === module.id);
+    const stats = allStats.find(s => s.module_id === module.id);
     const health = allHealth.results.find(h => h.module.id === module.id);
     
     return {
       ...module,
       stats: stats || {
-        moduleId: module.id,
+        module_id: module.id,
         total_applications: 0,
         active_applications: 0,
         usage_count: 0,
-        lastActivity: module.createdAt || ''
+        last_activity: module.created_at || ''
       },
       health: health?.health
     };
@@ -185,23 +185,23 @@ export const getModuleActivityTrends = cache(async (moduleId: string | number, d
   
   // Process activity data for trends
   const trends = activities.data.map(activity => ({
-    timestamp: activity.createdAt,
-    activityType: activity.activityType,
+    timestamp: activity.created_at,
+    activity_type: activity.activity_type,
     description: activity.description,
     metadata: activity.metadata
   }));
   
   // Group by activity type
   const groupedTrends = trends.reduce((acc, trend) => {
-    if (!acc[trend.activityType]) {
-      acc[trend.activityType] = [];
+    if (!acc[trend.activity_type]) {
+      acc[trend.activity_type] = [];
     }
-    acc[trend.activityType].push(trend);
+    acc[trend.activity_type].push(trend);
     return acc;
   }, {} as Record<string, typeof trends>);
   
   return {
-    moduleId: moduleId,
+    module_id: moduleId,
     trends: groupedTrends,
     summary: {
       total_activities: trends.length,
@@ -229,27 +229,27 @@ export const getModulesByCategory = cache(async (category: string) => {
 export const getApplicationsByModuleWithDetails = cache(async (moduleId: string | number) => {
   const [applications, moduleApplications] = await Promise.all([
     getApplicationsByModule(moduleId),
-    getModuleApplications({ params: { moduleId: moduleId } })
+    getModuleApplications({ params: { module_id: moduleId } })
   ]);
   
   // Combine application data with relationship info
   const applicationsWithDetails = applications.map(application => {
-    const relationship = moduleApplications.data.find(ma => ma.applicationId === application.id);
+    const relationship = moduleApplications.data.find(ma => ma.application_id === application.id);
     
     return {
       ...application,
       relationship: {
-        isActive: relationship?.isActive,
+        is_active: relationship?.is_active,
         configuration: relationship?.configuration
       }
     };
   });
   
   return {
-    moduleId: moduleId,
+    module_id: moduleId,
     applications: applicationsWithDetails,
     total_applications: applicationsWithDetails.length,
-    active_applications: applicationsWithDetails.filter(a => a.relationship.isActive).length
+    active_applications: applicationsWithDetails.filter(a => a.relationship.is_active).length
   };
 });
 
@@ -265,14 +265,14 @@ export const getModulePerformanceMetrics = cache(async (moduleId: string | numbe
   // Calculate performance metrics
   const applicationUsageRate = stats.total_applications > 0 ? (stats.active_applications / stats.total_applications) * 100 : 0;
   const recentActivities = activities.data.filter(a => {
-    const activityDate = new Date(a.createdAt);
+    const activityDate = new Date(a.created_at);
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     return activityDate >= thirtyDaysAgo;
   });
   
   return {
-    moduleId: moduleId,
+    module_id: moduleId,
     module_name: module.name,
     metrics: {
       application_usage_rate,
@@ -295,19 +295,19 @@ export const getModulesWithHealthIssues = cache(async () => {
   ]);
   
   const modulesWithHealth = modules.data.map(module => {
-    const stats = allStats.find(s => s.moduleId === module.id);
+    const stats = allStats.find(s => s.module_id === module.id);
     const health = allHealth.results.find(h => h.module.id === module.id);
     
     return {
       ...module,
       stats: stats || {
-        moduleId: module.id,
+        module_id: module.id,
         total_applications: 0,
         active_applications: 0,
         usage_count: 0
       },
       health: health?.health || {
-        moduleId: module.id,
+        module_id: module.id,
         status: 'inactive' as const,
         metrics: {
           application_usage_rate: 0,

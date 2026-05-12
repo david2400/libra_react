@@ -107,7 +107,7 @@ export const profileActivityRepository = {
     }),
 
   // Create activity log
-  create: (activity: Omit<IProfileActivity, 'id' | 'createdAt'>) => 
+  create: (activity: Omit<IProfileActivity, 'id' | 'created_at'>) => 
     serverFetch.post<IProfileActivity>('/api/access_control/profile-activities', activity, {
       revalidate: false,
     }),

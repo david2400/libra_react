@@ -6,8 +6,6 @@ import type {
   IRolePermission, 
   ICreateRolePermissionPayload, 
   IUpdateRolePermissionPayload,
-  IRole,
-  IPermission,
   IRolePermissionStats,
   IRolePermissionOverview,
   IBulkRolePermissionPayload,
@@ -26,6 +24,8 @@ import type {
   // IRolePermissionMatrixResponse
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IPermission } from '../permissions';
+import { IRole } from '../roles';
 
 // --- IRole-IPermission Relationships Repository ---------------------------------
 
@@ -182,7 +182,7 @@ export const rolePermissionActivityRepository = {
     }),
 
   // Create activity log
-  create: (activity: Omit<IRolePermissionActivity, 'id' | 'createdAt'>) => 
+  create: (activity: Omit<IRolePermissionActivity, 'id' | 'created_at'>) => 
     serverFetch.post<IRolePermissionActivity>('/api/access_control/role-permission-activities', activity, {
       revalidate: false,
     }),

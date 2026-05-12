@@ -16,8 +16,8 @@ export const FormProfile = ({
   validationSchema,
   onSubmit,
 }: IFormProps<any>) => {
-  const intl = useTranslations("AccessControl.account.profiles");
-  const intlActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("account.profiles");
+  const tCommon = useTranslations("common");
   type ProfileInputs = z.infer<typeof validationSchema>;
 
   const {
@@ -30,14 +30,14 @@ export const FormProfile = ({
   });
 
   const themeOptions = [
-    { value: "light", label: "Claro" },
-    { value: "dark", label: "Oscuro" },
-    { value: "auto", label: "Automático" },
+    { value: "light", label: t("fields.themeOptions.light") },
+    { value: "dark", label: t("fields.themeOptions.dark") },
+    { value: "auto", label: t("fields.themeOptions.auto") },
   ];
 
   const timeFormatOptions = [
-    { value: "12h", label: "12 horas" },
-    { value: "24h", label: "24 horas" },
+    { value: "12h", label: t("fields.timeFormatOptions.12h") },
+    { value: "24h", label: t("fields.timeFormatOptions.24h") },
   ];
 
   return (
@@ -45,76 +45,76 @@ export const FormProfile = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "userId" }}
-          label={intl("fields.userId")}
+          label={t("fields.userId"))
           type='number'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "display_name" }}
-          label={intl("fields.display_name")}
+          label={t("fields.display_name"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "first_name" }}
-          label={intl("fields.first_name")}
+          label={t("fields.first_name"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "last_name" }}
-          label={intl("fields.last_name")}
+          label={t("fields.last_name"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "phone" }}
-          label={intl("fields.phone")}
+          label={t("fields.phone"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "avatar_url" }}
-          label={intl("fields.avatar_url")}
+          label={t("fields.avatar_url"))
           type='url'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "timezone" }}
-          label={intl("fields.timezone")}
+          label={t("fields.timezone"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "language" }}
-          label={intl("fields.language")}
+          label={t("fields.language"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "theme" }}
-          label={intl("fields.theme")}
+          label={t("fields.theme"))
           options={themeOptions}
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "time_format" }}
-          label={intl("fields.time_format")}
+          label={t("fields.time_format"))
           options={timeFormatOptions}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "bio" }}
-          label={intl("fields.bio")}
+          label={t("fields.bio"))
           className='col-span-12'
         />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
-        {intlActions("saveProfile")}
+        {tCommon("save")}
       </Buttons>
     </form>
   );

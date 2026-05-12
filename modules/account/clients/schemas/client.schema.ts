@@ -1,12 +1,16 @@
-import { useTranslations } from 'next-intl';
 import { z } from 'zod';
+import { useValidationMessages } from '@/lib/i18n';
 
 export const validationClient = () => {
-  const intl = useTranslations('Form');
+  const v = useValidationMessages();
 
   return z.object({
-    name: z.string().min(1, { message: intl('requiredField') }),
-    email: z.string().email().optional().or(z.literal('')),
+    name: z.string().min(1, { message: v.required }),
+    email: z
+      .string()
+      .email({ message: v.invalidEmail })
+      .optional()
+      .or(z.literal('')),
     phone: z.string().optional(),
     companyName: z.string().optional(),
     contactPerson: z.string().optional(),

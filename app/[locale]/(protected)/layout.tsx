@@ -1,26 +1,11 @@
 /** @format */
 
-import { ReactNode } from "react";
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { Layout } from "@/components/layout";
 
-interface RootLayoutProps {
-  children: ReactNode;
-  params: Promise<{ locale: string }>;
-}
-
-export default async function RootLayout({
+export default async function ProtectedLayout({
   children,
-  params,
-}: RootLayoutProps) {
-  await Promise.resolve(params);
-  const messages = await getMessages();
-
-  return (
-    // <QueryProvider>
-    <NextIntlClientProvider messages={messages}>
-      {children}
-    </NextIntlClientProvider>
-    // </QueryProvider>
-  );
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return <Layout>{children}</Layout>;
 }

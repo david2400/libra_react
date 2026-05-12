@@ -15,17 +15,17 @@ import {
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
 import type { 
-  ICreateMenuPermissionPayload, 
-  IUpdateMenuPermissionPayload,
   IBulkMenuPermissionPayload,
   IMenuPermissionActivity,
   IMenuPermissionValidationRequest,
-  IMenuPermissionExportRequest
+  IMenuPermissionExportRequest,
+  ICreateMenuPermission,
+  IUpdateMenuPermission
 } from './types';
 
 // --- IMenu-IPermission Relationships Actions ---------------------------------
 
-export const createMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: ICreateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const createMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: ICreateMenuPermission): Promise<ActionResultType<any>> => {
   try {
     const menuPermission = await menuPermissionsRepository.create(menuId, permissionId, payload);
     
@@ -37,11 +37,11 @@ export const createMenuPermissionAction = async (menuId: string | number, permis
     
     // Log activity
     await menuPermissionActivityRepository.create({
-      menuId: menuId,
-      permissionId: permissionId,
-      activityType: 'permission_granted',
+      menu_id: menuId,
+      permission_id: permissionId,
+      activity_type: 'permission_granted',
       description: 'IPermission granted to menu',
-      metadata: { isActive: payload.isActive }
+      metadata: { is_active: payload.is_active }
     });
     
     return { success: true, data: menuPermission };
@@ -67,7 +67,7 @@ export const createMenuPermissionAction = async (menuId: string | number, permis
   }
 };
 
-export const updateMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const updateMenuPermissionAction = async (menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermission): Promise<ActionResultType<any>> => {
   try {
     const menuPermission = await menuPermissionsRepository.update(menuId, permissionId, payload);
     
@@ -78,9 +78,9 @@ export const updateMenuPermissionAction = async (menuId: string | number, permis
     
     // Log activity
     await menuPermissionActivityRepository.create({
-      menuId: menuId,
-      permissionId: permissionId,
-      activityType: 'permission_updated',
+      menu_id: menuId,
+      permission_id: permissionId,
+      activity_type: 'permission_updated',
       description: 'IMenu-permission relationship updated',
       metadata: { updated_fields: Object.keys(payload) }
     });
@@ -120,9 +120,9 @@ export const deleteMenuPermissionAction = async (menuId: string | number, permis
     
     // Log activity
     await menuPermissionActivityRepository.create({
-      menuId: menuId,
-      permissionId: permissionId,
-      activityType: 'permission_revoked',
+      menu_id: menuId,
+      permission_id: permissionId,
+      activity_type: 'permission_revoked',
       description: 'IPermission revoked from menu'
     });
     
@@ -157,14 +157,14 @@ export const bulkAssignMenuPermissionsAction = async (payload: IBulkMenuPermissi
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.menuPermissions());
-    await revalidateCacheTag(accessControlTags.menu(payload.menuId));
+    await revalidateCacheTag(accessControlTags.menu(payload.menu_id));
     
     // Log activity for successful assignments
     for (const menuPermission of result.successful) {
       await menuPermissionActivityRepository.create({
-        menuId: payload.menuId,
-        permissionId: menuPermission.permissionId,
-        activityType: 'permission_granted',
+        menu_id: payload.menu_id,
+        permission_id: menuPermission.permission_id,
+        activity_type: 'permission_granted',
         description: 'IPermission granted to menu (bulk operation)',
         metadata: { bulk_operation: true }
       });
@@ -204,9 +204,9 @@ export const bulkRemoveMenuPermissionsAction = async (menuId: string | number, p
     // Log activity for successful removals
     for (const menuPermission of result.successful) {
       await menuPermissionActivityRepository.create({
-        menuId: menuId,
-        permissionId: menuPermission.permissionId,
-        activityType: 'permission_revoked',
+        menu_id: menuId,
+        permission_id: menuPermission.permission_id,
+        activity_type: 'permission_revoked',
         description: 'IPermission revoked from menu (bulk operation)',
         metadata: { bulk_operation: true }
       });
@@ -235,7 +235,7 @@ export const bulkRemoveMenuPermissionsAction = async (menuId: string | number, p
   }
 };
 
-export const bulkUpdateMenuPermissionsAction = async (menuId: string | number, permissionIds: (string | number)[], payload: IUpdateMenuPermissionPayload): Promise<ActionResultType<any>> => {
+export const bulkUpdateMenuPermissionsAction = async (menuId: string | number, permissionIds: (string | number)[], payload: IUpdateMenuPermission): Promise<ActionResultType<any>> => {
   try {
     const result = await menuPermissionBulkRepository.bulkUpdate(menuId, permissionIds, payload);
     
@@ -246,9 +246,9 @@ export const bulkUpdateMenuPermissionsAction = async (menuId: string | number, p
     // Log activity for successful updates
     for (const menuPermission of result.successful) {
       await menuPermissionActivityRepository.create({
-        menuId: menuId,
-        permissionId: menuPermission.permissionId,
-        activityType: 'permission_updated',
+        menu_id: menuId,
+        permission_id: menuPermission.permission_id,
+        activity_type: 'permission_updated',
         description: 'IMenu-permission relationship updated (bulk operation)',
         metadata: { bulk_operation: true, updated_fields: Object.keys(payload) }
       });
@@ -285,8 +285,8 @@ export const createMenuPermissionActivityAction = async (activity: Omit<IMenuPer
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.menuPermissions());
-    await revalidateCacheTag(accessControlTags.menu(activity.menuId));
-    await revalidateCacheTag(accessControlTags.permission(activity.permissionId));
+    await revalidateCacheTag(accessControlTags.menu(activity.menu_id));
+    await revalidateCacheTag(accessControlTags.permission(activity.permission_id));
     
     return { success: true, data: createdActivity };
   } catch (error) {
@@ -346,9 +346,9 @@ export const validateMenuPermissionTreeAction = async (menuId: string | number):
     
     // Log validation activity
     await menuPermissionActivityRepository.create({
-      menuId: menuId,
-      permissionId: 'system', // System activity
-      activityType: 'other',
+      menu_id: menuId,
+      permission_id: 'system', // System activity
+      activity_type: 'other',
       description: 'IMenu permission tree validation performed',
       metadata: { 
         total_validations: results.length,
@@ -386,9 +386,9 @@ export const validateAllMenuPermissionsAction = async (): Promise<ActionResultTy
     
     // Log validation activity
     await menuPermissionActivityRepository.create({
-      menuId: 'system', // System activity
-      permissionId: 'system',
-      activityType: 'other',
+      menu_id: 'system', // System activity
+      permission_id: 'system',
+      activity_type: 'other',
       description: 'All menu-permission relationships validation performed',
       metadata: { 
         total_validations: results.length,
@@ -432,9 +432,9 @@ export const calculateMenuPermissionInheritanceAction = async (menuId: string | 
     
     // Log inheritance calculation activity
     await menuPermissionActivityRepository.create({
-      menuId: menuId,
-      permissionId: 'system',
-      activityType: 'other',
+      menu_id: menuId,
+      permission_id: 'system',
+      activity_type: 'other',
       description: 'IMenu permission inheritance calculated',
       metadata: { 
         inherited_permissions_count: result.length
@@ -476,9 +476,9 @@ export const resolveMenuPermissionConflictsAction = async (menuId: string | numb
     
     // Log conflict resolution activity
     await menuPermissionActivityRepository.create({
-      menuId: menuId,
-      permissionId: 'system',
-      activityType: 'other',
+      menu_id: menuId,
+      permission_id: 'system',
+      activity_type: 'other',
       description: 'IMenu permission conflicts resolved',
       metadata: { 
         resolved_conflicts_count: result.resolution_count,
@@ -517,9 +517,9 @@ export const exportMenuPermissionsAction = async (request: IMenuPermissionExport
     
     // Log export activity
     await menuPermissionActivityRepository.create({
-      menuId: 'system', // System activity
-      permissionId: 'system',
-      activityType: 'other',
+      menu_id: 'system', // System activity
+      permission_id: 'system',
+      activity_type: 'other',
       description: 'IMenu-permission data exported',
       metadata: { 
         format: request.format,

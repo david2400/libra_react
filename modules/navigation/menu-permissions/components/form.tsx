@@ -7,9 +7,9 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormMenuPermission } from "../scenes/formMenuPermission";
 import { validationMenuPermission } from "../schemas/menu-permission.schema";
 import { IMenuPermissionCreateRequest, IMenuPermissionUpdateRequest } from "../models/menu-permission.interface";
-import { menuPermissionsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { createMenuPermissionAction } from "@/server/domains/access-control/navigation/menu_permissions";
 
 const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
   return <FormMenuPermission initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
@@ -17,6 +17,9 @@ const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>
 
 export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('navigation.menuPermissions.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: IMenuPermissionCreateRequest = {
     menuId: 0,
@@ -26,10 +29,10 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
 
   const handleSubmit: SubmitHandler<IMenuPermissionCreateRequest> = async (values) => {
     try {
-      const result = await menuPermissionsApi.create(values.menuId, values.permissionId, values);
+      const result = await createMenuPermissionAction(values.menuId, values.permissionId, values);
       
       Swal.fire({
-        title: "Permiso asignado exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -37,8 +40,8 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'permiso de menú' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -49,6 +52,9 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
 
 export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPermissionUpdateRequest>) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('navigation.menuPermissions.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<IMenuPermissionUpdateRequest> = async (values) => {
     if (!values.menuId || !values.permissionId) return;
@@ -57,7 +63,7 @@ export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPe
       const result = await menuPermissionsApi.update(values.menuId, values.permissionId, values);
       
       Swal.fire({
-        title: "Permiso actualizado exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -65,8 +71,8 @@ export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPe
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'permiso de menú' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

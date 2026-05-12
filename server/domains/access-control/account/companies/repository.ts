@@ -169,7 +169,7 @@ export const companyActivityRepository = {
     }),
 
   // Create activity log
-  create: (activity: Omit<ICompanyActivity, 'id' | 'createdAt'>) => 
+  create: (activity: Omit<ICompanyActivity, 'id' | 'created_at'>) => 
     serverFetch.post<ICompanyActivity>('/api/access_control/company-activities', activity, {
       revalidate: false,
     }),

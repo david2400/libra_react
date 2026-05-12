@@ -12,7 +12,6 @@ import type {
   IRoleMenuOverview,
   IBulkRoleMenuPayload,
   IBulkRoleMenuResponse,
-  IRoleMenuTreeNode,
   IRoleMenuTreeResponse,
   IRoleMenuActivity,
   IRoleMenuActivityFilter,
@@ -174,7 +173,7 @@ export const roleMenuActivityRepository = {
     }),
 
   // Create activity log
-  create: (activity: Omit<IRoleMenuActivity, 'id' | 'createdAt'>) => 
+  create: (activity: Omit<IRoleMenuActivity, 'id' | 'created_at'>) => 
     serverFetch.post<IRoleMenuActivity>('/api/access_control/role-menu-activities', activity, {
       revalidate: false,
     }),

@@ -4,10 +4,6 @@ import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { 
   IMenuPermission, 
-  ICreateMenuPermissionPayload, 
-  IUpdateMenuPermissionPayload,
-  IMenu,
-  IPermission,
   IMenuPermissionStats,
   IMenuPermissionOverview,
   IBulkMenuPermissionPayload,
@@ -21,9 +17,13 @@ import type {
   IMenuPermissionInheritance,
   IMenuPermissionInheritanceTree,
   IMenuPermissionConflict,
-  IMenuPermissionConflictResolution
+  IMenuPermissionConflictResolution,
+  IUpdateMenuPermission,
+  ICreateMenuPermission
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IPermission } from '@/modules/security/permissions/models/permission.interface';
+import { IMenu } from '@/modules/navigation/menus/models/menu.interface';
 
 // --- IMenu-IPermission Relationships Repository ---------------------------------
 
@@ -65,13 +65,13 @@ export const menuPermissionsRepository = {
     }),
 
   // Create menu-permission relationship
-  create: (menuId: string | number, permissionId: string | number, payload: ICreateMenuPermissionPayload) => 
+  create: (menuId: string | number, permissionId: string | number, payload: ICreateMenuPermission) => 
     serverFetch.post<IMenuPermission>(`/api/access_control/menu-permissions/${menuId}/${permissionId}`, payload, {
       revalidate: false,
     }),
 
   // Update menu-permission relationship
-  update: (menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermissionPayload) => 
+  update: (menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermission) => 
     serverFetch.put<IMenuPermission>(`/api/access_control/menu-permissions/${menuId}/${permissionId}`, payload, {
       revalidate: false,
     }),
@@ -124,7 +124,7 @@ export const menuPermissionBulkRepository = {
     }),
 
   // Bulk update menu-permission relationships
-  bulkUpdate: (menuId: string | number, permissionIds: (string | number)[], payload: IUpdateMenuPermissionPayload) => 
+  bulkUpdate: (menuId: string | number, permissionIds: (string | number)[], payload: IUpdateMenuPermission) => 
     serverFetch.post<IBulkMenuPermissionResponse>(`/api/access_control/menu-permissions/menu/${menuId}/bulk-update`, { permission_ids: permissionIds, ...payload }, {
       revalidate: false,
     }),
@@ -180,7 +180,7 @@ export const menuPermissionActivityRepository = {
     }),
 
   // Create activity log
-  create: (activity: Omit<IMenuPermissionActivity, 'id' | 'createdAt'>) => 
+  create: (activity: Omit<IMenuPermissionActivity, 'id' | 'created_at'>) => 
     serverFetch.post<IMenuPermissionActivity>('/api/access_control/menu-permission-activities', activity, {
       revalidate: false,
     }),

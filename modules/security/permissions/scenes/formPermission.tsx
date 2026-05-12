@@ -15,8 +15,8 @@ export const FormPermission = ({
   validationSchema,
   onSubmit,
 }: IFormProps<any>) => {
-  const intl = useTranslations("AccessControl.security.permissions");
-  const intlActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("security.permissions");
+  const tCommon = useTranslations("common");
   type PermissionInputs = z.infer<typeof validationSchema>;
 
   const {
@@ -33,30 +33,30 @@ export const FormPermission = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={intl("fields.name")}
+          label={t("fields.name"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "description" }}
-          label={intl("fields.description")}
+          label={t("fields.description"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "resource" }}
-          label={intl("fields.resource")}
+          label={t("fields.resource"))
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "action" }}
-          label={intl("fields.action")}
+          label={t("fields.action"))
           className='col-span-12 md:col-span-6'
         />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
-        {intlActions("savePermission")}
+        {tCommon("save")}
       </Buttons>
     </form>
   );

@@ -4,27 +4,27 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 // --- IRole-IMenu Relationship Types ----------------------------------------------
 
 export interface IRoleMenu {
-  roleId: string | number;
-  menuId: string | number;
-  isActive?: boolean;
-  canView?: boolean;
-  canEdit?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  role_id: string | number;
+  menu_id: string | number;
+  is_active?: boolean;
+  can_view?: boolean;
+  can_edit?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateRoleMenuPayload {
-  roleId: string | number;
-  menuId: string | number;
-  isActive?: boolean;
-  canView?: boolean;
-  canEdit?: boolean;
+  role_id: string | number;
+  menu_id: string | number;
+  is_active?: boolean;
+  can_view?: boolean;
+  can_edit?: boolean;
 }
 
 export interface IUpdateRoleMenuPayload {
-  isActive?: boolean;
-  canView?: boolean;
-  canEdit?: boolean;
+  is_active?: boolean;
+  can_view?: boolean;
+  can_edit?: boolean;
 }
 
 // --- IRole Types (for role-menu management) ------------------------------------
@@ -33,10 +33,10 @@ export interface IRole {
   id: string | number;
   name: string;
   description?: string;
-  isActive?: boolean;
+  is_active?: boolean;
   menus?: IMenu[];
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // --- IMenu Types (for role-menu management) ------------------------------------
@@ -47,27 +47,27 @@ export interface IMenu {
   label?: string;
   icon?: string;
   path?: string;
-  parentId?: string | number;
+  parent_id?: string | number;
   order?: number;
-  isActive?: boolean;
+  is_active?: boolean;
   children?: IMenu[];
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // --- IRole-IMenu Statistics Types ------------------------------------------------
 
 export interface IRoleMenuStats {
-  roleId: string | number;
-  menuId: string | number;
-  accessCount: number;
-  lastAccessed?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  role_id: string | number;
+  menu_id: string | number;
+  access_count: number;
+  last_accessed?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IRoleMenuOverview {
-  roleMenu: IRoleMenu;
+  role_menu: IRoleMenu;
   role: IRole;
   menu: IMenu;
   stats: IRoleMenuStats;
@@ -76,17 +76,17 @@ export interface IRoleMenuOverview {
 // --- Bulk Operations Types -----------------------------------------------------
 
 export interface IBulkRoleMenuPayload {
-  roleId: string | number;
-  menuIds: (string | number)[];
-  isActive?: boolean;
-  canView?: boolean;
-  canEdit?: boolean;
+  role_id: string | number;
+  menu_ids: (string | number)[];
+  is_active?: boolean;
+  can_view?: boolean;
+  can_edit?: boolean;
 }
 
 export interface IBulkRoleMenuResponse {
   successful: IRoleMenu[];
   failed: Array<{
-    menuId: string | number;
+    menu_id: string | number;
     error: string;
   }>;
   summary: {
@@ -99,74 +99,74 @@ export interface IBulkRoleMenuResponse {
 // --- IRole-IMenu Validation Types ------------------------------------------------
 
 export interface IRoleMenuValidationResult {
-  isValid: boolean;
+  is_valid: boolean;
   errors: string[];
   warnings: string[];
-  roleId: string | number;
-  menuId: string | number;
+  role_id: string | number;
+  menu_id: string | number;
 }
 
 export interface IRoleMenuValidationRequest {
-  roleId: string | number;
-  menuId: string | number;
-  validateHierarchy?: boolean;
-  validatePermissions?: boolean;
+  role_id: string | number;
+  menu_id: string | number;
+  validate_hierarchy?: boolean;
+  validate_permissions?: boolean;
 }
 
 // --- IRole-IMenu Activity Types --------------------------------------------------
 
 export interface IRoleMenuActivity {
   id: string | number;
-  roleId: string | number;
-  menuId: string | number;
-  activityType: 'menu_granted' | 'menu_revoked' | 'menu_updated' | 'menu_accessed' | 'other';
+  role_id: string | number;
+  menu_id: string | number;
+  activity_type: 'menu_granted' | 'menu_revoked' | 'menu_updated' | 'menu_accessed' | 'other';
   description?: string;
   metadata?: Record<string, unknown>;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface IRoleMenuActivityFilter {
-  roleId?: string | number;
-  menuId?: string | number;
-  activityType?: string;
-  startDate?: string;
-  endDate?: string;
+  role_id?: string | number;
+  menu_id?: string | number;
+  activity_type?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 // --- IRole-IMenu Inheritance Types -----------------------------------------------
 
 export interface IRoleMenuInheritance {
-  roleId: string | number;
-  menuId: string | number;
-  inheritedFromRoleId?: string | number;
-  inheritanceLevel: number;
-  isActive?: boolean;
+  role_id: string | number;
+  menu_id: string | number;
+  inherited_from_role_id?: string | number;
+  inheritance_level: number;
+  is_active?: boolean;
 }
 
 export interface IRoleMenuInheritanceTree {
   role: IRole;
-  inheritedMenus: Array<{
+  inherited_menus: Array<{
     menu: IMenu;
-    inheritedFrom: IRole;
-    inheritanceLevel: number;
+    inherited_from: IRole;
+    inheritance_level: number;
   }>;
-  totalInherited: number;
+  total_inherited: number;
 }
 
 // --- IRole-IMenu Export Types ----------------------------------------------------
 
 export interface IRoleMenuExportRequest {
-  roleIds?: (string | number)[];
-  menuIds?: (string | number)[];
+  role_ids?: (string | number)[];
+  menu_ids?: (string | number)[];
   format?: 'json' | 'csv' | 'xlsx';
-  includeStats?: boolean;
-  includeActivity?: boolean;
+  include_stats?: boolean;
+  include_activity?: boolean;
 }
 
 export interface IRoleMenuExportResponse {
-  fileUrl: string;
-  fileName: string;
-  fileSize: number;
-  exportDate: string;
-  recordCount: number;
+  file_url: string;
+  file_name: string;
+  file_size: number;
+  export_date: string;
+  record_count: number;
 }

@@ -17,6 +17,9 @@ const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>
 
 export const RegisterClient = ({}: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('account.clients.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: IClientCreateRequest = {
     name: "",
@@ -29,7 +32,7 @@ export const RegisterClient = ({}: IFormAddProps = {}) => {
       const result = await clientsApi.create(values);
       
       Swal.fire({
-        title: "Cliente creado exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -37,8 +40,8 @@ export const RegisterClient = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'cliente' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -49,6 +52,9 @@ export const RegisterClient = ({}: IFormAddProps = {}) => {
 
 export const UpdateClient = ({ initialValues }: IFormUpdateProps<IClientUpdateRequest>) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('account.clients.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<IClientUpdateRequest> = async (values) => {
     if (!values.id) return;
@@ -57,7 +63,7 @@ export const UpdateClient = ({ initialValues }: IFormUpdateProps<IClientUpdateRe
       const result = await clientsApi.update(values.id, values);
       
       Swal.fire({
-        title: "Cliente actualizado exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -65,8 +71,8 @@ export const UpdateClient = ({ initialValues }: IFormUpdateProps<IClientUpdateRe
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'cliente' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

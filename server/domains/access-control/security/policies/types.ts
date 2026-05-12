@@ -8,9 +8,9 @@ export interface IPolicy {
   name: string;
   description?: string;
   rules?: IPolicyRule[];
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreatePolicyPayload {

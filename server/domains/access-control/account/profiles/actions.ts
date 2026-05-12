@@ -37,7 +37,7 @@ export const createProfileAction = async (payload: ICreateProfilePayload): Promi
     // Log activity
     await profileActivityRepository.create({
       profile_id: profile.id,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'IProfile created'
     });
     
@@ -75,7 +75,7 @@ export const updateProfileAction = async (id: string | number, payload: IUpdateP
     // Log activity
     await profileActivityRepository.create({
       profile_id: id,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'IProfile updated',
       metadata: { updated_fields: Object.keys(payload) }
     });
@@ -147,7 +147,7 @@ export const updateProfilePreferencesAction = async (profileId: string | number,
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'preference_update',
+      activity_type: 'preference_update',
       description: 'IProfile preferences updated',
       metadata: { updated_sections: Object.keys(payload) }
     });
@@ -186,7 +186,7 @@ export const resetProfilePreferencesAction = async (profileId: string | number):
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'preference_update',
+      activity_type: 'preference_update',
       description: 'IProfile preferences reset to defaults'
     });
     
@@ -259,7 +259,7 @@ export const enableTwoFactorAction = async (profileId: string | number, payload:
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'Two-factor authentication enabled'
     });
     
@@ -293,7 +293,7 @@ export const verifyTwoFactorAction = async (profileId: string | number, payload:
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: result.verified ? 'Two-factor authentication verified' : 'Two-factor authentication verification failed',
       metadata: { verified: result.verified }
     });
@@ -332,7 +332,7 @@ export const disableTwoFactorAction = async (profileId: string | number): Promis
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'Two-factor authentication disabled'
     });
     
@@ -370,7 +370,7 @@ export const generateBackupCodesAction = async (profileId: string | number): Pro
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'New backup codes generated'
     });
     
@@ -408,7 +408,7 @@ export const addTrustedDeviceAction = async (profileId: string | number, payload
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'Trusted device added',
       metadata: { device_name: payload.name }
     });
@@ -447,7 +447,7 @@ export const removeTrustedDeviceAction = async (profileId: string | number, devi
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'Trusted device removed',
       metadata: { device_id: deviceId }
     });
@@ -486,7 +486,7 @@ export const updatePasswordChangeAction = async (profileId: string | number): Pr
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'password_change',
+      activity_type: 'password_change',
       description: 'Password changed'
     });
     
@@ -524,7 +524,7 @@ export const resetFailedAttemptsAction = async (profileId: string | number): Pro
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'Failed login attempts reset'
     });
     
@@ -562,7 +562,7 @@ export const lockProfileAccountAction = async (profileId: string | number, durat
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: `Account locked for ${durationHours} hours`
     });
     
@@ -600,7 +600,7 @@ export const unlockProfileAccountAction = async (profileId: string | number): Pr
     // Log activity
     await profileActivityRepository.create({
       profile_id: profileId,
-      activityType: 'profile_update',
+      activity_type: 'profile_update',
       description: 'Account unlocked'
     });
     

@@ -1,18 +1,18 @@
-import { useTranslations } from 'next-intl';
 import { z } from 'zod';
+import { useValidationMessages } from '@/lib/i18n';
 
 export const validationRoleMenu = () => {
-  const intl = useTranslations('Form');
+  const v = useValidationMessages();
 
   return z.object({
     roleId: z.coerce
-      .number({ invalid_type_error: intl('requiredField') })
+      .number({ invalid_type_error: v.invalidFormat })
       .int()
-      .positive({ message: intl('requiredField') }),
+      .positive({ message: v.required }),
     menuId: z.coerce
-      .number({ invalid_type_error: intl('requiredField') })
+      .number({ invalid_type_error: v.invalidFormat })
       .int()
-      .positive({ message: intl('requiredField') }),
+      .positive({ message: v.required }),
     isActive: z.boolean().optional(),
     canView: z.boolean().optional(),
     canEdit: z.boolean().optional(),

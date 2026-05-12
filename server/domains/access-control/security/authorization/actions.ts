@@ -33,7 +33,7 @@ export const checkAuthorizationAction = async (request: IAuthorizationRequest): 
     
     // Create audit entry
     await authorizationAuditRepository.create({
-      userId: request.userId,
+      user_id: request.user_id,
       resource: request.resource,
       action: request.action,
       authorized: response.authorized,
@@ -41,7 +41,7 @@ export const checkAuthorizationAction = async (request: IAuthorizationRequest): 
       policies_applied: response.policies_applied || [],
       permissions_used: response.permissions_used || [],
       context: {
-        userId: request.userId,
+        user_id: request.user_id,
         timestamp: new Date().toISOString(),
         additional_context: request.context
       },
@@ -77,7 +77,7 @@ export const checkAuthorizationWithContextAction = async (request: IAuthorizatio
     
     // Create audit entry with enhanced context
     await authorizationAuditRepository.create({
-      userId: request.userId,
+      user_id: request.user_id,
       resource: request.resource,
       action: request.action,
       authorized: response.authorized,
@@ -121,7 +121,7 @@ export const batchCheckAuthorizationAction = async (requests: IAuthorizationRequ
       const response = responses[i];
       
       await authorizationAuditRepository.create({
-        userId: request.userId,
+        user_id: request.user_id,
         resource: request.resource,
         action: request.action,
         authorized: response.authorized,
@@ -129,7 +129,7 @@ export const batchCheckAuthorizationAction = async (requests: IAuthorizationRequ
         policies_applied: response.policies_applied || [],
         permissions_used: response.permissions_used || [],
         context: {
-          userId: request.userId,
+          user_id: request.user_id,
           timestamp: new Date().toISOString(),
           additional_context: request.context
         },

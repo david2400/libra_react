@@ -8,22 +8,22 @@ export interface IClient {
   name: string;
   email?: string;
   phone?: string;
-  companyName?: string;
-  contactPerson?: string;
+  company_name?: string;
+  contact_person?: string;
   address?: string;
   city?: string;
   country?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateClientPayload {
   name: string;
   email?: string;
   phone?: string;
-  companyName?: string;
-  contactPerson?: string;
+  company_name?: string;
+  contact_person?: string;
   address?: string;
   city?: string;
   country?: string;
@@ -33,12 +33,12 @@ export interface IUpdateClientPayload {
   name?: string;
   email?: string;
   phone?: string;
-  companyName?: string;
-  contactPerson?: string;
+  company_name?: string;
+  contact_person?: string;
   address?: string;
   city?: string;
   country?: string;
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
 // --- ICompany Types (for client management) ----------------------------------
@@ -53,44 +53,44 @@ export interface ICompany {
   address?: string;
   city?: string;
   country?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // --- Client-ICompany Relationships Types ---------------------------------------
 
 export interface IClientCompany {
-  clientId: string | number;
-  companyId: string | number;
-  isPrimary?: boolean;
-  relationshipType?: string;
+  client_id: string | number;
+  company_id: string | number;
+  is_primary?: boolean;
+  relationship_type?: string;
   client?: IClient;
   company?: ICompany;
 }
 
 export interface ICreateClientCompanyPayload {
-  clientId: string | number;
-  companyId: string | number;
-  isPrimary?: boolean;
-  relationshipType?: string;
+  client_id: string | number;
+  company_id: string | number;
+  is_primary?: boolean;
+  relationship_type?: string;
 }
 
 export interface IUpdateClientCompanyPayload {
-  isPrimary?: boolean;
-  relationshipType?: string;
+  is_primary?: boolean;
+  relationship_type?: string;
 }
 
 // --- Client Authentication Types ---------------------------------------------
 
 export interface IClientAuth {
-  clientId: string | number;
+  client_id: string | number;
   username: string;
-  passwordHash?: string;
-  lastLogin?: string;
-  isActive?: boolean;
-  loginAttempts?: number;
-  lockedUntil?: string;
+  password_hash?: string;
+  last_login?: string;
+  is_active?: boolean;
+  login_attempts?: number;
+  locked_until?: string;
 }
 
 export interface IClientLoginRequest {
@@ -100,54 +100,54 @@ export interface IClientLoginRequest {
 
 export interface IClientLoginResponse {
   token: string;
-  refreshToken?: string;
+  refresh_token?: string;
   client: IClient;
-  expiresIn?: number;
+  expires_in?: number;
 }
 
 export interface IClientRefreshTokenRequest {
-  refreshToken: string;
+  refresh_token: string;
 }
 
 export interface IClientRefreshTokenResponse {
   token: string;
-  refreshToken?: string;
-  expiresIn?: number;
+  refresh_token?: string;
+  expires_in?: number;
 }
 
 // --- Client Statistics Types ---------------------------------------------
 
 export interface IClientStats {
-  clientId: string | number;
-  totalUsers: number;
-  activeSessions: number;
-  loginCount: number;
-  lastActivity: string;
-  createdAt?: string;
+  client_id: string | number;
+  total_users: number;
+  active_sessions: number;
+  login_count: number;
+  last_activity: string;
+  created_at?: string;
 }
 
 export interface IClientOverview {
   client: IClient;
   companies: ICompany[];
   stats: IClientStats;
-  primaryCompany?: ICompany;
+  primary_company?: ICompany;
 }
 
 // --- Client Activity Types -------------------------------------------------
 
 export interface IClientActivity {
   id: string | number;
-  clientId: string | number;
-  activityType: 'login' | 'logout' | 'password_change' | 'profile_update' | 'other';
+  client_id: string | number;
+  activity_type: 'login' | 'logout' | 'password_change' | 'profile_update' | 'other';
   description?: string;
-  ipAddress?: string;
-  userAgent?: string;
-  createdAt: string;
+  ip_address?: string;
+  user_agent?: string;
+  created_at: string;
 }
 
 export interface IClientActivityFilter {
-  clientId?: string | number;
-  activityType?: string;
-  startDate?: string;
-  endDate?: string;
+  client_id?: string | number;
+  activity_type?: string;
+  start_date?: string;
+  end_date?: string;
 }

@@ -1,8 +1,397 @@
-﻿{
+{
   "common": {
     "welcome": "Bienvenido",
     "loading": "Cargando...",
     "error": "Error",
-    "success": "Éxito"
+    "success": "Éxito",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "create": "Crear",
+    "update": "Actualizar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "actions": "Acciones",
+    "status": "Estado",
+    "active": "Activo",
+    "inactive": "Inactivo",
+    "yes": "Sí",
+    "no": "No",
+    "confirm": "Confirmar",
+    "close": "Cerrar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "previous": "Anterior",
+    "submit": "Enviar",
+    "reset": "Restablecer"
+  },
+  "validation": {
+    "required": "Este campo es requerido",
+    "requiredField": "Campo requerido",
+    "invalidEmail": "Correo electrónico inválido",
+    "invalidPhone": "Número de teléfono inválido",
+    "invalidUrl": "URL inválida",
+    "minLength": "Debe tener al menos {min} caracteres",
+    "maxLength": "Debe tener máximo {max} caracteres",
+    "min": "El valor mínimo es {min}",
+    "max": "El valor máximo es {max}",
+    "mustMatch": "Los campos deben coincidir",
+    "alphanumeric": "Solo se permiten caracteres alfanuméricos",
+    "numeric": "Solo se permiten números",
+    "positiveNumber": "Debe ser un número positivo",
+    "invalidFormat": "Formato inválido"
+  },
+  "messages": {
+    "createSuccess": "{entity} creado exitosamente",
+    "updateSuccess": "{entity} actualizado exitosamente",
+    "deleteSuccess": "{entity} eliminado exitosamente",
+    "createError": "Error al crear {entity}",
+    "updateError": "Error al actualizar {entity}",
+    "deleteError": "Error al eliminar {entity}",
+    "unexpectedError": "Ocurrió un error inesperado",
+    "confirmDelete": "¿Está seguro de eliminar este {entity}?",
+    "noData": "No hay datos disponibles",
+    "loadingData": "Cargando datos..."
+  },
+  "account": {
+    "clients": {
+      "title": "Clientes",
+      "description": "Gestión de Clientes",
+      "subtitle": "Gestiona los clientes y sus datos de contacto",
+      "createButton": "Crear Cliente",
+      "editButton": "Editar Cliente",
+      "fields": {
+        "name": "Nombre",
+        "email": "Correo Electrónico",
+        "phone": "Teléfono",
+        "companyName": "Nombre de la Empresa",
+        "contactPerson": "Persona de Contacto",
+        "address": "Dirección",
+        "city": "Ciudad",
+        "country": "País"
+      },
+      "modal": {
+        "create_title": "Crear Cliente",
+        "edit_title": "Editar Cliente"
+      },
+      "metrics": {
+        "total": "Total de clientes",
+        "active": "Clientes activos",
+        "uniqueCities": "Ciudades únicas"
+      },
+      "messages": {
+        "createSuccess": "Cliente creado exitosamente",
+        "updateSuccess": "Cliente actualizado exitosamente",
+        "deleteSuccess": "Cliente eliminado exitosamente"
+      }
+    },
+    "companies": {
+      "title": "Empresas",
+      "description": "Gestión de Empresas",
+      "subtitle": "Administra las empresas del sistema",
+      "createButton": "Crear Empresa",
+      "editButton": "Editar Empresa",
+      "fields": {
+        "name": "Nombre",
+        "email": "Correo Electrónico",
+        "phone": "Teléfono",
+        "address": "Dirección",
+        "city": "Ciudad",
+        "country": "País",
+        "taxId": "NIT/RUC",
+        "website": "Sitio Web",
+        "industry": "Industria",
+        "size": "Tamaño",
+        "description": "Descripción",
+        "sizeOptions": {
+          "small": "Pequeña",
+          "medium": "Mediana",
+          "large": "Grande",
+          "enterprise": "Empresa"
+        }
+      },
+      "modal": {
+        "create_title": "Crear Empresa",
+        "edit_title": "Editar Empresa"
+      },
+      "messages": {
+        "createSuccess": "Empresa creada exitosamente",
+        "updateSuccess": "Empresa actualizada exitosamente",
+        "deleteSuccess": "Empresa eliminada exitosamente"
+      }
+    },
+    "profiles": {
+      "title": "Perfiles",
+      "description": "Gestión de Perfiles",
+      "subtitle": "Administra los perfiles de usuario",
+      "createButton": "Crear Perfil",
+      "editButton": "Editar Perfil",
+      "fields": {
+        "name": "Nombre",
+        "description": "Descripción",
+        "permissions": "Permisos",
+        "userId": "ID de Usuario",
+        "first_name": "Nombre",
+        "last_name": "Apellido",
+        "display_name": "Nombre para Mostrar",
+        "avatar_url": "URL del Avatar",
+        "bio": "Biografía",
+        "phone": "Teléfono",
+        "timezone": "Zona Horaria",
+        "language": "Idioma",
+        "theme": "Tema",
+        "time_format": "Formato de Hora",
+        "themeOptions": {
+          "light": "Claro",
+          "dark": "Oscuro",
+          "auto": "Automático"
+        },
+        "timeFormatOptions": {
+          "12h": "12 horas",
+          "24h": "24 horas"
+        }
+      },
+      "modal": {
+        "create_title": "Crear Perfil",
+        "edit_title": "Editar Perfil"
+      },
+      "messages": {
+        "createSuccess": "Perfil creado exitosamente",
+        "updateSuccess": "Perfil actualizado exitosamente",
+        "deleteSuccess": "Perfil eliminado exitosamente"
+      }
+    },
+    "users": {
+      "title": "Usuarios",
+      "description": "Gestión de Usuarios",
+      "subtitle": "Administra los usuarios del sistema",
+      "createButton": "Crear Usuario",
+      "editButton": "Editar Usuario",
+      "fields": {
+        "username": "Nombre de Usuario",
+        "email": "Correo Electrónico",
+        "firstName": "Nombre",
+        "lastName": "Apellido",
+        "phone": "Teléfono",
+        "role": "Rol",
+        "password": "Contraseña",
+        "confirmPassword": "Confirmar Contraseña"
+      },
+      "modal": {
+        "create_title": "Crear Usuario",
+        "edit_title": "Editar Usuario"
+      },
+      "messages": {
+        "createSuccess": "Usuario creado exitosamente",
+        "updateSuccess": "Usuario actualizado exitosamente",
+        "deleteSuccess": "Usuario eliminado exitosamente"
+      }
+    }
+  },
+  "security": {
+    "roles": {
+      "title": "Roles",
+      "description": "Gestión de Roles",
+      "subtitle": "Administra los roles y permisos del sistema",
+      "createButton": "Crear Rol",
+      "editButton": "Editar Rol",
+      "fields": {
+        "name": "Nombre",
+        "description": "Descripción",
+        "permissions": "Permisos"
+      },
+      "modal": {
+        "create_title": "Crear Rol",
+        "edit_title": "Editar Rol"
+      },
+      "messages": {
+        "createSuccess": "Rol creado exitosamente",
+        "updateSuccess": "Rol actualizado exitosamente",
+        "deleteSuccess": "Rol eliminado exitosamente"
+      }
+    },
+    "permissions": {
+      "title": "Permisos",
+      "description": "Gestión de Permisos",
+      "subtitle": "Administra los permisos del sistema",
+      "createButton": "Crear Permiso",
+      "editButton": "Editar Permiso",
+      "fields": {
+        "name": "Nombre",
+        "code": "Código",
+        "description": "Descripción",
+        "module": "Módulo",
+        "action": "Acción"
+      },
+      "modal": {
+        "create_title": "Crear Permiso",
+        "edit_title": "Editar Permiso"
+      },
+      "messages": {
+        "createSuccess": "Permiso creado exitosamente",
+        "updateSuccess": "Permiso actualizado exitosamente",
+        "deleteSuccess": "Permiso eliminado exitosamente"
+      }
+    },
+    "applications": {
+      "title": "Aplicaciones",
+      "description": "Gestión de Aplicaciones",
+      "subtitle": "Administra las aplicaciones del sistema",
+      "createButton": "Crear Aplicación",
+      "editButton": "Editar Aplicación",
+      "fields": {
+        "name": "Nombre",
+        "code": "Código",
+        "description": "Descripción",
+        "url": "URL",
+        "version": "Versión",
+        "baseUrl": "URL Base",
+        "status": "Estado",
+        "statusOptions": {
+          "active": "Activo",
+          "inactive": "Inactivo",
+          "maintenance": "Mantenimiento"
+        }
+      },
+      "modal": {
+        "create_title": "Crear Aplicación",
+        "edit_title": "Editar Aplicación"
+      },
+      "messages": {
+        "createSuccess": "Aplicación creada exitosamente",
+        "updateSuccess": "Aplicación actualizada exitosamente",
+        "deleteSuccess": "Aplicación eliminada exitosamente"
+      }
+    },
+    "moduleApplications": {
+      "title": "Módulos de Aplicación",
+      "description": "Gestión de Módulos",
+      "subtitle": "Administra los módulos de las aplicaciones",
+      "createButton": "Crear Módulo",
+      "editButton": "Editar Módulo",
+      "fields": {
+        "name": "Nombre",
+        "code": "Código",
+        "description": "Descripción",
+        "application": "Aplicación"
+      },
+      "modal": {
+        "create_title": "Crear Módulo",
+        "edit_title": "Editar Módulo"
+      },
+      "messages": {
+        "createSuccess": "Módulo creado exitosamente",
+        "updateSuccess": "Módulo actualizado exitosamente",
+        "deleteSuccess": "Módulo eliminado exitosamente"
+      }
+    },
+    "policies": {
+      "title": "Políticas",
+      "description": "Gestión de Políticas",
+      "subtitle": "Administra las políticas de seguridad",
+      "createButton": "Crear Política",
+      "editButton": "Editar Política",
+      "fields": {
+        "name": "Nombre",
+        "description": "Descripción",
+        "rules": "Reglas"
+      },
+      "modal": {
+        "create_title": "Crear Política",
+        "edit_title": "Editar Política"
+      },
+      "messages": {
+        "createSuccess": "Política creada exitosamente",
+        "updateSuccess": "Política actualizada exitosamente",
+        "deleteSuccess": "Política eliminada exitosamente"
+      }
+    },
+    "rolePermissions": {
+      "title": "Permisos de Roles",
+      "description": "Asignación de Permisos",
+      "subtitle": "Asigna permisos a los roles",
+      "createButton": "Asignar Permiso",
+      "editButton": "Editar Asignación",
+      "fields": {
+        "role": "Rol",
+        "permission": "Permiso"
+      },
+      "modal": {
+        "create_title": "Asignar Permiso a Rol",
+        "edit_title": "Editar Asignación"
+      },
+      "messages": {
+        "createSuccess": "Permiso asignado exitosamente",
+        "updateSuccess": "Asignación actualizada exitosamente",
+        "deleteSuccess": "Asignación eliminada exitosamente"
+      }
+    }
+  },
+  "navigation": {
+    "menus": {
+      "title": "Menús",
+      "description": "Gestión de Menús",
+      "subtitle": "Administra los menús de navegación",
+      "createButton": "Crear Menú",
+      "editButton": "Editar Menú",
+      "fields": {
+        "name": "Nombre",
+        "label": "Etiqueta",
+        "icon": "Ícono",
+        "url": "URL",
+        "order": "Orden",
+        "parent": "Menú Padre"
+      },
+      "modal": {
+        "create_title": "Crear Menú",
+        "edit_title": "Editar Menú"
+      },
+      "messages": {
+        "createSuccess": "Menú creado exitosamente",
+        "updateSuccess": "Menú actualizado exitosamente",
+        "deleteSuccess": "Menú eliminado exitosamente"
+      }
+    },
+    "menuPermissions": {
+      "title": "Permisos de Menú",
+      "description": "Asignación de Permisos a Menús",
+      "subtitle": "Asigna permisos a los menús",
+      "createButton": "Asignar Permiso",
+      "editButton": "Editar Asignación",
+      "fields": {
+        "menu": "Menú",
+        "permission": "Permiso"
+      },
+      "modal": {
+        "create_title": "Asignar Permiso a Menú",
+        "edit_title": "Editar Asignación"
+      },
+      "messages": {
+        "createSuccess": "Permiso asignado exitosamente",
+        "updateSuccess": "Asignación actualizada exitosamente",
+        "deleteSuccess": "Asignación eliminada exitosamente"
+      }
+    },
+    "roleMenus": {
+      "title": "Menús de Roles",
+      "description": "Asignación de Menús a Roles",
+      "subtitle": "Asigna menús a los roles",
+      "createButton": "Asignar Menú",
+      "editButton": "Editar Asignación",
+      "fields": {
+        "role": "Rol",
+        "menu": "Menú"
+      },
+      "modal": {
+        "create_title": "Asignar Menú a Rol",
+        "edit_title": "Editar Asignación"
+      },
+      "messages": {
+        "createSuccess": "Menú asignado exitosamente",
+        "updateSuccess": "Asignación actualizada exitosamente",
+        "deleteSuccess": "Asignación eliminada exitosamente"
+      }
+    }
   }
 }

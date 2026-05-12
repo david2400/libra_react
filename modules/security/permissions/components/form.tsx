@@ -35,6 +35,9 @@ const FormBase = ({
 
 export const RegisterPermission = ({}: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('security.permissions.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: IPermissionCreateRequest = {
     name: "",
@@ -48,7 +51,7 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
       const result = await permissionsApi.create(values);
       
       Swal.fire({
-        title: "Permiso creado exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -58,8 +61,8 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'permiso' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -78,6 +81,9 @@ export const UpdatePermission = ({
   initialValues,
 }: IFormUpdateProps<IPermissionUpdateRequest>) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('security.permissions.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<IPermissionUpdateRequest> = async (values) => {
     if (!values.id) return;
@@ -86,7 +92,7 @@ export const UpdatePermission = ({
       const result = await permissionsApi.update(values.id, values);
       
       Swal.fire({
-        title: "Permiso actualizado exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -96,8 +102,8 @@ export const UpdatePermission = ({
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'permiso' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

@@ -9,10 +9,10 @@ export interface IApplication {
   description?: string;
   version?: string;
   status?: 'active' | 'inactive' | 'maintenance';
-  baseUrl?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  base_url?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateApplicationPayload {
@@ -20,7 +20,7 @@ export interface ICreateApplicationPayload {
   description?: string;
   version?: string;
   status?: 'active' | 'inactive' | 'maintenance';
-  baseUrl?: string;
+  base_url?: string;
 }
 
 export interface IUpdateApplicationPayload {
@@ -28,8 +28,8 @@ export interface IUpdateApplicationPayload {
   description?: string;
   version?: string;
   status?: 'active' | 'inactive' | 'maintenance';
-  baseUrl?: string;
-  isActive?: boolean;
+  base_url?: string;
+  is_active?: boolean;
 }
 
 // --- IModule Types (for application management) -------------------------------
@@ -47,30 +47,30 @@ export interface IModule {
 // --- IApplication-IModule Relationships Types ---------------------------------
 
 export interface IApplicationModule {
-  applicationId: string | number;
-  moduleId: string | number;
-  isActive?: boolean;
+  application_id: string | number;
+  module_id: string | number;
+  is_active?: boolean;
   application?: IApplication;
   module?: IModule;
 }
 
 export interface ICreateApplicationModulePayload {
-  applicationId: string | number;
-  moduleId: string | number;
-  isActive?: boolean;
+  application_id: string | number;
+  module_id: string | number;
+  is_active?: boolean;
 }
 
 export interface IUpdateApplicationModulePayload {
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
 // --- IApplication Health Types -------------------------------------------------
 
 export interface IApplicationHealth {
-  applicationId: string | number;
+  application_id: string | number;
   status: 'healthy' | 'unhealthy' | 'degraded';
-  responseTime?: number;
-  lastChecked: string;
+  response_time?: number;
+  last_checked: string;
   details?: Record<string, unknown>;
 }
 
@@ -92,39 +92,39 @@ export interface IApplicationHealthReport {
 // --- IApplication Configuration Types -----------------------------------------
 
 export interface IApplicationConfig {
-  applicationId: string | number;
+  application_id: string | number;
   key: string;
   value: string | number | boolean;
   description?: string;
-  isEncrypted?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  is_encrypted?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateApplicationConfigPayload {
-  applicationId: string | number;
+  application_id: string | number;
   key: string;
   value: string | number | boolean;
   description?: string;
-  isEncrypted?: boolean;
+  is_encrypted?: boolean;
 }
 
 export interface IUpdateApplicationConfigPayload {
   value?: string | number | boolean;
   description?: string;
-  isEncrypted?: boolean;
+  is_encrypted?: boolean;
 }
 
 // --- IApplication Statistics Types ---------------------------------------------
 
 export interface IApplicationStats {
-  applicationId: string | number;
-  totalUsers: number;
-  activeSessions: number;
-  requestsPerMinute?: number;
-  averageResponseTime?: number;
-  errorRate?: number;
-  lastUpdated: string;
+  application_id: string | number;
+  total_users: number;
+  active_sessions: number;
+  requests_per_minute?: number;
+  average_response_time?: number;
+  error_rate?: number;
+  last_updated: string;
 }
 
 export interface IApplicationOverview {
@@ -132,5 +132,5 @@ export interface IApplicationOverview {
   modules: IModule[];
   health: IApplicationHealth;
   stats: IApplicationStats;
-  configCount: number;
+  config_count: number;
 }

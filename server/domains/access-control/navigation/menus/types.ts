@@ -1,5 +1,6 @@
 import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IPermission } from '../../security/permissions';
 
 // --- IMenu Types ----------------------------------------------------------------
 
@@ -9,48 +10,33 @@ export interface IMenu {
   label?: string;
   icon?: string;
   path?: string;
-  parentId?: string | number;
+  parent_id?: string | number;
   order?: number;
-  isActive?: boolean;
+  is_active?: boolean;
   children?: IMenu[];
   permissions?: IPermission[];
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 } 
 
-export interface ICreateMenuPayload {
+export interface ICreateMenu {
   name: string;
   label?: string;
   icon?: string;
   path?: string;
-  parentId?: string | number;
+  parent_id?: string | number;
   order?: number;
 }
 
-export interface IUpdateMenuPayload {
+export interface IUpdateMenu {
   name?: string;
   label?: string;
   icon?: string;
   path?: string;
-  parentId?: string | number;
+  parent_id?: string | number;
   order?: number;
-  isActive?: boolean;
+  is_active?: boolean;
 }
-
-// --- IPermission Types (for menu management) -----------------------------------
-
-export interface IPermission {
-  id: string | number;
-  name: string;
-  description?: string;
-  resource?: string;
-  action?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// --- IMenu Hierarchy Types ------------------------------------------------------
 
 export interface IMenuHierarchy {
   menu: IMenu;
@@ -62,20 +48,20 @@ export interface IMenuHierarchy {
 
 export interface IMenuTree {
   root: IMenu[];
-  totalMenus: number;
-  maxDepth: number;
+  total_menus: number;
+  max_depth: number;
 }
 
 // --- IMenu Statistics Types -----------------------------------------------------
 
 export interface IMenuStats {
-  menuId: string | number;
-  viewCount: number;
-  clickCount: number;
-  lastAccessed?: string;
-  averageAccessTime?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  menu_id: string | number;
+  view_count: number;
+  click_count: number;
+  last_accessed?: string;
+  average_access_time?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IMenuOverview {
@@ -89,67 +75,67 @@ export interface IMenuOverview {
 // --- IMenu Validation Types -----------------------------------------------------
 
 export interface IMenuValidationResult {
-  isValid: boolean;
+  is_valid: boolean;
   errors: string[];
   warnings: string[];
-  menuId: string | number;
+  menu_id: string | number;
 }
 
 export interface IMenuValidationRequest {
-  menuId: string | number;
-  validateHierarchy?: boolean;
-  validatePermissions?: boolean;
-  validatePath?: boolean;
+  menu_id: string | number;
+  validate_hierarchy?: boolean;
+  validate_permissions?: boolean;
+  validate_path?: boolean;
 }
 
 // --- IMenu Activity Types -------------------------------------------------------
 
 export interface IMenuActivity {
   id: string | number;
-  menuId: string | number;
-  userId?: string | number;
-  activityType: 'view' | 'click' | 'created' | 'updated' | 'deleted' | 'other';
+  menu_id: string | number;
+  user_id?: string | number;
+  activity_type: 'view' | 'click' | 'created' | 'updated' | 'deleted' | 'other';
   description?: string;
   metadata?: Record<string, unknown>;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface IMenuActivityFilter {
-  menuId?: string | number;
-  userId?: string | number;
-  activityType?: string;
-  startDate?: string;
-  endDate?: string;
+  menu_id?: string | number;
+  user_id?: string | number;
+  activity_type?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 // --- IMenu Export Types ---------------------------------------------------------
 
 export interface IMenuExportRequest {
-  menuIds?: (string | number)[];
+  menu_ids?: (string | number)[];
   format?: 'json' | 'csv' | 'xlsx';
-  includeChildren?: boolean;
-  includePermissions?: boolean;
-  includeStats?: boolean;
+  include_children?: boolean;
+  include_permissions?: boolean;
+  include_stats?: boolean;
 }
 
 export interface IMenuExportResponse {
-  fileUrl: string;
-  fileName: string;
-  fileSize: number;
-  exportDate: string;
-  recordCount: number;
+  file_url: string;
+  file_name: string;
+  file_size: number;
+  export_date: string;
+  record_count: number;
 }
 
 // --- IMenu Reordering Types -----------------------------------------------------
 
 export interface IMenuReorderRequest {
-  menuId: string | number;
-  newOrder: number;
-  newParentId?: string | number;
+  menu_id: string | number;
+  new_order: number;
+  new_parent_id?: string | number;
 }
 
 export interface IMenuReorderResponse {
   success: boolean;
-  affectedMenus: IMenu[];
+  affected_menus: IMenu[];
   message?: string;
 }

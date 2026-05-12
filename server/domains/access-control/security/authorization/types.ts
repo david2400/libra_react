@@ -4,20 +4,20 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 // --- Authorization Types ---------------------------------------------------------
 
 export interface IAuthorizationRequest {
-  userId: string | number;
+  user_id: string | number;
   resource: string;
   action: string;
   context?: Record<string, unknown>;
-  requestTime?: string;
+  request_time?: string;
 }
 
 export interface IAuthorizationResponse {
   authorized: boolean;
   reason?: string;
-  policiesApplied?: string[];
-  permissionsUsed?: string[];
-  cacheHit?: boolean;
-  responseTime?: number;
+  policies_applied?: string[];
+  permissions_used?: string[];
+  cache_hit?: boolean;
+  response_time?: number;
 }
 
 export interface IAuthorizationLog {
@@ -26,8 +26,8 @@ export interface IAuthorizationLog {
   action: string;
   authorized: boolean;
   reason?: string;
-  checkedAt: string;
-  responseTimeMs?: number;
+  checked_at: string;
+  response_time_ms?: number;
 }
 
 // --- IUser Types (for authorization management) ---------------------------------
@@ -35,14 +35,14 @@ export interface IAuthorizationLog {
 export interface IUser {
   id: string | number;
   email: string;
-  userName?: string;
-  firstName?: string;
-  lastName?: string;
-  isActive?: boolean;
+  user_name?: string;
+  first_name?: string;
+  last_name?: string;
+  is_active?: boolean;
   roles?: any[];
   permissions?: any[];
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // --- IPermission Types (for authorization management) -------------------------
@@ -80,10 +80,10 @@ export interface IPolicyRule {
 // --- Authorization Context Types ----------------------------------------------
 
 export interface IAuthorizationContext {
-  userId: string | number;
-  sessionId?: string;
-  ipAddress?: string;
-  userAgent?: string;
+  user_id: string | number;
+  session_id?: string;
+  ip_address?: string;
+  user_agent?: string;
   timestamp: string;
   metadata?: Record<string, unknown>;
 }
@@ -92,14 +92,14 @@ export interface IAuthorizationDecision {
   request: IAuthorizationRequest;
   response: IAuthorizationResponse;
   context: IAuthorizationContext;
-  evaluatedPolicies: IPolicy[];
-  evaluatedPermissions: IPermission[];
+  evaluated_policies: IPolicy[];
+  evaluated_permissions: IPermission[];
 }
 
 // --- Bulk Authorization Types -------------------------------------------------
 
 export interface IBulkAuthorizationRequest {
-  userId: string | number;
+  user_id: string | number;
   checks: Array<{
     resource: string;
     action: string;
@@ -145,33 +145,33 @@ export interface IAuthorizationCacheStats {
 
 export interface IAuthorizationAudit {
   id: string | number;
-  userId: string | number;
+  user_id: string | number;
   resource: string;
   action: string;
   authorized: boolean;
   reason?: string;
   context?: IAuthorizationContext;
   timestamp: string;
-  ipAddress?: string;
-  userAgent?: string;
+  ip_address?: string;
+  user_agent?: string;
 }
 
 export interface IAuthorizationAuditFilter {
-  userId?: string | number;
+  user_id?: string | number;
   resource?: string;
   action?: string;
   authorized?: boolean;
-  startDate?: string;
-  endDate?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 // --- Authorization Statistics Types -------------------------------------------
 
 export interface IAuthorizationStats {
-  totalRequests: number;
-  authorizedRequests: number;
-  deniedRequests: number;
-  averageResponseTime: number;
+  total_requests: number;
+  authorized_requests: number;
+  denied_requests: number;
+  average_response_time: number;
   cacheHitRate: number;
   topResources: Array<{
     resource: string;

@@ -21,12 +21,12 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./*"],
-      "@app/*": ["app/*"],
-      "@components/*": ["components/*"],
-      "@store/*": ["store/*"],
-      "@modules/*": ["modules/*"],
-      "@context/*": ["context/*"],
-      "@lib/*": ["lib/*"]
+      "@app/*": ["./app/*"],
+      "@components/*": ["./components/*"],
+      "@store/*": ["./store/*"],
+      "@modules/*": ["./modules/*"],
+      "@context/*": ["./context/*"],
+      "@lib/*": ["./lib/*"]
     }
   },
   "include": [

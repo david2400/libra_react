@@ -37,11 +37,11 @@ export const createRolePermissionAction = async (roleId: string | number, permis
     
     // Log activity
     await rolePermissionActivityRepository.create({
-      roleId: roleId,
-      permissionId: permissionId,
-      activityType: 'permission_granted',
+      role_id: roleId,
+      permission_id: permissionId,
+      activity_type: 'permission_granted',
       description: 'IPermission granted to role',
-      metadata: { isActive: payload.isActive }
+      metadata: { is_active: payload.is_active }
     });
     
     return { success: true, data: rolePermission };
@@ -78,9 +78,9 @@ export const updateRolePermissionAction = async (roleId: string | number, permis
     
     // Log activity
     await rolePermissionActivityRepository.create({
-      roleId: roleId,
-      permissionId: permissionId,
-      activityType: 'permission_updated',
+      role_id: roleId,
+      permission_id: permissionId,
+      activity_type: 'permission_updated',
       description: 'IRole-permission relationship updated',
       metadata: { updated_fields: Object.keys(payload) }
     });
@@ -120,9 +120,9 @@ export const deleteRolePermissionAction = async (roleId: string | number, permis
     
     // Log activity
     await rolePermissionActivityRepository.create({
-      roleId: roleId,
-      permissionId: permissionId,
-      activityType: 'permission_revoked',
+      role_id: roleId,
+      permission_id: permissionId,
+      activity_type: 'permission_revoked',
       description: 'IPermission revoked from role'
     });
     
@@ -157,14 +157,14 @@ export const bulkAssignRolePermissionsAction = async (payload: IBulkRolePermissi
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
-    await revalidateCacheTag(accessControlTags.role(payload.roleId));
+    await revalidateCacheTag(accessControlTags.role(payload.role_id));
     
     // Log activity for successful assignments
     for (const rolePermission of result.successful) {
       await rolePermissionActivityRepository.create({
-        roleId: payload.roleId,
-        permissionId: rolePermission.permissionId,
-        activityType: 'permission_granted',
+        role_id: payload.role_id,
+        permission_id: rolePermission.permission_id,
+        activity_type: 'permission_granted',
         description: 'IPermission granted to role (bulk operation)',
         metadata: { bulk_operation: true }
       });
@@ -204,9 +204,9 @@ export const bulkRemoveRolePermissionsAction = async (roleId: string | number, p
     // Log activity for successful removals
     for (const rolePermission of result.successful) {
       await rolePermissionActivityRepository.create({
-        roleId: roleId,
-        permissionId: rolePermission.permissionId,
-        activityType: 'permission_revoked',
+        role_id: roleId,
+        permission_id: rolePermission.permission_id,
+        activity_type: 'permission_revoked',
         description: 'IPermission revoked from role (bulk operation)',
         metadata: { bulk_operation: true }
       });
@@ -246,9 +246,9 @@ export const bulkUpdateRolePermissionsAction = async (roleId: string | number, p
     // Log activity for successful updates
     for (const rolePermission of result.successful) {
       await rolePermissionActivityRepository.create({
-        roleId: roleId,
-        permissionId: rolePermission.permissionId,
-        activityType: 'permission_updated',
+        role_id: roleId,
+        permission_id: rolePermission.permission_id,
+        activity_type: 'permission_updated',
         description: 'IRole-permission relationship updated (bulk operation)',
         metadata: { bulk_operation: true, updated_fields: Object.keys(payload) }
       });
@@ -285,8 +285,8 @@ export const createRolePermissionActivityAction = async (activity: Omit<IRolePer
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
-    await revalidateCacheTag(accessControlTags.role(activity.roleId));
-    await revalidateCacheTag(accessControlTags.permission(activity.permissionId));
+    await revalidateCacheTag(accessControlTags.role(activity.role_id));
+    await revalidateCacheTag(accessControlTags.permission(activity.permission_id));
     
     return { success: true, data: createdActivity };
   } catch (error) {
@@ -346,9 +346,9 @@ export const validateRolePermissionTreeAction = async (roleId: string | number):
     
     // Log validation activity
     await rolePermissionActivityRepository.create({
-      roleId: roleId,
-      permissionId: 'system', // System activity
-      activityType: 'other',
+      role_id: roleId,
+      permission_id: 'system', // System activity
+      activity_type: 'other',
       description: 'IRole permission tree validation performed',
       metadata: { 
         total_validations: results.length,
@@ -386,9 +386,9 @@ export const validateAllRolePermissionsAction = async (): Promise<ActionResultTy
     
     // Log validation activity
     await rolePermissionActivityRepository.create({
-      roleId: 'system', // System activity
-      permissionId: 'system',
-      activityType: 'other',
+      role_id: 'system', // System activity
+      permission_id: 'system',
+      activity_type: 'other',
       description: 'All role-permission relationships validation performed',
       metadata: { 
         total_validations: results.length,
@@ -432,9 +432,9 @@ export const calculateRolePermissionInheritanceAction = async (roleId: string | 
     
     // Log inheritance calculation activity
     await rolePermissionActivityRepository.create({
-      roleId: roleId,
-      permissionId: 'system',
-      activityType: 'other',
+      role_id: roleId,
+      permission_id: 'system',
+      activity_type: 'other',
       description: 'IRole permission inheritance calculated',
       metadata: { 
         inherited_permissions_count: result.length
@@ -476,9 +476,9 @@ export const resolveRolePermissionConflictsAction = async (roleId: string | numb
     
     // Log conflict resolution activity
     await rolePermissionActivityRepository.create({
-      roleId: roleId,
-      permissionId: 'system',
-      activityType: 'other',
+      role_id: roleId,
+      permission_id: 'system',
+      activity_type: 'other',
       description: 'IRole permission conflicts resolved',
       metadata: { 
         resolved_conflicts_count: result.resolution_count,
@@ -517,9 +517,9 @@ export const exportRolePermissionsAction = async (request: IRolePermissionExport
     
     // Log export activity
     await rolePermissionActivityRepository.create({
-      roleId: 'system', // System activity
-      permissionId: 'system',
-      activityType: 'other',
+      role_id: 'system', // System activity
+      permission_id: 'system',
+      activity_type: 'other',
       description: 'IRole-permission data exported',
       metadata: { 
         format: request.format,

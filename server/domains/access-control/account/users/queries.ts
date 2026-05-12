@@ -33,9 +33,9 @@ export const getUserWithStatus = cache(async (id: number) => {
   
   return {
     user,
-    isActive: user.status === 'ACTIVE',
-    lastLogin: user.lastLogin,
-    has_refresh_token: !!user.refreshToken
+    is_active: user.status === 'ACTIVE',
+    last_login: user.last_login,
+    has_refresh_token: !!user.refresh_token
   };
 });
 
@@ -49,16 +49,16 @@ export const getUsersWithSummary = cache(async (params?: IUserListParams) => {
   const processedUsers = users.data.map(user => ({
     ...user,
     isActive: user.status === 'ACTIVE',
-    days_since_last_login: user.lastLogin ? 
-      Math.floor((Date.now() - new Date(user.lastLogin).getTime()) / (1000 * 60 * 60 * 24)) : null,
-    has_refresh_token: !!user.refreshToken
+    days_since_last_login: user.last_login ? 
+      Math.floor((Date.now() - new Date(user.last_login).getTime()) / (1000 * 60 * 60 * 24)) : null,
+    has_refresh_token: !!user.refresh_token
   }));
   
   return {
     users: processedUsers,
     summary: {
       total: users.meta.total,
-      active: processedUsers.filter(u => u.isActive).length,
+      active: processedUsers.filter(u => u.is_active).length,
       with_refresh_token: processedUsers.filter(u => u.has_refresh_token).length,
       logged_in_recently: processedUsers.filter(u => 
         u.days_since_last_login !== null && u.days_since_last_login <= 7

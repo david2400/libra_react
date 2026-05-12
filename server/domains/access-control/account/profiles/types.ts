@@ -5,7 +5,7 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 export interface IProfile {
   id: string | number;
-  userId: string | number;
+  user_id: string | number;
   first_name?: string;
   last_name?: string;
   display_name?: string;
@@ -17,13 +17,13 @@ export interface IProfile {
   date_format?: string;
   time_format?: '12h' | '24h';
   theme?: 'light' | 'dark' | 'auto';
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  is_active?: boolean;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateProfilePayload {
-  userId: string | number;
+  user_id: string | number;
   first_name?: string;
   last_name?: string;
   display_name?: string;
@@ -49,7 +49,7 @@ export interface IUpdateProfilePayload {
   date_format?: string;
   time_format?: '12h' | '24h';
   theme?: 'light' | 'dark' | 'auto';
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
 // --- IUser Types (for profile management) ---------------------------------
@@ -60,11 +60,11 @@ export interface IUser {
   user_name?: string;
   first_name?: string;
   last_name?: string;
-  isActive?: boolean;
+  is_active?: boolean;
   roles?: any[];
   permissions?: any[];
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // --- IProfile Preferences Types ---------------------------------------------
@@ -86,7 +86,7 @@ export interface IProfilePreferences {
     compact_mode: boolean;
     show_tooltips: boolean;
   };
-  updatedAt?: string;
+  updated_at?: string;
 }
 
 export interface IUpdateProfilePreferencesPayload {
@@ -112,33 +112,33 @@ export interface IUpdateProfilePreferencesPayload {
 export interface IProfileActivity {
   id: string | number;
   profile_id: string | number;
-  activityType: 'login' | 'logout' | 'profile_update' | 'password_change' | 'preference_update' | 'other';
+  activity_type: 'login' | 'logout' | 'profile_update' | 'password_change' | 'preference_update' | 'other';
   description?: string;
-  ipAddress?: string;
-  userAgent?: string;
+  ip_address?: string;
+  user_agent?: string;
   metadata?: Record<string, unknown>;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface IProfileActivityFilter {
   profile_id?: string | number;
-  activityType?: string;
-  startDate?: string;
-  endDate?: string;
+  activity_type?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 // --- IProfile Statistics Types ---------------------------------------------
 
 export interface IProfileStats {
   profile_id: string | number;
-  loginCount: number;
-  lastLogin?: string;
+  login_count: number;
+  last_login?: string;
   profile_updates: number;
   preference_changes: number;
   session_duration_avg?: number;
   total_session_time?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IProfileOverview {
@@ -162,9 +162,9 @@ export interface IProfileSecurity {
   trusted_devices: Array<{
     id: string;
     name: string;
-    userAgent: string;
+    user_agent: string;
     last_used: string;
-    createdAt: string;
+    created_at: string;
   }>;
 }
 
@@ -179,5 +179,5 @@ export interface IVerifyTwoFactorPayload {
 
 export interface IAddTrustedDevicePayload {
   name: string;
-  userAgent: string;
+  user_agent: string;
 }

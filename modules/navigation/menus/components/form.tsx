@@ -15,9 +15,9 @@ import {
   IMenuUpdateRequest,
   IMenu,
 } from "../models/menu.interface";
-import { menusApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { createMenuServerAction, updateMenuServerAction } from "@/app/[locale]/(protected)/navigation/menus/actions";
 
 const FormBase = ({
   initialValues,
@@ -41,6 +41,9 @@ interface IRegisterMenuProps extends IFormAddProps {
 
 export const RegisterMenu = ({ availableMenus }: IRegisterMenuProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('navigation.menus.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: IMenuCreateRequest = {
     name: "",
@@ -53,10 +56,10 @@ export const RegisterMenu = ({ availableMenus }: IRegisterMenuProps = {}) => {
 
   const handleSubmit: SubmitHandler<IMenuCreateRequest> = async (values) => {
     try {
-      const result = await menusApi.create(values);
+      const result = await createMenuServerAction(values);
       
       Swal.fire({
-        title: "Menú creado exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -66,8 +69,8 @@ export const RegisterMenu = ({ availableMenus }: IRegisterMenuProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'menú' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -92,15 +95,18 @@ export const UpdateMenu = ({
   availableMenus,
 }: IUpdateMenuProps) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('navigation.menus.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<IMenuUpdateRequest> = async (values) => {
     if (!values.id) return;
     
     try {
-      const result = await menusApi.update(values.id, values);
+      const result = await updateMenuServerAction(values.id, values);
       
       Swal.fire({
-        title: "Menú actualizado exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -110,8 +116,8 @@ export const UpdateMenu = ({
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'menú' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

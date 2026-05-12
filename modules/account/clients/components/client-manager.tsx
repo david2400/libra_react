@@ -17,8 +17,8 @@ interface IClientManagerProps {
 }
 
 export const ClientManager = ({ initialData }: IClientManagerProps) => {
-  const t = useTranslations("AccessControl.account.clients");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("account.clients");
+  const tCommon = useTranslations("common");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
@@ -76,22 +76,22 @@ export const ClientManager = ({ initialData }: IClientManagerProps) => {
         ),
       },
       {
-        header: "Estado",
+        header: tCommon("status"),
         accessorKey: "isActive",
         cell: ({ row }) => (
           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
             row.original.isActive !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
           }`}>
-            {row.original.isActive !== false ? "Activo" : "Inactivo"}
+            {row.original.isActive !== false ? tCommon("active") : tCommon("inactive")}
           </span>
         ),
       },
       {
         id: "actions",
-        header: "Acciones",
+        header: tCommon("actions"),
         cell: ({ row }) => (
           <Buttons size='sm' variant='outline' onClick={() => handleEdit(row.original)}>
-            Editar
+            {tCommon("edit")}
           </Buttons>
         ),
       },
@@ -102,19 +102,19 @@ export const ClientManager = ({ initialData }: IClientManagerProps) => {
   const summaryCards = [
     {
       icon: HiOutlineUserCircle,
-      label: "Total de clientes",
+      label: t("metrics.total"),
       value: metrics.totalClients,
       accent: "from-orange-500/40 to-amber-500/40 text-orange-700",
     },
     {
       icon: HiOutlineUserCircle,
-      label: "Clientes activos",
+      label: t("metrics.active"),
       value: metrics.activeClients,
       accent: "from-yellow-500/40 to-orange-500/40 text-yellow-700",
     },
     {
       icon: HiOutlineUserCircle,
-      label: "Ciudades únicas",
+      label: t("metrics.uniqueCities"),
       value: metrics.uniqueCities,
       accent: "from-amber-500/40 to-yellow-500/40 text-amber-700",
     },
@@ -129,14 +129,14 @@ export const ClientManager = ({ initialData }: IClientManagerProps) => {
           </span>
           <div className='space-y-2'>
             <h1 className='text-4xl font-semibold leading-tight'>{t("description")}</h1>
-            <p className='text-white/80'>Gestiona los clientes y sus datos de contacto.</p>
+            <p className='text-white/80'>{t("subtitle")}</p>
           </div>
           <Buttons
             color='success'
             className='inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-3 text-sm font-semibold text-primary transition hover:-translate-y-0.5 hover:bg-white'
             onClick={() => setOpenModal(true)}>
             <HiOutlinePlusCircle className='h-4 w-4' />
-            {tActions("saveClient")}
+            {t("createButton")}
           </Buttons>
         </header>
       </article>
@@ -155,7 +155,7 @@ export const ClientManager = ({ initialData }: IClientManagerProps) => {
 
       <DataTable data={initialData} columns={columns} className='py-2' />
 
-      <Modal size='lg' title="Crear cliente" open={openModal} onOpenChange={() => setOpenModal(!openModal)}>
+      <Modal size='lg' title={t("modal.create_title")} open={openModal} onOpenChange={() => setOpenModal(!openModal)}>
         <RegisterClient />
       </Modal>
 

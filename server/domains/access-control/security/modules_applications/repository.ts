@@ -212,7 +212,7 @@ export const moduleActivityRepository = {
     }),
 
   // Create activity log
-  create: (activity: Omit<IModuleActivity, 'id' | 'createdAt'>) => 
+  create: (activity: Omit<IModuleActivity, 'id' | 'created_at'>) => 
     serverFetch.post<IModuleActivity>('/api/access_control/module-activities', activity, {
       revalidate: false,
     }),

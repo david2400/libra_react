@@ -115,7 +115,7 @@ export const authorizationAuditRepository = {
     }),
 
   // Create audit entry (system generated)
-  create: (audit: Omit<IAuthorizationAudit, 'id' | 'createdAt'>) => 
+  create: (audit: Omit<IAuthorizationAudit, 'id' | 'created_at'>) => 
     serverFetch.post<IAuthorizationAudit>('/api/access_control/authorization/audit', audit, {
       revalidate: false,
     }),
@@ -179,7 +179,7 @@ export const authorizationPolicyRepository = {
     }),
 
   // Create policy
-  create: (policy: Omit<IAuthorizationPolicy, 'id' | 'createdAt' | 'updatedAt'>) => 
+  create: (policy: Omit<IAuthorizationPolicy, 'id' | 'created_at' | 'updated_at'>) => 
     serverFetch.post<IAuthorizationPolicy>('/api/access_control/authorization/policies', policy, {
       revalidate: false,
     }),
@@ -270,7 +270,7 @@ export const authorizationSecurityRepository = {
     }),
 
   // Create security rule
-  createRule: (rule: Omit<ISecurityRule, 'id' | 'createdAt' | 'updatedAt'>) => 
+  createRule: (rule: Omit<ISecurityRule, 'id' | 'created_at' | 'updated_at'>) => 
     serverFetch.post<ISecurityRule>('/api/access_control/authorization/security/rules', rule, {
       revalidate: false,
     }),

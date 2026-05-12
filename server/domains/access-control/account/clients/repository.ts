@@ -204,7 +204,7 @@ export const clientActivityRepository = {
     }),
 
   // Create activity log
-  create: (activity: Omit<IClientActivity, 'id' | 'createdAt'>) => 
+  create: (activity: Omit<IClientActivity, 'id' | 'created_at'>) => 
     serverFetch.post<IClientActivity>('/api/access_control/client-activities', activity, {
       revalidate: false,
     }),

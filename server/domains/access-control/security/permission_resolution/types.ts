@@ -4,45 +4,45 @@ import type { ListParams } from '@/server/lib/types';
 // --- IPermission Resolution Types ---------------------------------------------
 
 export interface IPermission {
-  idPermission: number;
+  id_permission: number;
   name: string;
   description?: string;
-  aplicationsId: number;
-  moduleAplicationId?: number;
+  aplications_id: number;
+  module_aplication_id?: number;
   activo?: boolean;
-  usrCrea?: number;
-  usrMod?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  usr_crea?: number;
+  usr_mod?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IEffectivePermission extends IPermission {
   source: 'USER' | 'ROLE';
   level?: string;
-  roleId?: number;
-  roleName?: string;
+  role_id?: number;
+  role_name?: string;
 }
 
 export interface IPermissionCheckRequest {
-  permissionCode: string;
-  requiredLevel: string;
+  permission_code: string;
+  required_level: string;
 }
 
 export interface IPermissionCheckResponse {
-  hasPermission: boolean;
-  effectiveLevel?: string;
+  has_permission: boolean;
+  effective_level?: string;
   source?: 'USER' | 'ROLE';
 }
 
 export interface IHasAnyPermissionRequest {
-  permissionCodes: string[];
+  permission_codes: string[];
 }
 
 export interface IHasAllPermissionsRequest {
-  permissionCodes: string[];
+  permission_codes: string[];
 }
 
 export interface IPermissionResolutionParams extends ListParams {
-  userId?: number;
-  includeExpired?: boolean;
+  user_id?: number;
+  include_expired?: boolean;
 }

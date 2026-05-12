@@ -7,9 +7,9 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormRoleMenu } from "../scenes/formRoleMenu";
 import { validationRoleMenu } from "../schemas/role-menu.schema";
 import { IRoleMenuCreateRequest, IRoleMenuUpdateRequest } from "../models/role-menu.interface";
-import { roleMenusApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { createRoleMenuAction, updateRoleMenuAction } from "@/server/domains/access-control/navigation/role_menus";
 
 const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
   return <FormRoleMenu initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
@@ -17,6 +17,9 @@ const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>
 
 export const RegisterRoleMenu = ({}: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('navigation.roleMenus.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: IRoleMenuCreateRequest = {
     roleId: 0,
@@ -28,10 +31,10 @@ export const RegisterRoleMenu = ({}: IFormAddProps = {}) => {
 
   const handleSubmit: SubmitHandler<IRoleMenuCreateRequest> = async (values) => {
     try {
-      const result = await roleMenusApi.create(values.roleId, values.menuId, values);
+      const result = await createRoleMenuAction(values.roleId, values.menuId, values);
       
       Swal.fire({
-        title: "Menú asignado exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -39,8 +42,8 @@ export const RegisterRoleMenu = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'menú de rol' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -51,15 +54,22 @@ export const RegisterRoleMenu = ({}: IFormAddProps = {}) => {
 
 export const UpdateRoleMenu = ({ initialValues }: IFormUpdateProps<IRoleMenuUpdateRequest>) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('navigation.roleMenus.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<IRoleMenuUpdateRequest> = async (values) => {
     if (!values.roleId || !values.menuId) return;
     
     try {
-      const result = await roleMenusApi.update(values.roleId, values.menuId, values);
+      const result = await updateRoleMenuAction(
+        values.roleId,
+        values.menuId,
+        values,
+      );
       
       Swal.fire({
-        title: "Asignación actualizada exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -67,8 +77,8 @@ export const UpdateRoleMenu = ({ initialValues }: IFormUpdateProps<IRoleMenuUpda
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'menú de rol' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

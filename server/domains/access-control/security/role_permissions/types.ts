@@ -1,65 +1,43 @@
 import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IRole } from '../roles';
+import { IPermission } from '../permissions';
 
 // --- IRole-IPermission Relationship Types ----------------------------------------
 
 export interface IRolePermission {
-  roleId: string | number;
-  permissionId: string | number;
-  isActive?: boolean;
-  grantedAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  role_id: string | number;
+  permission_id: string | number;
+  is_active?: boolean;
+  granted_at?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateRolePermissionPayload {
-  roleId: string | number;
-  permissionId: string | number;
-  isActive?: boolean;
+  role_id: string | number;
+  permission_id: string | number;
+  is_active?: boolean;
 }
 
 export interface IUpdateRolePermissionPayload {
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
-// --- IRole Types (for role-permission management) ------------------------------
-
-export interface IRole {
-  id: string | number;
-  name: string;
-  description?: string;
-  isActive?: boolean;
-  permissions?: IPermission[];
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// --- IPermission Types (for role-permission management) ------------------------
-
-export interface IPermission {
-  id: string | number;
-  name: string;
-  description?: string;
-  resource?: string;
-  action?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
 
 // --- IRole-IPermission Statistics Types ------------------------------------------
 
 export interface IRolePermissionStats {
-  roleId: string | number;
-  permissionId: string | number;
-  usageCount: number;
-  lastUsed?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  role_id: string | number;
+  permission_id: string | number;
+  usage_count: number;
+  last_used?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface IRolePermissionOverview {
-  rolePermission: IRolePermission;
+  role_permission: IRolePermission;
   role: IRole;
   permission: IPermission;
   stats: IRolePermissionStats;
@@ -68,15 +46,15 @@ export interface IRolePermissionOverview {
 // --- Bulk Operations Types -----------------------------------------------------
 
 export interface IBulkRolePermissionPayload {
-  roleId: string | number;
-  permissionIds: (string | number)[];
-  isActive?: boolean;
+  role_id: string | number;
+  permission_ids: (string | number)[];
+  is_active?: boolean;
 }
 
 export interface IBulkRolePermissionResponse {
   successful: IRolePermission[];
   failed: Array<{
-    permissionId: string | number;
+    permission_id: string | number;
     error: string;
   }>;
   summary: {
@@ -89,91 +67,91 @@ export interface IBulkRolePermissionResponse {
 // --- IRole-IPermission Validation Types ------------------------------------------
 
 export interface IRolePermissionValidationResult {
-  isValid: boolean;
+  is_valid: boolean;
   errors: string[];
   warnings: string[];
-  roleId: string | number;
-  permissionId: string | number;
+  role_id: string | number;
+  permission_id: string | number;
 }
 
 export interface IRolePermissionValidationRequest {
-  roleId: string | number;
-  permissionId: string | number;
-  validateConflicts?: boolean;
-  validateHierarchy?: boolean;
+  role_id: string | number;
+  permission_id: string | number;
+  validate_conflicts?: boolean;
+  validate_hierarchy?: boolean;
 }
 
 // --- IRole-IPermission Activity Types --------------------------------------------
 
 export interface IRolePermissionActivity {
   id: string | number;
-  roleId: string | number;
-  permissionId: string | number;
-  activityType: 'permission_granted' | 'permission_revoked' | 'permission_updated' | 'permission_used' | 'other';
+  role_id: string | number;
+  permission_id: string | number;
+  activity_type: 'permission_granted' | 'permission_revoked' | 'permission_updated' | 'permission_used' | 'other';
   description?: string;
   metadata?: Record<string, unknown>;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface IRolePermissionActivityFilter {
-  roleId?: string | number;
-  permissionId?: string | number;
-  activityType?: string;
-  startDate?: string;
-  endDate?: string;
+  role_id?: string | number;
+  permission_id?: string | number;
+  activity_type?: string;
+  start_date?: string;
+  end_date?: string;
 }
 
 // --- IRole-IPermission Inheritance Types -----------------------------------------
 
 export interface IRolePermissionInheritance {
-  roleId: string | number;
-  permissionId: string | number;
-  inheritedFromRoleId?: string | number;
-  inheritanceLevel: number;
-  isActive?: boolean;
+  role_id: string | number;
+  permission_id: string | number;
+  inherited_from_role_id?: string | number;
+  inheritance_level: number;
+  is_active?: boolean;
 }
 
 export interface IRolePermissionInheritanceTree {
   role: IRole;
-  inheritedPermissions: Array<{
+  inherited_permissions: Array<{
     permission: IPermission;
-    inheritedFrom: IRole;
-    inheritanceLevel: number;
+    inherited_from: IRole;
+    inheritance_level: number;
   }>;
-  totalInherited: number;
+  total_inherited: number;
 }
 
 // --- IRole-IPermission Conflict Types --------------------------------------------
 
 export interface IRolePermissionConflict {
-  roleId: string | number;
-  permissionId: string | number;
-  conflictType: 'duplicate' | 'incompatible' | 'hierarchy' | 'other';
+  role_id: string | number;
+  permission_id: string | number;
+  conflict_type: 'duplicate' | 'incompatible' | 'hierarchy' | 'other';
   description: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  resolutionSuggestion?: string;
+  resolution_suggestion?: string;
 }
 
 export interface IRolePermissionConflictResolution {
   conflicts: IRolePermissionConflict[];
-  resolutionCount: number;
-  unresolvedCount: number;
+  resolution_count: number;
+  unresolved_count: number;
 }
 
 // --- IRole-IPermission Export Types ----------------------------------------------
 
 export interface IRolePermissionExportRequest {
-  roleIds?: (string | number)[];
-  permissionIds?: (string | number)[];
+  role_ids?: (string | number)[];
+  permission_ids?: (string | number)[];
   format?: 'json' | 'csv' | 'xlsx';
-  includeStats?: boolean;
-  includeActivity?: boolean;
+  include_stats?: boolean;
+  include_activity?: boolean;
 }
 
 export interface IRolePermissionExportResponse {
-  fileUrl: string;
-  fileName: string;
-  fileSize: number;
-  exportDate: string;
-  recordCount: number;
+  file_url: string;
+  file_name: string;
+  file_size: number;
+  export_date: string;
+  record_count: number;
 }

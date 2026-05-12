@@ -1,12 +1,12 @@
-import { useTranslations } from 'next-intl';
 import { z } from 'zod';
+import { useValidationMessages } from '@/lib/i18n';
 
 export const validationUser = () => {
-  const intl = useTranslations('Form');
+  const v = useValidationMessages();
 
   return z.object({
-    username: z.string().min(1, { message: intl('requiredField') }),
-    password: z.string().min(6, { message: 'Mínimo 6 caracteres' }).optional(),
+    username: z.string().min(1, { message: v.required }),
+    password: z.string().min(6, { message: v.minLength(6) }).optional(),
     status: z.string().optional(),
     companyId: z.coerce.number().optional(),
     clientId: z.coerce.number().optional(),

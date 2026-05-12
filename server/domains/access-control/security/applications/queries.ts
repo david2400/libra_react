@@ -125,15 +125,15 @@ export const getApplicationsDashboard = cache(async () => {
   // Combine data for dashboard
   const dashboardData = applications.data.map(app => {
     const health = allHealth.results.find(h => h.application.id === app.id);
-    const stats = allStats.find(s => s.applicationId === app.id);
+    const stats = allStats.find(s => s.application_id === app.id);
     
     return {
       ...app,
       health: health?.health,
       stats: stats || {
-        applicationId: app.id,
-        totalUsers: 0,
-        activeSessions: 0,
+        application_id: app.id,
+        total_users: 0,
+        active_sessions: 0,
         last_updated: new Date().toISOString()
       }
     };
@@ -160,7 +160,7 @@ export const getApplicationHealthTrends = cache(async (applicationId: string | n
   }));
   
   return {
-    applicationId: applicationId,
+    application_id: applicationId,
     trends,
     summary: {
       total_checks: trends.length,

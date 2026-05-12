@@ -170,7 +170,7 @@ export const getUserAuthorizationOverview = cache(async (userId: string | number
   ]);
   
   return {
-    userId: userId,
+    user_id: userId,
     stats: userStats,
     recent_audits: recentAudits.data,
     performance: userPerformance.data[0] || null,

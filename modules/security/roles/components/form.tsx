@@ -35,6 +35,9 @@ const FormBase = ({
 
 export const RegisterRole = ({}: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('security.roles.messages');
+  const tMessages = useTranslations('messages');
 
   const defaultValues: IRoleCreateRequest = {
     name: "",
@@ -48,7 +51,7 @@ export const RegisterRole = ({}: IFormAddProps = {}) => {
       const result = await rolesApi.create(values);
       
       Swal.fire({
-        title: "Rol creado exitosamente",
+        title: t('createSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -58,8 +61,8 @@ export const RegisterRole = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('createError', { entity: 'rol' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }
@@ -78,6 +81,9 @@ export const UpdateRole = ({
   initialValues,
 }: IFormUpdateProps<IRoleUpdateRequest>) => {
   const router = useRouter();
+  const { useTranslations } = require('next-intl');
+  const t = useTranslations('security.roles.messages');
+  const tMessages = useTranslations('messages');
 
   const handleSubmit: SubmitHandler<IRoleUpdateRequest> = async (values) => {
     if (!values.id) return;
@@ -86,7 +92,7 @@ export const UpdateRole = ({
       const result = await rolesApi.update(values.id, values);
       
       Swal.fire({
-        title: "Rol actualizado exitosamente",
+        title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -96,8 +102,8 @@ export const UpdateRole = ({
       });
     } catch (error) {
       Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        title: tMessages('updateError', { entity: 'rol' }),
+        text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
     }

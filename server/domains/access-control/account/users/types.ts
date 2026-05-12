@@ -7,36 +7,36 @@ export interface IUser {
   id_user: number;
   username: string;
   password: string;
-  lastLogin?: string;
-  refreshToken?: string;
+  last_login?: string;
+  refresh_token?: string;
   status: string;
-  companyId?: number;
-  clientId?: number;
+  company_id?: number;
+  client_id?: number;
   activo?: boolean;
   usr_crea?: number;
   usr_mod?: number;
-  createdAt?: string;
-  updatedAt?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateUserPayload {
   username: string;
   password: string;
-  lastLogin?: string;
-  refreshToken?: string;
+  last_login?: string;
+  refresh_token?: string;
   status?: string;
-  companyId?: number;
-  clientId?: number;
+  company_id?: number;
+  client_id?: number;
 }
 
 export interface IUpdateUserPayload {
   username?: string;
   password?: string;
-  lastLogin?: string;
-  refreshToken?: string;
+  last_login?: string;
+  refresh_token?: string;
   status?: string;
-  companyId?: number;
-  clientId?: number;
+  company_id?: number;
+  client_id?: number;
   activo?: boolean;
   usr_mod?: number;
 }

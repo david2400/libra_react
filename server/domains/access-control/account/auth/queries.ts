@@ -89,7 +89,7 @@ export const getTokenValidationWithUserInfo = async (request: ITokenValidationRe
     return {
       ...validation,
       additional_info: {
-        lastLogin: null, // Would come from user service
+        last_login: null, // Would come from user service
         session_duration: null, // Would be calculated
         device_info: null // Would come from session service
       }
@@ -111,7 +111,7 @@ export const getAuthenticationMetrics = cache(async () => {
       total_logins_today: 0,
       successful_logins: 0,
       failed_logins: 0,
-      activeSessions: 0,
+      active_sessions: 0,
       tokens_issued_today: 0,
       tokens_validated_today: 0
     },
