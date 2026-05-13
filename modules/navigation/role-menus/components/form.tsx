@@ -3,7 +3,7 @@
 "use client";
 
 import { SubmitHandler } from "react-hook-form";
-import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models/form.interface";
+import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models";
 import { FormRoleMenu } from "../scenes/formRoleMenu";
 import { validationRoleMenu } from "../schemas/role-menu.schema";
 import { IRoleMenuCreateRequest, IRoleMenuUpdateRequest } from "../models/role-menu.interface";

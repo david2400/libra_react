@@ -1,5 +1,6 @@
 ﻿import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IClient } from '../clients';
 
 // --- ICompany Types -------------------------------------------------------------
 
@@ -20,7 +21,7 @@ export interface ICompany {
   updated_at?: string;
 }
 
-export interface ICreateCompanyPayload {
+export interface ICreateCompany {
   name: string;
   description?: string;
   industry?: string;
@@ -33,7 +34,7 @@ export interface ICreateCompanyPayload {
   email?: string;
 }
 
-export interface IUpdateCompanyPayload {
+export interface IUpdateCompany {
   name?: string;
   description?: string;
   industry?: string;
@@ -49,20 +50,7 @@ export interface IUpdateCompanyPayload {
 
 // --- Client Types (for company management) -----------------------------------
 
-export interface IClient {
-  id: string | number;
-  name: string;
-  email?: string;
-  phone?: string;
-  company_name?: string;
-  contact_person?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
+
 
 // --- ICompany-Client Relationships Types -----------------------------------
 
@@ -75,14 +63,14 @@ export interface ICompanyClient {
   client?: IClient;
 }
 
-export interface ICreateCompanyClientPayload {
+export interface ICreateCompanyClient {
   company_id: string | number;
   client_id: string | number;
   is_primary?: boolean;
   relationship_type?: string;
 }
 
-export interface IUpdateCompanyClientPayload {
+export interface IUpdateCompanyClient {
   company_id?: string | number;
   client_id?: string | number;
   is_primary?: boolean;
@@ -139,7 +127,7 @@ export interface ICompanyConfig {
   updated_at?: string;
 }
 
-export interface ICreateCompanyConfigPayload {
+export interface ICreateCompanyConfig {
   company_id: string | number;
   key: string;
   value: string | number | boolean;
@@ -147,7 +135,7 @@ export interface ICreateCompanyConfigPayload {
   is_encrypted?: boolean;
 }
 
-export interface IUpdateCompanyConfigPayload {
+export interface IUpdateCompanyConfig {
   value?: string | number | boolean;
   description?: string;
   is_encrypted?: boolean;

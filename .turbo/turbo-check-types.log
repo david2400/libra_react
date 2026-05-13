@@ -1,0 +1,81 @@
+
+> libra@0.1.0 check-types C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverkid\apps\libra
+> tsc --noEmit
+
+modules/account/companies/scenes/formCompany.tsx(56,34): error TS1005: '}' expected.
+modules/account/companies/scenes/formCompany.tsx(59,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/companies/scenes/formCompany.tsx(63,37): error TS1005: '}' expected.
+modules/account/companies/scenes/formCompany.tsx(66,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/companies/scenes/formCompany.tsx(70,35): error TS1005: '}' expected.
+modules/account/companies/scenes/formCompany.tsx(73,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/companies/scenes/formCompany.tsx(77,35): error TS1005: '}' expected.
+modules/account/companies/scenes/formCompany.tsx(79,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/companies/scenes/formCompany.tsx(83,34): error TS1005: '}' expected.
+modules/account/companies/scenes/formCompany.tsx(85,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/companies/scenes/formCompany.tsx(89,37): error TS1005: '}' expected.
+modules/account/companies/scenes/formCompany.tsx(91,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/companies/scenes/formCompany.tsx(95,37): error TS1005: '}' expected.
+modules/account/companies/scenes/formCompany.tsx(97,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/companies/scenes/formCompany.tsx(101,41): error TS1005: '}' expected.
+modules/account/companies/scenes/formCompany.tsx(103,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(48,36): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(51,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(55,42): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(57,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(61,40): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(63,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(67,39): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(69,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(73,35): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(75,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(79,40): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(82,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(86,38): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(88,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(92,38): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(94,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(98,35): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(101,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(105,41): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(108,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/account/profiles/scenes/formProfile.tsx(112,33): error TS1005: '}' expected.
+modules/account/profiles/scenes/formProfile.tsx(114,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/menu-permissions/scenes/formMenuPermission.tsx(36,36): error TS1005: '}' expected.
+modules/navigation/menu-permissions/scenes/formMenuPermission.tsx(39,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/menu-permissions/scenes/formMenuPermission.tsx(43,42): error TS1005: '}' expected.
+modules/navigation/menu-permissions/scenes/formMenuPermission.tsx(46,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/menus/scenes/formMenu.tsx(76,34): error TS1005: '}' expected.
+modules/navigation/menus/scenes/formMenu.tsx(78,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/menus/scenes/formMenu.tsx(82,35): error TS1005: '}' expected.
+modules/navigation/menus/scenes/formMenu.tsx(84,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/menus/scenes/formMenu.tsx(88,34): error TS1005: '}' expected.
+modules/navigation/menus/scenes/formMenu.tsx(90,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/menus/scenes/formMenu.tsx(94,34): error TS1005: '}' expected.
+modules/navigation/menus/scenes/formMenu.tsx(96,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/menus/scenes/formMenu.tsx(100,38): error TS1005: '}' expected.
+modules/navigation/menus/scenes/formMenu.tsx(107,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/menus/scenes/formMenu.tsx(111,35): error TS1005: '}' expected.
+modules/navigation/menus/scenes/formMenu.tsx(114,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/role-menus/scenes/formRoleMenu.tsx(36,36): error TS1005: '}' expected.
+modules/navigation/role-menus/scenes/formRoleMenu.tsx(39,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/navigation/role-menus/scenes/formRoleMenu.tsx(43,36): error TS1005: '}' expected.
+modules/navigation/role-menus/scenes/formRoleMenu.tsx(46,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/applications/scenes/formApplication.tsx(42,34): error TS1005: '}' expected.
+modules/security/applications/scenes/formApplication.tsx(44,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/applications/scenes/formApplication.tsx(48,37): error TS1005: '}' expected.
+modules/security/applications/scenes/formApplication.tsx(50,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/applications/scenes/formApplication.tsx(54,41): error TS1005: '}' expected.
+modules/security/applications/scenes/formApplication.tsx(56,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/applications/scenes/formApplication.tsx(60,37): error TS1005: '}' expected.
+modules/security/applications/scenes/formApplication.tsx(63,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/applications/scenes/formApplication.tsx(67,36): error TS1005: '}' expected.
+modules/security/applications/scenes/formApplication.tsx(71,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/permissions/scenes/formPermission.tsx(36,34): error TS1005: '}' expected.
+modules/security/permissions/scenes/formPermission.tsx(38,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/permissions/scenes/formPermission.tsx(42,41): error TS1005: '}' expected.
+modules/security/permissions/scenes/formPermission.tsx(44,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/permissions/scenes/formPermission.tsx(48,38): error TS1005: '}' expected.
+modules/security/permissions/scenes/formPermission.tsx(50,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+modules/security/permissions/scenes/formPermission.tsx(54,36): error TS1005: '}' expected.
+modules/security/permissions/scenes/formPermission.tsx(56,10): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+ ELIFECYCLE  Command failed with exit code 2.

@@ -3,7 +3,7 @@
 "use client";
 
 import { SubmitHandler } from "react-hook-form";
-import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models/form.interface";
+import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models";
 import { FormCompany } from "../scenes/formCompany";
 import { validationCompany } from "../schemas/company.schema";
 import { ICompanyCreateRequest, ICompanyUpdateRequest } from "../models/company.interface";

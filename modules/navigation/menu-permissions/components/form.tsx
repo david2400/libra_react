@@ -3,7 +3,7 @@
 "use client";
 
 import { SubmitHandler } from "react-hook-form";
-import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models/form.interface";
+import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models";
 import { FormMenuPermission } from "../scenes/formMenuPermission";
 import { validationMenuPermission } from "../schemas/menu-permission.schema";
 import { IMenuPermissionCreateRequest, IMenuPermissionUpdateRequest } from "../models/menu-permission.interface";

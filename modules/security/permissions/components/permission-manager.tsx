@@ -25,7 +25,9 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
   const [editingPermission, setEditingPermission] = useState<IPermission | null>(null);
 
   const metrics = useMemo(() => {
-    const activePermissions = initialData.filter((perm) => perm.isActive !== false).length;
+    const activePermissions = initialData.filter(
+      (perm) => perm.is_active !== false,
+    ).length;
     const uniqueResources = new Set(initialData.map(p => p.resource).filter(Boolean)).size;
 
     return {
@@ -65,7 +67,9 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
         accessorKey: "resource",
         header: t("fields.resource"),
         cell: (info) => (
-          <span className='text-sm font-mono'>{info.getValue<string>() || "-"}</span>
+          <span className='text-sm font-mono'>
+            {info.getValue<string>() || "-"}
+          </span>
         ),
       },
       {
@@ -79,7 +83,9 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
         accessorKey: "description",
         header: t("fields.description"),
         cell: (info) => (
-          <span className='text-sm text-muted-foreground'>{info.getValue<string>() || "-"}</span>
+          <span className='text-sm text-muted-foreground'>
+            {info.getValue<string>() || "-"}
+          </span>
         ),
       },
       {
@@ -89,11 +95,11 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
           <div className='flex items-center'>
             <span
               className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                row.original.isActive !== false
+                row.original.is_active !== false
                   ? "bg-green-100 text-green-800"
                   : "bg-red-100 text-red-800"
               }`}>
-              {row.original.isActive !== false ? "Active" : "Inactive"}
+              {row.original.is_active !== false ? "Active" : "Inactive"}
             </span>
           </div>
         ),

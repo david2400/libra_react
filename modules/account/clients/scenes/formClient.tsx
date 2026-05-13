@@ -6,9 +6,9 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { FormField } from "@repo/ui/form/scenes/form-field";
-import { Buttons } from "@repo/ui/buttons/scenes/index";
-import { IFormProps } from "@repo/ui/form/models/form.interface";
+import { FormField } from "@repo/ui/form/scenes";
+import { Buttons } from "@repo/ui/buttons";
+import { IFormProps } from "@repo/ui/form/models";
 
 export const FormClient = ({
   initialValues,

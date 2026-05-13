@@ -6,9 +6,9 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { FormField } from "@repo/ui/form/scenes/form-field";
-import { Buttons } from "@repo/ui/buttons/scenes/index";
-import { IFormProps } from "@repo/ui/form/models/form.interface";
+import { FormField } from "@repo/ui/form/scenes";
+import { Buttons } from "@repo/ui/buttons";
+import { IFormProps } from "@repo/ui/form/models";
 
 export const FormRole = ({
   initialValues,
@@ -33,13 +33,13 @@ export const FormRole = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={t("fields.name"))
+          label={t("fields.name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "description" }}
-          label={t("fields.description"))
+          label={t("fields.description")}
           className='col-span-12'
         />
       </div>

@@ -1,20 +1,8 @@
 ﻿import 'server-only';
 import type { ListParams } from '@/server/lib/types';
+import { IPermission } from '../permissions';
 
-// --- IPermission Resolution Types ---------------------------------------------
 
-export interface IPermission {
-  id_permission: number;
-  name: string;
-  description?: string;
-  aplications_id: number;
-  module_aplication_id?: number;
-  activo?: boolean;
-  usr_crea?: number;
-  usr_mod?: number;
-  created_at?: string;
-  updated_at?: string;
-}
 
 export interface IEffectivePermission extends IPermission {
   source: 'USER' | 'ROLE';

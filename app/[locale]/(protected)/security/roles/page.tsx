@@ -1,11 +1,14 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { RoleManager } from "@/modules/security/roles";
 
-import { buildRolesData } from "./helpers";
+import {
+  IRole,
+  getRoles,
+} from "@/server/domains/access-control/security/roles";
 
 export async function generateMetadata({
   params,
@@ -21,10 +24,21 @@ export async function generateMetadata({
   };
 }
 
-const RolesPage = async () => {
-  const data = await buildRolesData();
+const RolesPage: NextPage = async () => {
+  try {
+    const rolesResponse = await getRoles();
 
-  return <RoleManager initialData={data} />;
+    // Extract the data array from the paginated response
+    const rolesData: IRole[] = Array.isArray(rolesResponse)
+      ? rolesResponse
+      : rolesResponse?.data || [];
+
+    return <RoleManager initialData={rolesData} />;
+  } catch (error) {
+    console.error("Error loading themes:", error);
+    // Return empty data if API fails
+    return <RoleManager initialData={[]} />;
+  }
 };
 
 export default RolesPage;

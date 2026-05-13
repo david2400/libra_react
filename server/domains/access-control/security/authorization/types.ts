@@ -1,5 +1,7 @@
 import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IPermission } from '../permissions';
+import { IPolicy } from '../policies';
 
 // --- Authorization Types ---------------------------------------------------------
 
@@ -43,31 +45,6 @@ export interface IUser {
   permissions?: any[];
   created_at?: string;
   updated_at?: string;
-}
-
-// --- IPermission Types (for authorization management) -------------------------
-
-export interface IPermission {
-  id: string | number;
-  name: string;
-  description?: string;
-  resource?: string;
-  action?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-// --- Policy Types (for authorization management) -----------------------------
-
-export interface IPolicy {
-  id: string | number;
-  name: string;
-  description?: string;
-  rules?: IPolicyRule[];
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface IPolicyRule {

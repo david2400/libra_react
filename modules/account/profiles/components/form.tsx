@@ -3,7 +3,7 @@
 "use client";
 
 import { SubmitHandler } from "react-hook-form";
-import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models/form.interface";
+import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models";
 import { FormProfile } from "../scenes/formProfile";
 import { validationProfile } from "../schemas/profile.schema";
 import { IProfileCreateRequest, IProfileUpdateRequest } from "../models/profile.interface";

@@ -4,8 +4,10 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { RoleMenuManager } from "@/modules/navigation/role-menus";
-
-import { buildRoleMenusData } from "./helpers";
+import {
+  IRoleMenu,
+  getRoleMenus,
+} from "@/server/domains/access-control/navigation/role_menus";
 
 export async function generateMetadata({
   params,
@@ -22,9 +24,17 @@ export async function generateMetadata({
 }
 
 const RoleMenusPage = async () => {
-  const data = await buildRoleMenusData();
+  try {
+    const rolesMenuResponse = await getRoleMenus();
 
-  return <RoleMenuManager initialData={data} />;
+    const themesData: IRoleMenu[] = Array.isArray(rolesMenuResponse)
+      ? rolesMenuResponse
+      : rolesMenuResponse?.data || [];
+
+    return <RoleMenuManager initialData={themesData} />;
+  } catch (error) {
+    return <RoleMenuManager initialData={[]} />;
+  }
 };
 
 export default RoleMenusPage;

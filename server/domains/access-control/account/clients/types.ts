@@ -1,8 +1,8 @@
 ﻿import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { ICompany } from '../companies';
 
 // --- Client Types -------------------------------------------------------------
-
 export interface IClient {
   id: string | number;
   name: string;
@@ -41,23 +41,6 @@ export interface IUpdateClientPayload {
   is_active?: boolean;
 }
 
-// --- ICompany Types (for client management) ----------------------------------
-
-export interface ICompany {
-  id: string | number;
-  name: string;
-  description?: string;
-  industry?: string;
-  size?: 'small' | 'medium' | 'large' | 'enterprise';
-  website?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
-
 // --- Client-ICompany Relationships Types ---------------------------------------
 
 export interface IClientCompany {
@@ -69,14 +52,14 @@ export interface IClientCompany {
   company?: ICompany;
 }
 
-export interface ICreateClientCompanyPayload {
+export interface ICreateClientCompany {
   client_id: string | number;
   company_id: string | number;
   is_primary?: boolean;
   relationship_type?: string;
 }
 
-export interface IUpdateClientCompanyPayload {
+export interface IUpdateClientCompany {
   is_primary?: boolean;
   relationship_type?: string;
 }

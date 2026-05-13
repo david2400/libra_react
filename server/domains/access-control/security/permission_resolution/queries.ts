@@ -3,7 +3,6 @@ import { cache } from 'react';
 
 import { permissionResolutionRepository } from './repository';
 import type { 
-  IPermission,
   IEffectivePermission
 } from './types';
 
@@ -19,8 +18,8 @@ export const getUserPermissions = cache((userId: number) =>
   permissionResolutionRepository.getUserPermissions(userId)
 );
 
-// Get role-based permissions
-export const getRolePermissions = cache((userId: number) => 
+// // Get role-based permissions
+export const getRolePermissionsByUser = cache((userId: number) => 
   permissionResolutionRepository.getRolePermissions(userId)
 );
 
@@ -44,7 +43,7 @@ export const getUserPermissionProfile = cache(async (userId: number) => {
   const [effectivePermissions, userPermissions, rolePermissions] = await Promise.all([
     getEffectivePermissions(userId),
     getUserPermissions(userId),
-    getRolePermissions(userId)
+    getRolePermissionsByUser(userId)
   ]);
   
   return {

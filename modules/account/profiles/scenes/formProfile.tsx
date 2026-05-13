@@ -6,10 +6,10 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { FormField } from "@repo/ui/form/scenes/form-field";
-import { FormSelectField } from "@repo/ui/form/scenes/form-select";
-import { Buttons } from "@repo/ui/buttons/scenes/index";
-import { IFormProps } from "@repo/ui/form/models/form.interface";
+import { FormField } from "@repo/ui/form/scenes";
+import { FormSelectField } from "@repo/ui/form/scenes";
+import { Buttons } from "@repo/ui/buttons";
+import { IFormProps } from "@repo/ui/form/models";
 
 export const FormProfile = ({
   initialValues,
@@ -96,14 +96,14 @@ export const FormProfile = ({
         <FormSelectField
           controller={{ control, name: "theme" }}
           label={t("fields.theme"))
-          options={themeOptions}
+          data={themeOptions}
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "time_format" }}
           label={t("fields.time_format"))
-          options={timeFormatOptions}
+          data={timeFormatOptions}
           className='col-span-12 md:col-span-6'
         />
 

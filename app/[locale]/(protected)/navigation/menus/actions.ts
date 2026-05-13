@@ -6,11 +6,11 @@ import {
   deleteMenuAction,
 } from '@/server/domains/access-control/navigation/menus';
 import type {
-  ICreateMenuPayload,
-  IUpdateMenuPayload,
+  ICreateMenu,
+  IUpdateMenu,
 } from '@/server/domains/access-control/navigation/menus';
 
-export async function createMenuServerAction(payload: ICreateMenuPayload) {
+export async function createMenuServerAction(payload: ICreateMenu) {
   const result = await createMenuAction(payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createMenuServerAction(payload: ICreateMenuPayload) {
   return result.data;
 }
 
-export async function updateMenuServerAction(id: string | number, payload: IUpdateMenuPayload) {
+export async function updateMenuServerAction(id: string | number, payload: IUpdateMenu) {
   const result = await updateMenuAction(id, payload);
 
   if (!result.success) {

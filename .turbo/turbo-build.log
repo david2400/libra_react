@@ -1,0 +1,1295 @@
+
+> libra@0.1.0 build C:\Users\davi4\Documents\Proyectos\JS\NEXT\kleverkid\apps\libra
+> next build
+
+▲ Next.js 16.2.4 (Turbopack)
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 44 errors:
+./apps/libra/modules/account/companies/scenes/formCompany.tsx:56:34
+Expected '</', got ')'
+  [90m54 |[0m         <[33mFormSelectField[0m
+  [90m55 |[0m           controller={{ control, name: [32m"size"[0m }}
+[31m[1m>[0m [90m56 |[0m           label={t([32m"fields.size"[0m))
+  [90m   |[0m                                  [31m[1m^[0m
+  [90m57 |[0m           data={sizeOptions}
+  [90m58 |[0m           className=[32m'col-span-12 md:col-span-6'[0m
+  [90m59 |[0m         />
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/account/companies/scenes/formCompany.tsx [Client Component Browser]
+    ./apps/libra/modules/account/companies/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/account/companies/components/company-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/account/companies/components/company-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/companies/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/account/companies/scenes/formCompany.tsx [Client Component SSR]
+    ./apps/libra/modules/account/companies/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/account/companies/components/company-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/account/companies/components/company-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/companies/page.tsx [Server Component]
+
+
+./apps/libra/modules/account/profiles/scenes/formProfile.tsx:48:36
+Expected '</', got ')'
+  [90m46 |[0m         <[33mFormField[0m
+  [90m47 |[0m           controller={{ control, name: [32m"userId"[0m }}
+[31m[1m>[0m [90m48 |[0m           label={t([32m"fields.userId"[0m))
+  [90m   |[0m                                    [31m[1m^[0m
+  [90m49 |[0m           [36mtype[0m=[32m'number'[0m
+  [90m50 |[0m           className=[32m'col-span-12 md:col-span-6'[0m
+  [90m51 |[0m         />
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/account/profiles/scenes/formProfile.tsx [Client Component Browser]
+    ./apps/libra/modules/account/profiles/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/account/profiles/components/profile-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/account/profiles/components/profile-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/profiles/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/account/profiles/scenes/formProfile.tsx [Client Component SSR]
+    ./apps/libra/modules/account/profiles/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/account/profiles/components/profile-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/account/profiles/components/profile-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/profiles/page.tsx [Server Component]
+
+
+./apps/libra/modules/navigation/menu-permissions/scenes/formMenuPermission.tsx:36:36
+Expected '</', got ')'
+  [90m34 |[0m         <[33mFormField[0m
+  [90m35 |[0m           controller={{ control, name: [32m"menuId"[0m }}
+[31m[1m>[0m [90m36 |[0m           label={t([32m"fields.menuId"[0m))
+  [90m   |[0m                                    [31m[1m^[0m
+  [90m37 |[0m           [36mtype[0m=[32m'number'[0m
+  [90m38 |[0m           className=[32m'col-span-12 md:col-span-6'[0m
+  [90m39 |[0m         />
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/navigation/menu-permissions/scenes/formMenuPermission.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/navigation/menu-permissions/scenes/formMenuPermission.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+
+./apps/libra/modules/navigation/menus/scenes/formMenu.tsx:76:34
+Expected '</', got ')'
+  [90m74 |[0m         <[33mFormField[0m
+  [90m75 |[0m           controller={{ control, name: [32m"name"[0m }}
+[31m[1m>[0m [90m76 |[0m           label={t([32m"fields.name"[0m))
+  [90m   |[0m                                  [31m[1m^[0m
+  [90m77 |[0m           className=[32m'col-span-12 md:col-span-6'[0m
+  [90m78 |[0m         />
+  [90m79 |[0m
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/navigation/menus/scenes/formMenu.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menus/components/menu-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menus/components/menu-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/navigation/menus/scenes/formMenu.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menus/components/menu-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menus/components/menu-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx [Server Component]
+
+
+./apps/libra/modules/navigation/role-menus/scenes/formRoleMenu.tsx:36:36
+Expected '</', got ')'
+  [90m34 |[0m         <[33mFormField[0m
+  [90m35 |[0m           controller={{ control, name: [32m"roleId"[0m }}
+[31m[1m>[0m [90m36 |[0m           label={t([32m"fields.roleId"[0m))
+  [90m   |[0m                                    [31m[1m^[0m
+  [90m37 |[0m           [36mtype[0m=[32m'number'[0m
+  [90m38 |[0m           className=[32m'col-span-12 md:col-span-6'[0m
+  [90m39 |[0m         />
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/navigation/role-menus/scenes/formRoleMenu.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/navigation/role-menus/scenes/formRoleMenu.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/modules/security/applications/scenes/formApplication.tsx:42:34
+Expected '</', got ')'
+  [90m40 |[0m         <[33mFormField[0m
+  [90m41 |[0m           controller={{ control, name: [32m"name"[0m }}
+[31m[1m>[0m [90m42 |[0m           label={t([32m"fields.name"[0m))
+  [90m   |[0m                                  [31m[1m^[0m
+  [90m43 |[0m           className=[32m'col-span-12 md:col-span-6'[0m
+  [90m44 |[0m         />
+  [90m45 |[0m
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/security/applications/scenes/formApplication.tsx [Client Component Browser]
+    ./apps/libra/modules/security/applications/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/security/applications/components/form.tsx [Server Component]
+    ./apps/libra/modules/security/applications/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/security/applications/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/security/applications/scenes/formApplication.tsx [Client Component SSR]
+    ./apps/libra/modules/security/applications/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/security/applications/components/form.tsx [Server Component]
+    ./apps/libra/modules/security/applications/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/security/applications/page.tsx [Server Component]
+
+
+./apps/libra/modules/security/permissions/scenes/formPermission.tsx:36:34
+Expected '</', got ')'
+  [90m34 |[0m         <[33mFormField[0m
+  [90m35 |[0m           controller={{ control, name: [32m"name"[0m }}
+[31m[1m>[0m [90m36 |[0m           label={t([32m"fields.name"[0m))
+  [90m   |[0m                                  [31m[1m^[0m
+  [90m37 |[0m           className=[32m'col-span-12 md:col-span-6'[0m
+  [90m38 |[0m         />
+  [90m39 |[0m
+
+Parsing ecmascript source code failed
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/security/permissions/scenes/formPermission.tsx [Client Component Browser]
+    ./apps/libra/modules/security/permissions/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/security/permissions/components/form.tsx [Server Component]
+    ./apps/libra/modules/security/permissions/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/security/permissions/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/security/permissions/scenes/formPermission.tsx [Client Component SSR]
+    ./apps/libra/modules/security/permissions/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/security/permissions/components/form.tsx [Server Component]
+    ./apps/libra/modules/security/permissions/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/security/permissions/page.tsx [Server Component]
+
+
+./apps/libra/server/lib/server-fetch.ts:3:1
+You're importing a module that depends on "next/headers". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+  [90m1 |[0m [36mimport[0m [32m'server-only'[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { cookies, headers [36mas[0m nextHeaders } [36mfrom[0m [32m'next/headers'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m { env } [36mfrom[0m [32m'./env'[0m;
+  [90m5 |[0m [36mimport[0m { [33mServerApiError[0m, [36mtype[0m [33mServerFetchOptions[0m } [36mfrom[0m [32m'./types'[0m;
+  [90m6 |[0m
+
+Ecmascript file had an error
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/lib/server-fetch.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/repository.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/index.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/lib/server-fetch.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/lib/server-fetch.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts:1:1
+You're importing a module that depends on "server-only". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m { cache } [36mfrom[0m [32m'react'[0m;
+  [90m3 |[0m
+  [90m4 |[0m [36mimport[0m {
+
+Ecmascript file had an error
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts:1:1
+You're importing a module that depends on "server-only". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { serverFetch } [36mfrom[0m [32m'@/server/lib'[0m;
+  [90m4 |[0m [36mimport[0m { accessControlTags } [36mfrom[0m [32m'@/server/lib/cache-tags'[0m;
+
+Ecmascript file had an error
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts:1:1
+You're importing a module that depends on "server-only". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m [36mtype[0m { [33mListParams[0m, [33mIPaginatedResponse[0m } [36mfrom[0m [32m'@/server/lib/types'[0m;
+  [90m3 |[0m [36mimport[0m { [33mIPermission[0m } [36mfrom[0m [32m'../../security/permissions'[0m;
+  [90m4 |[0m [36mimport[0m { [33mIMenu[0m } [36mfrom[0m [32m'../menus'[0m;
+
+Ecmascript file had an error
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts:1:1
+You're importing a module that depends on "server-only". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m { cache } [36mfrom[0m [32m'react'[0m;
+  [90m3 |[0m
+  [90m4 |[0m [36mimport[0m {
+
+Ecmascript file had an error
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts:1:1
+You're importing a module that depends on "server-only". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { serverFetch } [36mfrom[0m [32m'@/server/lib'[0m;
+  [90m4 |[0m [36mimport[0m { accessControlTags } [36mfrom[0m [32m'@/server/lib/cache-tags'[0m;
+
+Ecmascript file had an error
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts
+    ./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/role_menus/types.ts:1:1
+You're importing a module that depends on "server-only". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m [36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m [36mtype[0m { [33mListParams[0m, [33mIPaginatedResponse[0m } [36mfrom[0m [32m'@/server/lib/types'[0m;
+  [90m3 |[0m
+  [90m4 |[0m [90m// --- IRole-IMenu Relationship Types ----------------------------------------------[0m
+
+Ecmascript file had an error
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/types.ts
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/types.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/types.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/server/lib/server-fetch.ts:1:1
+You're importing a module that depends on "server-only". This API is only available in Server Components in the App Router, but you are using it in the Pages Router.
+    Learn more: https://nextjs.org/docs/app/building-your-application/rendering/server-components
+[31m[1m>[0m [90m1 |[0m [36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { cookies, headers [36mas[0m nextHeaders } [36mfrom[0m [32m'next/headers'[0m;
+  [90m4 |[0m [36mimport[0m { env } [36mfrom[0m [32m'./env'[0m;
+
+Ecmascript file had an error
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/lib/server-fetch.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/repository.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/index.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/lib/server-fetch.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/lib/server-fetch.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts:1:1
+'server-only' cannot be imported from a Client Component module
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m { cache } [36mfrom[0m [32m'react'[0m;
+  [90m3 |[0m
+  [90m4 |[0m [36mimport[0m {
+
+It should only be used from a Server Component.
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts:1:1
+'server-only' cannot be imported from a Client Component module
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { serverFetch } [36mfrom[0m [32m'@/server/lib'[0m;
+  [90m4 |[0m [36mimport[0m { accessControlTags } [36mfrom[0m [32m'@/server/lib/cache-tags'[0m;
+
+It should only be used from a Server Component.
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts:1:1
+'server-only' cannot be imported from a Client Component module
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m [36mtype[0m { [33mListParams[0m, [33mIPaginatedResponse[0m } [36mfrom[0m [32m'@/server/lib/types'[0m;
+  [90m3 |[0m [36mimport[0m { [33mIPermission[0m } [36mfrom[0m [32m'../../security/permissions'[0m;
+  [90m4 |[0m [36mimport[0m { [33mIMenu[0m } [36mfrom[0m [32m'../menus'[0m;
+
+It should only be used from a Server Component.
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/menu_permissions/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/menu-permissions/components/menu-permission-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts:1:1
+'server-only' cannot be imported from a Client Component module
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m { cache } [36mfrom[0m [32m'react'[0m;
+  [90m3 |[0m
+  [90m4 |[0m [36mimport[0m {
+
+It should only be used from a Server Component.
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts:1:1
+'server-only' cannot be imported from a Client Component module
+[31m[1m>[0m [90m1 |[0m ﻿[36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { serverFetch } [36mfrom[0m [32m'@/server/lib'[0m;
+  [90m4 |[0m [36mimport[0m { accessControlTags } [36mfrom[0m [32m'@/server/lib/cache-tags'[0m;
+
+It should only be used from a Server Component.
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts
+    ./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/server/domains/access-control/navigation/role_menus/types.ts:1:1
+'server-only' cannot be imported from a Client Component module
+[31m[1m>[0m [90m1 |[0m [36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m [36mimport[0m [36mtype[0m { [33mListParams[0m, [33mIPaginatedResponse[0m } [36mfrom[0m [32m'@/server/lib/types'[0m;
+  [90m3 |[0m
+  [90m4 |[0m [90m// --- IRole-IMenu Relationship Types ----------------------------------------------[0m
+
+It should only be used from a Server Component.
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/types.ts
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/queries.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/types.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/domains/access-control/navigation/role_menus/types.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/server/lib/server-fetch.ts:1:1
+'server-only' cannot be imported from a Client Component module
+[31m[1m>[0m [90m1 |[0m [36mimport[0m [32m'server-only'[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m2 |[0m
+  [90m3 |[0m [36mimport[0m { cookies, headers [36mas[0m nextHeaders } [36mfrom[0m [32m'next/headers'[0m;
+  [90m4 |[0m [36mimport[0m { env } [36mfrom[0m [32m'./env'[0m;
+
+It should only be used from a Server Component.
+
+Import traces:
+  Server Component:
+    ./apps/libra/server/lib/server-fetch.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/repository.ts
+    ./apps/libra/server/domains/access-control/navigation/menus/index.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menus/page.tsx
+
+  Client Component Browser:
+    ./apps/libra/server/lib/server-fetch.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component Browser]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/server/lib/server-fetch.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts [Client Component SSR]
+    ./apps/libra/server/domains/access-control/navigation/role_menus/index.ts [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/navigation/role-menus/components/form.tsx [Server Component]
+    ./apps/libra/modules/navigation/role-menus/index.ts [Server Component]
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx [Server Component]
+
+
+./apps/libra/app/[locale]/(protected)/account/clients/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { clientsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIClient[0m } [36mfrom[0m [32m"@/server/domains/access-control/account/clients"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildClientsData = [36masync[0m (): [33mPromise[0m<[33mIClient[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/account/clients/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/account/clients/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/account/companies/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { companiesApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mICompany[0m } [36mfrom[0m [32m"@/server/domains/access-control/account/companies"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildCompaniesData = [36masync[0m (): [33mPromise[0m<[33mICompany[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/account/companies/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/account/companies/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/account/profiles/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { profilesApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIProfile[0m } [36mfrom[0m [32m"@/server/domains/access-control/account/profiles"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildProfilesData = [36masync[0m (): [33mPromise[0m<[33mIProfile[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/account/profiles/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/account/profiles/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/account/users/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { usersApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIUser[0m } [36mfrom[0m [32m"@/server/domains/access-control/account/users"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildUsersData = [36masync[0m (): [33mPromise[0m<[33mIUser[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/account/users/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/account/users/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { menuPermissionsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIMenuPermission[0m } [36mfrom[0m [32m"@/server/domains/access-control/navigation/menu_permi...[0m
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildMenuPermissionsData = [36masync[0m (): [33mPromise[0m<[33mIMenuPermission[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/navigation/role-menus/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { roleMenusApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIRoleMenu[0m } [36mfrom[0m [32m"@/server/domains/access-control/navigation/role_menus"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildRoleMenusData = [36masync[0m (): [33mPromise[0m<[33mIRoleMenu[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/navigation/role-menus/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/security/applications/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { applicationsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIApplication[0m } [36mfrom[0m [32m"@/server/domains/access-control/security/applications"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildApplicationsData = [36masync[0m (): [33mPromise[0m<[33mIApplication[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/security/applications/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/security/applications/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/security/modules-applications/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { modulesApplicationsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIModuleApplication[0m } [36mfrom[0m [32m"@/server/domains/access-control/security/modules_a...[0m
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildModuleApplicationsData = [36masync[0m (): [33mPromise[0m<[33mIModuleApplication[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/security/modules-applications/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/security/modules-applications/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/security/permissions/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { permissionsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIPermission[0m } [36mfrom[0m [32m"@/server/domains/access-control/security/permissions"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildPermissionsData = [36masync[0m (): [33mPromise[0m<[33mIPermission[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/security/permissions/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/security/permissions/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/security/policies/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { policiesApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIPolicy[0m } [36mfrom[0m [32m"@/server/domains/access-control/security/policies"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildPoliciesData = [36masync[0m (): [33mPromise[0m<[33mIPolicy[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/security/policies/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/security/policies/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/security/role-permissions/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { rolePermissionsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIRolePermission[0m } [36mfrom[0m [32m"@/server/domains/access-control/security/role_permiss...[0m
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildRolePermissionsData = [36masync[0m (): [33mPromise[0m<[33mIRolePermission[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/security/role-permissions/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/security/role-permissions/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/app/[locale]/(protected)/security/roles/helpers.ts:3:1
+Module not found: Can't resolve '@/lib/api'
+  [90m1 |[0m [36mimport[0m [32m"server-only"[0m;
+  [90m2 |[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m { rolesApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m [36mtype[0m { [33mIRole[0m } [36mfrom[0m [32m"@/server/domains/access-control/security/roles"[0m;
+  [90m5 |[0m
+  [90m6 |[0m [36mexport[0m [36mconst[0m buildRolesData = [36masync[0m (): [33mPromise[0m<[33mIRole[0m[]> => {
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/app/[locale]/(protected)/security/roles/helpers.ts
+    ./apps/libra/app/[locale]/(protected)/security/roles/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/account/clients/components/form.tsx:10:1
+Module not found: Can't resolve '@/lib/api'
+  [90m 8 |[0m [36mimport[0m { validationClient } [36mfrom[0m [32m"../schemas/client.schema"[0m;
+  [90m 9 |[0m [36mimport[0m { [33mIClientCreateRequest[0m, [33mIClientUpdateRequest[0m } [36mfrom[0m [32m"../models/client.interface"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { clientsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m12 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m13 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/account/clients/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/account/clients/components/client-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/account/clients/components/client-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/clients/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/account/clients/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/account/clients/components/client-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/account/clients/components/client-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/clients/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/account/companies/components/form.tsx:10:1
+Module not found: Can't resolve '@/lib/api'
+  [90m 8 |[0m [36mimport[0m { validationCompany } [36mfrom[0m [32m"../schemas/company.schema"[0m;
+  [90m 9 |[0m [36mimport[0m { [33mICompanyCreateRequest[0m, [33mICompanyUpdateRequest[0m } [36mfrom[0m [32m"../models/company.interface"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { companiesApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m12 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"@repo/ui/shared/i18n/routing"[0m;
+  [90m13 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/account/companies/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/account/companies/components/company-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/account/companies/components/company-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/companies/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/account/companies/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/account/companies/components/company-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/account/companies/components/company-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/companies/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/account/profiles/components/form.tsx:10:1
+Module not found: Can't resolve '@/lib/api'
+  [90m 8 |[0m [36mimport[0m { validationProfile } [36mfrom[0m [32m"../schemas/profile.schema"[0m;
+  [90m 9 |[0m [36mimport[0m { [33mIProfileCreateRequest[0m, [33mIProfileUpdateRequest[0m } [36mfrom[0m [32m"../models/profile.interface"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { profilesApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m12 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m13 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/account/profiles/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/account/profiles/components/profile-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/account/profiles/components/profile-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/profiles/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/account/profiles/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/account/profiles/components/profile-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/account/profiles/components/profile-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/profiles/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/account/users/components/form.tsx:10:1
+Module not found: Can't resolve '@/lib/api'
+  [90m 8 |[0m [36mimport[0m { validationUser } [36mfrom[0m [32m"../schemas/user.schema"[0m;
+  [90m 9 |[0m [36mimport[0m { [33mIUserCreateRequest[0m, [33mIUserUpdateRequest[0m } [36mfrom[0m [32m"../models/user.interface"[0m;
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { usersApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m12 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m13 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import traces:
+  Client Component Browser:
+    ./apps/libra/modules/account/users/components/form.tsx [Client Component Browser]
+    ./apps/libra/modules/account/users/components/user-manager.tsx [Client Component Browser]
+    ./apps/libra/modules/account/users/components/user-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/users/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./apps/libra/modules/account/users/components/form.tsx [Client Component SSR]
+    ./apps/libra/modules/account/users/components/user-manager.tsx [Client Component SSR]
+    ./apps/libra/modules/account/users/components/user-manager.tsx [Server Component]
+    ./apps/libra/app/[locale]/(protected)/account/users/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/security/applications/components/form.tsx:17:1
+Module not found: Can't resolve '@/lib/api'
+  [90m15 |[0m   [33mIApplicationUpdateRequest[0m,
+  [90m16 |[0m } [36mfrom[0m [32m"../models/application.interface"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { applicationsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m19 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m20 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/modules/security/applications/components/form.tsx
+    ./apps/libra/modules/security/applications/index.ts
+    ./apps/libra/app/[locale]/(protected)/security/applications/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/security/modules-applications/components/form.tsx:10:1
+Module not found: Can't resolve '@/lib/api'
+  [90m 8 |[0m [36mimport[0m { validationModuleApplication } [36mfrom[0m [32m"../schemas/module-application.schema"[0m;
+  [90m 9 |[0m [36mimport[0m { [33mIModuleApplicationCreateRequest[0m, [33mIModuleApplicationUpdateRequest[0m } [36mfrom[0m [32m"../model...[0m
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { modulesApplicationsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m12 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m13 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/modules/security/modules-applications/components/form.tsx
+    ./apps/libra/modules/security/modules-applications/index.ts
+    ./apps/libra/app/[locale]/(protected)/security/modules-applications/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/security/permissions/components/form.tsx:18:1
+Module not found: Can't resolve '@/lib/api'
+  [90m16 |[0m   [33mIPermission[0m,
+  [90m17 |[0m } [36mfrom[0m [32m"../models/permission.interface"[0m;
+[31m[1m>[0m [90m18 |[0m [36mimport[0m { permissionsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m19 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m20 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m21 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/modules/security/permissions/components/form.tsx
+    ./apps/libra/modules/security/permissions/index.ts
+    ./apps/libra/app/[locale]/(protected)/security/permissions/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/security/policies/components/form.tsx:17:1
+Module not found: Can't resolve '@/lib/api'
+  [90m15 |[0m   [33mIPolicyUpdateRequest[0m,
+  [90m16 |[0m } [36mfrom[0m [32m"../models/policy.interface"[0m;
+[31m[1m>[0m [90m17 |[0m [36mimport[0m { policiesApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m18 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m19 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m20 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/modules/security/policies/components/form.tsx
+    ./apps/libra/modules/security/policies/index.ts
+    ./apps/libra/app/[locale]/(protected)/security/policies/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/security/role-permissions/components/form.tsx:10:1
+Module not found: Can't resolve '@/lib/api'
+  [90m 8 |[0m [36mimport[0m { validationRolePermission } [36mfrom[0m [32m"../schemas/role-permission.schema"[0m;
+  [90m 9 |[0m [36mimport[0m { [33mIRolePermissionCreateRequest[0m, [33mIRolePermissionUpdateRequest[0m } [36mfrom[0m [32m"../models/role...[0m
+[31m[1m>[0m [90m10 |[0m [36mimport[0m { rolePermissionsApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m11 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m12 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m13 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/modules/security/role-permissions/components/form.tsx
+    ./apps/libra/modules/security/role-permissions/index.ts
+    ./apps/libra/app/[locale]/(protected)/security/role-permissions/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+./apps/libra/modules/security/roles/components/form.tsx:18:1
+Module not found: Can't resolve '@/lib/api'
+  [90m16 |[0m   [33mIRole[0m,
+  [90m17 |[0m } [36mfrom[0m [32m"../models/role.interface"[0m;
+[31m[1m>[0m [90m18 |[0m [36mimport[0m { rolesApi } [36mfrom[0m [32m"@/lib/api"[0m;
+  [90m   |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m19 |[0m [36mimport[0m [33mSwal[0m [36mfrom[0m [32m"sweetalert2"[0m;
+  [90m20 |[0m [36mimport[0m { useRouter } [36mfrom[0m [32m"next/navigation"[0m;
+  [90m21 |[0m
+
+Import map: aliased to relative './lib/api' inside of [project]/apps/libra
+
+
+Import trace:
+  Server Component:
+    ./apps/libra/modules/security/roles/components/form.tsx
+    ./apps/libra/modules/security/roles/index.ts
+    ./apps/libra/app/[locale]/(protected)/security/roles/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./apps/libra/modules/account/companies/scenes/formCompany.tsx:56:34)
+    at <unknown> (./apps/libra/modules/account/profiles/scenes/formProfile.tsx:48:36)
+    at <unknown> (./apps/libra/modules/navigation/menu-permissions/scenes/formMenuPermission.tsx:36:36)
+    at <unknown> (./apps/libra/modules/navigation/menus/scenes/formMenu.tsx:76:34)
+    at <unknown> (./apps/libra/modules/navigation/role-menus/scenes/formRoleMenu.tsx:36:36)
+    at <unknown> (./apps/libra/modules/security/applications/scenes/formApplication.tsx:42:34)
+    at <unknown> (./apps/libra/modules/security/permissions/scenes/formPermission.tsx:36:34)
+    at <unknown> (./apps/libra/server/lib/server-fetch.ts:3:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/role_menus/types.ts:1:1)
+    at <unknown> (./apps/libra/server/lib/server-fetch.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/menu_permissions/queries.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/menu_permissions/repository.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/menu_permissions/types.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/role_menus/queries.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/role_menus/repository.ts:1:1)
+    at <unknown> (./apps/libra/server/domains/access-control/navigation/role_menus/types.ts:1:1)
+    at <unknown> (./apps/libra/server/lib/server-fetch.ts:1:1)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/account/clients/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/account/companies/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/account/profiles/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/account/users/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/navigation/menu-permissions/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/navigation/role-menus/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/security/applications/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/security/modules-applications/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/security/permissions/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/security/policies/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/security/role-permissions/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/app/[locale]/(protected)/security/roles/helpers.ts:3:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/account/clients/components/form.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/account/companies/components/form.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/account/profiles/components/form.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/account/users/components/form.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/security/applications/components/form.tsx:17:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/security/modules-applications/components/form.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/security/permissions/components/form.tsx:18:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/security/policies/components/form.tsx:17:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/security/role-permissions/components/form.tsx:10:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at <unknown> (./apps/libra/modules/security/roles/components/form.tsx:18:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+ ELIFECYCLE  Command failed with exit code 1.

@@ -4,8 +4,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { PermissionManager } from "@/modules/security/permissions";
-
-import { buildPermissionsData } from "./helpers";
+import { IPermission, getPermissions } from "@/server/domains/access-control/security/permissions";
 
 export async function generateMetadata({
   params,
@@ -22,9 +21,22 @@ export async function generateMetadata({
 }
 
 const PermissionsPage = async () => {
-  const data = await buildPermissionsData();
+  try {
+    const modulesApplicationResponse = await getPermissions();
 
-  return <PermissionManager initialData={data} />;
+    // Extract the data array from the paginated response
+    const modulesApplicationData: IPermission[] = Array.isArray(
+      modulesApplicationResponse,
+    )
+      ? modulesApplicationResponse
+      : modulesApplicationResponse?.data || [];
+
+    return <PermissionManager initialData={modulesApplicationData} />;
+  } catch (error) {
+    console.error("Error loading themes:", error);
+    // Return empty data if API fails
+    return <PermissionManager initialData={[]} />;
+  }
 };
 
 export default PermissionsPage;

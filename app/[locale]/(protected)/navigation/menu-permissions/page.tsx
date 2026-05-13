@@ -1,11 +1,10 @@
-/** @format */
-
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-
 import { MenuPermissionManager } from "@/modules/navigation/menu-permissions/components/menu-permission-manager";
-
-import { buildMenuPermissionsData } from "./helpers";
+import {
+  IMenuPermission,
+  getMenuPermissions,
+} from "@/server/domains/access-control/navigation/menu_permissions";
 
 export async function generateMetadata({
   params,
@@ -22,9 +21,20 @@ export async function generateMetadata({
 }
 
 const MenuPermissionsPage = async () => {
-  const data = await buildMenuPermissionsData();
+  try {
+    const menuPermissionResponse = await getMenuPermissions();
 
-  return <MenuPermissionManager initialData={data} />;
+    // Extract the data array from the paginated response
+    const menuPermissions: IMenuPermission[] = Array.isArray(
+      menuPermissionResponse,
+    )
+      ? menuPermissionResponse
+      : menuPermissionResponse?.data || [];
+
+    return <MenuPermissionManager initialData={menuPermissions} />;
+  } catch (error) {
+    return <MenuPermissionManager initialData={[]} />;
+  }
 };
 
 export default MenuPermissionsPage;

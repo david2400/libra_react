@@ -5,11 +5,11 @@ import {
   createCompanyAction,
   updateCompanyAction,
   deleteCompanyAction,
-  type ICreateCompanyPayload,
-  type IUpdateCompanyPayload,
+  type ICreateCompany,
+  type IUpdateCompany,
 } from '@/server/domains/access-control/account/companies';
 
-export async function createCompanyServerAction(payload: ICreateCompanyPayload) {
+export async function createCompanyServerAction(payload: ICreateCompany) {
   const result = await createCompanyAction(payload);
 
   if (!result.success) {
@@ -19,7 +19,7 @@ export async function createCompanyServerAction(payload: ICreateCompanyPayload) 
   return result.data;
 }
 
-export async function updateCompanyServerAction(id: string | number, payload: IUpdateCompanyPayload) {
+export async function updateCompanyServerAction(id: string | number, payload: IUpdateCompany) {
   const result = await updateCompanyAction(id, payload);
 
   if (!result.success) {

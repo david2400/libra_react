@@ -7,7 +7,7 @@ import {
   IFormAddProps,
   IFormProps,
   IFormUpdateProps,
-} from "@repo/ui/form/models/form.interface";
+} from "@repo/ui/form/models";
 import { FormApplication } from "../scenes/formApplication";
 import { validationApplication } from "../schemas/application.schema";
 import {

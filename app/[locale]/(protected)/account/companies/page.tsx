@@ -4,8 +4,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { CompanyManager } from "@/modules/account/companies/components/company-manager";
-
-import { buildCompaniesData } from "./helpers";
+import { ICompany, getCompanies } from "@/server/domains/access-control/account/companies";
 
 export async function generateMetadata({
   params,
@@ -22,9 +21,20 @@ export async function generateMetadata({
 }
 
 const CompaniesPage = async () => {
-  const data = await buildCompaniesData();
+  try {
+    const companiesResponse = await getCompanies();
 
-  return <CompanyManager initialData={data} />;
+    // Extract the data array from the paginated response
+    const companiesData: ICompany[] = Array.isArray(companiesResponse)
+      ? companiesResponse
+      : companiesResponse?.data || [];
+
+    return <CompanyManager initialData={companiesData} />;
+  } catch (error) {
+    console.error("Error loading themes:", error);
+    // Return empty data if API fails
+    return <CompanyManager initialData={[]} />;
+  }
 };
 
 export default CompaniesPage;

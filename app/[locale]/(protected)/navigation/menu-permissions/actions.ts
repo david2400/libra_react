@@ -6,11 +6,11 @@ import {
   deleteMenuPermissionAction,
 } from '@/server/domains/access-control/navigation/menu_permissions';
 import type {
-  ICreateMenuPermissionPayload,
-  IUpdateMenuPermissionPayload,
+  ICreateMenuPermission,
+  IUpdateMenuPermission,
 } from '@/server/domains/access-control/navigation/menu_permissions';
 
-export async function createMenuPermissionServerAction(menuId: string | number, permissionId: string | number, payload: ICreateMenuPermissionPayload) {
+export async function createMenuPermissionServerAction(menuId: string | number, permissionId: string | number, payload: ICreateMenuPermission) {
   const result = await createMenuPermissionAction(menuId, permissionId, payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createMenuPermissionServerAction(menuId: string | number, 
   return result.data;
 }
 
-export async function updateMenuPermissionServerAction(menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermissionPayload) {
+export async function updateMenuPermissionServerAction(menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermission) {
   const result = await updateMenuPermissionAction(menuId, permissionId, payload);
 
   if (!result.success) {

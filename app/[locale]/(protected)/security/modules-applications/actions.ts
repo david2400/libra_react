@@ -11,7 +11,7 @@ import type {
 } from '@/server/domains/access-control/security/modules_applications';
 
 export async function createModuleApplicationServerAction(payload: ICreateModuleApplicationPayload) {
-  const result = await createModuleApplicationAction(payload.moduleId, payload.applicationId, payload);
+  const result = await createModuleApplicationAction(payload.module_id, payload.application_id, payload);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? 'No se pudo crear el módulo de aplicación');

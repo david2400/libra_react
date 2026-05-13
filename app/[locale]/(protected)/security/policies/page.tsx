@@ -2,10 +2,8 @@
 
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-
 import { PolicyManager } from "@/modules/security/policies";
-
-import { buildPoliciesData } from "./helpers";
+import { IPolicy, getPolicies } from "@/server/domains/access-control/security/policies";
 
 export async function generateMetadata({
   params,
@@ -22,9 +20,22 @@ export async function generateMetadata({
 }
 
 const PoliciesPage = async () => {
-  const data = await buildPoliciesData();
+  try {
+    const policiesResponse = await getPolicies();
 
-  return <PolicyManager initialData={data} />;
+    // Extract the data array from the paginated response
+    const policiesData: IPolicy[] = Array.isArray(
+      policiesResponse,
+    )
+      ? policiesResponse
+      : policiesResponse?.data || [];
+
+    return <PolicyManager initialData={policiesData} />;
+  } catch (error) {
+    console.error("Error loading themes:", error);
+    // Return empty data if API fails
+    return <PolicyManager initialData={[]} />;
+  }
 };
 
 export default PoliciesPage;
