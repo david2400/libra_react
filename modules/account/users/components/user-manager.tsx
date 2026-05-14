@@ -17,8 +17,8 @@ interface IUserManagerProps {
 }
 
 export const UserManager = ({ initialData }: IUserManagerProps) => {
-  const t = useTranslations("AccessControl.account.users");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("account.users");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

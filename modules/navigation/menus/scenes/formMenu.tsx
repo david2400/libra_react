@@ -73,31 +73,31 @@ export const FormMenu = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={t("fields.name"))
+          label={t("fields.name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "label" }}
-          label={t("fields.label"))
+          label={t("fields.label")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "icon" }}
-          label={t("fields.icon"))
+          label={t("fields.icon")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "path" }}
-          label={t("fields.path"))
+          label={t("fields.path")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "parentId" }}
-          label={t("fields.parentId"))
+          label={t("fields.parentId")}
           data={opcionesMenus}
           placeholder='Seleccionar menú padre...'
           disabled={menusData.loading || !!menusData.error}
@@ -108,7 +108,7 @@ export const FormMenu = ({
 
         <FormField
           controller={{ control, name: "order" }}
-          label={t("fields.order"))
+          label={t("fields.order")}
           type='number'
           className='col-span-12 md:col-span-6'
         />

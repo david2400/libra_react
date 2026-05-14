@@ -39,32 +39,32 @@ export const FormApplication = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={t("fields.name"))
+          label={t("fields.name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "version" }}
-          label={t("fields.version"))
+          label={t("fields.version")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "description" }}
-          label={t("fields.description"))
+          label={t("fields.description")}
           className='col-span-12'
         />
 
         <FormField
           controller={{ control, name: "baseUrl" }}
-          label={t("fields.baseUrl"))
+          label={t("fields.baseUrl")}
           type='url'
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "status" }}
-          label={t("fields.status"))
+          label={t("fields.status")}
           data={statusOptions}
           placeholder='Seleccionar estado...'
           className='w-full col-span-12 md:col-span-6'

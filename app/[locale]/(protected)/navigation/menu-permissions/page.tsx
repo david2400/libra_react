@@ -12,11 +12,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await Promise.resolve(params);
-  const t = await getTranslations({ locale, namespace: "Titles" });
+  const t = await getTranslations({ locale, namespace: "navigation.menuPermissions" });
 
   return {
-    title: t("menu_permissions"),
-    description: "Gestión de permisos de menú.",
+    title: t("title"),
+    description: t("description"),
   };
 }
 

@@ -17,8 +17,8 @@ interface IRoleMenuManagerProps {
 }
 
 export const RoleMenuManager = ({ initialData }: IRoleMenuManagerProps) => {
-  const t = useTranslations("AccessControl.navigation.roleMenus");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("navigation.roleMenus");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

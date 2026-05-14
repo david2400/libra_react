@@ -53,52 +53,52 @@ export const FormCompany = ({
 
         <FormSelectField
           controller={{ control, name: "size" }}
-          label={t("fields.size"))
+          label={t("fields.size")}
           data={sizeOptions}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "website" }}
-          label={t("fields.website"))
+          label={t("fields.website")}
           type='url'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "email" }}
-          label={t("fields.email"))
+          label={t("fields.email")}
           type='email'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "phone" }}
-          label={t("fields.phone"))
+          label={t("fields.phone")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "city" }}
-          label={t("fields.city"))
+          label={t("fields.city")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "country" }}
-          label={t("fields.country"))
+          label={t("fields.country")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "address" }}
-          label={t("fields.address"))
+          label={t("fields.address")}
           className='col-span-12'
         />
 
         <FormField
           controller={{ control, name: "description" }}
-          label={t("fields.description"))
+          label={t("fields.description")}
           className='col-span-12'
         />
       </div>

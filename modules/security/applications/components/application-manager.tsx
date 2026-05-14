@@ -17,8 +17,8 @@ interface IApplicationManagerProps {
 }
 
 export const ApplicationManager = ({ initialData }: IApplicationManagerProps) => {
-  const t = useTranslations("AccessControl.security.applications");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("security.applications");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

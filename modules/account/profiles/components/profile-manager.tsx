@@ -17,8 +17,8 @@ interface IProfileManagerProps {
 }
 
 export const ProfileManager = ({ initialData }: IProfileManagerProps) => {
-  const t = useTranslations("AccessControl.account.profiles");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("account.profiles");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

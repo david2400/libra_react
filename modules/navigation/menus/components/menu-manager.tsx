@@ -17,9 +17,9 @@ interface IMenuManagerProps {
 }
 
 export const MenuManager = ({ initialData }: IMenuManagerProps) => {
-  const t = useTranslations("AccessControl.navigation.menus");
-  const tOptions = useTranslations("AccessControl.options");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("navigation.menus");
+  const tOptions = useTranslations("common");
+  const tActions = useTranslations("common");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

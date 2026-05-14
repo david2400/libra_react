@@ -17,8 +17,8 @@ interface IRolePermissionManagerProps {
 }
 
 export const RolePermissionManager = ({ initialData }: IRolePermissionManagerProps) => {
-  const t = useTranslations("AccessControl.security.rolePermissions");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("security.rolePermissions");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

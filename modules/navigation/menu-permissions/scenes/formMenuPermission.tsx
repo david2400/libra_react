@@ -33,14 +33,14 @@ export const FormMenuPermission = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "menuId" }}
-          label={t("fields.menuId"))
+          label={t("fields.menuId")}
           type='number'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "permissionId" }}
-          label={t("fields.permissionId"))
+          label={t("fields.permissionId")}
           type='number'
           className='col-span-12 md:col-span-6'
         />

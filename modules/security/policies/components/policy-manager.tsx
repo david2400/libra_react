@@ -17,8 +17,8 @@ interface IPolicyManagerProps {
 }
 
 export const PolicyManager = ({ initialData }: IPolicyManagerProps) => {
-  const t = useTranslations("AccessControl.security.policies");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("security.policies");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

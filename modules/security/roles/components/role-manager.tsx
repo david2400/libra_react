@@ -17,16 +17,16 @@ interface IRoleManagerProps {
 }
 
 export const RoleManager = ({ initialData }: IRoleManagerProps) => {
-  const t = useTranslations("AccessControl.security.roles");
-  const tOptions = useTranslations("AccessControl.options");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("security.roles");
+  const tOptions = useTranslations("options");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [editingRole, setEditingRole] = useState<IRole | null>(null);
 
   const metrics = useMemo(() => {
-    const activeRoles = initialData.filter((role) => role.isActive !== false).length;
+    const activeRoles = initialData.filter((role) => role.is_active !== false).length;
     const totalPermissions = initialData.reduce((acc, role) => acc + (role.permissions?.length || 0), 0);
 
     return {
@@ -80,16 +80,16 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
       },
       {
         header: "Status",
-        accessorKey: "isActive",
+        accessorKey: "is_active",
         cell: ({ row }) => (
           <div className='flex items-center'>
             <span
               className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                row.original.isActive !== false
+                row.original.is_active !== false
                   ? "bg-green-100 text-green-800"
                   : "bg-red-100 text-red-800"
               }`}>
-              {row.original.isActive !== false ? "Active" : "Inactive"}
+              {row.original.is_active !== false ? "Active" : "Inactive"}
             </span>
           </div>
         ),

@@ -33,25 +33,25 @@ export const FormPermission = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
-          label={t("fields.name"))
+          label={t("fields.name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "description" }}
-          label={t("fields.description"))
+          label={t("fields.description")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "resource" }}
-          label={t("fields.resource"))
+          label={t("fields.resource")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "action" }}
-          label={t("fields.action"))
+          label={t("fields.action")}
           className='col-span-12 md:col-span-6'
         />
       </div>

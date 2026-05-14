@@ -17,8 +17,8 @@ interface ICompanyManagerProps {
 }
 
 export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
-  const t = useTranslations("AccessControl.account.companies");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("account.companies");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

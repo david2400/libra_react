@@ -17,8 +17,8 @@ interface IMenuPermissionManagerProps {
 }
 
 export const MenuPermissionManager = ({ initialData }: IMenuPermissionManagerProps) => {
-  const t = useTranslations("AccessControl.navigation.menuPermissions");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("navigation.menuPermissions");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

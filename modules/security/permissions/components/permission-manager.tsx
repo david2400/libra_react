@@ -17,8 +17,8 @@ interface IPermissionManagerProps {
 }
 
 export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
-  const t = useTranslations("AccessControl.security.permissions");
-  const tActions = useTranslations("AccessControl.actions");
+  const t = useTranslations("security.permissions");
+  const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);

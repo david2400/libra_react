@@ -16,11 +16,11 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await Promise.resolve(params);
-  const t = await getTranslations({ locale, namespace: "Titles" });
+  const t = await getTranslations({ locale, namespace: "security.roles" });
 
   return {
-    title: t("roles"),
-    description: "Gestión de roles del sistema.",
+    title: t("title"),
+    description: t("description"),
   };
 }
 
@@ -35,8 +35,38 @@ const RolesPage: NextPage = async () => {
 
     return <RoleManager initialData={rolesData} />;
   } catch (error) {
-    console.error("Error loading themes:", error);
-    // Return empty data if API fails
+    console.error("Error loading roles:", error);
+    // Return mock data if API fails for development
+    // const mockRoles: IRole[] = [
+    //   {
+    //     id: 1,
+    //     name: "Administrador",
+    //     description: "Rol con acceso completo al sistema",
+    //     is_active: true,
+    //     permissions: [
+    //       { id: 1, name: "Crear", action: "create", description: "Crear recursos" },
+    //       { id: 2, name: "Editar", action: "edit", description: "Editar recursos" },
+    //       { id: 3, name: "Eliminar", action: "delete", description: "Eliminar recursos" }
+    //     ]
+    //   },
+    //   {
+    //     id: 2,
+    //     name: "Usuario",
+    //     description: "Rol con acceso limitado",
+    //     is_active: true,
+    //     permissions: [
+    //       { id: 4, name: "Leer", action: "read", description: "Leer recursos" }
+    //     ]
+    //   },
+    //   {
+    //     id: 3,
+    //     name: "Invitado",
+    //     description: "Rol de solo lectura",
+    //     is_active: false,
+    //     permissions: []
+    //   }
+    // ];
+    
     return <RoleManager initialData={[]} />;
   }
 };

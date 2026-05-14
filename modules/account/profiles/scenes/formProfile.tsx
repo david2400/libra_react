@@ -45,71 +45,71 @@ export const FormProfile = ({
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "userId" }}
-          label={t("fields.userId"))
+          label={t("fields.userId")}
           type='number'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "display_name" }}
-          label={t("fields.display_name"))
+          label={t("fields.display_name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "first_name" }}
-          label={t("fields.first_name"))
+          label={t("fields.first_name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "last_name" }}
-          label={t("fields.last_name"))
+          label={t("fields.last_name")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "phone" }}
-          label={t("fields.phone"))
+          label={t("fields.phone")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "avatar_url" }}
-          label={t("fields.avatar_url"))
+          label={t("fields.avatar_url")}
           type='url'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "timezone" }}
-          label={t("fields.timezone"))
+          label={t("fields.timezone")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "language" }}
-          label={t("fields.language"))
+          label={t("fields.language")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "theme" }}
-          label={t("fields.theme"))
+          label={t("fields.theme")}
           data={themeOptions}
           className='col-span-12 md:col-span-6'
         />
 
         <FormSelectField
           controller={{ control, name: "time_format" }}
-          label={t("fields.time_format"))
+          label={t("fields.time_format")}
           data={timeFormatOptions}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
           controller={{ control, name: "bio" }}
-          label={t("fields.bio"))
+          label={t("fields.bio")}
           className='col-span-12'
         />
       </div>

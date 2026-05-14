@@ -1,10 +1,14 @@
 {
+  "actions": {
+    "saveRole": "Crear Rol"
+  },
   "common": {
     "welcome": "Bienvenido",
     "loading": "Cargando...",
     "error": "Error",
     "success": "Éxito",
     "save": "Guardar",
+    "saveMenu": "Crear Menú",
     "cancel": "Cancelar",
     "edit": "Editar",
     "delete": "Eliminar",
@@ -13,6 +17,7 @@
     "search": "Buscar",
     "filter": "Filtrar",
     "actions": "Acciones",
+    "saveRole": "Crear Rol",
     "status": "Estado",
     "active": "Activo",
     "inactive": "Inactivo",
@@ -203,7 +208,8 @@
       },
       "modal": {
         "create_title": "Crear Rol",
-        "edit_title": "Editar Rol"
+        "edit_title": "Editar Rol",
+        "edit_description": "Editar la información del rol seleccionado"
       },
       "messages": {
         "createSuccess": "Rol creado exitosamente",
@@ -339,13 +345,16 @@
         "name": "Nombre",
         "label": "Etiqueta",
         "icon": "Ícono",
+        "path": "Ruta",
         "url": "URL",
         "order": "Orden",
-        "parent": "Menú Padre"
+        "parent": "Menú Padre",
+        "parentId": "Menú Padre"
       },
       "modal": {
         "create_title": "Crear Menú",
-        "edit_title": "Editar Menú"
+        "edit_title": "Editar Menú",
+        "edit_description": "Editar la información del menú seleccionado"
       },
       "messages": {
         "createSuccess": "Menú creado exitosamente",
