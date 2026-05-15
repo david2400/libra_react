@@ -8,20 +8,16 @@ import { IPermission } from '../permissions';
 export interface IRolePermission {
   role_id: string | number;
   permission_id: string | number;
-  is_active?: boolean;
-  granted_at?: string;
-  created_at?: string;
-  updated_at?: string;
+  level?: string;
 }
 
-export interface ICreateRolePermissionPayload {
+export interface ICreateRolePermission {
   role_id: string | number;
   permission_id: string | number;
-  is_active?: boolean;
+  level: string;
 }
 
-export interface IUpdateRolePermissionPayload {
-  is_active?: boolean;
+export interface IUpdateRolePermission extends ICreateRolePermission {
 }
 
 
@@ -48,7 +44,7 @@ export interface IRolePermissionOverview {
 export interface IBulkRolePermissionPayload {
   role_id: string | number;
   permission_ids: (string | number)[];
-  is_active?: boolean;
+
 }
 
 export interface IBulkRolePermissionResponse {
@@ -108,7 +104,7 @@ export interface IRolePermissionInheritance {
   permission_id: string | number;
   inherited_from_role_id?: string | number;
   inheritance_level: number;
-  is_active?: boolean;
+
 }
 
 export interface IRolePermissionInheritanceTree {

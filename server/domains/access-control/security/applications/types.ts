@@ -1,16 +1,25 @@
 import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { ICompany } from '../../account/companies';
+import { IPermission } from '../permissions';
+import { IModule, IModuleApplication } from '../modules_applications';
+import { IMenu } from '../../navigation/menus';
 
 // --- IApplication Types ---------------------------------------------------------
 
 export interface IApplication {
-  id: string | number;
+  id_aplications: number;
   name: string;
   description?: string;
-  version?: string;
-  status?: 'active' | 'inactive' | 'maintenance';
-  base_url?: string;
-  is_active?: boolean;
+  route: string;
+  maintenance_mode?: boolean;
+  publication_date: string;
+  company_id?: number;
+  company?: ICompany;
+  permission?: IPermission[];
+  modules_application?: IModuleApplication[];
+  menu?: IMenu[];
+  // Audit fields from AuditInfo
   created_at?: string;
   updated_at?: string;
 }
@@ -18,31 +27,22 @@ export interface IApplication {
 export interface ICreateApplicationPayload {
   name: string;
   description?: string;
-  version?: string;
-  status?: 'active' | 'inactive' | 'maintenance';
-  base_url?: string;
+  route: string;
+  maintenance_mode?: boolean;
+  publication_date: string;
+  company_id?: number;
 }
 
 export interface IUpdateApplicationPayload {
   name?: string;
   description?: string;
-  version?: string;
-  status?: 'active' | 'inactive' | 'maintenance';
-  base_url?: string;
-  is_active?: boolean;
+  route?: string;
+  maintenance_mode?: boolean;
+  publication_date?: string;
+  company_id?: number;
 }
 
-// --- IModule Types (for application management) -------------------------------
 
-export interface IModule {
-  id: string | number;
-  name: string;
-  description?: string;
-  version?: string;
-  isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
 
 // --- IApplication-IModule Relationships Types ---------------------------------
 

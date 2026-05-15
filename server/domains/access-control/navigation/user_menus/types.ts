@@ -1,26 +1,30 @@
 import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IUser } from '../../account/users';
+import { IMenu } from '../menus';
 
 // --- IUser-IMenu Relationship Types -------------------------------------
 
 export interface IUserMenu {
-  user_id: string | number;
-  menu_id: string | number;
-  access_level?: string;
-  is_active?: boolean;
+  user_id: number;
+  menu_id: number;
+  access_level: string;
+  is_active: boolean;
   expires_at?: string;
-  override_role?: boolean;
+  override_role: boolean;
+  user?: IUser;
+  menu?: IMenu;
+  // Audit fields from AuditInfo
   created_at?: string;
   updated_at?: string;
 }
 
 export interface ICreateUserMenuPayload {
-  user_id: string | number;
-  menu_id: string | number;
-  access_level?: string;
-  is_active?: boolean;
+  user_id: number;
+  menu_id: number;
+  access_level: string;
+  is_active: boolean;
   expires_at?: string;
-  override_role?: boolean;
+  override_role: boolean;
 }
 
 export interface IUpdateUserMenuPayload {
@@ -33,18 +37,18 @@ export interface IUpdateUserMenuPayload {
 // --- IMenu Types (for user-menu management) -----------------------------
 
 export interface IBulkUserMenuPayload {
-  user_id: string | number;
-  menu_ids: (string | number)[];
-  access_level?: string;
-  is_active?: boolean;
+  user_id: number;
+  menu_ids: number[];
+  access_level: string;
+  is_active: boolean;
   expires_at?: string;
-  override_role?: boolean;
+  override_role: boolean;
 }
 
 export interface IBulkUserMenuResponse {
   successful: IUserMenu[];
   failed: Array<{
-    menu_id: string | number;
+    menu_id: number;
     error: string;
   }>;
   summary: {

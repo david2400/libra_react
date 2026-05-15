@@ -1,6 +1,7 @@
 {
   "actions": {
-    "saveRole": "Crear Rol"
+    "saveRole": "Crear Rol",
+    "saveApplication": "Crear Aplicación"
   },
   "common": {
     "welcome": "Bienvenido",
@@ -262,7 +263,8 @@
       },
       "modal": {
         "create_title": "Crear Aplicación",
-        "edit_title": "Editar Aplicación"
+        "edit_title": "Editar Aplicación",
+        "edit_description": "Editar la información de la aplicación seleccionada"
       },
       "messages": {
         "createSuccess": "Aplicación creada exitosamente",

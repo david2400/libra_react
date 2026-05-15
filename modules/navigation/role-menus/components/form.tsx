@@ -9,7 +9,7 @@ import { validationRoleMenu } from "../schemas/role-menu.schema";
 import { IRoleMenuCreateRequest, IRoleMenuUpdateRequest } from "../models/role-menu.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createRoleMenuAction, updateRoleMenuAction } from "@/server/domains/access-control/navigation/role_menus";
+import { createRoleMenuAction, updateRoleMenuAction } from "../api/actions";
 
 const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
   return <FormRoleMenu initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;

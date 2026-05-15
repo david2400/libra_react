@@ -9,7 +9,7 @@ import { validationMenuPermission } from "../schemas/menu-permission.schema";
 import { IMenuPermissionCreateRequest, IMenuPermissionUpdateRequest } from "../models/menu-permission.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createMenuPermissionAction } from "@/server/domains/access-control/navigation/menu_permissions";
+import { createMenuPermissionAction, updateMenuPermissionAction } from "../api/actions";
 
 const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
   return <FormMenuPermission initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
@@ -60,7 +60,7 @@ export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPe
     if (!values.menuId || !values.permissionId) return;
     
     try {
-      const result = await menuPermissionsApi.update(values.menuId, values.permissionId, values);
+      const result = await updateMenuPermissionAction(values.menuId, values.permissionId, values);
       
       Swal.fire({
         title: t('updateSuccess'),

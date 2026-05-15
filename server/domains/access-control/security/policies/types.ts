@@ -1,14 +1,39 @@
 ﻿import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IApplication } from '../applications';
 
 // --- Policy Types -------------------------------------------------------------
 
+export enum PolicyEffect {
+  ALLOW = 'ALLOW',
+  DENY = 'DENY',
+  NOT_APPLICABLE = 'NOT_APPLICABLE'
+}
+
 export interface IPolicy {
-  id: string | number;
+  id_policy: number;
   name: string;
   description?: string;
-  rules?: IPolicyRule[];
-  is_active?: boolean;
+  application_id: number;
+  application?: IApplication;
+  version: string;
+  default_effect: PolicyEffect;
+  is_active: boolean;
+  priority: number;
+  statements?: IPolicyStatement[];
+  // Audit fields from AuditInfo
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface IPolicyStatement {
+  id?: number;
+  policy_id: number;
+  effect: PolicyEffect;
+  resource?: string;
+  actions?: string[];
+  conditions?: Record<string, unknown>;
+  priority?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -16,16 +41,26 @@ export interface IPolicy {
 export interface ICreatePolicyPayload {
   name: string;
   description?: string;
-  rules?: IPolicyRule[];
+  application_id: number;
+  version: string;
+  default_effect: PolicyEffect;
+  is_active: boolean;
+  priority: number;
+  statements?: IPolicyStatement[];
 }
 
 export interface IUpdatePolicyPayload {
   name?: string;
   description?: string;
-  rules?: IPolicyRule[];
-  isActive?: boolean;
+  application_id?: number;
+  version?: string;
+  default_effect?: PolicyEffect;
+  is_active?: boolean;
+  priority?: number;
+  statements?: IPolicyStatement[];
 }
 
+// Legacy interface - use IPolicyStatement instead
 export interface IPolicyRule {
   resource: string;
   actions: string[];
@@ -48,27 +83,30 @@ export interface IUser {
 }
 
 export interface IUserPolicy {
-  userId: string | number;
-  policyId: string | number;
-  isActive?: boolean;
+  user_id: number;
+  policy_id: number;
+  is_active?: boolean;
   user?: IUser;
   policy?: IPolicy;
+  // Audit fields
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface ICreateUserPolicyPayload {
-  userId: string | number;
-  policyId: string | number;
-  isActive?: boolean;
+  user_id: number;
+  policy_id: number;
+  is_active?: boolean;
 }
 
 export interface IUpdateUserPolicyPayload {
-  isActive?: boolean;
+  is_active?: boolean;
 }
 
 // --- Policy Evaluation Types ---------------------------------------------------
 
 export interface IPolicyEvaluationRequest {
-  userId: string | number;
+  user_id: number;
   resource: string;
   action: string;
   context?: Record<string, unknown>;
@@ -76,7 +114,7 @@ export interface IPolicyEvaluationRequest {
 
 export interface IPolicyEvaluationResponse {
   allowed: boolean;
-  policyId?: string | number;
+  policy_id?: number;
   policy_name?: string;
   reasons?: string[];
   conditions_matched?: Record<string, unknown>;

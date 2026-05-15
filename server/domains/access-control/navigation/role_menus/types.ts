@@ -1,65 +1,43 @@
 import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IRole } from '../../security/roles';
+import { IMenu } from '../menus';
 
 // --- IRole-IMenu Relationship Types ----------------------------------------------
 
 export interface IRoleMenu {
-  role_id: string | number;
-  menu_id: string | number;
-  is_active?: boolean;
-  can_view?: boolean;
-  can_edit?: boolean;
+  role_id: number;
+  menu_id: number;
+  access_level: string;
+  is_active: boolean;
+  priority?: number;
+  role?: IRole;
+  menu?: IMenu;
+  // Audit fields from AuditInfo
   created_at?: string;
   updated_at?: string;
 }
 
 export interface ICreateRoleMenuPayload {
-  role_id: string | number;
-  menu_id: string | number;
-  is_active?: boolean;
-  can_view?: boolean;
-  can_edit?: boolean;
+  role_id: number;
+  menu_id: number;
+  access_level: string;
+  is_active: boolean;
+  priority?: number;
 }
 
 export interface IUpdateRoleMenuPayload {
+  access_level?: string;
   is_active?: boolean;
-  can_view?: boolean;
-  can_edit?: boolean;
+  priority?: number;
 }
 
-// --- IRole Types (for role-menu management) ------------------------------------
-
-export interface IRole {
-  id: string | number;
-  name: string;
-  description?: string;
-  is_active?: boolean;
-  menus?: IMenu[];
-  created_at?: string;
-  updated_at?: string;
-}
-
-// --- IMenu Types (for role-menu management) ------------------------------------
-
-export interface IMenu {
-  id: string | number;
-  name: string;
-  label?: string;
-  icon?: string;
-  path?: string;
-  parent_id?: string | number;
-  order?: number;
-  is_active?: boolean;
-  children?: IMenu[];
-  created_at?: string;
-  updated_at?: string;
-}
 
 // --- IRole-IMenu Statistics Types ------------------------------------------------
 
 export interface IRoleMenuStats {
-  role_id: string | number;
-  menu_id: string | number;
+  role_id: number;
+  menu_id: number;
   access_count: number;
   last_accessed?: string;
   created_at?: string;
@@ -76,17 +54,17 @@ export interface IRoleMenuOverview {
 // --- Bulk Operations Types -----------------------------------------------------
 
 export interface IBulkRoleMenuPayload {
-  role_id: string | number;
-  menu_ids: (string | number)[];
-  is_active?: boolean;
-  can_view?: boolean;
-  can_edit?: boolean;
+  role_id: number;
+  menu_ids: number[];
+  access_level: string;
+  is_active: boolean;
+  priority?: number;
 }
 
 export interface IBulkRoleMenuResponse {
   successful: IRoleMenu[];
   failed: Array<{
-    menu_id: string | number;
+    menu_id: number;
     error: string;
   }>;
   summary: {

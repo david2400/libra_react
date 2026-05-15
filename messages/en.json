@@ -1,4 +1,8 @@
 {
+  "actions": {
+    "saveRole": "Create Role",
+    "saveApplication": "Create Application"
+  },
   "common": {
     "welcome": "Welcome",
     "loading": "Loading...",
@@ -256,7 +260,8 @@
       },
       "modal": {
         "create_title": "Create Application",
-        "edit_title": "Edit Application"
+        "edit_title": "Edit Application",
+        "edit_description": "Edit the information of the selected application"
       },
       "messages": {
         "createSuccess": "Application created successfully",

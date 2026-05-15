@@ -22,7 +22,6 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
   try {
     const cookieStore = await cookies();
     const token =
-      cookieStore.get('libra.session-token')?.value ??
       cookieStore.get('next-auth.session-token')?.value ??
       cookieStore.get('__Secure-next-auth.session-token')?.value;
 
@@ -58,7 +57,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
     // Extract the most specific error message from the response body
     const errorMessage = extractErrorMessage(body, response.status);
-    
+
     // Create a properly structured ServerApiError that can be caught
     const serverError = new ServerApiError({
       message: errorMessage,
@@ -94,7 +93,7 @@ function extractErrorMessage(body: unknown, status: number): string {
   // If body is an object, try to extract the message from common properties
   if (typeof body === 'object' && body !== null) {
     const bodyObj = body as any;
-    
+
     // Common error message properties in order of preference
     const messageProps = [
       'detail',      // Django/DRF style

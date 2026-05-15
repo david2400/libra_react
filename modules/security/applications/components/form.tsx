@@ -1,5 +1,3 @@
-/** @format */
-
 "use client";
 
 import { SubmitHandler } from "react-hook-form";
@@ -14,9 +12,9 @@ import {
   IApplicationCreateRequest,
   IApplicationUpdateRequest,
 } from "../models/application.interface";
-import { applicationsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { createApplicationAction, updateApplicationAction } from "../api/actions";
 
 const FormBase = ({
   initialValues,
@@ -43,12 +41,12 @@ export const RegisterApplication = ({}: IFormAddProps = {}) => {
     description: "",
     version: "",
     status: "active",
-    baseUrl: "",
+    base_url: "",
   };
 
   const handleSubmit: SubmitHandler<IApplicationCreateRequest> = async (values) => {
     try {
-      const result = await applicationsApi.create(values);
+      const result = await createApplicationAction(values);
       
       Swal.fire({
         title: t('createSuccess'),
@@ -89,7 +87,7 @@ export const UpdateApplication = ({
     if (!values.id) return;
     
     try {
-      const result = await applicationsApi.update(values.id, values);
+      const result = await updateApplicationAction(values.id, values);
       
       Swal.fire({
         title: t('updateSuccess'),
