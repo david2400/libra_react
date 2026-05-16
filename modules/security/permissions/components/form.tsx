@@ -42,8 +42,8 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
   const defaultValues: IPermissionCreateRequest = {
     name: "",
     description: "",
-    resource: "",
-    action: "",
+    aplications_id: 0,
+    module_aplication_id: undefined,
   };
 
   const handleSubmit: SubmitHandler<IPermissionCreateRequest> = async (values) => {

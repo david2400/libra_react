@@ -43,8 +43,9 @@ export const RegisterRole = ({}: IFormAddProps = {}) => {
   const defaultValues: IRoleCreateRequest = {
     name: "",
     description: "",
-    permission_ids: [],
-    menu_ids: [],
+    manage_users: false,
+    requires_approval: false,
+    // approval_workflow: {},
   };
 
   const handleSubmit: SubmitHandler<IRoleCreateRequest> = async (values) => {

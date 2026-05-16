@@ -39,9 +39,10 @@ export const RegisterApplication = ({}: IFormAddProps = {}) => {
   const defaultValues: IApplicationCreateRequest = {
     name: "",
     description: "",
-    version: "",
-    status: "active",
-    base_url: "",
+    route: "",
+    publication_date: "",
+    company_id: undefined,
+    maintenance_mode: false,
   };
 
   const handleSubmit: SubmitHandler<IApplicationCreateRequest> = async (values) => {

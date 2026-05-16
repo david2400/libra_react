@@ -156,7 +156,8 @@
         "timeFormatOptions": {
           "12h": "12 horas",
           "24h": "24 horas"
-        }
+        },
+        "date_format": "Formato de Fecha"
       },
       "modal": {
         "create_title": "Crear Perfil",
@@ -182,7 +183,10 @@
         "phone": "Teléfono",
         "role": "Rol",
         "password": "Contraseña",
-        "confirmPassword": "Confirmar Contraseña"
+        "confirmPassword": "Confirmar Contraseña",
+        "status": "Estado",
+        "company_id": "ID de Empresa",
+        "client_id": "ID de Cliente"
       },
       "modal": {
         "create_title": "Crear Usuario",
@@ -205,7 +209,11 @@
       "fields": {
         "name": "Nombre",
         "description": "Descripción",
-        "permissions": "Permisos"
+        "permissions": "Permisos",
+        "manage_users": "Gestionar Usuarios",
+        "requires_approval": "Requiere Aprobación",
+        "approval_workflow": "Flujo de Aprobación",
+        "status": "Estado"
       },
       "modal": {
         "create_title": "Crear Rol",
@@ -229,7 +237,9 @@
         "code": "Código",
         "description": "Descripción",
         "module": "Módulo",
-        "action": "Acción"
+        "action": "Acción",
+        "aplications_id": "ID de Aplicación",
+        "module_aplication_id": "ID de Módulo de Aplicación"
       },
       "modal": {
         "create_title": "Crear Permiso",
@@ -255,6 +265,10 @@
         "version": "Versión",
         "baseUrl": "URL Base",
         "status": "Estado",
+        "route": "Ruta",
+        "publication_date": "Fecha de Publicación",
+        "company_id": "ID de Empresa",
+        "maintenance_mode": "Modo Mantenimiento",
         "statusOptions": {
           "active": "Activo",
           "inactive": "Inactivo",
@@ -303,7 +317,17 @@
       "fields": {
         "name": "Nombre",
         "description": "Descripción",
-        "rules": "Reglas"
+        "rules": "Reglas",
+        "version": "Versión",
+        "application_id": "ID de Aplicación",
+        "default_effect": "Efecto Predeterminado",
+        "priority": "Prioridad",
+        "is_active": "Activo",
+        "effectOptions": {
+          "ALLOW": "Permitir",
+          "DENY": "Denegar",
+          "NOT_APPLICABLE": "No Aplicable"
+        }
       },
       "modal": {
         "create_title": "Crear Política",
@@ -323,7 +347,10 @@
       "editButton": "Editar Asignación",
       "fields": {
         "role": "Rol",
-        "permission": "Permiso"
+        "permission": "Permiso",
+        "role_id": "ID de Rol",
+        "permission_id": "ID de Permiso",
+        "level": "Nivel"
       },
       "modal": {
         "create_title": "Asignar Permiso a Rol",
@@ -351,7 +378,14 @@
         "url": "URL",
         "order": "Orden",
         "parent": "Menú Padre",
-        "parentId": "Menú Padre"
+        "parentId": "Menú Padre",
+        "application_id": "ID de Aplicación",
+        "protocol": "Protocolo",
+        "subdomain": "Subdominio",
+        "port": "Puerto",
+        "sort_order": "Orden de Clasificación",
+        "parent_id": "ID de Menú Padre",
+        "visible": "Visible"
       },
       "modal": {
         "create_title": "Crear Menú",
@@ -372,7 +406,9 @@
       "editButton": "Editar Asignación",
       "fields": {
         "menu": "Menú",
-        "permission": "Permiso"
+        "permission": "Permiso",
+        "menu_id": "ID de Menú",
+        "permission_id": "ID de Permiso"
       },
       "modal": {
         "create_title": "Asignar Permiso a Menú",
@@ -392,7 +428,12 @@
       "editButton": "Editar Asignación",
       "fields": {
         "role": "Rol",
-        "menu": "Menú"
+        "menu": "Menú",
+        "role_id": "ID de Rol",
+        "menu_id": "ID de Menú",
+        "access_level": "Nivel de Acceso",
+        "is_active": "Activo",
+        "priority": "Prioridad"
       },
       "modal": {
         "create_title": "Asignar Menú a Rol",

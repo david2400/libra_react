@@ -6,8 +6,10 @@ export const validationRole = () => {
 
   return z.object({
     name: z.string().min(1, { message: v.required }),
-    description: z.string().optional(),
-    permission_ids: z.array(z.coerce.number()).optional(),
-    menu_ids: z.array(z.coerce.number()).optional(),
+    description: z.string().min(1, { message: v.required }),
+    manage_users: z.boolean(),
+    requires_approval: z.boolean().optional(),
+    // approval_workflow: z.record(z.any()).optional(),
+    // status: z.string().min(1, { message: v.required }),
   });
 };

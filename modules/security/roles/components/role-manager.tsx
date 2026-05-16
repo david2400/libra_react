@@ -26,13 +26,13 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
   const [editingRole, setEditingRole] = useState<IRole | null>(null);
 
   const metrics = useMemo(() => {
-    const activeRoles = initialData.filter((role) => role.is_active !== false).length;
-    const totalPermissions = initialData.reduce((acc, role) => acc + (role.permissions?.length || 0), 0);
+    const activeRoles = initialData.filter((role) => role.deleted !== false).length;
+    // const totalPermissions = initialData.reduce((acc, role) => acc + (role.permissions?.length || 0), 0);
 
     return {
       totalRoles: initialData.length,
       activeRoles,
-      totalPermissions,
+      // totalPermissions,
     };
   }, [initialData]);
 
@@ -69,27 +69,27 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
           <span className='text-sm'>{info.getValue<string>() || "-"}</span>
         ),
       },
-      {
-        accessorKey: "permissions",
-        header: "Permisos",
-        cell: ({ row }) => (
-          <span className='text-sm'>
-            {row.original.permissions?.length || 0} permisos
-          </span>
-        ),
-      },
+      // {
+      //   accessorKey: "permissions",
+      //   header: "Permisos",
+      //   cell: ({ row }) => (
+      //     <span className='text-sm'>
+      //       {row.original.permissions?.length || 0} permisos
+      //     </span>
+      //   ),
+      // },
       {
         header: "Status",
-        accessorKey: "is_active",
+        accessorKey: "deleted",
         cell: ({ row }) => (
           <div className='flex items-center'>
             <span
               className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                row.original.is_active !== false
+                row.original.deleted == false
                   ? "bg-green-100 text-green-800"
                   : "bg-red-100 text-red-800"
               }`}>
-              {row.original.is_active !== false ? "Active" : "Inactive"}
+              {row.original.deleted == false ? "Active" : "Inactive"}
             </span>
           </div>
         ),
@@ -129,12 +129,12 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
       value: metrics.activeRoles,
       accent: "from-emerald-500/40 to-teal-500/40 text-emerald-700",
     },
-    {
-      icon: HiOutlineShieldCheck,
-      label: "Total permisos",
-      value: metrics.totalPermissions,
-      accent: "from-amber-500/40 to-orange-500/40 text-amber-700",
-    },
+    // {
+    //   icon: HiOutlineShieldCheck,
+    //   label: "Total permisos",
+    //   value: metrics.totalPermissions,
+    //   accent: "from-amber-500/40 to-orange-500/40 text-amber-700",
+    // },
   ];
 
   return (

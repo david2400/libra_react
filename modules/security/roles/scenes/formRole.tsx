@@ -28,6 +28,8 @@ export const FormRole = ({
     defaultValues: initialValues,
   });
 
+  console.log(errors);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       <div className='grid grid-cols-12 gap-4'>
@@ -57,17 +59,12 @@ export const FormRole = ({
           className='col-span-12 md:col-span-6'
         />
 
-        <FormField
+        {/* <FormField
           controller={{ control, name: "approval_workflow" }}
           label={t("fields.approval_workflow")}
           className='col-span-12 md:col-span-6'
-        />
-
-        <FormField
-          controller={{ control, name: "status" }}
-          label={t("fields.status")}
-          className='col-span-12 md:col-span-6'
-        />
+        /> */}
+      
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
         {tCommon("save")}

@@ -12,8 +12,7 @@ export interface IRole extends IAuditInfo {
   description: string;
   manage_users: boolean;
   requires_approval?: boolean;
-  approval_workflow?: string;
-  status: string;
+  approval_workflow?: any;
   role_user?: IUser[];
   role_permission?: IRolePermission[];
 }
@@ -23,8 +22,7 @@ export interface ICreateRole {
   description: string;
   manage_users: boolean;
   requires_approval?: boolean;
-  approval_workflow?: string;
-  status: string;
+  approval_workflow?: JSON;
 }
 
 export interface IUpdateRole extends ICreateRole {

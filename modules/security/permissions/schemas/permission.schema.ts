@@ -7,7 +7,7 @@ export const validationPermission = () => {
   return z.object({
     name: z.string().min(1, { message: v.required }),
     description: z.string().optional(),
-    resource: z.string().optional(),
-    action: z.string().optional(),
+    aplications_id: z.number().min(1, { message: v.required }),
+    module_aplication_id: z.number().optional(),
   });
 };
