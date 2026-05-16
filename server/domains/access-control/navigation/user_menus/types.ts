@@ -1,10 +1,11 @@
 import 'server-only';
 import { IUser } from '../../account/users';
 import { IMenu } from '../menus';
+import { IAuditInfo } from '@/server/lib/types';
 
 // --- IUser-IMenu Relationship Types -------------------------------------
 
-export interface IUserMenu {
+export interface IUserMenu extends IAuditInfo {
   user_id: number;
   menu_id: number;
   access_level: string;
@@ -13,9 +14,6 @@ export interface IUserMenu {
   override_role: boolean;
   user?: IUser;
   menu?: IMenu;
-  // Audit fields from AuditInfo
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface ICreateUserMenuPayload {

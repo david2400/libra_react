@@ -1,5 +1,5 @@
 ﻿import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IApplication } from '../applications';
 
 // --- Policy Types -------------------------------------------------------------
@@ -10,7 +10,7 @@ export enum PolicyEffect {
   NOT_APPLICABLE = 'NOT_APPLICABLE'
 }
 
-export interface IPolicy {
+export interface IPolicy extends IAuditInfo {
   id_policy: number;
   name: string;
   description?: string;
@@ -21,9 +21,6 @@ export interface IPolicy {
   is_active: boolean;
   priority: number;
   statements?: IPolicyStatement[];
-  // Audit fields from AuditInfo
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface IPolicyStatement {

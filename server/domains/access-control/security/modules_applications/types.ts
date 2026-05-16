@@ -1,18 +1,16 @@
 import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import { IApplication } from '@/modules/security/applications/models/application.interface';
+import { IAuditInfo } from '@/server/lib/types';
 
 // --- IModule Types --------------------------------------------------------------
 
-export interface IModule {
+export interface IModule extends IAuditInfo {
   id: string | number;
   name: string;
   description?: string;
   version?: string;
   status?: 'active' | 'inactive' | 'deprecated';
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface ICreateModulePayload {

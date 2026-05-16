@@ -93,6 +93,12 @@ export const FormProfile = ({
           className='col-span-12 md:col-span-6'
         />
 
+        <FormField
+          controller={{ control, name: "date_format" }}
+          label={t("fields.date_format")}
+          className='col-span-12 md:col-span-6'
+        />
+
         <FormSelectField
           controller={{ control, name: "theme" }}
           label={t("fields.theme")}

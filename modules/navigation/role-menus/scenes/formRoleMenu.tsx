@@ -32,15 +32,35 @@ export const FormRoleMenu = ({
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       <div className='grid grid-cols-12 gap-4'>
         <FormField
-          controller={{ control, name: "roleId" }}
-          label={t("fields.roleId")}
+          controller={{ control, name: "role_id" }}
+          label={t("fields.role_id")}
           type='number'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
-          controller={{ control, name: "menuId" }}
-          label={t("fields.menuId")}
+          controller={{ control, name: "menu_id" }}
+          label={t("fields.menu_id")}
+          type='number'
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "access_level" }}
+          label={t("fields.access_level")}
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "is_active" }}
+          label={t("fields.is_active")}
+          type='checkbox'
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "priority" }}
+          label={t("fields.priority")}
           type='number'
           className='col-span-12 md:col-span-6'
         />

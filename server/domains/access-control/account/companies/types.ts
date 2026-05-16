@@ -1,10 +1,10 @@
 ﻿import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IClient } from '../clients';
 
 // --- ICompany Types -------------------------------------------------------------
 
-export interface ICompany {
+export interface ICompany extends IAuditInfo {
   id: string | number;
   name: string;
   description?: string;
@@ -16,9 +16,6 @@ export interface ICompany {
   country?: string;
   phone?: string;
   email?: string;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface ICreateCompany {
@@ -34,25 +31,11 @@ export interface ICreateCompany {
   email?: string;
 }
 
-export interface IUpdateCompany {
-  name?: string;
-  description?: string;
-  industry?: string;
-  size?: 'small' | 'medium' | 'large' | 'enterprise';
-  website?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  phone?: string;
-  email?: string;
-  is_active?: boolean;
+export interface IUpdateCompany extends ICreateCompany {
+  id_company: number;
 }
 
-// --- Client Types (for company management) -----------------------------------
 
-
-
-// --- ICompany-Client Relationships Types -----------------------------------
 
 export interface ICompanyClient {
   company_id: string | number;

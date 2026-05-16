@@ -1,22 +1,18 @@
 ﻿import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IPermission } from '../../security/permissions';
 import { IMenu } from '../menus';
 
 // --- IMenu-IPermission Relationship Types -------------------------------------
 
-export interface IMenuPermission {
+export interface IMenuPermission extends IAuditInfo {
   menu_id: string | number;
   permission_id: string | number;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface ICreateMenuPermission {
   menu_id: string | number;
   permission_id: string | number;
-  is_active?: boolean;
 }
 
 export interface IUpdateMenuPermission extends ICreateMenuPermission {

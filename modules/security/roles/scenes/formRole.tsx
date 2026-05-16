@@ -42,6 +42,32 @@ export const FormRole = ({
           label={t("fields.description")}
           className='col-span-12'
         />
+
+        <FormField
+          controller={{ control, name: "manage_users" }}
+          label={t("fields.manage_users")}
+          type='checkbox'
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "requires_approval" }}
+          label={t("fields.requires_approval")}
+          type='checkbox'
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "approval_workflow" }}
+          label={t("fields.approval_workflow")}
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "status" }}
+          label={t("fields.status")}
+          className='col-span-12 md:col-span-6'
+        />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>
         {tCommon("save")}

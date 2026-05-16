@@ -1,11 +1,11 @@
 import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IPermission } from '../../security/permissions';
 import { IApplication } from '../../security/applications';
 
 // --- IMenu Types ----------------------------------------------------------------
 
-export interface IMenu {
+export interface IMenu extends IAuditInfo {
   id_menu: number;
   application_id: number;
   application?: IApplication;
@@ -21,9 +21,6 @@ export interface IMenu {
   children?: IMenu[];
   icon?: string;
   visible: boolean;
-  // Audit fields from AuditInfo
-  created_at?: string;
-  updated_at?: string;
 } 
 
 export interface ICreateMenu {

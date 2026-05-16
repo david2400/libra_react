@@ -1,12 +1,12 @@
 ﻿import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IApplication } from '../applications';
 import { IModuleApplication } from '../modules_applications';
 import { IRolePermission } from '../role_permissions';
 
 // --- IPermission Types -------------------------------------------------------------
 
-export interface IPermission {
+export interface IPermission extends IAuditInfo {
   id_permission: number;
   name: string;
   description?: string;
@@ -15,9 +15,7 @@ export interface IPermission {
   module_aplication_id?: number;
   module_aplication?: IModuleApplication;
   role_permission?: IRolePermission[];
-  // Audit fields from AuditInfo
-  created_at?: string;
-  updated_at?: string;
+
 }
 
 export interface ICreatePermissionPayload {

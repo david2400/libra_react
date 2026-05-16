@@ -45,8 +45,8 @@ export const FormApplication = ({
         />
 
         <FormField
-          controller={{ control, name: "version" }}
-          label={t("fields.version")}
+          controller={{ control, name: "route" }}
+          label={t("fields.route")}
           className='col-span-12 md:col-span-6'
         />
 
@@ -57,18 +57,24 @@ export const FormApplication = ({
         />
 
         <FormField
-          controller={{ control, name: "baseUrl" }}
-          label={t("fields.baseUrl")}
-          type='url'
+          controller={{ control, name: "publication_date" }}
+          label={t("fields.publication_date")}
+          type='date'
           className='col-span-12 md:col-span-6'
         />
 
-        <FormSelectField
-          controller={{ control, name: "status" }}
-          label={t("fields.status")}
-          data={statusOptions}
-          placeholder='Seleccionar estado...'
-          className='w-full col-span-12 md:col-span-6'
+        <FormField
+          controller={{ control, name: "company_id" }}
+          label={t("fields.company_id")}
+          type='number'
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "maintenance_mode" }}
+          label={t("fields.maintenance_mode")}
+          type='checkbox'
+          className='col-span-12 md:col-span-6'
         />
       </div>
       <Buttons type='submit' loading={isSubmitting} className='w-full'>

@@ -32,16 +32,22 @@ export const FormRolePermission = ({
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       <div className='grid grid-cols-12 gap-4'>
         <FormField
-          controller={{ control, name: "roleId" }}
-          label={intl("fields.roleId")}
+          controller={{ control, name: "role_id" }}
+          label={intl("fields.role_id")}
           type='number'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
-          controller={{ control, name: "permissionId" }}
-          label={intl("fields.permissionId")}
+          controller={{ control, name: "permission_id" }}
+          label={intl("fields.permission_id")}
           type='number'
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "level" }}
+          label={intl("fields.level")}
           className='col-span-12 md:col-span-6'
         />
       </div>

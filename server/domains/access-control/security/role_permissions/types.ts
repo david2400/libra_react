@@ -1,11 +1,11 @@
 import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IRole } from '../roles';
 import { IPermission } from '../permissions';
 
 // --- IRole-IPermission Relationship Types ----------------------------------------
 
-export interface IRolePermission {
+export interface IRolePermission extends IAuditInfo {
   role_id: string | number;
   permission_id: string | number;
   level?: string;

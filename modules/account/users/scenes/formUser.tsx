@@ -51,8 +51,15 @@ export const FormUser = ({
         />
 
         <FormField
-          controller={{ control, name: "companyId" }}
+          controller={{ control, name: "company_id" }}
           label={intl("fields.companyId")}
+          type='number'
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "client_id" }}
+          label={intl("fields.clientId")}
           type='number'
           className='col-span-12 md:col-span-6'
         />

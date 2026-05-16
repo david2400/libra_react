@@ -44,14 +44,16 @@ export const FormPermission = ({
         />
 
         <FormField
-          controller={{ control, name: "resource" }}
-          label={t("fields.resource")}
+          controller={{ control, name: "aplications_id" }}
+          label={t("fields.aplications_id")}
+          type='number'
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
-          controller={{ control, name: "action" }}
-          label={t("fields.action")}
+          controller={{ control, name: "module_aplication_id" }}
+          label={t("fields.module_aplication_id")}
+          type='number'
           className='col-span-12 md:col-span-6'
         />
       </div>

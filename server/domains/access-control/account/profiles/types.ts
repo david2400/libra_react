@@ -1,9 +1,10 @@
 ﻿import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
+import { IUser } from '../users';
 
 // --- IProfile Types -------------------------------------------------------------
 
-export interface IProfile {
+export interface IProfile extends IAuditInfo {
   id: string | number;
   user_id: string | number;
   first_name?: string;
@@ -17,12 +18,9 @@ export interface IProfile {
   date_format?: string;
   time_format?: '12h' | '24h';
   theme?: 'light' | 'dark' | 'auto';
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
 }
 
-export interface ICreateProfilePayload {
+export interface ICreateProfile {
   user_id: string | number;
   first_name?: string;
   last_name?: string;
@@ -37,35 +35,10 @@ export interface ICreateProfilePayload {
   theme?: 'light' | 'dark' | 'auto';
 }
 
-export interface IUpdateProfilePayload {
-  first_name?: string;
-  last_name?: string;
-  display_name?: string;
-  avatar_url?: string;
-  bio?: string;
-  phone?: string;
-  timezone?: string;
-  language?: string;
-  date_format?: string;
-  time_format?: '12h' | '24h';
-  theme?: 'light' | 'dark' | 'auto';
-  is_active?: boolean;
+export interface IUpdateProfile extends ICreateProfile {
+  id_profile: number;
 }
 
-// --- IUser Types (for profile management) ---------------------------------
-
-export interface IUser {
-  id: string | number;
-  email: string;
-  user_name?: string;
-  first_name?: string;
-  last_name?: string;
-  is_active?: boolean;
-  roles?: any[];
-  permissions?: any[];
-  created_at?: string;
-  updated_at?: string;
-}
 
 // --- IProfile Preferences Types ---------------------------------------------
 

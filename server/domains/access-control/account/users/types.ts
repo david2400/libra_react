@@ -1,9 +1,9 @@
 ﻿import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 
 // --- IUser Types ---------------------------------------------------------
 
-export interface IUser {
+export interface IUser extends IAuditInfo {
   id_user: number;
   username: string;
   password: string;
@@ -12,14 +12,9 @@ export interface IUser {
   status: string;
   company_id?: number;
   client_id?: number;
-  activo?: boolean;
-  usr_crea?: number;
-  usr_mod?: number;
-  created_at?: string;
-  updated_at?: string;
 }
 
-export interface ICreateUserPayload {
+export interface ICreateUser {
   username: string;
   password: string;
   last_login?: string;
@@ -29,16 +24,9 @@ export interface ICreateUserPayload {
   client_id?: number;
 }
 
-export interface IUpdateUserPayload {
-  username?: string;
-  password?: string;
-  last_login?: string;
-  refresh_token?: string;
-  status?: string;
-  company_id?: number;
-  client_id?: number;
-  activo?: boolean;
-  usr_mod?: number;
+export interface IUpdateUser extends ICreateUser {
+  id_user?: number;
+
 }
 
 // --- IUser List Types -------------------------------------------------

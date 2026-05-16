@@ -1,11 +1,11 @@
 import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IRole } from '../../security/roles';
 import { IMenu } from '../menus';
 
 // --- IRole-IMenu Relationship Types ----------------------------------------------
 
-export interface IRoleMenu {
+export interface IRoleMenu extends IAuditInfo {
   role_id: number;
   menu_id: number;
   access_level: string;
@@ -13,9 +13,6 @@ export interface IRoleMenu {
   priority?: number;
   role?: IRole;
   menu?: IMenu;
-  // Audit fields from AuditInfo
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface ICreateRoleMenuPayload {

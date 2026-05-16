@@ -1,4 +1,11 @@
 // ─── Generic API response wrappers ──────────────────────────────────────────
+export interface IAuditInfo {
+  deleted: boolean;
+  usr_crea?: string;
+  usr_mod?: string;
+  created_at?: Date;
+  updated_at?: Date;
+}
 
 export interface IApiResponse<T> {
   data: T;
@@ -8,7 +15,7 @@ export interface IApiResponse<T> {
 
 export interface IPaginatedResponse<T> {
   data: T[];
-  meta: PaginationMeta;
+  meta: IPaginationMeta;
 }
 
 export interface IPaginationMeta {
@@ -101,4 +108,4 @@ export interface IActionError {
   };
 }
 
-export type ActionResultType<T = void> = ActionResult<T> | ActionError;
+export type ActionResultType<T = void> = IActionResult<T> | IActionError;

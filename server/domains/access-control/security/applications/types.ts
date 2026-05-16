@@ -1,5 +1,5 @@
 import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { ICompany } from '../../account/companies';
 import { IPermission } from '../permissions';
 import { IModule, IModuleApplication } from '../modules_applications';
@@ -7,7 +7,7 @@ import { IMenu } from '../../navigation/menus';
 
 // --- IApplication Types ---------------------------------------------------------
 
-export interface IApplication {
+export interface IApplication extends IAuditInfo {
   id_aplications: number;
   name: string;
   description?: string;
@@ -19,9 +19,6 @@ export interface IApplication {
   permission?: IPermission[];
   modules_application?: IModuleApplication[];
   menu?: IMenu[];
-  // Audit fields from AuditInfo
-  created_at?: string;
-  updated_at?: string;
 }
 
 export interface ICreateApplicationPayload {

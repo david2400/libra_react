@@ -69,6 +69,12 @@ export const FormClient = ({
         />
 
         <FormField
+          controller={{ control, name: "country" }}
+          label={t("fields.country")}
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
           controller={{ control, name: "address" }}
           label={t("fields.address")}
           className='col-span-12'

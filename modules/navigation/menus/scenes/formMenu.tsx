@@ -58,19 +58,26 @@ export const FormMenu = ({
 
   const opcionesMenus = useMemo(() => {
     return menusData.menus
-      .filter((menu) => menu.id !== initialValues?.id)
+      .filter((menu) => menu.id_menu !== initialValues?.id_menu)
       .map((menu) => ({
-        id: menu.id.toString(),
-        value: menu.id.toString(),
-        label: menu.label || menu.name,
+        id: menu.id_menu.toString(),
+        value: menu.id_menu.toString(),
+        label: menu.name,
         disabled: false,
       }))
       .sort((a, b) => a.label.localeCompare(b.label));
-  }, [menusData.menus, initialValues?.id]);
+  }, [menusData.menus, initialValues?.id_menu]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       <div className='grid grid-cols-12 gap-4'>
+        <FormField
+          controller={{ control, name: "application_id" }}
+          label={t("fields.application_id")}
+          type='number'
+          className='col-span-12 md:col-span-6'
+        />
+
         <FormField
           controller={{ control, name: "name" }}
           label={t("fields.name")}
@@ -78,14 +85,28 @@ export const FormMenu = ({
         />
 
         <FormField
-          controller={{ control, name: "label" }}
-          label={t("fields.label")}
+          controller={{ control, name: "protocol" }}
+          label={t("fields.protocol")}
           className='col-span-12 md:col-span-6'
         />
 
         <FormField
-          controller={{ control, name: "icon" }}
-          label={t("fields.icon")}
+          controller={{ control, name: "subdomain" }}
+          label={t("fields.subdomain")}
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "url" }}
+          label={t("fields.url")}
+          type='url'
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "port" }}
+          label={t("fields.port")}
+          type='number'
           className='col-span-12 md:col-span-6'
         />
 
@@ -95,21 +116,34 @@ export const FormMenu = ({
           className='col-span-12 md:col-span-6'
         />
 
+        <FormField
+          controller={{ control, name: "sort_order" }}
+          label={t("fields.sort_order")}
+          type='number'
+          className='col-span-12 md:col-span-6'
+        />
+
         <FormSelectField
-          controller={{ control, name: "parentId" }}
-          label={t("fields.parentId")}
+          controller={{ control, name: "parent_id" }}
+          label={t("fields.parent_id")}
           data={opcionesMenus}
           placeholder='Seleccionar menú padre...'
           disabled={menusData.loading || !!menusData.error}
-          error={errors.parentId?.message}
+          error={errors.parent_id?.message}
           className='w-full col-span-12 md:col-span-6'
           description='Menú padre (opcional)'
         />
 
         <FormField
-          controller={{ control, name: "order" }}
-          label={t("fields.order")}
-          type='number'
+          controller={{ control, name: "icon" }}
+          label={t("fields.icon")}
+          className='col-span-12 md:col-span-6'
+        />
+
+        <FormField
+          controller={{ control, name: "visible" }}
+          label={t("fields.visible")}
+          type='checkbox'
           className='col-span-12 md:col-span-6'
         />
       </div>
