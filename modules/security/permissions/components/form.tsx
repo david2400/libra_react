@@ -15,9 +15,9 @@ import {
   IPermissionUpdateRequest,
   IPermission,
 } from "../models/permission.interface";
-import { permissionsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { createPermissionAction, updatePermissionAction } from "../api/actions";
 
 const FormBase = ({
   initialValues,
@@ -42,13 +42,24 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
   const defaultValues: IPermissionCreateRequest = {
     name: "",
     description: "",
-    aplications_id: 0,
-    module_aplication_id: undefined,
+    permission_type: "APPLICATION",
+    resource: "",
+    action: "READ",
+    application_id: undefined,
+    module_id: undefined,
+    http_method: "",
+    endpoint_path: "",
+    ui_component: "",
+    feature_flag: "",
+    priority: 0,
+    cache_ttl: 3600,
+    is_sensitive: false,
+    metadata: "",
   };
 
   const handleSubmit: SubmitHandler<IPermissionCreateRequest> = async (values) => {
     try {
-      const result = await permissionsApi.create(values);
+      const result = await createPermissionAction(values);
       
       Swal.fire({
         title: t('createSuccess'),
@@ -79,17 +90,19 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
 
 export const UpdatePermission = ({
   initialValues,
-}: IFormUpdateProps<IPermissionUpdateRequest>) => {
+}: IFormUpdateProps<any>) => {
   const router = useRouter();
   const { useTranslations } = require('next-intl');
   const t = useTranslations('security.permissions.messages');
   const tMessages = useTranslations('messages');
 
+  
+
   const handleSubmit: SubmitHandler<IPermissionUpdateRequest> = async (values) => {
     if (!values.id) return;
     
     try {
-      const result = await permissionsApi.update(values.id, values);
+      const result = await updatePermissionAction(values.id, values);
       
       Swal.fire({
         title: t('updateSuccess'),

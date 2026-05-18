@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
@@ -11,6 +11,7 @@ import { RegisterCompany, UpdateCompany } from "./form";
 import { HiOutlineBuildingOffice, HiOutlinePlusCircle } from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
 import { ICompany } from "../models/company.interface";
+import { clientApi } from "@/lib/client-api";
 
 interface ICompanyManagerProps {
   initialData: ICompany[];
@@ -23,17 +24,38 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [editingCompany, setEditingCompany] = useState<ICompany | null>(null);
+  const [companies, setCompanies] = useState<ICompany[]>(initialData);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch companies data client-side
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        setLoading(true);
+        const response = await clientApi.get<{ data: ICompany[]; meta: any }>('/api/access_control/companies');
+        const companiesData = response.data || [];
+        setCompanies(companiesData);
+      } catch (error) {
+        console.error('Error fetching companies:', error);
+        // Keep initial data if fetch fails
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
 
   const metrics = useMemo(() => {
-    const activeCompanies = initialData.filter((company) => company.isActive !== false).length;
-    const uniqueIndustries = new Set(initialData.map(c => c.industry).filter(Boolean)).size;
+    const activeCompanies = companies.filter((company) => company.is_active !== false).length;
+    const uniqueIndustries = new Set(companies.map(c => c.economic_activity).filter(Boolean)).size;
 
     return {
-      totalCompanies: initialData.length,
+      totalCompanies: companies.length,
       activeCompanies,
       uniqueIndustries,
     };
-  }, [initialData]);
+  }, [companies]);
 
   const handleEdit = (row: ICompany) => {
     setEditingCompany(row);
@@ -48,8 +70,8 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
         cell: (info) => (
           <div className='flex flex-col'>
             <span className='font-semibold text-foreground'>{info.getValue<string>()}</span>
-            {info.row.original.industry && (
-              <span className='text-xs text-muted-foreground'>{info.row.original.industry}</span>
+            {info.row.original.economic_activity && (
+              <span className='text-xs text-muted-foreground'>{info.row.original.economic_activity}</span>
             )}
           </div>
         ),
@@ -69,6 +91,24 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
         },
       },
       {
+        accessorKey: "economic_activity",
+        header: t("fields.economic_activity"),
+        cell: (info) => {
+          const activityLabels: Record<string, string> = {
+            technology: "Tecnología",
+            finance: "Finanzas",
+            healthcare: "Salud",
+            education: "Educación",
+            retail: "Retail",
+            manufacturing: "Manufactura",
+            consulting: "Consultoría",
+            other: "Otro",
+          };
+          const activity = info.getValue<string>();
+          return <span className='text-sm'>{activity ? activityLabels[activity] || activity : "-"}</span>;
+        },
+      },
+      {
         accessorKey: "email",
         header: t("fields.email"),
         cell: (info) => (
@@ -84,12 +124,12 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
       },
       {
         header: "Estado",
-        accessorKey: "isActive",
+        accessorKey: "is_active",
         cell: ({ row }) => (
           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.original.isActive !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            row.original.is_active !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
           }`}>
-            {row.original.isActive !== false ? "Activa" : "Inactiva"}
+            {row.original.is_active !== false ? "Activa" : "Inactiva"}
           </span>
         ),
       },
@@ -160,7 +200,7 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
         ))}
       </div>
 
-      <DataTable data={initialData} columns={columns} className='py-2' />
+      <DataTable data={companies} columns={columns} className='py-2' />
 
       <Modal size='lg' title="Crear empresa" open={openModal} onOpenChange={() => setOpenModal(!openModal)}>
         <RegisterCompany />

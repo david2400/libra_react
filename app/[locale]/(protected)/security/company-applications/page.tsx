@@ -3,7 +3,7 @@
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { PermissionManager } from "@/modules/security/permissions";
+import { CompanyApplicationManager } from "@/modules/security/company-applications";
 
 export async function generateMetadata({
   params,
@@ -11,7 +11,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await Promise.resolve(params);
-  const t = await getTranslations({ locale, namespace: "security.permissions" });
+  const t = await getTranslations({ locale, namespace: "security.companyApplications" });
 
   return {
     title: t("title"),
@@ -19,9 +19,9 @@ export async function generateMetadata({
   };
 }
 
-const PermissionsPage = () => {
+const CompanyApplicationsPage = () => {
   // Pass empty initial data - the component will fetch data client-side
-  return <PermissionManager initialData={[]} />;
+  return <CompanyApplicationManager initialData={[]} />;
 };
 
-export default PermissionsPage;
+export default CompanyApplicationsPage;

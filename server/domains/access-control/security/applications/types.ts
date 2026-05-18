@@ -8,20 +8,16 @@ import { IMenu } from '../../navigation/menus';
 // --- IApplication Types ---------------------------------------------------------
 
 export interface IApplication extends IAuditInfo {
-  id_aplications: number;
+  id_application: number;
   name: string;
   description?: string;
   route: string;
-  maintenance_mode?: boolean;
+  maintenance_mode: boolean;
   publication_date: string;
   company_id?: number;
-  company?: ICompany;
-  permission?: IPermission[];
-  modules_application?: IModuleApplication[];
-  menu?: IMenu[];
 }
 
-export interface ICreateApplicationPayload {
+export interface ICreateApplication {
   name: string;
   description?: string;
   route: string;
@@ -30,13 +26,8 @@ export interface ICreateApplicationPayload {
   company_id?: number;
 }
 
-export interface IUpdateApplicationPayload {
-  name?: string;
-  description?: string;
-  route?: string;
-  maintenance_mode?: boolean;
-  publication_date?: string;
-  company_id?: number;
+export interface IUpdateApplication extends ICreateApplication {
+  id_application: number;
 }
 
 

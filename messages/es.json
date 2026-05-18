@@ -1,7 +1,18 @@
 {
   "actions": {
     "saveRole": "Crear Rol",
-    "saveApplication": "Crear Aplicación"
+    "saveApplication": "Crear Aplicación",
+    "saveCompany": "Crear Empresa",
+    "saveUser": "Crear Usuario",
+    "saveProfile": "Crear Perfil",
+    "saveClient": "Crear Cliente",
+    "saveMenu": "Crear Menú",
+    "saveRoleMenu": "Asignar Menú a Rol",
+    "saveMenuPermission": "Asignar Permiso a Menú",
+    "savePermission": "Crear Permiso",
+    "saveRolePermission": "Asignar Permiso a Rol",
+    "savePolicy": "Crear Política",
+    "saveModuleApplication": "Crear Módulo de Aplicación"
   },
   "common": {
     "welcome": "Bienvenido",
@@ -100,16 +111,36 @@
       "editButton": "Editar Empresa",
       "fields": {
         "name": "Nombre",
+        "nit": "NIT",
+        "active_date": "Fecha de Activación",
+        "status": "Estado",
         "email": "Correo Electrónico",
         "phone": "Teléfono",
+        "website": "Sitio Web",
+        "contact_person": "Persona de Contacto",
         "address": "Dirección",
         "city": "Ciudad",
+        "state": "Estado/Provincia",
         "country": "País",
-        "taxId": "NIT/RUC",
-        "website": "Sitio Web",
-        "industry": "Industria",
-        "size": "Tamaño",
+        "postal_code": "Código Postal",
+        "legal_representative": "Representante Legal",
+        "tax_regime": "Régimen Fiscal",
+        "economic_activity": "Actividad Económica",
+        "employee_count": "Número de Empleados",
+        "timezone": "Zona Horaria",
+        "currency": "Moneda",
+        "language": "Idioma",
+        "verification_date": "Fecha de Verificación",
+        "is_active": "Activo",
+        "is_verified": "Verificado",
+        "max_users": "Máximo de Usuarios",
+        "max_applications": "Máximo de Aplicaciones",
+        "subscription_type": "Tipo de Suscripción",
+        "subscription_start_date": "Fecha de Inicio de Suscripción",
+        "subscription_end_date": "Fecha de Fin de Suscripción",
         "description": "Descripción",
+        "size": "Tamaño",
+        "industry": "Industria",
         "sizeOptions": {
           "small": "Pequeña",
           "medium": "Mediana",
@@ -221,35 +252,16 @@
         "edit_description": "Editar la información del rol seleccionado"
       },
       "messages": {
-        "createSuccess": "Rol creado exitosamente",
-        "updateSuccess": "Rol actualizado exitosamente",
-        "deleteSuccess": "Rol eliminado exitosamente"
       }
     },
-    "permissions": {
-      "title": "Permisos",
-      "description": "Gestión de Permisos",
-      "subtitle": "Administra los permisos del sistema",
-      "createButton": "Crear Permiso",
-      "editButton": "Editar Permiso",
-      "fields": {
-        "name": "Nombre",
-        "code": "Código",
-        "description": "Descripción",
-        "module": "Módulo",
-        "action": "Acción",
-        "aplications_id": "ID de Aplicación",
-        "module_aplication_id": "ID de Módulo de Aplicación"
-      },
-      "modal": {
-        "create_title": "Crear Permiso",
-        "edit_title": "Editar Permiso"
-      },
-      "messages": {
-        "createSuccess": "Permiso creado exitosamente",
-        "updateSuccess": "Permiso actualizado exitosamente",
-        "deleteSuccess": "Permiso eliminado exitosamente"
-      }
+    "modal": {
+      "create_title": "Crear Empresa",
+      "edit_title": "Editar Empresa"
+    },
+    "messages": {
+      "createSuccess": "Empresa creada exitosamente",
+      "updateSuccess": "Empresa actualizada exitosamente",
+      "deleteSuccess": "Empresa eliminada exitosamente"
     },
     "applications": {
       "title": "Aplicaciones",

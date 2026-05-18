@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
@@ -11,6 +11,7 @@ import { RegisterPermission, UpdatePermission } from "./form";
 import { HiOutlineKey, HiOutlinePlusCircle } from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
 import { IPermission } from "../models/permission.interface";
+import { clientApi } from "@/lib/client-api";
 
 interface IPermissionManagerProps {
   initialData: IPermission[];
@@ -23,19 +24,38 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [editingPermission, setEditingPermission] = useState<IPermission | null>(null);
+  const [permissions, setPermissions] = useState<IPermission[]>(initialData);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch permissions data client-side
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      try {
+        setLoading(true);
+        const response = await clientApi.get<{ data: IPermission[]; meta: any }>('/api/access_control/permissions');
+        const permissionsData = response.data || [];
+        setPermissions(permissionsData);
+      } catch (error) {
+        console.error('Error fetching permissions:', error);
+        // Keep initial data if fetch fails
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPermissions();
+  }, []);
 
   const metrics = useMemo(() => {
-    const activePermissions = initialData.filter(
-      (perm) => perm.is_active !== false,
-    ).length;
-    const uniqueResources = new Set(initialData.map(p => p.resource).filter(Boolean)).size;
+    const totalPermissions = permissions.length;
+    const uniqueApplications = new Set(permissions.map(p => p.aplications_id).filter(Boolean)).size;
 
     return {
-      totalPermissions: initialData.length,
-      activePermissions,
-      uniqueResources,
+      totalPermissions,
+      activePermissions: totalPermissions, // All permissions are considered active by default
+      uniqueApplications,
     };
-  }, [initialData]);
+  }, [permissions]);
 
   const handleEdit = (row: IPermission) => {
     setEditingPermission(row);
@@ -64,19 +84,10 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
         ),
       },
       {
-        accessorKey: "resource",
-        header: t("fields.resource"),
+        accessorKey: "module_aplication_id",
+        header: t("fields.module_aplication_id"),
         cell: (info) => (
-          <span className='text-sm font-mono'>
-            {info.getValue<string>() || "-"}
-          </span>
-        ),
-      },
-      {
-        accessorKey: "action",
-        header: t("fields.action"),
-        cell: (info) => (
-          <span className='text-sm'>{info.getValue<string>() || "-"}</span>
+          <span className='text-sm'>{info.getValue<number>() || "-"}</span>
         ),
       },
       {
@@ -89,19 +100,10 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
         ),
       },
       {
-        header: "Status",
-        accessorKey: "isActive",
-        cell: ({ row }) => (
-          <div className='flex items-center'>
-            <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                row.original.is_active !== false
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
-              }`}>
-              {row.original.is_active !== false ? "Active" : "Inactive"}
-            </span>
-          </div>
+        header: "Aplicación ID",
+        accessorKey: "aplications_id",
+        cell: (info) => (
+          <span className='text-sm'>{info.getValue<number>() || "-"}</span>
         ),
       },
       {
@@ -138,8 +140,8 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
     },
     {
       icon: HiOutlineKey,
-      label: "Recursos únicos",
-      value: metrics.uniqueResources,
+      label: "Aplicaciones únicas",
+      value: metrics.uniqueApplications,
       accent: "from-amber-500/40 to-orange-500/40 text-amber-700",
     },
   ];
@@ -186,7 +188,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
       </div>
 
       <DataTable
-        data={initialData}
+        data={permissions}
         columns={columns}
         className='py-2'
       />

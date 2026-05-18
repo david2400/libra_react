@@ -10,24 +10,59 @@ export interface IPermission extends IAuditInfo {
   id_permission: number;
   name: string;
   description?: string;
-  aplications_id: number;
-  aplications?: IApplication;
-  module_aplication_id?: number;
-  module_aplication?: IModuleApplication;
+  permission_type: 'API' | 'APPLICATION' | 'UI' | 'SYSTEM';
+  resource: string;
+  action: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' | 'EXECUTE' | 'VIEW' | 'MANAGE' | 'ADMIN' | 'APPROVE' | 'REJECT';
+  application_id?: number;
+  application?: IApplication;
+  module_id?: number;
+  module?: IModuleApplication;
+  api_type?: 'REST' | 'GraphQL' | 'gRPC' | 'SOAP' | 'WebSockets' | 'RPC (general)';
+  http_method?: string;
+  endpoint_path?: string;
+  ui_component?: string;
+  feature_flag?: string;
+  priority?: number;
+  cache_ttl?: number;
+  is_sensitive?: boolean;
+  metadata?: string;
   role_permission?: IRolePermission[];
-
 }
 
 export interface ICreatePermissionPayload {
   name: string;
   description?: string;
-  aplications_id: number;
-  module_aplication_id?: number;
+  permission_type: 'API' | 'APPLICATION' | 'UI' | 'SYSTEM';
+  resource: string;
+  action: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' | 'EXECUTE' | 'VIEW' | 'MANAGE' | 'ADMIN' | 'APPROVE' | 'REJECT';
+  application_id?: number;
+  module_id?: number;
+  api_type?: 'REST' | 'GraphQL' | 'gRPC' | 'SOAP' | 'WebSockets' | 'RPC (general)';
+  http_method?: string;
+  endpoint_path?: string;
+  ui_component?: string;
+  feature_flag?: string;
+  priority?: number;
+  cache_ttl?: number;
+  is_sensitive?: boolean;
+  metadata?: string;
 }
 
 export interface IUpdatePermissionPayload {
   name?: string;
   description?: string;
-  aplications_id?: number;
-  module_aplication_id?: number;
+  permission_type?: 'API' | 'APPLICATION' | 'UI' | 'SYSTEM';
+  resource?: string;
+  action?: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' | 'EXECUTE' | 'VIEW' | 'MANAGE' | 'ADMIN' | 'APPROVE' | 'REJECT';
+  application_id?: number;
+  module_id?: number;
+  api_type?: 'REST' | 'GraphQL' | 'gRPC' | 'SOAP' | 'WebSockets' | 'RPC (general)';
+  http_method?: string;
+  endpoint_path?: string;
+  ui_component?: string;
+  feature_flag?: string;
+  priority?: number;
+  cache_ttl?: number;
+  is_sensitive?: boolean;
+  metadata?: string;
 }

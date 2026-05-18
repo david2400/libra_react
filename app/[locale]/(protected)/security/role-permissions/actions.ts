@@ -6,11 +6,11 @@ import {
   deleteRolePermissionAction,
 } from '@/server/domains/access-control/security/role_permissions';
 import type {
-  ICreateRolePermissionPayload,
-  IUpdateRolePermissionPayload,
+  ICreateRolePermission,
+  IUpdateRolePermission,
 } from '@/server/domains/access-control/security/role_permissions';
 
-export async function createRolePermissionServerAction(roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload) {
+export async function createRolePermissionServerAction(roleId: string | number, permissionId: string | number, payload: ICreateRolePermission) {
   const result = await createRolePermissionAction(roleId, permissionId, payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createRolePermissionServerAction(roleId: string | number, 
   return result.data;
 }
 
-export async function updateRolePermissionServerAction(roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload) {
+export async function updateRolePermissionServerAction(roleId: string | number, permissionId: string | number, payload: IUpdateRolePermission) {
   const result = await updateRolePermissionAction(roleId, permissionId, payload);
 
   if (!result.success) {

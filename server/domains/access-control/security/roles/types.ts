@@ -26,7 +26,7 @@ export interface ICreateRole {
 }
 
 export interface IUpdateRole extends ICreateRole {
-
+  id_role: number;
 }
 
 

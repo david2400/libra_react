@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
@@ -11,6 +11,7 @@ import { RegisterRolePermission, UpdateRolePermission } from "./form";
 import { HiOutlineLockClosed, HiOutlinePlusCircle } from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
 import { IRolePermission } from "../models/role-permission.interface";
+import { clientApi } from "@/lib/client-api";
 
 interface IRolePermissionManagerProps {
   initialData: IRolePermission[];
@@ -23,17 +24,38 @@ export const RolePermissionManager = ({ initialData }: IRolePermissionManagerPro
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [editingRolePermission, setEditingRolePermission] = useState<IRolePermission | null>(null);
+  const [rolePermissions, setRolePermissions] = useState<IRolePermission[]>(initialData);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch role permissions data client-side
+  useEffect(() => {
+    const fetchRolePermissions = async () => {
+      try {
+        setLoading(true);
+        const response = await clientApi.get<{ data: IRolePermission[]; meta: any }>('/api/access_control/role_permissions');
+        const rolePermissionsData = response.data || [];
+        setRolePermissions(rolePermissionsData);
+      } catch (error) {
+        console.error('Error fetching role permissions:', error);
+        // Keep initial data if fetch fails
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRolePermissions();
+  }, []);
 
   const metrics = useMemo(() => {
-    const activeAssignments = initialData.filter((rp) => rp.isActive !== false).length;
-    const uniqueRoles = new Set(initialData.map(rp => rp.roleId)).size;
+    const activeAssignments = rolePermissions.filter((rp) => rp.isActive !== false).length;
+    const uniqueRoles = new Set(rolePermissions.map(rp => rp.roleId)).size;
 
     return {
-      totalAssignments: initialData.length,
+      totalAssignments: rolePermissions.length,
       activeAssignments,
       uniqueRoles,
     };
-  }, [initialData]);
+  }, [rolePermissions]);
 
   const handleEdit = (row: IRolePermission) => {
     setEditingRolePermission(row);
@@ -46,24 +68,32 @@ export const RolePermissionManager = ({ initialData }: IRolePermissionManagerPro
         accessorKey: "role",
         header: "Rol",
         cell: ({ row }) => (
-          <span className='font-semibold'>{row.original.role?.name || `ID: ${row.original.roleId}`}</span>
+          <span className='font-semibold'>
+            {row.original.role?.name || `ID: ${row.original.role_id}`}
+          </span>
         ),
       },
       {
         accessorKey: "permission",
         header: "Permiso",
         cell: ({ row }) => (
-          <span className='text-sm'>{row.original.permission?.name || `ID: ${row.original.permissionId}`}</span>
+          <span className='text-sm'>
+            {row.original.permission?.name ||
+              `ID: ${row.original.permissionId}`}
+          </span>
         ),
       },
       {
         header: "Status",
         accessorKey: "isActive",
         cell: ({ row }) => (
-          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.original.isActive !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-          }`}>
-            {row.original.isActive !== false ? "Active" : "Inactive"}
+          <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              row.original.deleted !== false
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}>
+            {row.original.deleted !== false ? "Active" : "Inactive"}
           </span>
         ),
       },
@@ -71,7 +101,10 @@ export const RolePermissionManager = ({ initialData }: IRolePermissionManagerPro
         id: "actions",
         header: "Actions",
         cell: ({ row }) => (
-          <Buttons size='sm' variant='outline' onClick={() => handleEdit(row.original)}>
+          <Buttons
+            size='sm'
+            variant='outline'
+            onClick={() => handleEdit(row.original)}>
             Editar
           </Buttons>
         ),
@@ -134,7 +167,7 @@ export const RolePermissionManager = ({ initialData }: IRolePermissionManagerPro
         ))}
       </div>
 
-      <DataTable data={initialData} columns={columns} className='py-2' />
+      <DataTable data={rolePermissions} columns={columns} className='py-2' />
 
       <Modal size='lg' title="Asignar permiso a rol" open={openModal} onOpenChange={() => setOpenModal(!openModal)}>
         <RegisterRolePermission />

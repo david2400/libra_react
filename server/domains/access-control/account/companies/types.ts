@@ -5,30 +5,76 @@ import { IClient } from '../clients';
 // --- ICompany Types -------------------------------------------------------------
 
 export interface ICompany extends IAuditInfo {
-  id: string | number;
+  id_company: number;
   name: string;
-  description?: string;
-  industry?: string;
-  size?: 'small' | 'medium' | 'large' | 'enterprise';
+  nit: string;
+  active_date: string;
+  status: string;
+  // Información de contacto
+  email?: string;
+  phone?: string;
   website?: string;
+  contact_person?: string;
+  // Dirección
   address?: string;
   city?: string;
+  state?: string;
   country?: string;
-  phone?: string;
-  email?: string;
+  postal_code?: string;
+  // Datos fiscales y legales
+  legal_representative?: string;
+  tax_regime?: string;
+  economic_activity?: string;
+  employee_count?: number;
+  // Configuración y estado
+  timezone?: string;
+  currency?: string;
+  language?: string;
+  is_active?: boolean;
+  is_verified?: boolean;
+  verification_date?: string;
+  // Límites y configuración del plan
+  max_users?: number;
+  max_applications?: number;
+  subscription_type?: string;
+  subscription_start_date?: string;
+  subscription_end_date?: string;
 }
 
 export interface ICreateCompany {
   name: string;
-  description?: string;
-  industry?: string;
-  size?: 'small' | 'medium' | 'large' | 'enterprise';
+  nit: string;
+  active_date: string;
+  status: string;
+  // Información de contacto
+  email?: string;
+  phone?: string;
   website?: string;
+  contact_person?: string;
+  // Dirección
   address?: string;
   city?: string;
+  state?: string;
   country?: string;
-  phone?: string;
-  email?: string;
+  postal_code?: string;
+  // Datos fiscales y legales
+  legal_representative?: string;
+  tax_regime?: string;
+  economic_activity?: string;
+  employee_count?: number;
+  // Configuración y estado
+  timezone?: string;
+  currency?: string;
+  language?: string;
+  is_active?: boolean;
+  is_verified?: boolean;
+  verification_date?: string;
+  // Límites y configuración del plan
+  max_users?: number;
+  max_applications?: number;
+  subscription_type?: string;
+  subscription_start_date?: string;
+  subscription_end_date?: string;
 }
 
 export interface IUpdateCompany extends ICreateCompany {

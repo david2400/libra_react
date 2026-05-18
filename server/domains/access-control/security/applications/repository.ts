@@ -4,9 +4,8 @@ import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { 
   IApplication, 
-  ICreateApplicationPayload, 
-  IUpdateApplicationPayload,
-  IModule,
+  ICreateApplication, 
+  IUpdateApplication,
   IApplicationModule,
   ICreateApplicationModulePayload,
   IUpdateApplicationModulePayload,
@@ -20,6 +19,7 @@ import type {
   IApplicationOverview
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import { IModule } from '../modules_applications';
 
 // --- Applications Repository -----------------------------------------------------
 
@@ -40,13 +40,13 @@ export const applicationsRepository = {
     }),
 
   // Create application
-  create: (payload: ICreateApplicationPayload) => 
+  create: (payload: ICreateApplication) => 
     serverFetch.post<IApplication>('/api/access_control/applications', payload, {
       revalidate: false,
     }),
 
   // Update application
-  update: (id: string | number, payload: IUpdateApplicationPayload) => 
+  update: (id: string | number, payload: IUpdateApplication) => 
     serverFetch.put<IApplication>(`/api/access_control/applications/${id}`, payload, {
       revalidate: false,
     }),

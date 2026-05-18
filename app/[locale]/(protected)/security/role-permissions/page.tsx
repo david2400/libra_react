@@ -4,7 +4,6 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { RolePermissionManager } from "@/modules/security/role-permissions";
-import { IRolePermission, getRolePermissions } from "@/server/domains/access-control/security/role_permissions";
 
 export async function generateMetadata({
   params,
@@ -20,23 +19,9 @@ export async function generateMetadata({
   };
 }
 
-const RolePermissionsPage = async () => {
-  try {
-    const rolePermissionResponse = await getRolePermissions();
-
-    // Extract the data array from the paginated response
-    const rolePermissionData: IRolePermission[] = Array.isArray(
-      rolePermissionResponse,
-    )
-      ? rolePermissionResponse
-      : rolePermissionResponse?.data || [];
-
-    return <RolePermissionManager initialData={rolePermissionData} />;
-  } catch (error) {
-    console.error("Error loading themes:", error);
-    // Return empty data if API fails
-    return <RolePermissionManager initialData={[]} />;
-  }
+const RolePermissionsPage = () => {
+  // Pass empty initial data - the component will fetch data client-side
+  return <RolePermissionManager initialData={[]} />;
 };
 
 export default RolePermissionsPage;

@@ -2,7 +2,7 @@ import { useTranslations } from 'next-intl';
 import { z } from 'zod';
 
 export const validationRolePermission = () => {
-  const intl = useTranslations('Form');
+  const intl = useTranslations('validation');
 
   return z.object({
     roleId: z.coerce

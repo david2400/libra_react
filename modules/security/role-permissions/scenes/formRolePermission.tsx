@@ -15,8 +15,8 @@ export const FormRolePermission = ({
   validationSchema,
   onSubmit,
 }: IFormProps<any>) => {
-  const intl = useTranslations("AccessControl.security.rolePermissions");
-  const intlActions = useTranslations("AccessControl.actions");
+  const intl = useTranslations("security.rolePermissions");
+  const intlActions = useTranslations("actions");
   type RolePermissionInputs = z.infer<typeof validationSchema>;
 
   const {

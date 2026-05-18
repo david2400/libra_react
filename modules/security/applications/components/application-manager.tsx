@@ -10,23 +10,31 @@ import { Buttons } from "@repo/ui/buttons/scenes";
 import { RegisterApplication, UpdateApplication } from "./form";
 import { HiOutlineSquares2X2, HiOutlinePlusCircle } from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
-import { IApplication } from "../models/application.interface";
+import { IApplication } from "@/modules/security/applications";
+import type { IApplicationUpdateRequest } from "@/modules/security/applications";
 
 interface IApplicationManagerProps {
   initialData: IApplication[];
 }
 
-export const ApplicationManager = ({ initialData }: IApplicationManagerProps) => {
+export const ApplicationManager = ({
+  initialData,
+}: IApplicationManagerProps) => {
   const t = useTranslations("security.applications");
   const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [editingApplication, setEditingApplication] = useState<IApplication | null>(null);
+  const [editingApplication, setEditingApplication] =
+    useState<IApplicationUpdateRequest | null>(null);
 
   const metrics = useMemo(() => {
-    const activeApps = initialData.filter((app) => app.status === "active").length;
-    const maintenanceApps = initialData.filter((app) => app.status === "maintenance").length;
+    const activeApps = initialData.filter(
+      (app) => app.deleted === false,
+    ).length;
+    const maintenanceApps = initialData.filter(
+      (app) => app.maintenance_mode === true,
+    ).length;
 
     return {
       totalApplications: initialData.length,
@@ -36,6 +44,7 @@ export const ApplicationManager = ({ initialData }: IApplicationManagerProps) =>
   }, [initialData]);
 
   const handleEdit = (row: IApplication) => {
+    console.log("row", row);
     setEditingApplication(row);
     handleModalCloseEdit();
   };
@@ -58,50 +67,57 @@ export const ApplicationManager = ({ initialData }: IApplicationManagerProps) =>
             <span className='font-semibold text-foreground'>
               {info.row.original.name}
             </span>
-            {info.row.original.version && (
+            {/* {info.row.original.version && (
               <span className='text-xs text-muted-foreground'>
                 v{info.row.original.version}
               </span>
-            )}
+            )} */}
           </div>
         ),
       },
+      // {
+      //   accessorKey: "baseUrl",
+      //   header: t("fields.baseUrl"),
+      //   cell: (info) => (
+      //     <span className='text-sm font-mono'>
+      //       {info.getValue<string>() || "-"}
+      //     </span>
+      //   ),
+      // },
+
       {
-        accessorKey: "baseUrl",
-        header: t("fields.baseUrl"),
+        accessorKey: "description",
+        header: t("fields.description"),
         cell: (info) => (
-          <span className='text-sm font-mono'>{info.getValue<string>() || "-"}</span>
+          <span className='text-sm text-muted-foreground'>
+            {info.getValue<string>() || "-"}
+          </span>
         ),
       },
+
       {
-        accessorKey: "status",
-        header: t("fields.status"),
+        accessorKey: "maintenance_mode",
+        header: t("fields.maintenance_mode"),
         cell: ({ row }) => {
-          const statusColors = {
-            active: "bg-green-100 text-green-800",
-            inactive: "bg-red-100 text-red-800",
-            maintenance: "bg-yellow-100 text-yellow-800",
-          };
-          const status = row.original.status || "inactive";
+          const isMaintenance = row.original.maintenance_mode;
+          const statusColor = isMaintenance
+            ? "bg-yellow-100 text-yellow-800"
+            : "bg-green-100 text-green-800";
+          const status = isMaintenance ? "maintenance" : "active";
           return (
-            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[status]}`}>
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColor}`}>
               {status}
             </span>
           );
         },
       },
       {
-        accessorKey: "description",
-        header: t("fields.description"),
-        cell: (info) => (
-          <span className='text-sm text-muted-foreground'>{info.getValue<string>() || "-"}</span>
-        ),
-      },
-      {
         id: "actions",
         header: "Actions",
         enableSorting: false,
         cell: ({ row }) => (
+          console.log(row.original),
           <div className='flex gap-2'>
             <Buttons
               size='sm'
@@ -113,7 +129,7 @@ export const ApplicationManager = ({ initialData }: IApplicationManagerProps) =>
         ),
       },
     ],
-    [t, handleEdit],
+    [],
   );
 
   const summaryCards = [
@@ -178,11 +194,7 @@ export const ApplicationManager = ({ initialData }: IApplicationManagerProps) =>
         ))}
       </div>
 
-      <DataTable
-        data={initialData}
-        columns={columns}
-        className='py-2'
-      />
+      <DataTable data={initialData} columns={columns} className='py-2' />
 
       <Modal
         size='lg'

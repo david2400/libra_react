@@ -12,8 +12,8 @@ import {
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
 import type { 
-  ICreateApplicationPayload, 
-  IUpdateApplicationPayload,
+  ICreateApplication, 
+  IUpdateApplication,
   ICreateApplicationModulePayload,
   IUpdateApplicationModulePayload,
   ICreateApplicationConfigPayload,
@@ -22,14 +22,14 @@ import type {
 
 // --- Applications Actions -----------------------------------------------------
 
-export const createApplicationAction = async (payload: ICreateApplicationPayload): Promise<ActionResultType<any>> => {
+export const createApplicationAction = async (payload: ICreateApplication): Promise<ActionResultType<any>> => {
   try {
     const application = await applicationsRepository.create(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.applications());
-    if (typeof application.id === 'string' || typeof application.id === 'number') {
-      await revalidateCacheTag(accessControlTags.application(application.id));
+    if (typeof application.id_application === 'string' || typeof application.id_application === 'number') {
+      await revalidateCacheTag(accessControlTags.application(application.id_application));
     }
     
     return { success: true, data: application };
@@ -55,7 +55,7 @@ export const createApplicationAction = async (payload: ICreateApplicationPayload
   }
 };
 
-export const updateApplicationAction = async (id: string | number, payload: IUpdateApplicationPayload): Promise<ActionResultType<any>> => {
+export const updateApplicationAction = async (id: string | number, payload: IUpdateApplication): Promise<ActionResultType<any>> => {
   try {
     const application = await applicationsRepository.update(id, payload);
     

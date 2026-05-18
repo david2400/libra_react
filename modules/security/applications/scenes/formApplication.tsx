@@ -4,12 +4,20 @@
 
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
+import { useState, useEffect, useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FormField } from "@repo/ui/form/scenes";
 import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
 import { FormSelectField } from "@repo/ui/form";
+
+// Define the interface for educational levels
+interface INivelEducativo {
+  id: number;
+  nombre: string;
+  codigo: string;
+}
 
 export const FormApplication = ({
   initialValues,
@@ -29,25 +37,14 @@ export const FormApplication = ({
     defaultValues: initialValues,
   });
 
-  const statusOptions = [
-    { id: "active", value: "active", label: t("fields.statusOptions.active") },
-    { id: "inactive", value: "inactive", label: t("fields.statusOptions.inactive") },
-    { id: "maintenance", value: "maintenance", label: t("fields.statusOptions.maintenance") },
-  ];
-
+  console.log(errors);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       <div className='grid grid-cols-12 gap-4'>
         <FormField
           controller={{ control, name: "name" }}
           label={t("fields.name")}
-          className='col-span-12 md:col-span-6'
-        />
-
-        <FormField
-          controller={{ control, name: "route" }}
-          label={t("fields.route")}
-          className='col-span-12 md:col-span-6'
+          className='col-span-12'
         />
 
         <FormField
@@ -63,12 +60,25 @@ export const FormApplication = ({
           className='col-span-12 md:col-span-6'
         />
 
-        <FormField
+   
+
+        {/* <FormSelectField
           controller={{ control, name: "company_id" }}
           label={t("fields.company_id")}
-          type='number'
-          className='col-span-12 md:col-span-6'
-        />
+          data={opcionesNiveles}
+          placeholder='Seleccionar nivel superior...'
+          disabled={nivelesData.loading || !!nivelesData.error}
+          // searchable={true}
+          // emptyMessage={nivelesData.loading
+          //   ? "Cargando niveles..."
+          //   : nivelesData.error
+          //     ? nivelesData.error
+          //     : "No hay niveles disponibles"}
+          error={errors.nivel_educativo?.message}
+          className='w-full col-span-12 md:col-span-6'
+          // @ts-ignore - El componente FormSelectField tiene un conflicto de tipos pero soporta estas props
+          description='Nivel educativo al que pertenece (opcional)'
+        /> */}
 
         <FormField
           controller={{ control, name: "maintenance_mode" }}
