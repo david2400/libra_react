@@ -11,7 +11,6 @@ import { RegisterCompany, UpdateCompany } from "./form";
 import { HiOutlineBuildingOffice, HiOutlinePlusCircle } from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
 import { ICompany } from "../models/company.interface";
-import { clientApi } from "@/lib/client-api";
 
 interface ICompanyManagerProps {
   initialData: ICompany[];
@@ -29,26 +28,24 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
 
   // Fetch companies data client-side
   useEffect(() => {
-    const fetchCompanies = async () => {
-      try {
-        setLoading(true);
-        const response = await clientApi.get<{ data: ICompany[]; meta: any }>('/api/access_control/companies');
-        const companiesData = response.data || [];
-        setCompanies(companiesData);
-      } catch (error) {
-        console.error('Error fetching companies:', error);
-        // Keep initial data if fetch fails
-      } finally {
-        setLoading(false);
-      }
-    };
+    setLoading(true);
 
-    fetchCompanies();
+    getCompaniesServices()
+      .then((companies) => {
+        setCompanies(companies);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const metrics = useMemo(() => {
-    const activeCompanies = companies.filter((company) => company.is_active !== false).length;
-    const uniqueIndustries = new Set(companies.map(c => c.economic_activity).filter(Boolean)).size;
+    const activeCompanies = companies.filter(
+      (company) => company.is_active !== false,
+    ).length;
+    const uniqueIndustries = new Set(
+      companies.map((c) => c.economic_activity).filter(Boolean),
+    ).size;
 
     return {
       totalCompanies: companies.length,
@@ -69,9 +66,13 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
         header: t("fields.name"),
         cell: (info) => (
           <div className='flex flex-col'>
-            <span className='font-semibold text-foreground'>{info.getValue<string>()}</span>
+            <span className='font-semibold text-foreground'>
+              {info.getValue<string>()}
+            </span>
             {info.row.original.economic_activity && (
-              <span className='text-xs text-muted-foreground'>{info.row.original.economic_activity}</span>
+              <span className='text-xs text-muted-foreground'>
+                {info.row.original.economic_activity}
+              </span>
             )}
           </div>
         ),
@@ -87,7 +88,9 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
             enterprise: "Empresa",
           };
           const size = info.getValue<string>();
-          return <span className='text-sm'>{size ? sizeLabels[size] : "-"}</span>;
+          return (
+            <span className='text-sm'>{size ? sizeLabels[size] : "-"}</span>
+          );
         },
       },
       {
@@ -105,7 +108,11 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
             other: "Otro",
           };
           const activity = info.getValue<string>();
-          return <span className='text-sm'>{activity ? activityLabels[activity] || activity : "-"}</span>;
+          return (
+            <span className='text-sm'>
+              {activity ? activityLabels[activity] || activity : "-"}
+            </span>
+          );
         },
       },
       {
@@ -126,9 +133,12 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
         header: "Estado",
         accessorKey: "is_active",
         cell: ({ row }) => (
-          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.original.is_active !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-          }`}>
+          <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              row.original.is_active !== false
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}>
             {row.original.is_active !== false ? "Activa" : "Inactiva"}
           </span>
         ),
@@ -137,7 +147,10 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
         id: "actions",
         header: "Acciones",
         cell: ({ row }) => (
-          <Buttons size='sm' variant='outline' onClick={() => handleEdit(row.original)}>
+          <Buttons
+            size='sm'
+            variant='outline'
+            onClick={() => handleEdit(row.original)}>
             Editar
           </Buttons>
         ),
@@ -175,8 +188,12 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
             {t("title")}
           </span>
           <div className='space-y-2'>
-            <h1 className='text-4xl font-semibold leading-tight'>{t("description")}</h1>
-            <p className='text-white/80'>Gestiona las empresas y sus datos corporativos.</p>
+            <h1 className='text-4xl font-semibold leading-tight'>
+              {t("description")}
+            </h1>
+            <p className='text-white/80'>
+              Gestiona las empresas y sus datos corporativos.
+            </p>
           </div>
           <Buttons
             color='success'
@@ -190,24 +207,41 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
 
       <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
         {summaryCards.map((card) => (
-          <div key={card.label} className={`rounded-2xl border border-border/40 bg-gradient-to-br ${card.accent} px-5 py-4 shadow-sm backdrop-blur`}>
+          <div
+            key={card.label}
+            className={`rounded-2xl border border-border/40 bg-gradient-to-br ${card.accent} px-5 py-4 shadow-sm backdrop-blur`}>
             <div className='flex items-center justify-between text-sm font-semibold text-white/80'>
               <span>{card.label}</span>
               <card.icon className='h-5 w-5 text-white/70' />
             </div>
-            <p className='mt-2 text-2xl font-semibold text-white'>{card.value}</p>
+            <p className='mt-2 text-2xl font-semibold text-white'>
+              {card.value}
+            </p>
           </div>
         ))}
       </div>
 
       <DataTable data={companies} columns={columns} className='py-2' />
 
-      <Modal size='lg' title="Crear empresa" open={openModal} onOpenChange={() => setOpenModal(!openModal)}>
+      <Modal
+        size='lg'
+        title='Crear empresa'
+        open={openModal}
+        onOpenChange={() => setOpenModal(!openModal)}>
         <RegisterCompany />
       </Modal>
 
-      <Modal size='lg' open={openModalUpdate} onOpenChange={() => setOpenModalUpdate(!openModalUpdate)} title={t("modal.edit_title")} showCloseButton={true} hideDefaultFooter={true}>
-        <UpdateCompany initialValues={editingCompany} handleClose={() => setOpenModalUpdate(false)} />
+      <Modal
+        size='lg'
+        open={openModalUpdate}
+        onOpenChange={() => setOpenModalUpdate(!openModalUpdate)}
+        title={t("modal.edit_title")}
+        showCloseButton={true}
+        hideDefaultFooter={true}>
+        <UpdateCompany
+          initialValues={editingCompany}
+          handleClose={() => setOpenModalUpdate(false)}
+        />
       </Modal>
     </section>
   );

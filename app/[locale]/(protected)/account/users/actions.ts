@@ -6,11 +6,11 @@ import {
   deleteUserAction,
 } from '@/server/domains/access-control/account/users';
 import type {
-  ICreateUserPayload,
-  IUpdateUserPayload,
+  ICreateUser,
+  IUpdateUser,
 } from '@/server/domains/access-control/account/users';
 
-export async function createUserServerAction(payload: ICreateUserPayload) {
+export async function createUserServerAction(payload: ICreateUser) {
   const result = await createUserAction(payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createUserServerAction(payload: ICreateUserPayload) {
   return result.data;
 }
 
-export async function updateUserServerAction(id: number, payload: IUpdateUserPayload) {
+export async function updateUserServerAction(id: number, payload: IUpdateUser) {
   const result = await updateUserAction(id, payload);
 
   if (!result.success) {

@@ -37,7 +37,6 @@ export const FormApplication = ({
     defaultValues: initialValues,
   });
 
-  console.log(errors);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       <div className='grid grid-cols-12 gap-4'>

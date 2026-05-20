@@ -6,11 +6,11 @@ import {
   deleteClientAction,
 } from '@/server/domains/access-control/account/clients';
 import type {
-  ICreateClientPayload,
-  IUpdateClientPayload,
+  ICreateClient,
+  IUpdateClient,
 } from '@/server/domains/access-control/account/clients';
 
-export async function createClientServerAction(payload: ICreateClientPayload) {
+export async function createClientServerAction(payload: ICreateClient) {
   const result = await createClientAction(payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createClientServerAction(payload: ICreateClientPayload) {
   return result.data;
 }
 
-export async function updateClientServerAction(id: string | number, payload: IUpdateClientPayload) {
+export async function updateClientServerAction(id: string | number, payload: IUpdateClient) {
   const result = await updateClientAction(id, payload);
 
   if (!result.success) {

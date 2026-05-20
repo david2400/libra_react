@@ -1,0 +1,2548 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Essenza Access Control API",
+    "description": "API para gestión de control de acceso, permisos, roles, usuarios y navegación",
+    "contact": {
+      "name": "Essenza Development Team",
+      "email": "dev@essenza.com"
+    },
+    "license": { "name": "Proprietary", "url": "https://essenza.com/license" },
+    "version": "v1.0.0"
+  },
+  "servers": [{ "url": "/", "description": "Default Server" }],
+  "tags": [
+    {
+      "name": "Policy Management",
+      "description": "APIs for managing authorization policies"
+    },
+    {
+      "name": "Authorization",
+      "description": "APIs for authorization decisions"
+    },
+    {
+      "name": "User Policy Assignment",
+      "description": "APIs for assigning policies to users"
+    }
+  ],
+  "paths": {
+    "/api/access_control/user-permissions/{userId}/{permissionId}": {
+      "get": {
+        "tags": ["User Permissions"],
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "permissionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/UserPermissionDto" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["User Permissions"],
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "permissionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserPermissionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/UserPermissionDto" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User Permissions"],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "permissionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/access_control/roles/{id}": {
+      "get": {
+        "tags": ["Roles"],
+        "summary": "Get role by ID",
+        "description": "Returns a role by its ID",
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Roles"],
+        "summary": "Update role",
+        "description": "Updates an existing role by ID",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateRoleDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Roles"],
+        "summary": "Delete role",
+        "description": "Deletes a role by ID",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/role-permissions/{permissionId}/{roleId}": {
+      "get": {
+        "tags": ["RolePermissions"],
+        "summary": "Get role-permission by composite ID",
+        "description": "Returns a role-permission by permissionId and roleId",
+        "operationId": "getById_1",
+        "parameters": [
+          {
+            "name": "permissionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/RolePermission" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/RolePermission" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["RolePermissions"],
+        "summary": "Update role-permission",
+        "description": "Updates an existing role-permission by composite key",
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "name": "permissionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRolePermissionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/RolePermission" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/RolePermission" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["RolePermissions"],
+        "summary": "Delete role-permission",
+        "description": "Deletes a role-permission relation by composite key",
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "name": "permissionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/policies/{id}": {
+      "get": {
+        "tags": ["Policy Management"],
+        "summary": "Get policy by ID",
+        "description": "Retrieve a specific policy by its ID",
+        "operationId": "getPolicyById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Policy" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Policy Management"],
+        "summary": "Update policy",
+        "description": "Update an existing authorization policy",
+        "operationId": "updatePolicy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdatePolicyDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Policy" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Policy Management"],
+        "summary": "Delete policy",
+        "description": "Delete an authorization policy",
+        "operationId": "deletePolicy",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/access_control/permissions/{id}": {
+      "get": {
+        "tags": ["Permissions"],
+        "summary": "Get permission by ID",
+        "description": "Returns a permission by its ID",
+        "operationId": "getById_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Permissions"],
+        "summary": "Update permission",
+        "description": "Updates an existing permission by ID",
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdatePermissionDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Permissions"],
+        "summary": "Delete permission",
+        "description": "Deletes a permission by ID",
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/modules-applications/{id}": {
+      "get": {
+        "tags": ["ModulesApplications"],
+        "summary": "Get module application by ID",
+        "description": "Returns a module application by its ID",
+        "operationId": "getById_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["ModulesApplications"],
+        "summary": "Update module application",
+        "description": "Updates an existing module application by ID",
+        "operationId": "update_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateModulesApplicationDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["ModulesApplications"],
+        "summary": "Delete module application",
+        "description": "Deletes a module application by ID",
+        "operationId": "delete_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/company-applications/company/{companyId}/application/{applicationId}/deactivate": {
+      "put": {
+        "tags": ["Company Applications Management"],
+        "summary": "Deactivate application license",
+        "description": "Deactivates a company's license for an application",
+        "operationId": "deactivateLicense",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "License deactivated",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          },
+          "404": {
+            "description": "Assignment not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/company-applications/company/{companyId}/application/{applicationId}/activate": {
+      "put": {
+        "tags": ["Company Applications Management"],
+        "summary": "Activate application license",
+        "description": "Activates a company's license for an application",
+        "operationId": "activateLicense",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Assignment not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          },
+          "200": {
+            "description": "License activated",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/applications/{id}": {
+      "get": {
+        "tags": ["Applications"],
+        "summary": "Get application by ID",
+        "description": "Returns an application by its ID",
+        "operationId": "getById_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/Application" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/Application" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Applications"],
+        "summary": "Update application",
+        "description": "Updates an existing application by ID",
+        "operationId": "update_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateApplicationDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/Application" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/Application" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Applications"],
+        "summary": "Delete application",
+        "description": "Deletes an application by ID",
+        "operationId": "delete_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/user-policies": {
+      "post": {
+        "tags": ["User Policy Assignment"],
+        "summary": "Assign policy to user",
+        "description": "Assign a policy to a specific user",
+        "operationId": "assignPolicy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AssignPolicyRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/UserPolicy" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-permissions": {
+      "get": {
+        "tags": ["User Permissions"],
+        "operationId": "findAll",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["User Permissions"],
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserPermissionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/UserPermissionDto" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-permissions/user/{userId}/bulk": {
+      "post": {
+        "tags": ["User Permissions"],
+        "operationId": "assignBulk",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateUserPermissionDto"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/roles": {
+      "get": {
+        "tags": ["Roles"],
+        "summary": "List roles",
+        "description": "Returns all roles. Optional filter by name",
+        "operationId": "getAll",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Role" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Roles"],
+        "summary": "Create role",
+        "description": "Creates a new role",
+        "operationId": "create_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateRoleDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/role-permissions": {
+      "get": {
+        "tags": ["RolePermissions"],
+        "summary": "List role-permissions",
+        "description": "Returns all role-permission relations. Optional filters: roleId, permissionId",
+        "operationId": "getAll_1",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "permissionId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/RolePermission" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["RolePermissions"],
+        "summary": "Create role-permission",
+        "description": "Creates a new role-permission relation",
+        "operationId": "create_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRolePermissionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/RolePermission" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/RolePermission" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/policies": {
+      "get": {
+        "tags": ["Policy Management"],
+        "summary": "Get all policies",
+        "description": "Retrieve all policies for a specific application",
+        "operationId": "getAllPolicies",
+        "parameters": [
+          {
+            "name": "applicationId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Policy" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Policy Management"],
+        "summary": "Create policy",
+        "description": "Create a new authorization policy",
+        "operationId": "createPolicy",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePolicyDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Policy" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/permissions": {
+      "get": {
+        "tags": ["Permissions"],
+        "summary": "List permissions",
+        "description": "Returns all permissions. Supports optional filters: name, aplicationsId, moduleAplicationId",
+        "operationId": "getAll_2",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aplicationsId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "moduleAplicationId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Permission" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Permissions"],
+        "summary": "Create permission",
+        "description": "Creates a new permission",
+        "operationId": "create_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePermissionDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/permission-resolution/user/{userId}/has-any-permission": {
+      "post": {
+        "tags": ["Permission Resolution"],
+        "operationId": "hasAnyPermission",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "uniqueItems": true,
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "boolean" } } }
+          }
+        }
+      }
+    },
+    "/api/access_control/permission-resolution/user/{userId}/has-all-permissions": {
+      "post": {
+        "tags": ["Permission Resolution"],
+        "operationId": "hasAllPermissions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "uniqueItems": true,
+                "type": "array",
+                "items": { "type": "string" }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "boolean" } } }
+          }
+        }
+      }
+    },
+    "/api/access_control/modules-applications": {
+      "get": {
+        "tags": ["ModulesApplications"],
+        "summary": "List module applications (paginated)",
+        "description": "Returns all module applications with pagination. Supports optional filters: name, aplicationId",
+        "operationId": "getAll_3",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "aplicationId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 0 }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32", "default": 20 }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "name" }
+          },
+          {
+            "name": "sortDir",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "default": "asc" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageModulesApplication"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["ModulesApplications"],
+        "summary": "Create module application",
+        "description": "Creates a new module application",
+        "operationId": "create_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateModulesApplicationDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/company-applications": {
+      "get": {
+        "tags": ["Company Applications Management"],
+        "summary": "List all company applications",
+        "description": "Returns all company-application relationships",
+        "operationId": "getAll_4",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CompanyApplication" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Company Applications Management"],
+        "summary": "Assign application to company",
+        "description": "Creates a new license for a company to use an application",
+        "operationId": "create_5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCompanyApplicationDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          },
+          "201": {
+            "description": "Application assigned",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/company-applications/company/{companyId}/application/{applicationId}": {
+      "post": {
+        "tags": ["Company Applications Management"],
+        "summary": "Assign application to company",
+        "description": "Quick assign application to company with default settings",
+        "operationId": "assignApplication",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Already assigned",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          },
+          "200": {
+            "description": "Application assigned",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Company Applications Management"],
+        "summary": "Revoke application from company",
+        "description": "Removes company's access to an application",
+        "operationId": "revokeApplication",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Assignment not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          },
+          "200": {
+            "description": "Application revoked",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/authorization/check": {
+      "post": {
+        "tags": ["Authorization"],
+        "summary": "Check authorization",
+        "description": "Evaluate if a user is authorized to perform an action on a resource",
+        "operationId": "checkAuthorization",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthorizationRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthorizationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/applications": {
+      "get": {
+        "tags": ["Applications"],
+        "summary": "List applications",
+        "description": "Returns all applications",
+        "operationId": "getAll_5",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Application" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Applications"],
+        "summary": "Create application",
+        "description": "Creates a new application",
+        "operationId": "create_6",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateApplicationDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/Application" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/Application" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-policies/user/{userId}": {
+      "get": {
+        "tags": ["User Policy Assignment"],
+        "summary": "Get user policies",
+        "description": "Retrieve all active policies assigned to a user",
+        "operationId": "getUserPolicies",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UserPolicy" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-permissions/user/{userId}": {
+      "get": {
+        "tags": ["User Permissions"],
+        "operationId": "findByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-permissions/user/{userId}/active": {
+      "get": {
+        "tags": ["User Permissions"],
+        "operationId": "findActiveByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-permissions/permission/{permissionId}": {
+      "get": {
+        "tags": ["User Permissions"],
+        "operationId": "findByPermissionId",
+        "parameters": [
+          {
+            "name": "permissionId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/permission-resolution/user/{userId}/user-permissions": {
+      "get": {
+        "tags": ["Permission Resolution"],
+        "operationId": "getUserPermissions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Permission" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/permission-resolution/user/{userId}/role-permissions": {
+      "get": {
+        "tags": ["Permission Resolution"],
+        "operationId": "getRolePermissions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Permission" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/permission-resolution/user/{userId}/has-permission": {
+      "get": {
+        "tags": ["Permission Resolution"],
+        "operationId": "hasPermission",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "permissionCode",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "requiredLevel",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": { "*/*": { "schema": { "type": "boolean" } } }
+          }
+        }
+      }
+    },
+    "/api/access_control/permission-resolution/user/{userId}/effective": {
+      "get": {
+        "tags": ["Permission Resolution"],
+        "operationId": "getEffectivePermissions",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "uniqueItems": true,
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Permission" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/modules-applications/{id}/descendants": {
+      "get": {
+        "tags": ["ModulesApplications"],
+        "summary": "Get all descendants of a module",
+        "description": "Returns all descendants (children, grandchildren, etc.) of a module",
+        "operationId": "getDescendants",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ModulesApplication" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/modules-applications/{id}/children": {
+      "get": {
+        "tags": ["ModulesApplications"],
+        "summary": "Get children of a module",
+        "description": "Returns direct children of a module",
+        "operationId": "getChildren",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ModulesApplication" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/modules-applications/roots": {
+      "get": {
+        "tags": ["ModulesApplications"],
+        "summary": "Get root modules by application",
+        "description": "Returns root modules (no parent) for an application",
+        "operationId": "getRootModules",
+        "parameters": [
+          {
+            "name": "aplicationId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/ModulesApplication" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/company-applications/{id}": {
+      "get": {
+        "tags": ["Company Applications Management"],
+        "summary": "Get company application by ID",
+        "description": "Returns a specific company-application relationship",
+        "operationId": "getById_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/company-applications/company/{companyId}": {
+      "get": {
+        "tags": ["Company Applications Management"],
+        "summary": "Get applications by company",
+        "description": "Returns all applications assigned to a specific company",
+        "operationId": "getApplicationsByCompany",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CompanyApplication" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/company-applications/company/{companyId}/active": {
+      "get": {
+        "tags": ["Company Applications Management"],
+        "summary": "Get active applications by company",
+        "description": "Returns only active applications for a company",
+        "operationId": "getActiveApplicationsByCompany",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CompanyApplication" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-policies/user/{userId}/policy/{policyId}": {
+      "delete": {
+        "tags": ["User Policy Assignment"],
+        "summary": "Revoke policy from user",
+        "description": "Remove a policy assignment from a user",
+        "operationId": "revokePolicy",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "policyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationId",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateUserPermissionDto": {
+        "type": "object",
+        "properties": {
+          "level": { "type": "string" },
+          "isActive": { "type": "boolean" },
+          "expiresAt": { "type": "string", "format": "date" }
+        }
+      },
+      "UserPermissionDto": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "userId": { "type": "integer", "format": "int64" },
+          "permissionId": { "type": "integer", "format": "int64" },
+          "level": { "type": "string" },
+          "isActive": { "type": "boolean" },
+          "expiresAt": { "type": "string", "format": "date" }
+        }
+      },
+      "UpdateRoleDto": {
+        "required": ["description", "idRole", "manageUsers", "name"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "manageUsers": { "type": "boolean" },
+          "requiresApproval": { "type": "boolean" },
+          "approvalWorkflow": { "type": "string" },
+          "idRole": { "type": "integer", "format": "int32" }
+        }
+      },
+      "Role": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idRole": { "type": "integer", "format": "int32" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "manageUsers": { "type": "boolean" },
+          "requiresApproval": { "type": "boolean" },
+          "approvalWorkflow": { "type": "string" }
+        }
+      },
+      "UpdateRolePermissionDto": {
+        "required": ["level", "permissionId", "roleId"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "level": { "type": "string" },
+          "permissionId": { "type": "integer", "format": "int64" },
+          "roleId": { "type": "integer", "format": "int32" }
+        }
+      },
+      "RolePermission": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "level": { "type": "string" },
+          "permissionId": { "type": "integer", "format": "int64" },
+          "roleId": { "type": "integer", "format": "int32" }
+        }
+      },
+      "PolicyConditionDto": {
+        "type": "object",
+        "properties": {
+          "idCondition": { "type": "integer", "format": "int64" },
+          "conditionType": { "type": "string" },
+          "key": { "type": "string" },
+          "operator": { "type": "string" },
+          "value": { "type": "string" }
+        }
+      },
+      "PolicyStatementDto": {
+        "type": "object",
+        "properties": {
+          "idStatement": { "type": "integer", "format": "int64" },
+          "sid": { "type": "string" },
+          "effect": { "type": "string", "enum": ["ALLOW", "DENY"] },
+          "actions": { "type": "array", "items": { "type": "string" } },
+          "resources": { "type": "array", "items": { "type": "string" } },
+          "order": { "type": "integer", "format": "int32" },
+          "conditions": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PolicyConditionDto" }
+          }
+        }
+      },
+      "UpdatePolicyDto": {
+        "required": [
+          "applicationId",
+          "defaultEffect",
+          "description",
+          "idPolicy",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "version": { "type": "string" },
+          "defaultEffect": { "type": "string", "enum": ["ALLOW", "DENY"] },
+          "isActive": { "type": "boolean" },
+          "priority": { "type": "integer", "format": "int32" },
+          "statements": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PolicyStatementDto" }
+          },
+          "idPolicy": { "type": "integer", "format": "int64" }
+        }
+      },
+      "Policy": {
+        "type": "object",
+        "properties": {
+          "idPolicy": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "version": { "type": "string" },
+          "defaultEffect": { "type": "string", "enum": ["ALLOW", "DENY"] },
+          "statements": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PolicyStatement" }
+          },
+          "isActive": { "type": "boolean" },
+          "priority": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "PolicyCondition": {
+        "type": "object",
+        "properties": {
+          "idCondition": { "type": "integer", "format": "int64" },
+          "statementId": { "type": "integer", "format": "int64" },
+          "conditionType": { "type": "string" },
+          "key": { "type": "string" },
+          "operator": { "type": "string" },
+          "value": { "type": "string" }
+        }
+      },
+      "PolicyStatement": {
+        "type": "object",
+        "properties": {
+          "idStatement": { "type": "integer", "format": "int64" },
+          "policyId": { "type": "integer", "format": "int64" },
+          "sid": { "type": "string" },
+          "effect": { "type": "string", "enum": ["ALLOW", "DENY"] },
+          "actions": { "type": "array", "items": { "type": "string" } },
+          "resources": { "type": "array", "items": { "type": "string" } },
+          "conditions": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PolicyCondition" }
+          },
+          "order": { "type": "integer", "format": "int32" }
+        }
+      },
+      "UpdatePermissionDto": {
+        "required": [
+          "action",
+          "idPermission",
+          "name",
+          "permissionType",
+          "resource"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "description": { "maxLength": 500, "minLength": 0, "type": "string" },
+          "permissionType": {
+            "type": "string",
+            "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
+          },
+          "resource": { "maxLength": 200, "minLength": 0, "type": "string" },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATE",
+              "READ",
+              "UPDATE",
+              "DELETE",
+              "EXECUTE",
+              "VIEW",
+              "MANAGE",
+              "ADMIN",
+              "APPROVE",
+              "REJECT"
+            ]
+          },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "moduleId": { "type": "integer", "format": "int64" },
+          "httpMethod": {
+            "maxLength": 10,
+            "minLength": 0,
+            "pattern": "GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS",
+            "type": "string"
+          },
+          "endpointPath": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          },
+          "uiComponent": { "maxLength": 200, "minLength": 0, "type": "string" },
+          "featureFlag": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "priority": { "minimum": 0, "type": "integer", "format": "int32" },
+          "cacheTtl": { "minimum": 0, "type": "integer", "format": "int32" },
+          "isSensitive": { "type": "boolean" },
+          "metadata": { "maxLength": 2000, "minLength": 0, "type": "string" },
+          "idPermission": { "type": "integer", "format": "int64" }
+        }
+      },
+      "Permission": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idPermission": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "permissionType": {
+            "type": "string",
+            "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
+          },
+          "resource": { "type": "string" },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATE",
+              "READ",
+              "UPDATE",
+              "DELETE",
+              "EXECUTE",
+              "VIEW",
+              "MANAGE",
+              "ADMIN",
+              "APPROVE",
+              "REJECT"
+            ]
+          },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "moduleId": { "type": "integer", "format": "int64" },
+          "httpMethod": { "type": "string" },
+          "endpointPath": { "type": "string" },
+          "uiComponent": { "type": "string" },
+          "featureFlag": { "type": "string" },
+          "priority": { "type": "integer", "format": "int32" },
+          "cacheTtl": { "type": "integer", "format": "int32" },
+          "isSensitive": { "type": "boolean" },
+          "metadata": { "type": "string" },
+          "applicationPermission": { "type": "boolean" },
+          "uiPermission": { "type": "boolean" },
+          "apiPermission": { "type": "boolean" },
+          "systemPermission": { "type": "boolean" }
+        }
+      },
+      "UpdateModulesApplicationDto": {
+        "required": [
+          "applicationId",
+          "description",
+          "idModulesAplication",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "parentModuleId": { "type": "integer", "format": "int32" },
+          "idModulesAplication": { "type": "integer", "format": "int32" }
+        }
+      },
+      "ModulesApplication": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idModulesAplication": { "type": "integer", "format": "int32" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "aplicationId": { "type": "integer", "format": "int64" },
+          "parentModuleId": { "type": "integer", "format": "int32" },
+          "level": { "type": "integer", "format": "int32" },
+          "path": { "type": "string" }
+        }
+      },
+      "CompanyApplication": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idCompanyApplication": { "type": "integer", "format": "int64" },
+          "companyId": { "type": "integer", "format": "int64" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "licenseStartDate": { "type": "string", "format": "date" },
+          "licenseEndDate": { "type": "string", "format": "date" },
+          "isActive": { "type": "boolean" },
+          "userLimit": { "type": "integer", "format": "int32" },
+          "currentUsers": { "type": "integer", "format": "int32" },
+          "subscriptionType": { "type": "string" },
+          "autoRenew": { "type": "boolean" },
+          "notes": { "type": "string" },
+          "licenseValid": { "type": "boolean" },
+          "subscriptionActive": { "type": "boolean" }
+        }
+      },
+      "UpdateApplicationDto": {
+        "required": ["idApplication", "name", "publicationDate"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "maintenanceMode": { "type": "boolean" },
+          "publicationDate": { "type": "string", "format": "date" },
+          "idApplication": { "type": "integer", "format": "int64" }
+        }
+      },
+      "Application": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idApplication": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "route": { "type": "string" },
+          "maintenanceMode": { "type": "boolean" },
+          "publicationDate": { "type": "string", "format": "date" }
+        }
+      },
+      "AssignPolicyRequest": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "integer", "format": "int64" },
+          "policyId": { "type": "integer", "format": "int64" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "isActive": { "type": "boolean" },
+          "expiresAt": { "type": "string", "format": "date" }
+        }
+      },
+      "UserPolicy": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "integer", "format": "int64" },
+          "policyId": { "type": "integer", "format": "int64" },
+          "isActive": { "type": "boolean" },
+          "expiresAt": { "type": "string", "format": "date" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateUserPermissionDto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "integer", "format": "int64" },
+          "permissionId": { "type": "integer", "format": "int64" },
+          "level": { "type": "string" },
+          "isActive": { "type": "boolean" },
+          "expiresAt": { "type": "string", "format": "date" }
+        }
+      },
+      "CreateRoleDto": {
+        "required": ["description", "manageUsers", "name"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "manageUsers": { "type": "boolean" },
+          "requiresApproval": { "type": "boolean" },
+          "approvalWorkflow": { "type": "string" }
+        }
+      },
+      "CreateRolePermissionDto": {
+        "required": ["level", "permissionId", "roleId"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "level": { "type": "string" },
+          "permissionId": { "type": "integer", "format": "int64" },
+          "roleId": { "type": "integer", "format": "int32" }
+        }
+      },
+      "CreatePolicyDto": {
+        "required": ["applicationId", "defaultEffect", "description", "name"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "version": { "type": "string" },
+          "defaultEffect": { "type": "string", "enum": ["ALLOW", "DENY"] },
+          "isActive": { "type": "boolean" },
+          "priority": { "type": "integer", "format": "int32" },
+          "statements": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PolicyStatementDto" }
+          }
+        }
+      },
+      "CreatePermissionDto": {
+        "required": ["action", "name", "permissionType", "resource"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "description": { "maxLength": 500, "minLength": 0, "type": "string" },
+          "permissionType": {
+            "type": "string",
+            "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
+          },
+          "resource": { "maxLength": 200, "minLength": 0, "type": "string" },
+          "action": {
+            "type": "string",
+            "enum": [
+              "CREATE",
+              "READ",
+              "UPDATE",
+              "DELETE",
+              "EXECUTE",
+              "VIEW",
+              "MANAGE",
+              "ADMIN",
+              "APPROVE",
+              "REJECT"
+            ]
+          },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "moduleId": { "type": "integer", "format": "int64" },
+          "httpMethod": {
+            "maxLength": 10,
+            "minLength": 0,
+            "pattern": "GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS",
+            "type": "string"
+          },
+          "endpointPath": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          },
+          "uiComponent": { "maxLength": 200, "minLength": 0, "type": "string" },
+          "featureFlag": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "priority": { "minimum": 0, "type": "integer", "format": "int32" },
+          "cacheTtl": { "minimum": 0, "type": "integer", "format": "int32" },
+          "isSensitive": { "type": "boolean" },
+          "metadata": { "maxLength": 2000, "minLength": 0, "type": "string" }
+        }
+      },
+      "CreateModulesApplicationDto": {
+        "required": ["applicationId", "description", "name"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "parentModuleId": { "type": "integer", "format": "int32" }
+        }
+      },
+      "CreateCompanyApplicationDto": {
+        "required": [
+          "applicationId",
+          "companyId",
+          "isActive",
+          "licenseStartDate"
+        ],
+        "type": "object",
+        "properties": {
+          "companyId": { "type": "integer", "format": "int64" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "route": { "type": "string" },
+          "licenseStartDate": { "type": "string", "format": "date" },
+          "licenseEndDate": { "type": "string", "format": "date" },
+          "isActive": { "type": "boolean" },
+          "userLimit": { "type": "integer", "format": "int32" },
+          "subscriptionType": { "type": "string" },
+          "autoRenew": { "type": "boolean" },
+          "notes": { "type": "string" }
+        }
+      },
+      "AuthorizationRequest": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "integer", "format": "int64" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "action": { "type": "string" },
+          "resource": { "type": "string" },
+          "ipAddress": { "type": "string" },
+          "userAttributes": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "resourceAttributes": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          },
+          "environmentAttributes": {
+            "type": "object",
+            "additionalProperties": { "type": "object" }
+          }
+        }
+      },
+      "AuthorizationResponse": {
+        "type": "object",
+        "properties": {
+          "effect": { "type": "string", "enum": ["ALLOW", "DENY"] },
+          "reason": { "type": "string" },
+          "evaluatedPolicies": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "allowed": { "type": "boolean" }
+        }
+      },
+      "CreateApplicationDto": {
+        "required": ["name", "publicationDate"],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "maintenanceMode": { "type": "boolean" },
+          "publicationDate": { "type": "string", "format": "date" }
+        }
+      },
+      "PageModulesApplication": {
+        "type": "object",
+        "properties": {
+          "totalPages": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ModulesApplication" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": { "type": "integer", "format": "int64" },
+          "sort": { "$ref": "#/components/schemas/SortObject" },
+          "paged": { "type": "boolean" },
+          "unpaged": { "type": "boolean" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "pageSize": { "type": "integer", "format": "int32" }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "empty": { "type": "boolean" },
+          "sorted": { "type": "boolean" },
+          "unsorted": { "type": "boolean" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer Authentication": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 ﻿import 'server-only';
 import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IApplication } from '../applications';
+import { IUser } from '../../account/users';
 
 // --- Policy Types -------------------------------------------------------------
 
@@ -62,21 +63,6 @@ export interface IPolicyRule {
   resource: string;
   actions: string[];
   conditions?: Record<string, unknown>;
-}
-
-// --- IUser-Policy Relationships Types (for policy management) -----------------
-
-export interface IUser {
-  id: string | number;
-  email: string;
-  user_name?: string;
-  first_name?: string;
-  last_name?: string;
-  isActive?: boolean;
-  roles?: any[];
-  permissions?: any[];
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 export interface IUserPolicy {

@@ -12,7 +12,8 @@
     "savePermission": "Crear Permiso",
     "saveRolePermission": "Asignar Permiso a Rol",
     "savePolicy": "Crear Política",
-    "saveModuleApplication": "Crear Módulo de Aplicación"
+    "saveModuleApplication": "Crear Módulo de Aplicación",
+    "saveCompanyApplication": "Crear Aplicación de Empresa"
   },
   "common": {
     "welcome": "Bienvenido",
@@ -296,6 +297,32 @@
         "createSuccess": "Aplicación creada exitosamente",
         "updateSuccess": "Aplicación actualizada exitosamente",
         "deleteSuccess": "Aplicación eliminada exitosamente"
+      }
+    },
+    "companyApplications": {
+      "title": "Aplicaciones de Empresa",
+      "description": "Gestión de Aplicaciones de Empresa",
+      "subtitle": "Administra las asignaciones de aplicaciones a empresas",
+      "fields": {
+        "company_id": "Empresa",
+        "application_id": "Aplicación",
+        "license_start_date": "Fecha de Inicio de Licencia",
+        "license_end_date": "Fecha de Fin de Licencia",
+        "is_active": "Estado Activo",
+        "user_limit": "Límite de Usuarios",
+        "subscription_type": "Tipo de Suscripción",
+        "auto_renew": "Renovación Automática",
+        "notes": "Notas"
+      },
+      "modal": {
+        "create_title": "Crear Aplicación de Empresa",
+        "edit_title": "Editar Aplicación de Empresa",
+        "edit_description": "Editar la información de la aplicación de empresa seleccionada"
+      },
+      "messages": {
+        "createSuccess": "Aplicación de empresa creada exitosamente",
+        "updateSuccess": "Aplicación de empresa actualizada exitosamente",
+        "deleteSuccess": "Aplicación de empresa eliminada exitosamente"
       }
     },
     "moduleApplications": {

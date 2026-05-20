@@ -15,7 +15,7 @@ export interface IRoleMenu extends IAuditInfo {
   menu?: IMenu;
 }
 
-export interface ICreateRoleMenuPayload {
+export interface ICreateRoleMenu {
   role_id: number;
   menu_id: number;
   access_level: string;
@@ -23,7 +23,7 @@ export interface ICreateRoleMenuPayload {
   priority?: number;
 }
 
-export interface IUpdateRoleMenuPayload {
+export interface IUpdateRoleMenu {
   access_level?: string;
   is_active?: boolean;
   priority?: number;

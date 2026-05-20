@@ -6,11 +6,11 @@ import {
   deleteApplicationAction,
 } from '@/server/domains/access-control/security/applications';
 import type {
-  ICreateApplicationPayload,
-  IUpdateApplicationPayload,
+  ICreateApplication,
+  IUpdateApplication,
 } from '@/server/domains/access-control/security/applications';
 
-export async function createApplicationServerAction(payload: ICreateApplicationPayload) {
+export async function createApplicationServerAction(payload: ICreateApplication) {
   const result = await createApplicationAction(payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createApplicationServerAction(payload: ICreateApplicationP
   return result.data;
 }
 
-export async function updateApplicationServerAction(id: string | number, payload: IUpdateApplicationPayload) {
+export async function updateApplicationServerAction(id: string | number, payload: IUpdateApplication) {
   const result = await updateApplicationAction(id, payload);
 
   if (!result.success) {

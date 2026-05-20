@@ -10,7 +10,10 @@ import { FormField } from "@repo/ui/form/scenes";
 import { FormSelectField } from "@repo/ui/form";
 import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { getCompanyApplicationsAction } from "../actions/company-applications.action";
+import { ICompany, ICompanyApplication } from "..";
+import { getCompaniesServices } from "@/modules/account/companies/services/company.service";
 
 // Define types for mock data
 interface CompanyOption {
@@ -38,6 +41,60 @@ export const FormCompanyApplication = ({
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
   const [applications, setApplications] = useState<ApplicationOption[]>([]);
 
+  // Estado optimizado con memoización
+  const [companyData, setCompanyData] = useState<{
+    data: ICompany[];
+    loading: boolean;
+    error: string | null;
+  }>({
+    data: [],
+    loading: false,
+    error: null,
+  });
+
+  const cargarCompanys = async () => {
+    try {
+      setCompanyData((prev) => ({ ...prev, loading: true, error: null }));
+
+      const niveles = await getCompaniesServices();
+
+      setCompanyData({
+        data: niveles,
+        loading: false,
+        error: null,
+      });
+    } catch (error) {
+      console.error("Error cargando niveles educativos:", error);
+      setCompanyData({
+        data: [],
+        loading: false,
+        error: "No se pudieron cargar los niveles educativos",
+      });
+    }
+  };
+
+  useEffect(() => {
+    let isMounted = true;
+
+    cargarCompanys();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Memoizar opciones para evitar recálculos
+  const opcionesNiveles = useMemo(() => {
+    return companyData.data
+      .map((nivel) => ({
+        id: nivel.id_company.toString(),
+        value: nivel.id_company.toString(),
+        label: `${nivel.name} (${nivel.description})`,
+        disabled: false,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label)); // Ordenar alfabéticamente
+  }, [companyData.data, initialValues?.id]);
+
   // Load companies and applications data
   useEffect(() => {
     // Mock companies data
@@ -50,21 +107,29 @@ export const FormCompanyApplication = ({
 
     // Mock applications data
     const mockApplications = [
-      { id: 1, name: "Sistema de Gestión", description: "Aplicación de gestión" },
-      { id: 2, name: "Portal de Clientes", description: "Portal para clientes" },
+      {
+        id: 1,
+        name: "Sistema de Gestión",
+        description: "Aplicación de gestión",
+      },
+      {
+        id: 2,
+        name: "Portal de Clientes",
+        description: "Portal para clientes",
+      },
       { id: 3, name: "Sistema de Ventas", description: "Aplicación de ventas" },
     ];
     setApplications(mockApplications);
   }, []);
 
-  const companyOptions = companies.map(company => ({
+  const companyOptions = companies.map((company) => ({
     value: company.id.toString(),
-    label: company.name
+    label: company.name,
   }));
 
-  const applicationOptions = applications.map(app => ({
+  const applicationOptions = applications.map((app) => ({
     value: app.id.toString(),
-    label: app.name
+    label: app.name,
   }));
 
   const subscriptionTypeOptions = [

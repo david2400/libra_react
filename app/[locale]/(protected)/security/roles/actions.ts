@@ -6,11 +6,11 @@ import {
   deleteRoleAction,
 } from '@/server/domains/access-control/security/roles';
 import type {
-  ICreateRolePayload,
-  IUpdateRolePayload,
+  ICreateRole,
+  IUpdateRole,
 } from '@/server/domains/access-control/security/roles';
 
-export async function createRoleServerAction(payload: ICreateRolePayload) {
+export async function createRoleServerAction(payload: ICreateRole) {
   const result = await createRoleAction(payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createRoleServerAction(payload: ICreateRolePayload) {
   return result.data;
 }
 
-export async function updateRoleServerAction(id: string | number, payload: IUpdateRolePayload) {
+export async function updateRoleServerAction(id: string | number, payload: IUpdateRole) {
   const result = await updateRoleAction(id, payload);
 
   if (!result.success) {

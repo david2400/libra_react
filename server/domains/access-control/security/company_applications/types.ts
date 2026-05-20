@@ -2,16 +2,6 @@ import 'server-only';
 import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IApplication } from '../applications';
 
-// Basic company interface - replace with actual company types when available
-export interface ICompany {
-  id_company: number;
-  name: string;
-  description?: string;
-  is_active?: boolean;
-  created_at?: string;
-  updated_at?: string;
-}
-
 // --- ICompanyApplication Types -------------------------------------------------------------
 
 export interface ICompanyApplication extends IAuditInfo {
@@ -25,8 +15,8 @@ export interface ICompanyApplication extends IAuditInfo {
   subscription_type?: string;
   auto_renew?: boolean;
   notes?: string;
-  company?: ICompany;
-  application?: IApplication;
+  // company?: ICompany;
+  // application?: IApplication;
 }
 
 export interface ICreateCompanyApplicationPayload {

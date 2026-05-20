@@ -78,6 +78,10 @@ export const accessControlTags = {
   modulesApplications: () => 'access-control:modules-applications' as const,
   modulesApplication: (id: number | string) => `access-control:modules-application:${id}` as const,
   
+  // Company-Applications
+  companyApplications: () => 'access-control:company-applications' as const,
+  companyApplication: (id: number | string) => `access-control:company-application:${id}` as const,
+  
   // Authorization
   authorization: () => 'access-control:authorization' as const,
   

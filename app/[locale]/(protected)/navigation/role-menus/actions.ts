@@ -6,11 +6,11 @@ import {
   deleteRoleMenuAction,
 } from '@/server/domains/access-control/navigation/role_menus';
 import type {
-  ICreateRoleMenuPayload,
-  IUpdateRoleMenuPayload,
+  ICreateRoleMenu,
+  IUpdateRoleMenu,
 } from '@/server/domains/access-control/navigation/role_menus';
 
-export async function createRoleMenuServerAction(roleId: string | number, menuId: string | number, payload: ICreateRoleMenuPayload) {
+export async function createRoleMenuServerAction(roleId: string | number, menuId: string | number, payload: ICreateRoleMenu) {
   const result = await createRoleMenuAction(roleId, menuId, payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createRoleMenuServerAction(roleId: string | number, menuId
   return result.data;
 }
 
-export async function updateRoleMenuServerAction(roleId: string | number, menuId: string | number, payload: IUpdateRoleMenuPayload) {
+export async function updateRoleMenuServerAction(roleId: string | number, menuId: string | number, payload: IUpdateRoleMenu) {
   const result = await updateRoleMenuAction(roleId, menuId, payload);
 
   if (!result.success) {

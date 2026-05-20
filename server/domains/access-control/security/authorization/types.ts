@@ -2,6 +2,7 @@ import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import { IPermission } from '../permissions';
 import { IPolicy } from '../policies';
+import { IUser } from '../../account/users';
 
 // --- Authorization Types ---------------------------------------------------------
 
@@ -32,20 +33,6 @@ export interface IAuthorizationLog {
   response_time_ms?: number;
 }
 
-// --- IUser Types (for authorization management) ---------------------------------
-
-export interface IUser {
-  id: string | number;
-  email: string;
-  user_name?: string;
-  first_name?: string;
-  last_name?: string;
-  is_active?: boolean;
-  roles?: any[];
-  permissions?: any[];
-  created_at?: string;
-  updated_at?: string;
-}
 
 export interface IPolicyRule {
   resource: string;

@@ -1,6 +1,6 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { RoleMenuManager } from "@/modules/navigation/role-menus";
@@ -15,7 +15,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await Promise.resolve(params);
-  const t = await getTranslations({ locale, namespace: "navigation.roleMenus" });
+  const t = await getTranslations({
+    locale,
+    namespace: "navigation.roleMenus",
+  });
 
   return {
     title: t("title"),
@@ -23,7 +26,7 @@ export async function generateMetadata({
   };
 }
 
-const RoleMenusPage = async () => {
+const RoleMenusPage: NextPage = async () => {
   try {
     const rolesMenuResponse = await getRoleMenus();
 

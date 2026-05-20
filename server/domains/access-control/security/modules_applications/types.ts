@@ -13,14 +13,14 @@ export interface IModule extends IAuditInfo {
   status?: 'active' | 'inactive' | 'deprecated';
 }
 
-export interface ICreateModulePayload {
+export interface ICreateModule {
   name: string;
   description?: string;
   version?: string;
   status?: 'active' | 'inactive' | 'deprecated';
 }
 
-export interface IUpdateModulePayload {
+export interface IUpdateModule {
   name?: string;
   description?: string;
   version?: string;

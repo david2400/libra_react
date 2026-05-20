@@ -11,30 +11,30 @@ import {
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
 import type { 
-  ICreateCompanyPayload, 
-  IUpdateCompanyPayload,
-  ICreateCompanyClientPayload,
-  IUpdateCompanyClientPayload,
+  ICreateCompany, 
+  IUpdateCompany,
+  ICreateCompanyClient,
+  IUpdateCompanyClient,
   ICompanyActivity,
-  ICreateCompanyConfigPayload,
-  IUpdateCompanyConfigPayload
+  ICreateCompanyConfig,
+  IUpdateCompanyConfig
 } from './types';
 
 // --- Companies Actions ---------------------------------------------------------
 
-export const createCompanyAction = async (payload: ICreateCompanyPayload): Promise<ActionResultType<any>> => {
+export const createCompanyAction = async (payload: ICreateCompany): Promise<ActionResultType<any>> => {
   try {
     const company = await companiesRepository.create(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companies());
-    if (typeof company.id === 'string' || typeof company.id === 'number') {
-      await revalidateCacheTag(accessControlTags.company(company.id));
+    if (typeof company.id_company === 'string' || typeof company.id_company === 'number') {
+      await revalidateCacheTag(accessControlTags.company(company.id_company));
     }
     
     // Log activity
     await companyActivityRepository.create({
-      company_id: company.id,
+      company_id: company.id_company,
       activity_type: 'profile_update',
       description: 'ICompany created',
       metadata: { company_name: company.name }
@@ -63,7 +63,7 @@ export const createCompanyAction = async (payload: ICreateCompanyPayload): Promi
   }
 };
 
-export const updateCompanyAction = async (id: string | number, payload: IUpdateCompanyPayload): Promise<ActionResultType<any>> => {
+export const updateCompanyAction = async (id: string | number, payload: IUpdateCompany): Promise<ActionResultType<any>> => {
   try {
     const company = await companiesRepository.update(id, payload);
     
@@ -135,7 +135,7 @@ export const deleteCompanyAction = async (id: string | number): Promise<ActionRe
 
 // --- ICompany-Client Relationships Actions ---------------------------------
 
-export const createCompanyClientAction = async (companyId: string | number, clientId: string | number, payload: ICreateCompanyClientPayload): Promise<ActionResultType<any>> => {
+export const createCompanyClientAction = async (companyId: string | number, clientId: string | number, payload: ICreateCompanyClient): Promise<ActionResultType<any>> => {
   try {
     const companyClient = await companyClientsRepository.create(companyId, clientId, payload);
     
@@ -179,7 +179,7 @@ export const createCompanyClientAction = async (companyId: string | number, clie
   }
 };
 
-export const updateCompanyClientAction = async (companyId: string | number, clientId: string | number, payload: IUpdateCompanyClientPayload): Promise<ActionResultType<any>> => {
+export const updateCompanyClientAction = async (companyId: string | number, clientId: string | number, payload: IUpdateCompanyClient): Promise<ActionResultType<any>> => {
   try {
     const companyClient = await companyClientsRepository.update(companyId, clientId, payload);
     
@@ -263,7 +263,7 @@ export const deleteCompanyClientAction = async (companyId: string | number, clie
 
 // --- ICompany Configuration Actions -----------------------------------------
 
-export const createCompanyConfigAction = async (companyId: string | number, payload: ICreateCompanyConfigPayload): Promise<ActionResultType<any>> => {
+export const createCompanyConfigAction = async (companyId: string | number, payload: ICreateCompanyConfig): Promise<ActionResultType<any>> => {
   try {
     const config = await companyConfigRepository.create(companyId, payload);
     
@@ -305,7 +305,7 @@ export const createCompanyConfigAction = async (companyId: string | number, payl
   }
 };
 
-export const updateCompanyConfigAction = async (companyId: string | number, key: string, payload: IUpdateCompanyConfigPayload): Promise<ActionResultType<any>> => {
+export const updateCompanyConfigAction = async (companyId: string | number, key: string, payload: IUpdateCompanyConfig): Promise<ActionResultType<any>> => {
   try {
     const config = await companyConfigRepository.update(companyId, key, payload);
     

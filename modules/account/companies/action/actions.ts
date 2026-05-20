@@ -1,6 +1,4 @@
-// Client-safe API layer for companies actions
-// Uses client-side API to avoid server-only import issues
-
+"use server"
 import { clientApi } from '@/lib/client-api';
 import type { 
   ICreateCompany, 
@@ -52,3 +50,17 @@ export const deleteCompanyAction = async (id: string | number): Promise<{ succes
     };
   }
 };
+
+
+export async function getCompanies(): Promise<ICompany[]> {
+  try {
+    const response = await getCompanies();
+    return Array.isArray(response) ? response : response?.data || [];
+  } catch (error) {
+    console.error('Error cargando niveles educativos:', error);
+    return [];
+  }
+}
+
+
+

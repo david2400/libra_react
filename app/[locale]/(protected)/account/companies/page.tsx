@@ -1,9 +1,10 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { CompanyManager } from "@/modules/account/companies/components/company-manager";
+import { ICompany, getCompanies } from "@/server/domains/access-control/account/companies";
 
 export async function generateMetadata({
   params,
@@ -19,9 +20,19 @@ export async function generateMetadata({
   };
 }
 
-const CompaniesPage = () => {
+const CompaniesPage: NextPage = async () => {
+  try {
+    const companiesResponse = await getCompanies();
+
+    const companiesData: ICompany[] = Array.isArray(companiesResponse)
+      ? companiesResponse
+      : companiesResponse?.data || [];
+
+    return <CompanyManager initialData={companiesData} />;
+  } catch (error) {
+    return <CompanyManager initialData={[]} />;
+  }
   // Pass empty initial data - the component will fetch data client-side
-  return <CompanyManager initialData={[]} />;
 };
 
 export default CompaniesPage;

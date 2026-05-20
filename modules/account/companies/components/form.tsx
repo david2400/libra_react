@@ -9,7 +9,7 @@ import { validationCompany } from "../schemas/company.schema";
 import { ICompanyCreateRequest, ICompanyUpdateRequest } from "../models/company.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "@repo/ui/shared/i18n/routing";
-import { createCompanyAction, updateCompanyAction } from "../api/actions";
+import { createCompanyAction, updateCompanyAction } from "../action/actions";
 
 const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
   return <FormCompany initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;

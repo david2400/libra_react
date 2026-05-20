@@ -7,8 +7,8 @@ import {
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { 
   IUser,
-  ICreateUserPayload,
-  IUpdateUserPayload,
+  ICreateUser,
+  IUpdateUser,
   IUserListParams
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -58,7 +58,7 @@ export const getUsersWithSummary = cache(async (params?: IUserListParams) => {
     users: processedUsers,
     summary: {
       total: users.meta.total,
-      active: processedUsers.filter(u => u.is_active).length,
+      active: processedUsers.filter(u => u.deleted).length,
       with_refresh_token: processedUsers.filter(u => u.has_refresh_token).length,
       logged_in_recently: processedUsers.filter(u => 
         u.days_since_last_login !== null && u.days_since_last_login <= 7

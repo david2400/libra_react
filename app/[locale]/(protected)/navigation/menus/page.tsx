@@ -1,6 +1,6 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { MenuManager } from "@/modules/navigation/menus/components/menu-manager";
@@ -21,16 +21,16 @@ export async function generateMetadata({
   };
 }
 
-const MenusPage = async () => {
+const MenusPage: NextPage = async () => {
   try {
-    const themesResponse = await getMenus();
+    const menusResponse = await getMenus();
 
     // Extract the data array from the paginated response
-    const themesData: IMenu[] = Array.isArray(themesResponse)
-      ? themesResponse
-      : themesResponse?.data || [];
+    const menuData: IMenu[] = Array.isArray(menusResponse)
+      ? menusResponse
+      : menusResponse?.data || [];
 
-    return <MenuManager initialData={themesData} />;
+    return <MenuManager initialData={menuData} />;
   } catch (error) {
     console.error("Error loading themes:", error);
     // Return empty data if API fails

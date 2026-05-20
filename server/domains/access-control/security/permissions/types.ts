@@ -29,7 +29,7 @@ export interface IPermission extends IAuditInfo {
   role_permission?: IRolePermission[];
 }
 
-export interface ICreatePermissionPayload {
+export interface ICreatePermission {
   name: string;
   description?: string;
   permission_type: 'API' | 'APPLICATION' | 'UI' | 'SYSTEM';
@@ -48,7 +48,7 @@ export interface ICreatePermissionPayload {
   metadata?: string;
 }
 
-export interface IUpdatePermissionPayload {
+export interface IUpdatePermission {
   name?: string;
   description?: string;
   permission_type?: 'API' | 'APPLICATION' | 'UI' | 'SYSTEM';

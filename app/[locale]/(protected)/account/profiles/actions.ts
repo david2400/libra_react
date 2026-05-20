@@ -6,11 +6,11 @@ import {
   deleteProfileAction,
 } from '@/server/domains/access-control/account/profiles';
 import type {
-  ICreateProfilePayload,
-  IUpdateProfilePayload,
+  ICreateProfile,
+  IUpdateProfile,
 } from '@/server/domains/access-control/account/profiles';
 
-export async function createProfileServerAction(payload: ICreateProfilePayload) {
+export async function createProfileServerAction(payload: ICreateProfile) {
   const result = await createProfileAction(payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createProfileServerAction(payload: ICreateProfilePayload) 
   return result.data;
 }
 
-export async function updateProfileServerAction(id: string | number, payload: IUpdateProfilePayload) {
+export async function updateProfileServerAction(id: string | number, payload: IUpdateProfile) {
   const result = await updateProfileAction(id, payload);
 
   if (!result.success) {

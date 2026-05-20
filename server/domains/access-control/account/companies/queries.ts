@@ -11,18 +11,17 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  ICompany, 
-  IClient,
-  ICompanyClient,
-  ICompanyStats,
-  ICompanyOverview,
-  ICompanyActivity,
-  ICompanyActivityFilter,
-  ICompanyConfig,
-  ICompanyHealth,
-  ICompanyHealthResponse
-} from './types';
+// import type { 
+//   ICompany, 
+//   ICompanyClient,
+//   ICompanyStats,
+//   ICompanyOverview,
+//   ICompanyActivity,
+//   ICompanyActivityFilter,
+//   ICompanyConfig,
+//   ICompanyHealth,
+//   ICompanyHealthResponse
+// } from './types';
 
 // --- Companies Queries ---------------------------------------------------------
 
@@ -146,13 +145,13 @@ export const getCompaniesDashboard = cache(async () => {
   
   // Combine data for dashboard
   const dashboardData = companies.data.map(company => {
-    const stats = allStats.find(s => s.company_id === company.id);
-    const health = allHealth.find(h => h.company.id === company.id);
+    const stats = allStats.find(s => s.company_id === company.id_company);
+    const health = allHealth.find(h => h.company.id_company === company.id_company);
     
     return {
       ...company,
       stats: stats || {
-        company_id: company.id,
+        company_id: company.id_company,
         total_clients: 0,
         active_clients: 0,
         total_users: 0,
@@ -213,30 +212,30 @@ export const getCompanyActivityTrends = cache(async (companyId: string | number,
 });
 
 // Get companies by industry
-export const getCompaniesByIndustry = cache(async (industry: string) => {
-  const companies = await getCompanies({ perPage: 100 });
+// export const getCompaniesByIndustry = cache(async (industry: string) => {
+//   const companies = await getCompanies({ perPage: 100 });
   
-  const filteredCompanies = companies.data.filter(company => company.industry === industry);
+//   const filteredCompanies = companies.data.filter(company => company.industry === industry);
   
-  return {
-    industry,
-    companies: filteredCompanies,
-    count: filteredCompanies.length
-  };
-});
+//   return {
+//     industry,
+//     companies: filteredCompanies,
+//     count: filteredCompanies.length
+//   };
+// });
 
 // Get companies by size
-export const getCompaniesBySize = cache(async (size: 'small' | 'medium' | 'large' | 'enterprise') => {
-  const companies = await getCompanies({ perPage: 100 });
+// export const getCompaniesBySize = cache(async (size: 'small' | 'medium' | 'large' | 'enterprise') => {
+//   const companies = await getCompanies({ perPage: 100 });
   
-  const filteredCompanies = companies.data.filter(company => company.size === size);
+//   const filteredCompanies = companies.data.filter(company => company.size === size);
   
-  return {
-    size,
-    companies: filteredCompanies,
-    count: filteredCompanies.length
-  };
-});
+//   return {
+//     size,
+//     companies: filteredCompanies,
+//     count: filteredCompanies.length
+//   };
+// });
 
 // Get company performance metrics
 export const getCompanyPerformanceMetrics = cache(async (companyId: string | number) => {

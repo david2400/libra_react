@@ -4,8 +4,7 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { UserManager } from "@/modules/account/users/components/user-manager";
-
-import { buildUsersData } from "./helpers";
+import { IUser, getUsers } from "@/server/domains/access-control/account/users";
 
 export async function generateMetadata({
   params,
@@ -22,9 +21,17 @@ export async function generateMetadata({
 }
 
 const UsersPage = async () => {
-  const data = await buildUsersData();
+  try {
+    const userResponse = await getUsers();
 
-  return <UserManager initialData={data} />;
+    const usersData: IUser[] = Array.isArray(userResponse)
+      ? userResponse
+      : userResponse?.data || [];
+
+    return <UserManager initialData={usersData} />;
+  } catch (error) {
+    return <UserManager initialData={[]} />;
+  }
 };
 
 export default UsersPage;

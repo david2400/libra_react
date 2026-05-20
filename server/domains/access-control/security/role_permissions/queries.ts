@@ -240,7 +240,7 @@ export const getRolePermissionInheritanceAnalysis = cache(async (roleId: string 
     total_permissions: directPermissions.length + inheritedPermissions.length,
     inheritance_depth: Math.max(0, ...inheritedPermissions.map(ip => ip.inheritance_level)),
     inheritance_sources: inheritedPermissions.reduce((acc, ip) => {
-      const sourceId = ip.inherited_from.id;
+      const sourceId = ip.inherited_from.id_role;
       if (!acc[sourceId]) {
         acc[sourceId] = 0;
       }

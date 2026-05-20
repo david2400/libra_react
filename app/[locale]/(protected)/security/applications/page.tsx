@@ -29,8 +29,7 @@ export async function generateMetadata({
 const ApplicationsPage: NextPage = async () => {
   try {
     const applicationsResponse = await getApplications();
-    console.log("applicationsResponse", applicationsResponse);
-    // Extract the data array from the paginated response
+
     const applicationData: IApplication[] = Array.isArray(applicationsResponse)
       ? applicationsResponse
       : applicationsResponse?.data || [];

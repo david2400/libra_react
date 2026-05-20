@@ -2,10 +2,10 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IRole, 
-  ICreateRolePayload, 
-  IUpdateRolePayload,
+import type {
+  IRole,
+  ICreateRole,
+  IUpdateRole,
 
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -14,7 +14,7 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 export const rolesRepository = {
   // List roles
-  list: (params?: ListParams) => 
+  list: (params?: ListParams) =>
     serverFetch.get<IPaginatedResponse<IRole>>('/api/access_control/roles', {
       params,
       revalidate: 120,
@@ -22,26 +22,26 @@ export const rolesRepository = {
     }),
 
   // Get role by ID
-  getById: (id: string | number) => 
+  getById: (id: string | number) =>
     serverFetch.get<IRole>(`/api/access_control/roles/${id}`, {
       revalidate: 300,
       tags: [accessControlTags.role(id)],
     }),
 
   // Create role
-  create: (payload: ICreateRolePayload) => 
+  create: (payload: ICreateRole) =>
     serverFetch.post<IRole>('/api/access_control/roles', payload, {
       revalidate: false,
     }),
 
   // Update role
-  update: (id: string | number, payload: IUpdateRolePayload) => 
+  update: (id: string | number, payload: IUpdateRole) =>
     serverFetch.put<IRole>(`/api/access_control/roles/${id}`, payload, {
       revalidate: false,
     }),
 
   // Delete role
-  delete: (id: string | number) => 
+  delete: (id: string | number) =>
     serverFetch.delete<void>(`/api/access_control/roles/${id}`, {
       revalidate: false,
     }),

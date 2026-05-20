@@ -6,11 +6,11 @@ import {
   deletePermissionAction,
 } from '@/server/domains/access-control/security/permissions';
 import type {
-  ICreatePermissionPayload,
-  IUpdatePermissionPayload,
+  ICreatePermission,
+  IUpdatePermission,
 } from '@/server/domains/access-control/security/permissions';
 
-export async function createPermissionServerAction(payload: ICreatePermissionPayload) {
+export async function createPermissionServerAction(payload: ICreatePermission) {
   const result = await createPermissionAction(payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createPermissionServerAction(payload: ICreatePermissionPay
   return result.data;
 }
 
-export async function updatePermissionServerAction(id: string | number, payload: IUpdatePermissionPayload) {
+export async function updatePermissionServerAction(id: string | number, payload: IUpdatePermission) {
   const result = await updatePermissionAction(id, payload);
 
   if (!result.success) {

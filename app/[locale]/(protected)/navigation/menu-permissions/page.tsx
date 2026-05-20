@@ -1,4 +1,6 @@
-import { Metadata } from "next";
+/** @format */
+
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 import { MenuPermissionManager } from "@/modules/navigation/menu-permissions/components/menu-permission-manager";
 import {
@@ -12,7 +14,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await Promise.resolve(params);
-  const t = await getTranslations({ locale, namespace: "navigation.menuPermissions" });
+  const t = await getTranslations({
+    locale,
+    namespace: "navigation.menuPermissions",
+  });
 
   return {
     title: t("title"),
@@ -20,7 +25,7 @@ export async function generateMetadata({
   };
 }
 
-const MenuPermissionsPage = async () => {
+const MenuPermissionsPage: NextPage = async () => {
   try {
     const menuPermissionResponse = await getMenuPermissions();
 
