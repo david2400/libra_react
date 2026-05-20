@@ -36,7 +36,7 @@ export interface IPolicyStatement {
   updated_at?: string;
 }
 
-export interface ICreatePolicyPayload {
+export interface ICreatePolicy {
   name: string;
   description?: string;
   application_id: number;
@@ -47,7 +47,7 @@ export interface ICreatePolicyPayload {
   statements?: IPolicyStatement[];
 }
 
-export interface IUpdatePolicyPayload {
+export interface IUpdatePolicy {
   name?: string;
   description?: string;
   application_id?: number;

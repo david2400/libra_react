@@ -6,11 +6,11 @@ import {
   deletePolicyAction,
 } from '@/server/domains/access-control/security/policies';
 import type {
-  ICreatePolicyPayload,
-  IUpdatePolicyPayload,
+  ICreatePolicy,
+  IUpdatePolicy,
 } from '@/server/domains/access-control/security/policies';
 
-export async function createPolicyServerAction(payload: ICreatePolicyPayload) {
+export async function createPolicyServerAction(payload: ICreatePolicy) {
   const result = await createPolicyAction(payload);
 
   if (!result.success) {
@@ -20,7 +20,7 @@ export async function createPolicyServerAction(payload: ICreatePolicyPayload) {
   return result.data;
 }
 
-export async function updatePolicyServerAction(id: string | number, payload: IUpdatePolicyPayload) {
+export async function updatePolicyServerAction(id: string | number, payload: IUpdatePolicy) {
   const result = await updatePolicyAction(id, payload);
 
   if (!result.success) {

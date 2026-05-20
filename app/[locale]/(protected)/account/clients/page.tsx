@@ -1,10 +1,13 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { ClientManager } from "@/modules/account/clients/components/client-manager";
-import { IClient, getClients } from "@/server/domains/access-control/account/clients";
+import {
+  IClient,
+  getClients,
+} from "@/server/domains/access-control/account/clients";
 
 export async function generateMetadata({
   params,
@@ -20,18 +23,16 @@ export async function generateMetadata({
   };
 }
 
-const ClientsPage = async () => {
+const ClientsPage: NextPage = async () => {
   try {
-    const modulesApplicationResponse = await getClients();
+    const clientResponse = await getClients();
 
     // Extract the data array from the paginated response
-    const modulesApplicationData: IClient[] = Array.isArray(
-      modulesApplicationResponse,
-    )
-      ? modulesApplicationResponse
-      : modulesApplicationResponse?.data || [];
+    const clientData: IClient[] = Array.isArray(clientResponse)
+      ? clientResponse
+      : clientResponse?.data || [];
 
-    return <ClientManager initialData={modulesApplicationData} />;
+    return <ClientManager initialData={clientData} />;
   } catch (error) {
     console.error("Error loading themes:", error);
     // Return empty data if API fails

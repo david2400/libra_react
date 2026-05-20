@@ -30,11 +30,11 @@ const RoleMenusPage: NextPage = async () => {
   try {
     const rolesMenuResponse = await getRoleMenus();
 
-    const themesData: IRoleMenu[] = Array.isArray(rolesMenuResponse)
+    const roleMenusData: IRoleMenu[] = Array.isArray(rolesMenuResponse)
       ? rolesMenuResponse
       : rolesMenuResponse?.data || [];
 
-    return <RoleMenuManager initialData={themesData} />;
+    return <RoleMenuManager initialData={roleMenusData} />;
   } catch (error) {
     return <RoleMenuManager initialData={[]} />;
   }

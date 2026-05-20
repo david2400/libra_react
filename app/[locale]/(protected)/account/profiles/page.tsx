@@ -1,10 +1,13 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { ProfileManager } from "@/modules/account/profiles/components/profile-manager";
-import { IProfile, getProfiles } from "@/server/domains/access-control/account/profiles";
+import {
+  IProfile,
+  getProfiles,
+} from "@/server/domains/access-control/account/profiles";
 
 export async function generateMetadata({
   params,
@@ -20,14 +23,12 @@ export async function generateMetadata({
   };
 }
 
-const ProfilesPage = async () => {
+const ProfilesPage: NextPage = async () => {
   try {
     const profileResponse = await getProfiles();
 
     // Extract the data array from the paginated response
-    const profileData: IProfile[] = Array.isArray(
-      profileResponse,
-    )
+    const profileData: IProfile[] = Array.isArray(profileResponse)
       ? profileResponse
       : profileResponse?.data || [];
 

@@ -1,6 +1,6 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { UserManager } from "@/modules/account/users/components/user-manager";
@@ -20,7 +20,7 @@ export async function generateMetadata({
   };
 }
 
-const UsersPage = async () => {
+const UsersPage: NextPage = async () => {
   try {
     const userResponse = await getUsers();
 
