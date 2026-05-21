@@ -12,8 +12,6 @@ import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
 import { useState, useEffect, useMemo } from "react";
 import { getCompanyApplicationsAction } from "../actions/company-applications.action";
-import { ICompany, ICompanyApplication } from "..";
-import { getCompaniesServices } from "@/modules/account/companies/services/company.service";
 
 // Define types for mock data
 interface CompanyOption {

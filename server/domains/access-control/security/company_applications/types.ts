@@ -19,7 +19,7 @@ export interface ICompanyApplication extends IAuditInfo {
   // application?: IApplication;
 }
 
-export interface ICreateCompanyApplicationPayload {
+export interface ICreateCompanyApplication {
   company_id: number;
   application_id: number;
   license_start_date: string;
@@ -31,16 +31,8 @@ export interface ICreateCompanyApplicationPayload {
   notes?: string;
 }
 
-export interface IUpdateCompanyApplicationPayload {
-  company_id?: number;
-  application_id?: number;
-  license_start_date?: string;
-  license_end_date?: string;
-  is_active?: boolean;
-  user_limit?: number;
-  subscription_type?: string;
-  auto_renew?: boolean;
-  notes?: string;
+export interface IUpdateCompanyApplication extends ICreateCompanyApplication {
+  id_company_application?: number;
 }
 
 export interface ICompanyApplicationParams extends ListParams {
@@ -56,8 +48,8 @@ export interface ICompanyApplicationRepository {
   findAll(params?: ICompanyApplicationParams): Promise<IPaginatedResponse<ICompanyApplication>>;
   findById(id: number): Promise<ICompanyApplication | null>;
   findByCompanyIdAndApplicationId(companyId: number, applicationId: number): Promise<ICompanyApplication | null>;
-  create(data: ICreateCompanyApplicationPayload): Promise<ICompanyApplication>;
-  update(id: number, data: IUpdateCompanyApplicationPayload): Promise<ICompanyApplication>;
+  create(data: ICreateCompanyApplication): Promise<ICompanyApplication>;
+  update(id: number, data: IUpdateCompanyApplication): Promise<ICompanyApplication>;
   delete(id: number): Promise<void>;
 }
 

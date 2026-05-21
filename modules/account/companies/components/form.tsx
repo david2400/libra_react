@@ -9,7 +9,7 @@ import { validationCompany } from "../schemas/company.schema";
 import { ICompanyCreateRequest, ICompanyUpdateRequest } from "../models/company.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "@repo/ui/shared/i18n/routing";
-import { createCompanyAction, updateCompanyAction } from "../action/actions";
+import { createCompanyServerAction, updateCompanyServerAction } from "@/app/[locale]/(protected)/account/companies/actions";
 
 const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
   return <FormCompany initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
@@ -54,7 +54,7 @@ export const RegisterCompany = ({}: IFormAddProps = {}) => {
 
   const handleSubmit: SubmitHandler<ICompanyCreateRequest> = async (values) => {
     try {
-      const result = await createCompanyAction(values);
+      const result = await createCompanyServerAction(values);
       
       Swal.fire({
         title: t('createSuccess'),
@@ -120,7 +120,7 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<any>) => {
     if (!values.id_company) return;
     
     try {
-      const result = await updateCompanyAction(values.id_company, values);
+      const result = await updateCompanyServerAction(values.id_company, values);
       
       Swal.fire({
         title: t('updateSuccess'),

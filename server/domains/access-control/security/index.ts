@@ -7,3 +7,4 @@ export * as policies from './policies';
 export * as rolePermissions from './role_permissions';
 export * as roles from './roles';
 export * as permissionResolution from './permission_resolution';
+export * as companyApplications from './company_applications';

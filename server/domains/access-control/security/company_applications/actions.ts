@@ -8,13 +8,13 @@ import {
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
 import type { 
-  ICreateCompanyApplicationPayload, 
-  IUpdateCompanyApplicationPayload,
+  ICreateCompanyApplication, 
+  IUpdateCompanyApplication,
 } from './types';
 
 // --- Company Applications Actions -----------------------------------------------
 
-export const createCompanyApplicationAction = async (payload: ICreateCompanyApplicationPayload): Promise<ActionResultType<any>> => {
+export const createCompanyApplicationAction = async (payload: ICreateCompanyApplication): Promise<ActionResultType<any>> => {
   try {
     const companyApplication = await companyApplicationsRepository.create(payload);
     
@@ -47,7 +47,7 @@ export const createCompanyApplicationAction = async (payload: ICreateCompanyAppl
   }
 };
 
-export const updateCompanyApplicationAction = async (id: string | number, payload: IUpdateCompanyApplicationPayload): Promise<ActionResultType<any>> => {
+export const updateCompanyApplicationAction = async (id: string | number, payload: IUpdateCompanyApplication): Promise<ActionResultType<any>> => {
   try {
     const companyApplication = await companyApplicationsRepository.update(id, payload);
     
@@ -177,7 +177,7 @@ export const deactivateLicenseAction = async (companyId: string | number, applic
 
 // --- Assignment Management Actions ----------------------------------------------
 
-export const assignApplicationToCompanyAction = async (companyId: string | number, applicationId: string | number, payload?: ICreateCompanyApplicationPayload): Promise<ActionResultType<any>> => {
+export const assignApplicationToCompanyAction = async (companyId: string | number, applicationId: string | number, payload?: ICreateCompanyApplication): Promise<ActionResultType<any>> => {
   try {
     let result;
     

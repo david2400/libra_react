@@ -3,31 +3,57 @@
 "use client";
 
 import { SubmitHandler } from "react-hook-form";
-import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models";
+import {
+  IFormAddProps,
+  IFormProps,
+  IFormUpdateProps,
+} from "@repo/ui/form/models";
 import { FormRolePermission } from "../scenes/formRolePermission";
 import { validationRolePermission } from "../schemas/role-permission.schema";
-import { IRolePermissionCreateRequest, IRolePermissionUpdateRequest } from "../models/role-permission.interface";
+import {
+  IRolePermissionCreateRequest,
+  IRolePermissionUpdateRequest,
+} from "../models/role-permission.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createRolePermissionAction, updateRolePermissionAction } from "../api/actions";
+import {
+  createRolePermissionServerAction,
+  updateRolePermissionServerAction,
+} from "@/app/[locale]/(protected)/security/role-permissions/actions";
 
-const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
-  return <FormRolePermission initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
+const FormBase = ({
+  initialValues,
+  onSubmit,
+  validationSchema,
+}: IFormProps<any>) => {
+  return (
+    <FormRolePermission
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    />
+  );
 };
 
 export const RegisterRolePermission = ({}: IFormAddProps = {}) => {
   const router = useRouter();
 
   const defaultValues: IRolePermissionCreateRequest = {
-    roleId: 0,
-    permissionId: 0,
-    isActive: true,
+    role_id: 0,
+    permission_id: 0,
+    level: "",
   };
 
-  const handleSubmit: SubmitHandler<IRolePermissionCreateRequest> = async (values) => {
+  const handleSubmit: SubmitHandler<IRolePermissionCreateRequest> = async (
+    values,
+  ) => {
     try {
-      const result = await createRolePermissionAction(values);
-      
+      const result = await createRolePermissionServerAction(
+        values.role_id,
+        values.permission_id,
+        values,
+      );
+
       if (result.success) {
         Swal.fire({
           title: "Asignación creada exitosamente",
@@ -52,18 +78,32 @@ export const RegisterRolePermission = ({}: IFormAddProps = {}) => {
     }
   };
 
-  return <FormBase initialValues={defaultValues} onSubmit={handleSubmit} validationSchema={validationRolePermission()} />;
+  return (
+    <FormBase
+      initialValues={defaultValues}
+      onSubmit={handleSubmit}
+      validationSchema={validationRolePermission()}
+    />
+  );
 };
 
-export const UpdateRolePermission = ({ initialValues }: IFormUpdateProps<IRolePermissionUpdateRequest>) => {
+export const UpdateRolePermission = ({
+  initialValues,
+}: IFormUpdateProps<IRolePermissionUpdateRequest>) => {
   const router = useRouter();
 
-  const handleSubmit: SubmitHandler<IRolePermissionUpdateRequest> = async (values) => {
-    if (!values.id) return;
-    
+  const handleSubmit: SubmitHandler<IRolePermissionUpdateRequest> = async (
+    values,
+  ) => {
+    if (!values.role_id || !values.permission_id) return;
+
     try {
-      const result = await updateRolePermissionAction(values.id, values);
-      
+      const result = await updateRolePermissionServerAction(
+        values.role_id,
+        values.permission_id,
+        values,
+      );
+
       if (result.success) {
         Swal.fire({
           title: "Asignación actualizada exitosamente",
@@ -90,5 +130,11 @@ export const UpdateRolePermission = ({ initialValues }: IFormUpdateProps<IRolePe
 
   if (!initialValues) return null;
 
-  return <FormBase initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationRolePermission()} />;
+  return (
+    <FormBase
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={validationRolePermission()}
+    />
+  );
 };

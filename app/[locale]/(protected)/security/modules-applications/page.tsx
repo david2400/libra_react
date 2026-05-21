@@ -1,9 +1,12 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 import { ModuleApplicationManager } from "@/modules/security/modules-applications";
-import { IModuleApplication, getModuleApplications } from "@/server/domains/access-control/security/modules_applications";
+import {
+  IModuleApplication,
+  getModuleApplications,
+} from "@/server/domains/access-control/security/modules_applications";
 
 export async function generateMetadata({
   params,
@@ -11,7 +14,10 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await Promise.resolve(params);
-  const t = await getTranslations({ locale, namespace: "security.modulesApplications" });
+  const t = await getTranslations({
+    locale,
+    namespace: "security.modulesApplications",
+  });
 
   return {
     title: t("title"),
@@ -19,7 +25,7 @@ export async function generateMetadata({
   };
 }
 
-const ModuleApplicationsPage = async () => {
+const ModuleApplicationsPage: NextPage = async () => {
   try {
     const modulesApplicationResponse = await getModuleApplications();
 

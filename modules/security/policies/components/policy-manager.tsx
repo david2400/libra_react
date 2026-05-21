@@ -25,13 +25,13 @@ export const PolicyManager = ({ initialData }: IPolicyManagerProps) => {
   const [editingPolicy, setEditingPolicy] = useState<IPolicy | null>(null);
 
   const metrics = useMemo(() => {
-    const activePolicies = initialData.filter((policy) => policy.isActive !== false).length;
-    const totalRules = initialData.reduce((acc, policy) => acc + (policy.rules?.length || 0), 0);
+    const activePolicies = initialData.filter((policy) => policy.deleted !== false).length;
+    // const totalRules = initialData.reduce((acc, policy) => acc + (policy.rules?.length || 0), 0);
 
     return {
       totalPolicies: initialData.length,
       activePolicies,
-      totalRules,
+      // totalRules,
     };
   }, [initialData]);
 
@@ -68,15 +68,15 @@ export const PolicyManager = ({ initialData }: IPolicyManagerProps) => {
           <span className='text-sm'>{info.getValue<string>() || "-"}</span>
         ),
       },
-      {
-        accessorKey: "rules",
-        header: "Reglas",
-        cell: ({ row }) => (
-          <span className='text-sm'>
-            {row.original.rules?.length || 0} reglas
-          </span>
-        ),
-      },
+      // {
+      //   accessorKey: "rules",
+      //   header: "Reglas",
+      //   cell: ({ row }) => (
+      //     <span className='text-sm'>
+      //       {row.original.rules?.length || 0} reglas
+      //     </span>
+      //   ),
+      // },
       {
         header: "Status",
         accessorKey: "isActive",
@@ -84,11 +84,11 @@ export const PolicyManager = ({ initialData }: IPolicyManagerProps) => {
           <div className='flex items-center'>
             <span
               className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                row.original.isActive !== false
+                row.original.deleted !== false
                   ? "bg-green-100 text-green-800"
                   : "bg-red-100 text-red-800"
               }`}>
-              {row.original.isActive !== false ? "Active" : "Inactive"}
+              {row.original.deleted !== false ? "Active" : "Inactive"}
             </span>
           </div>
         ),
@@ -125,12 +125,12 @@ export const PolicyManager = ({ initialData }: IPolicyManagerProps) => {
       value: metrics.activePolicies,
       accent: "from-emerald-500/40 to-teal-500/40 text-emerald-700",
     },
-    {
-      icon: HiOutlineDocumentText,
-      label: "Total de reglas",
-      value: metrics.totalRules,
-      accent: "from-amber-500/40 to-orange-500/40 text-amber-700",
-    },
+    // {
+    //   icon: HiOutlineDocumentText,
+    //   label: "Total de reglas",
+    //   value: metrics.totalRules,
+    //   accent: "from-amber-500/40 to-orange-500/40 text-amber-700",
+    // },
   ];
 
   return (

@@ -47,8 +47,8 @@ export const RolePermissionManager = ({ initialData }: IRolePermissionManagerPro
   }, []);
 
   const metrics = useMemo(() => {
-    const activeAssignments = rolePermissions.filter((rp) => rp.isActive !== false).length;
-    const uniqueRoles = new Set(rolePermissions.map(rp => rp.roleId)).size;
+    const activeAssignments = rolePermissions.filter((rp) => rp.deleted !== false).length;
+    const uniqueRoles = new Set(rolePermissions.map(rp => rp.role_id)).size;
 
     return {
       totalAssignments: rolePermissions.length,
@@ -79,7 +79,7 @@ export const RolePermissionManager = ({ initialData }: IRolePermissionManagerPro
         cell: ({ row }) => (
           <span className='text-sm'>
             {row.original.permission?.name ||
-              `ID: ${row.original.permissionId}`}
+              `ID: ${row.original.permission_id}`}
           </span>
         ),
       },

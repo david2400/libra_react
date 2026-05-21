@@ -3,23 +3,43 @@
 "use client";
 
 import { SubmitHandler } from "react-hook-form";
-import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/models";
+import {
+  IFormAddProps,
+  IFormProps,
+  IFormUpdateProps,
+} from "@repo/ui/form/models";
 import { FormMenuPermission } from "../scenes/formMenuPermission";
 import { validationMenuPermission } from "../schemas/menu-permission.schema";
-import { IMenuPermissionCreateRequest, IMenuPermissionUpdateRequest } from "../models/menu-permission.interface";
+import {
+  IMenuPermissionCreateRequest,
+  IMenuPermissionUpdateRequest,
+} from "../models/menu-permission.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createMenuPermissionAction, updateMenuPermissionAction } from "../api/actions";
+import {
+  createMenuPermissionServerAction,
+  updateMenuPermissionServerAction,
+} from "@/app/[locale]/(protected)/navigation/menu-permissions/actions";
 
-const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
-  return <FormMenuPermission initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
+const FormBase = ({
+  initialValues,
+  onSubmit,
+  validationSchema,
+}: IFormProps<any>) => {
+  return (
+    <FormMenuPermission
+      initialValues={initialValues}
+      onSubmit={onSubmit}
+      validationSchema={validationSchema}
+    />
+  );
 };
 
 export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
   const router = useRouter();
-  const { useTranslations } = require('next-intl');
-  const t = useTranslations('navigation.menuPermissions.messages');
-  const tMessages = useTranslations('messages');
+  const { useTranslations } = require("next-intl");
+  const t = useTranslations("navigation.menuPermissions.messages");
+  const tMessages = useTranslations("messages");
 
   const defaultValues: IMenuPermissionCreateRequest = {
     menuId: 0,
@@ -27,12 +47,18 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
     isActive: true,
   };
 
-  const handleSubmit: SubmitHandler<IMenuPermissionCreateRequest> = async (values) => {
+  const handleSubmit: SubmitHandler<IMenuPermissionCreateRequest> = async (
+    values,
+  ) => {
     try {
-      const result = await createMenuPermissionAction(values.menuId, values.permissionId, values);
-      
+      const result = await createMenuPermissionServerAction(
+        values.menuId,
+        values.permissionId,
+        values,
+      );
+
       Swal.fire({
-        title: t('createSuccess'),
+        title: t("createSuccess"),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -40,30 +66,44 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: tMessages('createError', { entity: 'permiso de menú' }),
-        text: (error as any)?.message || tMessages('unexpectedError'),
+        title: tMessages("createError", { entity: "permiso de menú" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
         icon: "error",
       });
     }
   };
 
-  return <FormBase initialValues={defaultValues} onSubmit={handleSubmit} validationSchema={validationMenuPermission()} />;
+  return (
+    <FormBase
+      initialValues={defaultValues}
+      onSubmit={handleSubmit}
+      validationSchema={validationMenuPermission()}
+    />
+  );
 };
 
-export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPermissionUpdateRequest>) => {
+export const UpdateMenuPermission = ({
+  initialValues,
+}: IFormUpdateProps<IMenuPermissionUpdateRequest>) => {
   const router = useRouter();
-  const { useTranslations } = require('next-intl');
-  const t = useTranslations('navigation.menuPermissions.messages');
-  const tMessages = useTranslations('messages');
+  const { useTranslations } = require("next-intl");
+  const t = useTranslations("navigation.menuPermissions.messages");
+  const tMessages = useTranslations("messages");
 
-  const handleSubmit: SubmitHandler<IMenuPermissionUpdateRequest> = async (values) => {
+  const handleSubmit: SubmitHandler<IMenuPermissionUpdateRequest> = async (
+    values,
+  ) => {
     if (!values.menuId || !values.permissionId) return;
-    
+
     try {
-      const result = await updateMenuPermissionAction(values.menuId, values.permissionId, values);
-      
+      const result = await updateMenuPermissionServerAction(
+        values.menuId,
+        values.permissionId,
+        values,
+      );
+
       Swal.fire({
-        title: t('updateSuccess'),
+        title: t("updateSuccess"),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -71,8 +111,8 @@ export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPe
       });
     } catch (error) {
       Swal.fire({
-        title: tMessages('updateError', { entity: 'permiso de menú' }),
-        text: (error as any)?.message || tMessages('unexpectedError'),
+        title: tMessages("updateError", { entity: "permiso de menú" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
         icon: "error",
       });
     }
@@ -80,5 +120,11 @@ export const UpdateMenuPermission = ({ initialValues }: IFormUpdateProps<IMenuPe
 
   if (!initialValues) return null;
 
-  return <FormBase initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationMenuPermission()} />;
+  return (
+    <FormBase
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+      validationSchema={validationMenuPermission()}
+    />
+  );
 };

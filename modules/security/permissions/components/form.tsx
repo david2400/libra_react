@@ -17,7 +17,10 @@ import {
 } from "../models/permission.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createPermissionAction, updatePermissionAction } from "../api/actions";
+import {
+  createPermissionServerAction,
+  updatePermissionServerAction,
+} from "@/app/[locale]/(protected)/security/permissions/actions";
 
 const FormBase = ({
   initialValues,
@@ -35,9 +38,9 @@ const FormBase = ({
 
 export const RegisterPermission = ({}: IFormAddProps = {}) => {
   const router = useRouter();
-  const { useTranslations } = require('next-intl');
-  const t = useTranslations('security.permissions.messages');
-  const tMessages = useTranslations('messages');
+  const { useTranslations } = require("next-intl");
+  const t = useTranslations("security.permissions.messages");
+  const tMessages = useTranslations("messages");
 
   const defaultValues: IPermissionCreateRequest = {
     name: "",
@@ -57,26 +60,28 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
     metadata: "",
   };
 
-  const handleSubmit: SubmitHandler<IPermissionCreateRequest> = async (values) => {
-    try {
-      const result = await createPermissionAction(values);
-      
-      Swal.fire({
-        title: t('createSuccess'),
-        icon: "success",
-        timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+  const handleSubmit: SubmitHandler<IPermissionCreateRequest> = async (
+    values,
+  ) => {
+    const result = await createPermissionServerAction(values)
+      .then(() => {
+        Swal.fire({
+          title: t("createSuccess"),
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+          willClose: () => {
+            router.refresh();
+          },
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: tMessages("createError", { entity: "permiso" }),
+          text: error?.message || tMessages("unexpectedError"),
+          icon: "error",
+        });
       });
-    } catch (error) {
-      Swal.fire({
-        title: tMessages('createError', { entity: 'permiso' }),
-        text: (error as any)?.message || tMessages('unexpectedError'),
-        icon: "error",
-      });
-    }
   };
 
   return (
@@ -88,38 +93,39 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
   );
 };
 
-export const UpdatePermission = ({
-  initialValues,
-}: IFormUpdateProps<any>) => {
+export const UpdatePermission = ({ initialValues }: IFormUpdateProps<any>) => {
   const router = useRouter();
-  const { useTranslations } = require('next-intl');
-  const t = useTranslations('security.permissions.messages');
-  const tMessages = useTranslations('messages');
+  const { useTranslations } = require("next-intl");
+  const t = useTranslations("security.permissions.messages");
+  const tMessages = useTranslations("messages");
 
-  
+  const handleSubmit: SubmitHandler<IPermissionUpdateRequest> = async (
+    values,
+  ) => {
+    if (!values.id_permission) return;
 
-  const handleSubmit: SubmitHandler<IPermissionUpdateRequest> = async (values) => {
-    if (!values.id) return;
-    
-    try {
-      const result = await updatePermissionAction(values.id, values);
-      
-      Swal.fire({
-        title: t('updateSuccess'),
-        icon: "success",
-        timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+    const result = await updatePermissionServerAction(
+      values.id_permission,
+      values,
+    )
+      .then(() => {
+        Swal.fire({
+          title: t("updateSuccess"),
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+          willClose: () => {
+            router.refresh();
+          },
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: tMessages("updateError", { entity: "permiso" }),
+          text: (error as any)?.message || tMessages("unexpectedError"),
+          icon: "error",
+        });
       });
-    } catch (error) {
-      Swal.fire({
-        title: tMessages('updateError', { entity: 'permiso' }),
-        text: (error as any)?.message || tMessages('unexpectedError'),
-        icon: "error",
-      });
-    }
   };
 
   if (!initialValues) {

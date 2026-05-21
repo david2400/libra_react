@@ -253,6 +253,9 @@
         "edit_description": "Editar la información del rol seleccionado"
       },
       "messages": {
+        "createSuccess": "Rol creado exitosamente",
+        "updateSuccess": "Rol actualizado exitosamente",
+        "deleteSuccess": "Rol eliminado exitosamente"
       }
     },
     "modal": {

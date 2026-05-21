@@ -17,8 +17,8 @@ import {
 } from "../models/role.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createRoleAction } from "../api/actions";
 import { updateApplicationAction } from "../../applications/api/actions";
+import { createRoleServerAction, updateRoleServerAction } from "@/app/[locale]/(protected)/security/roles/actions";
 
 const FormBase = ({
   initialValues,
@@ -49,7 +49,7 @@ export const RegisterRole = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IRoleCreateRequest> = async (values) => {
-    const result = await createRoleAction(values)
+    const result = await createRoleServerAction(values)
       .then(() => {
         Swal.fire({
           title: t("createSuccess"),
@@ -90,7 +90,7 @@ export const UpdateRole = ({
   const handleSubmit: SubmitHandler<IRoleUpdateRequest> = async (values) => {
     if (!values.id_role) return;
 
-    const result = await updateApplicationAction(values.id_role, values)
+    const result = await updateRoleServerAction(values.id_role, values)
       .then(() => {
         Swal.fire({
           title: t("updateSuccess"),

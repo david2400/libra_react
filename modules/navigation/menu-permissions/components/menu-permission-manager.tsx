@@ -25,8 +25,8 @@ export const MenuPermissionManager = ({ initialData }: IMenuPermissionManagerPro
   const [editingMenuPermission, setEditingMenuPermission] = useState<IMenuPermission | null>(null);
 
   const metrics = useMemo(() => {
-    const activeAssignments = initialData.filter((mp) => mp.isActive !== false).length;
-    const uniqueMenus = new Set(initialData.map(mp => mp.menuId)).size;
+    const activeAssignments = initialData.filter((mp) => mp.deleted !== false).length;
+    const uniqueMenus = new Set(initialData.map(mp => mp.menu_id)).size;
 
     return {
       totalAssignments: initialData.length,
@@ -58,12 +58,12 @@ export const MenuPermissionManager = ({ initialData }: IMenuPermissionManagerPro
       },
       {
         header: "Status",
-        accessorKey: "isActive",
+        accessorKey: "deleted",
         cell: ({ row }) => (
           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.original.isActive !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            row.original.deleted !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
           }`}>
-            {row.original.isActive !== false ? "Active" : "Inactive"}
+            {row.original.deleted !== false ? "Active" : "Inactive"}
           </span>
         ),
       },

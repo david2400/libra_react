@@ -1,9 +1,12 @@
 /** @format */
 
-import { Metadata } from "next";
+import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
-import { PolicyManager } from "@/modules/security/policies";
-import { IPolicy, getPolicies } from "@/server/domains/access-control/security/policies";
+import {
+  IPolicy,
+  getPolicies,
+} from "@/server/domains/access-control/security/policies";
+import { PolicyManager } from "@/modules/security/policies/components/policy-manager";
 
 export async function generateMetadata({
   params,
@@ -19,14 +22,12 @@ export async function generateMetadata({
   };
 }
 
-const PoliciesPage = async () => {
+const PoliciesPage: NextPage = async () => {
   try {
     const policiesResponse = await getPolicies();
 
     // Extract the data array from the paginated response
-    const policiesData: IPolicy[] = Array.isArray(
-      policiesResponse,
-    )
+    const policiesData: IPolicy[] = Array.isArray(policiesResponse)
       ? policiesResponse
       : policiesResponse?.data || [];
 

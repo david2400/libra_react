@@ -14,9 +14,13 @@ import {
   IPolicyCreateRequest,
   IPolicyUpdateRequest,
 } from "../models/policy.interface";
-import { policiesApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import {
+  createPolicyServerAction,
+  updatePolicyServerAction,
+} from "@/app/[locale]/(protected)/security/policies/actions";
+import { PolicyEffect } from "@/server/domains/access-control/security/policies";
 
 const FormBase = ({
   initialValues,
@@ -38,29 +42,33 @@ export const RegisterPolicy = ({}: IFormAddProps = {}) => {
   const defaultValues: IPolicyCreateRequest = {
     name: "",
     description: "",
-    rules: [],
+    application_id: 1,
+    version: "",
+    default_effect: PolicyEffect.ALLOW,
+    is_active: true,
+    priority: 1,
   };
 
   const handleSubmit: SubmitHandler<IPolicyCreateRequest> = async (values) => {
-    try {
-      const result = await policiesApi.create(values);
-      
-      Swal.fire({
-        title: "Política creada exitosamente",
-        icon: "success",
-        timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+    const result = await createPolicyServerAction(values)
+      .then(() => {
+        Swal.fire({
+          title: "Política creada exitosamente",
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+          willClose: () => {
+            router.refresh();
+          },
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: "Error!",
+          text: (error as any)?.message || "Ocurrió un error inesperado",
+          icon: "error",
+        });
       });
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
-        icon: "error",
-      });
-    }
   };
 
   return (
@@ -78,27 +86,27 @@ export const UpdatePolicy = ({
   const router = useRouter();
 
   const handleSubmit: SubmitHandler<IPolicyUpdateRequest> = async (values) => {
-    if (!values.id) return;
-    
-    try {
-      const result = await policiesApi.update(values.id, values);
-      
-      Swal.fire({
-        title: "Política actualizada exitosamente",
-        icon: "success",
-        timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+    if (!values.id_policy) return;
+
+    const result = await updatePolicyServerAction(values.id_policy, values)
+      .then(() => {
+        Swal.fire({
+          title: "Política actualizada exitosamente",
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+          willClose: () => {
+            router.refresh();
+          },
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: "Error!",
+          text: (error as any)?.message || "Ocurrió un error inesperado",
+          icon: "error",
+        });
       });
-    } catch (error) {
-      Swal.fire({
-        title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
-        icon: "error",
-      });
-    }
   };
 
   if (!initialValues) {

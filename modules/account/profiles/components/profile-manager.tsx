@@ -25,7 +25,7 @@ export const ProfileManager = ({ initialData }: IProfileManagerProps) => {
   const [editingProfile, setEditingProfile] = useState<IProfile | null>(null);
 
   const metrics = useMemo(() => {
-    const activeProfiles = initialData.filter((profile) => profile.isActive !== false).length;
+    const activeProfiles = initialData.filter((profile) => profile.deleted !== false).length;
     const uniqueTimezones = new Set(initialData.map(p => p.timezone).filter(Boolean)).size;
 
     return {
@@ -85,12 +85,12 @@ export const ProfileManager = ({ initialData }: IProfileManagerProps) => {
       },
       {
         header: "Estado",
-        accessorKey: "isActive",
+        accessorKey: "deleted",
         cell: ({ row }) => (
           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.original.isActive !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            row.original.deleted !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
           }`}>
-            {row.original.isActive !== false ? "Activo" : "Inactivo"}
+            {row.original.deleted !== false ? "Activo" : "Inactivo"}
           </span>
         ),
       },

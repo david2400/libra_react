@@ -25,8 +25,8 @@ export const UserManager = ({ initialData }: IUserManagerProps) => {
   const [editingUser, setEditingUser] = useState<IUser | null>(null);
 
   const metrics = useMemo(() => {
-    const activeUsers = initialData.filter((user) => user.activo !== false).length;
-    const uniqueCompanies = new Set(initialData.map(u => u.companyId).filter(Boolean)).size;
+    const activeUsers = initialData.filter((user) => user.deleted !== false).length;
+    const uniqueCompanies = new Set(initialData.map(u => u.company_id).filter(Boolean)).size;
 
     return {
       totalUsers: initialData.length,
@@ -65,12 +65,12 @@ export const UserManager = ({ initialData }: IUserManagerProps) => {
       },
       {
         header: "Estado",
-        accessorKey: "activo",
+        accessorKey: "deleted",
         cell: ({ row }) => (
           <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.original.activo !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
+            row.original.deleted !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
           }`}>
-            {row.original.activo !== false ? "Activo" : "Inactivo"}
+            {row.original.deleted !== false ? "Activo" : "Inactivo"}
           </span>
         ),
       },

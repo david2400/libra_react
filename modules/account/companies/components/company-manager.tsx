@@ -30,13 +30,13 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
   useEffect(() => {
     setLoading(true);
 
-    getCompaniesServices()
-      .then((companies) => {
-        setCompanies(companies);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    // getCompaniesServices()
+    //   .then((companies) => {
+    //     setCompanies(companies);
+    //   })
+    //   .finally(() => {
+    //     setLoading(false);
+    //   });
   }, []);
 
   const metrics = useMemo(() => {

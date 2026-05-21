@@ -48,7 +48,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
 
   const metrics = useMemo(() => {
     const totalPermissions = permissions.length;
-    const uniqueApplications = new Set(permissions.map(p => p.aplications_id).filter(Boolean)).size;
+    const uniqueApplications = new Set(permissions.map(p => p.application_id).filter(Boolean)).size;
 
     return {
       totalPermissions,

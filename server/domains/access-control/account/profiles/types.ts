@@ -4,20 +4,8 @@ import { IUser } from '../users';
 
 // --- IProfile Types -------------------------------------------------------------
 
-export interface IProfile extends IAuditInfo {
-  id: string | number;
-  user_id: string | number;
-  first_name?: string;
-  last_name?: string;
-  display_name?: string;
-  avatar_url?: string;
-  bio?: string;
-  phone?: string;
-  timezone?: string;
-  language?: string;
-  date_format?: string;
-  time_format?: '12h' | '24h';
-  theme?: 'light' | 'dark' | 'auto';
+export interface IProfile extends IUpdateProfile, IAuditInfo {
+
 }
 
 export interface ICreateProfile {

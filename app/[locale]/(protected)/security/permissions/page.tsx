@@ -3,11 +3,11 @@
 import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { PermissionManager } from "@/modules/security/permissions";
 import {
   IPermission,
   getPermissions,
 } from "@/server/domains/access-control/security/permissions";
+import { PermissionManager } from "@/modules/security/permissions/components/permission-manager";
 
 export async function generateMetadata({
   params,

@@ -47,15 +47,8 @@ export interface ICreatePolicy {
   statements?: IPolicyStatement[];
 }
 
-export interface IUpdatePolicy {
-  name?: string;
-  description?: string;
-  application_id?: number;
-  version?: string;
-  default_effect?: PolicyEffect;
-  is_active?: boolean;
-  priority?: number;
-  statements?: IPolicyStatement[];
+export interface IUpdatePolicy extends Partial<ICreatePolicy> {
+  id_policy: number;
 }
 
 // Legacy interface - use IPolicyStatement instead

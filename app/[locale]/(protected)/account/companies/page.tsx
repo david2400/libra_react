@@ -4,7 +4,10 @@ import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { CompanyManager } from "@/modules/account/companies/components/company-manager";
-import { ICompany, getCompanies } from "@/server/domains/access-control/account/companies";
+import {
+  ICompany,
+  getCompanies,
+} from "@/server/domains/access-control/account/companies";
 
 export async function generateMetadata({
   params,
