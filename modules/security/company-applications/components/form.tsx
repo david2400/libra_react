@@ -16,7 +16,8 @@ import {
 } from "../models/company-application.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createCompanyApplicationAction, updateCompanyApplicationAction } from "@/server/domains/access-control/security/company_applications";
+import { companyApplicationsClientApi } from "../api/client-api";
+import { createCompanyApplicationServerAction, updateCompanyApplicationServerAction } from "@/app/[locale]/(protected)/security/company-applications/actions";
 
 
 const FormBase = ({
@@ -33,7 +34,7 @@ const FormBase = ({
   );
 };
 
-export const RegisterCompanyApplication = ({}: IFormAddProps = {}) => {
+export const RegisterCompanyApplication = ({ onSuccess }: { onSuccess?: () => void } = {}) => {
   const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("security.companyApplications.messages");
@@ -54,23 +55,25 @@ export const RegisterCompanyApplication = ({}: IFormAddProps = {}) => {
   const handleSubmit: SubmitHandler<ICompanyApplicationCreateRequest> = async (
     values,
   ) => {
-    const result = await createCompanyApplicationAction(values)
-      .then((result) => {
-        Swal.fire({
-          title: t("createSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => router.refresh(),
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "Error!",
-          text: error.message || "Ocurrió un error inesperado",
-          icon: "error",
-        });
+    try {
+      await createCompanyApplicationServerAction(values);
+      Swal.fire({
+        title: t("createSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          onSuccess?.();
+          router.refresh();
+        },
       });
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error.message || "Ocurrió un error inesperado",
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -93,30 +96,26 @@ export const UpdateCompanyApplication = ({
   const handleSubmit: SubmitHandler<ICompanyApplicationUpdateRequest> = async (
     values,
   ) => {
-    if (!values.id) return;
+    if (!values.id_company_application) return;
 
     try {
-      const result = await updateCompanyApplicationAction(values.id, values);
-
-      if (result.success) {
-        Swal.fire({
-          title: t("updateSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => router.refresh(),
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: result.error?.message || "Ocurrió un error inesperado",
-          icon: "error",
-        });
-      }
-    } catch (error) {
+      await updateCompanyApplicationServerAction(
+        values.id_company_application,
+        values,
+      );
+      Swal.fire({
+        title: t("updateSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: false,
+        willClose: () => {
+          router.refresh();
+        },
+      });
+    } catch (error: any) {
       Swal.fire({
         title: "Error!",
-        text: (error as any)?.message || "Ocurrió un error inesperado",
+        text: error.message || "Ocurrió un error inesperado",
         icon: "error",
       });
     }

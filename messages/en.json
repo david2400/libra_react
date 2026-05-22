@@ -1,7 +1,8 @@
 {
   "actions": {
     "saveRole": "Create Role",
-    "saveApplication": "Create Application"
+    "saveApplication": "Create Application",
+    "saveCompanyApplication": "Create Company Application"
   },
   "common": {
     "welcome": "Welcome",
@@ -252,6 +253,8 @@
         "version": "Version",
         "baseUrl": "Base URL",
         "status": "Status",
+        "maintenance_mode": "Maintenance Mode",
+        "publication_date": "Publication Date",
         "statusOptions": {
           "active": "Active",
           "inactive": "Inactive",
@@ -310,6 +313,32 @@
         "createSuccess": "Policy created successfully",
         "updateSuccess": "Policy updated successfully",
         "deleteSuccess": "Policy deleted successfully"
+      }
+    },
+    "companyApplications": {
+      "title": "Company Applications",
+      "description": "Company Application Management",
+      "subtitle": "Manage company application assignments",
+      "fields": {
+        "company_id": "Company",
+        "application_id": "Application",
+        "license_start_date": "License Start Date",
+        "license_end_date": "License End Date",
+        "is_active": "Active Status",
+        "user_limit": "User Limit",
+        "subscription_type": "Subscription Type",
+        "auto_renew": "Auto Renew",
+        "notes": "Notes"
+      },
+      "modal": {
+        "create_title": "Create Company Application",
+        "edit_title": "Edit Company Application",
+        "edit_description": "Edit the information of the selected company application"
+      },
+      "messages": {
+        "createSuccess": "Company application created successfully",
+        "updateSuccess": "Company application updated successfully",
+        "deleteSuccess": "Company application deleted successfully"
       }
     },
     "rolePermissions": {

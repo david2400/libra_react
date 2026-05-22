@@ -8,6 +8,7 @@ import {
   IApplication,
   getApplications,
 } from "@/server/domains/access-control/security/applications";
+import { getAllApplicationsServerAction } from "./actions";
 
 export async function generateMetadata({
   params,
@@ -28,13 +29,9 @@ export async function generateMetadata({
 
 const ApplicationsPage: NextPage = async () => {
   try {
-    const applicationsResponse = await getApplications();
+    const applicationsResponse = await getAllApplicationsServerAction();
 
-    const applicationData: IApplication[] = Array.isArray(applicationsResponse)
-      ? applicationsResponse
-      : applicationsResponse?.data || [];
-
-    return <ApplicationManager initialData={applicationData} />;
+    return <ApplicationManager initialData={applicationsResponse} />;
   } catch (error) {
     console.error("Error loading themes:", error);
     // Return empty data if API fails

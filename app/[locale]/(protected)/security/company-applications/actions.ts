@@ -1,9 +1,7 @@
 'use server';
 
+import { IApplication, getApplications } from "@/server/domains/access-control/security/applications";
 import { ICreateCompanyApplication, IUpdateCompanyApplication, createCompanyApplicationAction, deleteCompanyApplicationAction, updateCompanyApplicationAction } from "@/server/domains/access-control/security/company_applications";
-
-
-
 
 export async function createCompanyApplicationServerAction(payload: ICreateCompanyApplication) {
   const result = await createCompanyApplicationAction(payload);
@@ -33,4 +31,11 @@ export async function deleteCompanyApplicationServerAction(companyApplicationId:
   }
 
   return result.data;
+}
+
+
+export async function getAllCompaniesServerAction(): Promise<IApplication[]> {
+  const result = await getApplications();
+
+  return result.data ?? [];
 }

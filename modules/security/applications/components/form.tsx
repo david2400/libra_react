@@ -19,11 +19,12 @@ import {
 } from "../models/application.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import {
-  createApplicationAction,
-  updateApplicationAction,
-} from "../api/actions";
+
 import { useTranslations } from "next-intl";
+import {
+  createApplicationServerAction,
+  updateApplicationServerAction,
+} from "@/app/[locale]/(protected)/security/applications/actions";
 
 const FormBase = ({
   initialValues,
@@ -58,7 +59,7 @@ export const RegisterApplication = ({}: IFormAddProps = {}) => {
     values,
   ) => {
     try {
-      const result = await createApplicationAction(values);
+      const result = await createApplicationServerAction(values);
 
       Swal.fire({
         title: t("createSuccess"),
@@ -101,7 +102,10 @@ export const UpdateApplication = ({
   ) => {
     if (!values.id_application) return;
 
-    const result = await updateApplicationAction(values.id_application, values)
+    const result = await updateApplicationServerAction(
+      values.id_application,
+      values,
+    )
       .then((values) => {
         Swal.fire({
           title: t("updateSuccess"),

@@ -1,32 +1,13 @@
-// --- Company Applications Module -----------------------------------------------
+// --- Applications Management IModule Exports ---------------------------------------
 
-// Types
+// Export all types
 export * from './types';
 
-// Repository
-export { companyApplicationsRepository } from './repository';
+// Export all repositories
+export * from './repository';
 
-// Queries
-export {
-  getCompanyApplications,
-  getCompanyApplicationById,
-  getActiveCompanyApplications,
-  getApplicationsByCompany,
-  getActiveApplicationsByCompany,
-  getCompanyApplicationProfile,
-  getCompanyApplicationPortfolio,
-  getCompanyLicenseExpirations,
-  getApplicationUsageStats,
-  getCompanyApplicationHealth,
-} from './queries';
+// Export all queries
+export * from './queries';
 
-// Actions
-export {
-  createCompanyApplicationAction,
-  updateCompanyApplicationAction,
-  deleteCompanyApplicationAction,
-  activateLicenseAction,
-  deactivateLicenseAction,
-  assignApplicationToCompanyAction,
-  revokeApplicationFromCompanyAction,
-} from './actions';
+// Export all actions
+export * from './actions';

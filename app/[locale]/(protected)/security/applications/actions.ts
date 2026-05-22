@@ -4,8 +4,10 @@ import {
   createApplicationAction,
   updateApplicationAction,
   deleteApplicationAction,
+  getApplications,
 } from '@/server/domains/access-control/security/applications';
 import type {
+  IApplication,
   ICreateApplication,
   IUpdateApplication,
 } from '@/server/domains/access-control/security/applications';
@@ -38,4 +40,13 @@ export async function deleteApplicationServerAction(id: string | number) {
   }
 
   return result.data;
+}
+
+
+export async function getAllApplicationsServerAction(): Promise<IApplication[]> {
+  const result = await getApplications();
+
+  return Array.isArray(result)
+    ? result
+    : result?.data || [];
 }

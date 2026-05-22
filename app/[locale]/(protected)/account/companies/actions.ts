@@ -7,6 +7,8 @@ import {
   deleteCompanyAction,
   type ICreateCompany,
   type IUpdateCompany,
+  getCompanies,
+  ICompany,
 } from '@/server/domains/access-control/account/companies';
 
 export async function createCompanyServerAction(payload: ICreateCompany) {
@@ -37,4 +39,12 @@ export async function deleteCompanyServerAction(id: string | number) {
   }
 
   return result.data;
+}
+
+export async function getAllCompaniesServerAction(): Promise<ICompany[]> {
+  const result = await getCompanies();
+
+  return Array.isArray(result)
+    ? result
+    : result?.data || [];
 }

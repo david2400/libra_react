@@ -8,6 +8,7 @@ import {
   ICompany,
   getCompanies,
 } from "@/server/domains/access-control/account/companies";
+import { getAllCompaniesServerAction } from "./actions";
 
 export async function generateMetadata({
   params,
@@ -25,13 +26,9 @@ export async function generateMetadata({
 
 const CompaniesPage: NextPage = async () => {
   try {
-    const companiesResponse = await getCompanies();
+    const companiesResponse: ICompany[] = await getAllCompaniesServerAction();
 
-    const companiesData: ICompany[] = Array.isArray(companiesResponse)
-      ? companiesResponse
-      : companiesResponse?.data || [];
-
-    return <CompanyManager initialData={companiesData} />;
+    return <CompanyManager initialData={companiesResponse} />;
   } catch (error) {
     return <CompanyManager initialData={[]} />;
   }

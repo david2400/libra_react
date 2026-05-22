@@ -11,7 +11,12 @@ import { FormSelectField } from "@repo/ui/form";
 import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
 import { useState, useEffect, useMemo } from "react";
-import { getCompanyApplicationsAction } from "../actions/company-applications.action";
+import { ICompany } from "@/server/domains/access-control/account/companies";
+import {
+  getAllApplications,
+  getAllCompanyAction,
+} from "../actions/company-applications.action";
+import { IApplication } from "@/server/domains/access-control/security/applications";
 
 // Define types for mock data
 interface CompanyOption {
@@ -35,11 +40,16 @@ export const FormCompanyApplication = ({
   const tCommon = useTranslations("common");
   type CompanyApplicationInputs = z.infer<typeof validationSchema>;
 
-  // Mock data for companies - replace with actual API call
-  const [companies, setCompanies] = useState<CompanyOption[]>([]);
-  const [applications, setApplications] = useState<ApplicationOption[]>([]);
+  const [applicationsData, setApplications] = useState<{
+    data: IApplication[];
+    loading: boolean;
+    error: string | null;
+  }>({
+    data: [],
+    loading: false,
+    error: null,
+  });
 
-  // Estado optimizado con memoización
   const [companyData, setCompanyData] = useState<{
     data: ICompany[];
     loading: boolean;
@@ -54,81 +64,78 @@ export const FormCompanyApplication = ({
     try {
       setCompanyData((prev) => ({ ...prev, loading: true, error: null }));
 
-      const niveles = await getCompaniesServices();
+      const companies = await getAllCompanyAction();
 
       setCompanyData({
-        data: niveles,
+        data: companies,
         loading: false,
         error: null,
       });
     } catch (error) {
-      console.error("Error cargando niveles educativos:", error);
+      console.error("Error cargando companies educativos:", error);
       setCompanyData({
         data: [],
         loading: false,
-        error: "No se pudieron cargar los niveles educativos",
+        error: "No se pudieron cargar los companies educativos",
       });
     }
   };
 
-  useEffect(() => {
-    let isMounted = true;
-
-    cargarCompanys();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   // Memoizar opciones para evitar recálculos
-  const opcionesNiveles = useMemo(() => {
+  const opcionesCompany = useMemo(() => {
     return companyData.data
       .map((nivel) => ({
         id: nivel.id_company.toString(),
         value: nivel.id_company.toString(),
-        label: `${nivel.name} (${nivel.description})`,
+        label: `${nivel.name}`,
         disabled: false,
       }))
       .sort((a, b) => a.label.localeCompare(b.label)); // Ordenar alfabéticamente
   }, [companyData.data, initialValues?.id]);
 
-  // Load companies and applications data
+  const cargarApplications = async () => {
+    try {
+      setApplications((prev) => ({ ...prev, loading: true, error: null }));
+
+      const applications = await getAllApplications();
+      console.log("applications", applications);
+      setApplications({
+        data: applications,
+        loading: false,
+        error: null,
+      });
+    } catch (error) {
+      console.error("Error cargando applications educativos:", error);
+      setApplications({
+        data: [],
+        loading: false,
+        error: "No se pudieron cargar los applications educativos",
+      });
+    }
+  };
+
+  // Memoizar opciones para evitar recálculos
+  const opcionesApplications = useMemo(() => {
+    return applicationsData.data
+      .map((nivel) => ({
+        id: nivel.id_application.toString(),
+        value: nivel.id_application.toString(),
+        label: `${nivel.name}`,
+        disabled: false,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label)); // Ordenar alfabéticamente
+  }, [applicationsData.data, initialValues?.id]);
+
   useEffect(() => {
-    // Mock companies data
-    const mockCompanies = [
-      { id: 1, name: "Empresa ABC", description: "Descripción de Empresa ABC" },
-      { id: 2, name: "Empresa XYZ", description: "Descripción de Empresa XYZ" },
-      { id: 3, name: "Empresa 123", description: "Descripción de Empresa 123" },
-    ];
-    setCompanies(mockCompanies);
+    let isMounted = true;
 
-    // Mock applications data
-    const mockApplications = [
-      {
-        id: 1,
-        name: "Sistema de Gestión",
-        description: "Aplicación de gestión",
-      },
-      {
-        id: 2,
-        name: "Portal de Clientes",
-        description: "Portal para clientes",
-      },
-      { id: 3, name: "Sistema de Ventas", description: "Aplicación de ventas" },
-    ];
-    setApplications(mockApplications);
+    cargarCompanys();
+    cargarApplications();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
-
-  const companyOptions = companies.map((company) => ({
-    value: company.id.toString(),
-    label: company.name,
-  }));
-
-  const applicationOptions = applications.map((app) => ({
-    value: app.id.toString(),
-    label: app.name,
-  }));
 
   const subscriptionTypeOptions = [
     { value: "basic", label: "Básico" },
@@ -157,7 +164,7 @@ export const FormCompanyApplication = ({
           <FormSelectField
             controller={{ control, name: "company_id" }}
             label={t("fields.company_id")}
-            data={companyOptions}
+            data={opcionesCompany}
             placeholder='Seleccionar empresa...'
             error={errors.company_id?.message}
             className='w-full col-span-12 md:col-span-6'
@@ -167,7 +174,7 @@ export const FormCompanyApplication = ({
           <FormSelectField
             controller={{ control, name: "application_id" }}
             label={t("fields.application_id")}
-            data={applicationOptions}
+            data={opcionesApplications}
             placeholder='Seleccionar aplicación...'
             error={errors.application_id?.message}
             className='w-full col-span-12 md:col-span-6'

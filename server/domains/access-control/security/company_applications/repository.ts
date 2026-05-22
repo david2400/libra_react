@@ -4,8 +4,8 @@ import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type {
   ICompanyApplication,
-  ICreateCompanyApplicationPayload,
-  IUpdateCompanyApplicationPayload,
+  ICreateCompanyApplication,
+  IUpdateCompanyApplication,
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
@@ -28,13 +28,13 @@ export const companyApplicationsRepository = {
     }),
 
   // Create company application
-  create: (payload: ICreateCompanyApplicationPayload) =>
+  create: (payload: ICreateCompanyApplication) =>
     serverFetch.post<ICompanyApplication>('/api/access_control/company-applications', payload, {
       revalidate: false,
     }),
 
   // Update company application
-  update: (id: string | number, payload: IUpdateCompanyApplicationPayload) =>
+  update: (id: string | number, payload: IUpdateCompanyApplication) =>
     serverFetch.put<ICompanyApplication>(`/api/access_control/company-applications/${id}`, payload, {
       revalidate: false,
     }),

@@ -1,26 +1,25 @@
-'use server';
+import { getAllCompaniesServerAction } from "@/app/[locale]/(protected)/account/companies/actions";
+import { getAllApplicationsServerAction } from "@/app/[locale]/(protected)/security/applications/actions";
 
-import { getCompanyApplications } from "@/server/domains/access-control/security/company_applications";
-import { ICompanyApplication } from "@/server/domains/access-control/security/company_applications/types";
-
-
-export async function getCompanyApplicationsAction(): Promise<ICompanyApplication[]> {
+export async function getAllCompanyAction() {
     try {
-        const response = await getCompanyApplications();
-        return Array.isArray(response) ? response : response?.data || [];
+        const company = await getAllCompaniesServerAction();
+
+        return company;
     } catch (error) {
-        console.error('Error cargando niveles educativos:', error);
+        console.error("Failed to fetch company:", error);
         return [];
     }
 }
 
 
-export async function getCompanyAction(): Promise<ICompanyApplication[]> {
+export async function getAllApplications() {
     try {
-        const response = await getCompanyApplications();
-        return Array.isArray(response) ? response : response?.data || [];
+        const company = await getAllApplicationsServerAction();
+
+        return company;
     } catch (error) {
-        console.error('Error cargando niveles educativos:', error);
+        console.error("Failed to fetch company:", error);
         return [];
     }
 }
