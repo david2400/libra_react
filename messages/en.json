@@ -2,7 +2,8 @@
   "actions": {
     "saveRole": "Create Role",
     "saveApplication": "Create Application",
-    "saveCompanyApplication": "Create Company Application"
+    "saveCompanyApplication": "Create Company Application",
+    "savePermission": "Create Permission"
   },
   "common": {
     "welcome": "Welcome",
@@ -204,11 +205,14 @@
       "fields": {
         "name": "Name",
         "description": "Description",
-        "permissions": "Permissions"
+        "permissions": "Permissions",
+        "manage_users": "Manage Users",
+        "requires_approval": "Requires Approval"
       },
       "modal": {
         "create_title": "Create Role",
-        "edit_title": "Edit Role"
+        "edit_title": "Edit Role",
+        "edit_description": "Edit the information of the selected role"
       },
       "messages": {
         "createSuccess": "Role created successfully",
@@ -227,11 +231,26 @@
         "code": "Code",
         "description": "Description",
         "module": "Module",
-        "action": "Action"
+        "action": "Action",
+        "module_aplication_id": "Module Application",
+        "permission_type": "Permission Type",
+        "resource": "Resource",
+        "application_id": "Application",
+        "module_id": "Module",
+        "api_type": "API Type",
+        "http_method": "HTTP Method",
+        "endpoint_path": "Endpoint Path",
+        "ui_component": "UI Component",
+        "feature_flag": "Feature Flag",
+        "priority": "Priority",
+        "cache_ttl": "Cache TTL",
+        "is_sensitive": "Sensitive",
+        "metadata": "Metadata"
       },
       "modal": {
         "create_title": "Create Permission",
-        "edit_title": "Edit Permission"
+        "edit_title": "Edit Permission",
+        "edit_description": "Edit the information of the selected permission"
       },
       "messages": {
         "createSuccess": "Permission created successfully",

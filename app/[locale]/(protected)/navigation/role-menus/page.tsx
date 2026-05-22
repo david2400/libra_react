@@ -3,11 +3,11 @@
 import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { RoleMenuManager } from "@/modules/navigation/role-menus";
 import {
   IRoleMenu,
   getRoleMenus,
 } from "@/server/domains/access-control/navigation/role_menus";
+import { RoleMenuManager } from "@/modules/navigation/role-menus/components/role-menu-manager";
 
 export async function generateMetadata({
   params,

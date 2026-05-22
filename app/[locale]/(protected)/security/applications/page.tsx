@@ -3,12 +3,9 @@
 import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { ApplicationManager } from "@/modules/security/applications";
-import {
-  IApplication,
-  getApplications,
-} from "@/server/domains/access-control/security/applications";
+
 import { getAllApplicationsServerAction } from "./actions";
+import { ApplicationManager } from "@/modules/security/applications/components/application-manager";
 
 export async function generateMetadata({
   params,

@@ -2,11 +2,11 @@
 
 import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
-import { ModuleApplicationManager } from "@/modules/security/modules-applications";
 import {
   IModuleApplication,
   getModuleApplications,
 } from "@/server/domains/access-control/security/modules_applications";
+import { ModuleApplicationManager } from "@/modules/security/modules-applications/components/module-application-manager";
 
 export async function generateMetadata({
   params,

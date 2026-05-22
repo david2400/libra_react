@@ -34,7 +34,7 @@ export const FormRole = ({
         <FormField
           controller={{ control, name: "name" }}
           label={t("fields.name")}
-          className='col-span-12 md:col-span-6'
+          className='col-span-12'
         />
 
         <FormField

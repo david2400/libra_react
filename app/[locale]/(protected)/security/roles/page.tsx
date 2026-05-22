@@ -3,12 +3,12 @@
 import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { RoleManager } from "@/modules/security/roles";
 
 import {
   IRole,
   getRoles,
 } from "@/server/domains/access-control/security/roles";
+import { RoleManager } from "@/modules/security/roles/components/role-manager";
 
 export async function generateMetadata({
   params,
