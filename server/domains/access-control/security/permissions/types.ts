@@ -6,28 +6,7 @@ import { IRolePermission } from '../role_permissions';
 
 // --- IPermission Types -------------------------------------------------------------
 
-export interface IPermission extends IAuditInfo {
-  id_permission: number;
-  name: string;
-  description?: string;
-  permission_type: 'API' | 'APPLICATION' | 'UI' | 'SYSTEM';
-  resource: string;
-  action: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' | 'EXECUTE' | 'VIEW' | 'MANAGE' | 'ADMIN' | 'APPROVE' | 'REJECT';
-  application_id?: number;
-  application?: IApplication;
-  module_id?: number;
-  module?: IModuleApplication;
-  api_type?: 'REST' | 'GraphQL' | 'gRPC' | 'SOAP' | 'WebSockets' | 'RPC (general)';
-  http_method?: string;
-  endpoint_path?: string;
-  ui_component?: string;
-  feature_flag?: string;
-  priority?: number;
-  cache_ttl?: number;
-  is_sensitive?: boolean;
-  metadata?: string;
-  role_permission?: IRolePermission[];
-}
+
 
 export interface ICreatePermission {
   name: string;
@@ -48,6 +27,13 @@ export interface ICreatePermission {
   metadata?: string;
 }
 
-export interface IUpdatePermission {
+export interface IUpdatePermission extends ICreatePermission {
   id_permission: number;
+}
+
+
+export interface IPermission extends IAuditInfo, IUpdatePermission {
+  application?: IApplication;
+  module?: IModuleApplication;
+  role_permission?: IRolePermission[];
 }

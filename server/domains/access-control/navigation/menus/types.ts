@@ -3,26 +3,6 @@ import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/ty
 import { IPermission } from '../../security/permissions';
 import { IApplication } from '../../security/applications';
 
-// --- IMenu Types ----------------------------------------------------------------
-
-export interface IMenu extends IAuditInfo {
-  id_menu: number;
-  application_id: number;
-  application?: IApplication;
-  name: string;
-  protocol?: string;
-  subdomain?: string;
-  url?: string;
-  port?: number;
-  path?: string;
-  sort_order?: number;
-  parent_id?: number;
-  parent?: IMenu;
-  children?: IMenu[];
-  icon?: string;
-  visible: boolean;
-} 
-
 export interface ICreateMenu {
   application_id: number;
   name: string;
@@ -37,18 +17,14 @@ export interface ICreateMenu {
   visible: boolean;
 }
 
-export interface IUpdateMenu {
-  application_id?: number;
-  name?: string;
-  protocol?: string;
-  subdomain?: string;
-  url?: string;
-  port?: number;
-  path?: string;
-  sort_order?: number;
-  parent_id?: number;
-  icon?: string;
-  visible?: boolean;
+export interface IUpdateMenu extends ICreateMenu {
+  id_menu: number;
+}
+
+export interface IMenu extends IAuditInfo, IUpdateMenu {
+  parent?: IMenu;
+  children?: IMenu[];
+  application?: IApplication;
 }
 
 export interface IMenuHierarchy {

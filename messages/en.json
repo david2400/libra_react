@@ -398,7 +398,8 @@
       },
       "modal": {
         "create_title": "Create Menu",
-        "edit_title": "Edit Menu"
+        "edit_title": "Edit Menu",
+        "edit_description": "Edit the information of the selected menu"
       },
       "messages": {
         "createSuccess": "Menu created successfully",
