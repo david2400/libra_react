@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@repo/ui/modals/scenes";
 import { Buttons } from "@repo/ui/buttons/scenes";
@@ -302,13 +302,54 @@ interface IModuleApplicationManagerProps {
   initialData: IModuleApplication[];
 }
 
+// Build hierarchical tree from flat list
+function buildHierarchy(flatList: IModuleApplication[]): IModuleApplication[] {
+  const map = new Map<number, IModuleApplication>();
+  const roots: IModuleApplication[] = [];
+
+  // First pass: create a map of all items with children array
+  flatList.forEach((item) => {
+    map.set(item.id_modules_application!, {
+      ...item,
+      parent_module_application: [], // Initialize children array
+    });
+  });
+
+  // Second pass: build the tree structure
+  flatList.forEach((item) => {
+    const node = map.get(item.id_modules_application!);
+    if (!node) return;
+
+    if (item.parent_module_application_id === null || item.parent_module_application_id === undefined) {
+      // Root level item
+      roots.push(node);
+    } else {
+      // Child item - add to parent's children array
+      const parent = map.get(item.parent_module_application_id);
+      if (parent) {
+        if (!Array.isArray(parent.parent_module_application)) {
+          parent.parent_module_application = [];
+        }
+        parent.parent_module_application.push(node);
+      } else {
+        // Parent not found, treat as root
+        roots.push(node);
+      }
+    }
+  });
+
+  return roots;
+}
+
 export const ModuleApplicationManager = ({
   initialData,
 }: IModuleApplicationManagerProps) => {
   const t = useTranslations("security.modulesApplications");
   const tActions = useTranslations("actions");
 
-  const [modules, setModules] = useState<IModuleApplication[]>(initialData);
+  // Build hierarchical structure from flat list
+  const hierarchicalData = useMemo(() => buildHierarchy(initialData), [initialData]);
+  const [modules, setModules] = useState<IModuleApplication[]>(hierarchicalData);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedIds, setExpandedIds] = useState<Set<number>>(() => {
     // Initially expand first 2 levels
@@ -323,7 +364,7 @@ export const ModuleApplicationManager = ({
         }
       });
     };
-    collectIds(initialData);
+    collectIds(hierarchicalData);
     return ids;
   });
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
@@ -331,6 +372,11 @@ export const ModuleApplicationManager = ({
   const [editingModuleApplication, setEditingModuleApplication] =
     useState<IModuleApplication | null>(null);
   const [isCompactMode, setIsCompactMode] = useState(false);
+
+  // Update modules when hierarchicalData changes
+  useEffect(() => {
+    setModules(hierarchicalData);
+  }, [hierarchicalData]);
 
   const metrics = useMemo(() => {
     const flattenModules = (items: IModuleApplication[]): IModuleApplication[] => {
