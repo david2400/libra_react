@@ -448,7 +448,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
             </p>
           </div>
           <div className='flex items-center gap-2'>
-            <Button variant='outline' size='sm' onClick={handleCreate}>
+            <Button variant='outline' size='sm' onClick={handleModalClose}>
               <BiPlus className='mr-2 h-4 w-4' />
               New Permission
             </Button>
@@ -481,7 +481,9 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                 </SelectTrigger>
                 <SelectContent>
                   {mockApplications.map((app) => (
-                    <SelectItem key={app.id_application} value={String(app.id_application)}>
+                    <SelectItem
+                      key={app.id_application}
+                      value={String(app.id_application)}>
                       <span className='flex items-center gap-2'>
                         {app.name}
                       </span>
@@ -648,7 +650,8 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                           (p) => p.permission_type === type,
                         ).length;
                         if (count === 0) return null;
-                        const config = PERMISSION_TYPE_CONFIG[type as PermissionType];
+                        const config =
+                          PERMISSION_TYPE_CONFIG[type as PermissionType];
                         return (
                           <Badge
                             key={type}
@@ -666,7 +669,9 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                     {filteredPermissions.length > 0 ? (
                       filteredPermissions.map((permission) => {
                         const typeConfig =
-                          PERMISSION_TYPE_CONFIG[permission.permission_type as PermissionType];
+                          PERMISSION_TYPE_CONFIG[
+                            permission.permission_type as PermissionType
+                          ];
                         const TypeIcon = typeConfig.icon;
 
                         return (
@@ -674,7 +679,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                             key={permission.id_permission}
                             className={cn(
                               "flex items-center justify-between p-4 transition-colors hover:bg-secondary/30",
-                              !permission.deleted && "opacity-50",
+                              permission.deleted && "opacity-50",
                             )}>
                             <div className='flex items-center gap-4 flex-1 min-w-0'>
                               <div

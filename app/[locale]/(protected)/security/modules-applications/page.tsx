@@ -29,13 +29,14 @@ const ModuleApplicationsPage: NextPage = async () => {
   try {
     const modulesApplicationResponse = await getModuleApplications();
 
-    // Extract the data array from the paginated response
+    // Extract the content array from the Spring Boot paginated response
     const modulesApplicationData: IModuleApplication[] = Array.isArray(
       modulesApplicationResponse,
     )
       ? modulesApplicationResponse
-      : modulesApplicationResponse?.data || [];
+      : modulesApplicationResponse?.content || [];
 
+    console.log("modulesApplicationData", modulesApplicationData);
     return <ModuleApplicationManager initialData={modulesApplicationData} />;
   } catch (error) {
     console.error("Error loading themes:", error);

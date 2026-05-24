@@ -1,18 +1,27 @@
-import { useTranslations } from 'next-intl';
 import { z } from 'zod';
+import { useValidationMessages } from '@/lib/i18n';
 
 export const validationModuleApplication = () => {
-  const intl = useTranslations('Form');
+  const v = useValidationMessages();
 
   return z.object({
-    moduleId: z.coerce
-      .number({ invalid_type_error: intl('requiredField') })
+    name: z.string().min(1, { message: v.required }),
+    description: z.string().optional(),
+    application_id: z.coerce
+      .number({ invalid_type_error: v.invalidFormat })
       .int()
-      .positive({ message: intl('requiredField') }),
-    applicationId: z.coerce
-      .number({ invalid_type_error: intl('requiredField') })
+      .positive({ message: v.required }),
+    parent_module_application_id: z.coerce
+      .number({ invalid_type_error: v.invalidFormat })
       .int()
-      .positive({ message: intl('requiredField') }),
-    isActive: z.boolean().optional(),
+      .optional()
+      .nullable(),
+    publication_date: z.coerce.date().optional().nullable(),
+    level: z.coerce
+      .number({ invalid_type_error: v.invalidFormat })
+      .int()
+      .optional()
+      .nullable(),
+    path: z.string().optional().nullable(),
   });
 };

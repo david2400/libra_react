@@ -1,4 +1,35 @@
 {
+  "AccessControl": {
+    "actions": {
+      "saveRole": "Crear Rol",
+      "saveApplication": "Crear Aplicación",
+      "saveCompany": "Crear Empresa",
+      "saveUser": "Crear Usuario",
+      "saveProfile": "Crear Perfil",
+      "saveClient": "Crear Cliente",
+      "saveMenu": "Crear Menú",
+      "saveRoleMenu": "Asignar Menú a Rol",
+      "saveMenuPermission": "Asignar Permiso a Menú",
+      "savePermission": "Crear Permiso",
+      "saveRolePermission": "Asignar Permiso a Rol",
+      "savePolicy": "Crear Política",
+      "saveModuleApplication": "Crear Módulo de Aplicación",
+      "saveCompanyApplication": "Crear Aplicación de Empresa"
+    },
+    "security": {
+      "modulesApplications": {
+        "fields": {
+          "name": "Nombre",
+          "description": "Descripción",
+          "applicationId": "Aplicación",
+          "parent_module_application_id": "Módulo Padre",
+          "publication_date": "Fecha de Publicación",
+          "level": "Nivel",
+          "path": "Ruta"
+        }
+      }
+    }
+  },
   "actions": {
     "saveRole": "Crear Rol",
     "saveApplication": "Crear Aplicación",
@@ -43,6 +74,22 @@
     "previous": "Anterior",
     "submit": "Enviar",
     "reset": "Restablecer"
+  },
+  "Form": {
+    "required": "Este campo es requerido",
+    "requiredField": "Campo requerido",
+    "invalidEmail": "Correo electrónico inválido",
+    "invalidPhone": "Número de teléfono inválido",
+    "invalidUrl": "URL inválida",
+    "minLength": "Debe tener al menos {min} caracteres",
+    "maxLength": "Debe tener máximo {max} caracteres",
+    "min": "El valor mínimo es {min}",
+    "max": "El valor máximo es {max}",
+    "mustMatch": "Los campos deben coincidir",
+    "alphanumeric": "Solo se permiten caracteres alfanuméricos",
+    "numeric": "Solo se permiten números",
+    "positiveNumber": "Debe ser un número positivo",
+    "invalidFormat": "Formato inválido"
   },
   "validation": {
     "required": "Este campo es requerido",
@@ -339,6 +386,33 @@
         "code": "Código",
         "description": "Descripción",
         "application": "Aplicación"
+      },
+      "modal": {
+        "create_title": "Crear Módulo",
+        "edit_title": "Editar Módulo"
+      },
+      "messages": {
+        "createSuccess": "Módulo creado exitosamente",
+        "updateSuccess": "Módulo actualizado exitosamente",
+        "deleteSuccess": "Módulo eliminado exitosamente"
+      }
+    },
+    "modulesApplications": {
+      "title": "Módulos de Aplicación",
+      "description": "Gestión de Módulos",
+      "subtitle": "Administra los módulos de las aplicaciones",
+      "createButton": "Crear Módulo",
+      "editButton": "Editar Módulo",
+      "fields": {
+        "name": "Nombre",
+        "code": "Código",
+        "description": "Descripción",
+        "application": "Aplicación",
+        "application_id": "Aplicación",
+        "parent_module_application_id": "Módulo Padre",
+        "publication_date": "Fecha de Publicación",
+        "level": "Nivel",
+        "path": "Ruta"
       },
       "modal": {
         "create_title": "Crear Módulo",

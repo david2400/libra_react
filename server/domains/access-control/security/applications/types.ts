@@ -2,8 +2,8 @@ import 'server-only';
 import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { ICompany } from '../../account/companies';
 import { IPermission } from '../permissions';
-import { IModule, IModuleApplication } from '../modules_applications';
 import { IMenu } from '../../navigation/menus';
+import { IModuleApplication } from '../modules_applications';
 
 // --- IApplication Types ---------------------------------------------------------
 
@@ -39,7 +39,7 @@ export interface IApplicationModule {
   module_id: string | number;
   is_active?: boolean;
   application?: IApplication;
-  module?: IModule;
+  module?: IModuleApplication;
 }
 
 export interface ICreateApplicationModulePayload {
@@ -117,7 +117,7 @@ export interface IApplicationStats {
 
 export interface IApplicationOverview {
   application: IApplication;
-  modules: IModule[];
+  modules: IModuleApplication[];
   health: IApplicationHealth;
   stats: IApplicationStats;
   config_count: number;

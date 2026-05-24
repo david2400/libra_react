@@ -1,9 +1,32 @@
 {
+  "AccessControl": {
+    "actions": {
+      "saveRole": "Create Role",
+      "saveApplication": "Create Application",
+      "saveCompanyApplication": "Create Company Application",
+      "savePermission": "Create Permission",
+      "saveModuleApplication": "Create Module"
+    },
+    "security": {
+      "modulesApplications": {
+        "fields": {
+          "name": "Name",
+          "description": "Description",
+          "applicationId": "Application",
+          "parent_module_application_id": "Parent Module",
+          "publication_date": "Publication Date",
+          "level": "Level",
+          "path": "Path"
+        }
+      }
+    }
+  },
   "actions": {
     "saveRole": "Create Role",
     "saveApplication": "Create Application",
     "saveCompanyApplication": "Create Company Application",
-    "savePermission": "Create Permission"
+    "savePermission": "Create Permission",
+    "saveModuleApplication": "Create Module"
   },
   "common": {
     "welcome": "Welcome",
@@ -31,6 +54,22 @@
     "previous": "Previous",
     "submit": "Submit",
     "reset": "Reset"
+  },
+  "Form": {
+    "required": "This field is required",
+    "requiredField": "Required field",
+    "invalidEmail": "Invalid email address",
+    "invalidPhone": "Invalid phone number",
+    "invalidUrl": "Invalid URL",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must be at most {max} characters",
+    "min": "Minimum value is {min}",
+    "max": "Maximum value is {max}",
+    "mustMatch": "Fields must match",
+    "alphanumeric": "Only alphanumeric characters allowed",
+    "numeric": "Only numbers allowed",
+    "positiveNumber": "Must be a positive number",
+    "invalidFormat": "Invalid format"
   },
   "validation": {
     "required": "This field is required",
@@ -302,6 +341,33 @@
         "code": "Code",
         "description": "Description",
         "application": "Application"
+      },
+      "modal": {
+        "create_title": "Create Module",
+        "edit_title": "Edit Module"
+      },
+      "messages": {
+        "createSuccess": "Module created successfully",
+        "updateSuccess": "Module updated successfully",
+        "deleteSuccess": "Module deleted successfully"
+      }
+    },
+    "modulesApplications": {
+      "title": "Application Modules",
+      "description": "Module Management",
+      "subtitle": "Manage application modules",
+      "createButton": "Create Module",
+      "editButton": "Edit Module",
+      "fields": {
+        "name": "Name",
+        "code": "Code",
+        "description": "Description",
+        "application": "Application",
+        "application_id": "Application",
+        "parent_module_application_id": "Parent Module",
+        "publication_date": "Publication Date",
+        "level": "Level",
+        "path": "Path"
       },
       "modal": {
         "create_title": "Create Module",

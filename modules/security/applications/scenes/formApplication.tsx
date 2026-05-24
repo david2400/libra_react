@@ -4,20 +4,11 @@
 
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { useState, useEffect, useMemo } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { FormField } from "@repo/ui/form/scenes";
 import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
-import { FormSelectField } from "@repo/ui/form";
-
-// Define the interface for educational levels
-interface INivelEducativo {
-  id: number;
-  nombre: string;
-  codigo: string;
-}
 
 export const FormApplication = ({
   initialValues,
@@ -58,8 +49,6 @@ export const FormApplication = ({
           type='date'
           className='col-span-12 md:col-span-6'
         />
-
-   
 
         {/* <FormSelectField
           controller={{ control, name: "company_id" }}

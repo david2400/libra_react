@@ -1,7 +1,6 @@
 import type { modulesApplications } from '@/server/domains/access-control/security';
 
-export type IModuleApplicationCreateRequest = modulesApplications.ICreateModuleApplicationPayload;
-export type IModuleApplicationUpdateRequest = modulesApplications.IUpdateModuleApplicationPayload & { moduleId: string | number; applicationId: string | number };
+export type IModuleApplicationCreateRequest = modulesApplications.ICreateModuleApplication;
+export type IModuleApplicationUpdateRequest = modulesApplications.IUpdateModuleApplication;
 export type IModuleApplication = modulesApplications.IModuleApplication;
-export type IModule = modulesApplications.IModule;
-export type IApplication = modulesApplications.IApplication;
+export type IModule = modulesApplications.IModuleApplication;

@@ -13,11 +13,39 @@ export interface IApiResponse<T> {
   status: number;
 }
 
-export interface IPaginatedResponse<T> {
-  data: T[];
-  meta: IPaginationMeta;
+// Spring Boot Page response structure
+export interface IPageable {
+  page_number: number;
+  page_size: number;
+  sort: {
+    empty: boolean;
+    unsorted: boolean;
+    sorted: boolean;
+  };
+  offset: number;
+  paged: boolean;
+  unpaged: boolean;
 }
 
+export interface IPaginatedResponse<T> {
+  content: T[];
+  pageable: IPageable;
+  last: boolean;
+  total_elements: number;
+  total_pages: number;
+  size: number;
+  number: number;
+  sort: {
+    empty: boolean;
+    unsorted: boolean;
+    sorted: boolean;
+  };
+  first: boolean;
+  number_of_elements: number;
+  empty: boolean;
+}
+
+// Legacy interface for backward compatibility
 export interface IPaginationMeta {
   page: number;
   per_page: number;
@@ -25,6 +53,24 @@ export interface IPaginationMeta {
   total_pages: number;
   has_next: boolean;
   has_prev: boolean;
+}
+
+// Helper function to convert Spring Boot Page to legacy format
+export function convertToLegacyPagination<T>(springPage: IPaginatedResponse<T>): {
+  data: T[];
+  meta: IPaginationMeta;
+} {
+  return {
+    data: springPage.content,
+    meta: {
+      page: springPage.number + 1, // Spring Boot uses 0-based indexing
+      per_page: springPage.size,
+      total: springPage.total_elements,
+      total_pages: springPage.total_pages,
+      has_next: !springPage.last,
+      has_prev: !springPage.first,
+    },
+  };
 }
 
 // ─── Query params ───────────────────────────────────────────────────────────

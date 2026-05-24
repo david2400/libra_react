@@ -3,63 +3,35 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import { IApplication } from '@/modules/security/applications/models/application.interface';
 import { IAuditInfo } from '@/server/lib/types';
 
-// --- IModule Types --------------------------------------------------------------
-
-export interface IModule extends IAuditInfo {
-  id: string | number;
+// --- IModuleApplication Types --------------------------------------------------------------
+export interface ICreateModuleApplication {
   name: string;
   description?: string;
-  version?: string;
-  status?: 'active' | 'inactive' | 'deprecated';
+  application_id: number;
+  parent_module_application_id?: number;
+  publication_date?: Date;
+  level?: number;
+  path?: string;
 }
 
-export interface ICreateModule {
-  name: string;
-  description?: string;
-  version?: string;
-  status?: 'active' | 'inactive' | 'deprecated';
+export interface IUpdateModuleApplication extends ICreateModuleApplication {
+  id_modules_application: number;
 }
 
-export interface IUpdateModule {
-  name?: string;
-  description?: string;
-  version?: string;
-  status?: 'active' | 'inactive' | 'deprecated';
-  is_active?: boolean;
+export interface IModuleApplication extends IAuditInfo, IUpdateModuleApplication {
+  parent_module_application: IModuleApplication[];
+  application: IApplication;
 }
 
-export interface IModuleApplication {
-  module_id: string | number;
-  application_id: string | number;
-  is_active?: boolean;
-  priority?: number;
-  module?: IModule;
-  application?: IApplication;
-  created_at?: string;
-  updated_at?: string;
-}
 
-export interface ICreateModuleApplicationPayload {
-  module_id: string | number;
-  application_id: string | number;
-  is_active?: boolean;
-  priority?: number;
-}
-
-export interface IUpdateModuleApplicationPayload {
-  is_active?: boolean;
-  priority?: number;
-}
-
-// --- IModule Dependencies Types ------------------------------------------------
 
 export interface IModuleDependency {
   module_id: string | number;
   depends_on_module_id: string | number;
   version?: string;
   is_required: boolean;
-  module?: IModule;
-  depends_on_module?: IModule;
+  module?: IModuleApplication;
+  depends_on_module?: IModuleApplication;
 }
 
 export interface ICreateModuleDependencyPayload {
@@ -74,7 +46,7 @@ export interface IUpdateModuleDependencyPayload {
   is_required?: boolean;
 }
 
-// --- IModule Configuration Types -----------------------------------------------
+// --- IModuleApplication Configuration Types -----------------------------------------------
 
 export interface IModuleConfig {
   module_id: string | number;
@@ -100,7 +72,7 @@ export interface IUpdateModuleConfigPayload {
   is_encrypted?: boolean;
 }
 
-// --- IModule Statistics Types --------------------------------------------------
+// --- IModuleApplication Statistics Types --------------------------------------------------
 
 export interface IModuleStats {
   module_id: string | number;
@@ -113,7 +85,7 @@ export interface IModuleStats {
 }
 
 export interface IModuleOverview {
-  module: IModule;
+  module: IModuleApplication;
   applications: IApplication[];
   dependencies: IModuleDependency[];
   stats: IModuleStats;
