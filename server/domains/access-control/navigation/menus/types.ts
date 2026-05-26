@@ -6,14 +6,11 @@ import { IApplication } from '../../security/applications';
 export interface ICreateMenu {
   application_id: number;
   name: string;
-  protocol?: string;
-  subdomain?: string;
-  url?: string;
-  port?: number;
-  path?: string;
-  sort_order?: number;
-  parent_id?: number;
-  icon?: string;
+  description?: string;
+  path: string;
+  order: number;
+  parent_menu_id: number;
+  icon: string;
   visible: boolean;
 }
 
@@ -22,7 +19,7 @@ export interface IUpdateMenu extends ICreateMenu {
 }
 
 export interface IMenu extends IAuditInfo, IUpdateMenu {
-  parent?: IMenu;
+  parent_menu?: IMenu;
   children?: IMenu[];
   application?: IApplication;
 }

@@ -34,7 +34,7 @@ const MenuPermissionsPage: NextPage = async () => {
       menuPermissionResponse,
     )
       ? menuPermissionResponse
-      : menuPermissionResponse?.data || [];
+      : menuPermissionResponse?.content || [];
 
     return <MenuPermissionManager initialData={menuPermissions} />;
   } catch (error) {

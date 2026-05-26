@@ -23,9 +23,7 @@ import { CSS } from "@dnd-kit/utilities";
 
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
-import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
-import { Buttons } from "@repo/ui/buttons/scenes";
 import { RegisterMenu, UpdateMenu } from "./form";
 import {
   HiPlus,
@@ -41,7 +39,6 @@ import {
   HiChevronRight as HiChevronRightIcon,
 } from "react-icons/hi";
 import { LuMaximize2, LuMinimize2, LuGripVertical } from "react-icons/lu";
-import { DataTable } from "@repo/ui/table/scenes";
 import { IMenu, IMenuWithDepth } from "../models/menu.interface";
 import { Button } from "@repo/ui/buttons/scenes/button";
 import {
@@ -65,6 +62,7 @@ import {
   SelectValue,
 } from "@repo/ui/inputs/scenes/select";
 import { mockMenus, mockApplications, mockModules } from "../lib/mock-data";
+import { IApplication } from "@/server/domains/access-control/security/applications";
 
 // type IconName = keyof typeof LucideIcons;
 
@@ -78,13 +76,10 @@ import { mockMenus, mockApplications, mockModules } from "../lib/mock-data";
 const emptyFormData: ICreateMenu = {
   application_id: 1,
   name: "",
-  protocol: "https",
-  subdomain: "",
-  url: "",
-  port: undefined,
+  description: "",
   path: "",
-  sort_order: 0,
-  parent_id: undefined,
+  order: 0,
+  parent_menu_id: 0,
   icon: "LayoutDashboard",
   visible: true,
 };
@@ -145,8 +140,8 @@ function getMenuBreadcrumb(
     return undefined;
   };
 
-  while (current.parent_id) {
-    const parent = findParent(current.parent_id, allMenus);
+  while (current.parent_menu_id) {
+    const parent = findParent(current.parent_menu_id, allMenus);
     if (parent) {
       parts.unshift(parent.name);
       current = parent;
@@ -423,14 +418,19 @@ function SortableMenuItem({
 
 interface IMenuManagerProps {
   initialData: IMenu[];
+  initialApplications: IApplication[];
 }
 
-export const MenuManager = ({ initialData }: IMenuManagerProps) => {
+export const MenuManager = ({
+  initialData,
+  initialApplications,
+}: IMenuManagerProps) => {
   const t = useTranslations("navigation.menus");
   const tOptions = useTranslations("common");
   const tActions = useTranslations("common");
 
-  const [menus, setMenus] = useState<IMenu[]>(mockMenus);
+  const [menus, setMenus] = useState<IMenu[]>(initialData);
+  // const [menus, setMenus] = useState<IMenu[]>(mockMenus);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedIds, setExpandedIds] = useState<Set<number>>(() => {
     // Initially expand first 2 levels
@@ -443,7 +443,7 @@ export const MenuManager = ({ initialData }: IMenuManagerProps) => {
         }
       });
     };
-    collectIds(mockMenus);
+    collectIds(menus);
     return ids;
   });
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
@@ -513,7 +513,10 @@ export const MenuManager = ({ initialData }: IMenuManagerProps) => {
             ? filterMenus(item.children)
             : undefined;
 
-          if (matchesSearch || (filteredChildren && filteredChildren.length > 0)) {
+          if (
+            matchesSearch ||
+            (filteredChildren && filteredChildren.length > 0)
+          ) {
             return { ...item, children: filteredChildren } as IMenu;
           }
           return null;
@@ -589,13 +592,15 @@ export const MenuManager = ({ initialData }: IMenuManagerProps) => {
     setFormData({
       application_id: menu.application_id,
       name: menu.name,
-      protocol: menu.protocol || "https",
-      subdomain: menu.subdomain || "",
-      url: menu.url || "",
-      port: menu.port,
+      description: menu.description,
+      // protocol: menu.protocol || "https",
+      // subdomain: menu.subdomain || "",
+      // url: menu.url || "",
+      // port: menu.port,
       path: menu.path || "",
-      sort_order: menu.sort_order || 0,
-      parent_id: menu.parent_id,
+      order: menu.order,
+      // sort_order: menu.sort_order || 0,
+      parent_menu_id: menu.parent_menu_id,
       icon: menu.icon || "LayoutDashboard",
       visible: menu.visible,
     });
@@ -664,10 +669,10 @@ export const MenuManager = ({ initialData }: IMenuManagerProps) => {
         deleted: false,
       };
 
-      if (formData.parent_id) {
+      if (formData.parent_menu_id) {
         const addToParent = (items: IMenu[]): IMenu[] => {
           return items.map((item) => {
-            if (item.id_menu === formData.parent_id) {
+            if (item.id_menu === formData.parent_menu_id) {
               return {
                 ...item,
                 children: [...(item.children || []), newMenu],
@@ -789,7 +794,7 @@ export const MenuManager = ({ initialData }: IMenuManagerProps) => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {mockApplications.map((app) => (
+                {initialApplications.map((app) => (
                   <SelectItem
                     key={app.id_application}
                     value={String(app.id_application)}>

@@ -44,9 +44,15 @@ export async function deleteApplicationServerAction(id: string | number) {
 
 
 export async function getAllApplicationsServerAction(): Promise<IApplication[]> {
-  const result = await getApplications();
+  try {
+    const result = await getApplications();
 
-  return Array.isArray(result)
-    ? result
-    : result?.data || [];
+    return Array.isArray(result)
+      ? result
+      : result?.content || [];
+  } catch (error) {
+    console.error("Failed to fetch applications:", error);
+    return [];
+  }
+
 }

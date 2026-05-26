@@ -8,7 +8,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
 import { Buttons } from "@repo/ui/buttons/scenes";
 import { RegisterMenuPermission, UpdateMenuPermission } from "./form";
-import { HiOutlineShieldExclamation, HiOutlinePlusCircle } from "react-icons/hi2";
+import {
+  HiOutlineShieldExclamation,
+  HiOutlinePlusCircle,
+} from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
 import { IMenuPermission } from "../models/menu-permission.interface";
 
@@ -16,17 +19,22 @@ interface IMenuPermissionManagerProps {
   initialData: IMenuPermission[];
 }
 
-export const MenuPermissionManager = ({ initialData }: IMenuPermissionManagerProps) => {
+export const MenuPermissionManager = ({
+  initialData,
+}: IMenuPermissionManagerProps) => {
   const t = useTranslations("navigation.menuPermissions");
   const tActions = useTranslations("actions");
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [editingMenuPermission, setEditingMenuPermission] = useState<IMenuPermission | null>(null);
+  const [editingMenuPermission, setEditingMenuPermission] =
+    useState<IMenuPermission | null>(null);
 
   const metrics = useMemo(() => {
-    const activeAssignments = initialData.filter((mp) => mp.deleted !== false).length;
-    const uniqueMenus = new Set(initialData.map(mp => mp.menu_id)).size;
+    const activeAssignments = initialData.filter(
+      (mp) => mp.deleted !== false,
+    ).length;
+    const uniqueMenus = new Set(initialData.map((mp) => mp.id_menu)).size;
 
     return {
       totalAssignments: initialData.length,
@@ -46,23 +54,22 @@ export const MenuPermissionManager = ({ initialData }: IMenuPermissionManagerPro
         accessorKey: "menu",
         header: "Menú",
         cell: ({ row }) => (
-          <span className='font-semibold'>{row.original.menu?.name || `ID: ${row.original.menuId}`}</span>
-        ),
-      },
-      {
-        accessorKey: "permission",
-        header: "Permiso",
-        cell: ({ row }) => (
-          <span className='text-sm'>{row.original.permission?.name || `ID: ${row.original.permissionId}`}</span>
+          <span className='font-semibold'>
+            {row.original.parent_menu?.name ||
+              `ID: ${row.original.parent_menu_id}`}
+          </span>
         ),
       },
       {
         header: "Status",
         accessorKey: "deleted",
         cell: ({ row }) => (
-          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.original.deleted !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-          }`}>
+          <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              row.original.deleted !== false
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}>
             {row.original.deleted !== false ? "Active" : "Inactive"}
           </span>
         ),
@@ -71,7 +78,10 @@ export const MenuPermissionManager = ({ initialData }: IMenuPermissionManagerPro
         id: "actions",
         header: "Actions",
         cell: ({ row }) => (
-          <Buttons size='sm' variant='outline' onClick={() => handleEdit(row.original)}>
+          <Buttons
+            size='sm'
+            variant='outline'
+            onClick={() => handleEdit(row.original)}>
             Editar
           </Buttons>
         ),
@@ -109,8 +119,12 @@ export const MenuPermissionManager = ({ initialData }: IMenuPermissionManagerPro
             {t("title")}
           </span>
           <div className='space-y-2'>
-            <h1 className='text-4xl font-semibold leading-tight'>{t("description")}</h1>
-            <p className='text-white/80'>Asigna permisos a menús de navegación.</p>
+            <h1 className='text-4xl font-semibold leading-tight'>
+              {t("description")}
+            </h1>
+            <p className='text-white/80'>
+              Asigna permisos a menús de navegación.
+            </p>
           </div>
           <Buttons
             color='success'
@@ -124,24 +138,41 @@ export const MenuPermissionManager = ({ initialData }: IMenuPermissionManagerPro
 
       <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
         {summaryCards.map((card) => (
-          <div key={card.label} className={`rounded-2xl border border-border/40 bg-gradient-to-br ${card.accent} px-5 py-4 shadow-sm backdrop-blur`}>
+          <div
+            key={card.label}
+            className={`rounded-2xl border border-border/40 bg-gradient-to-br ${card.accent} px-5 py-4 shadow-sm backdrop-blur`}>
             <div className='flex items-center justify-between text-sm font-semibold text-white/80'>
               <span>{card.label}</span>
               <card.icon className='h-5 w-5 text-white/70' />
             </div>
-            <p className='mt-2 text-2xl font-semibold text-white'>{card.value}</p>
+            <p className='mt-2 text-2xl font-semibold text-white'>
+              {card.value}
+            </p>
           </div>
         ))}
       </div>
 
       <DataTable data={initialData} columns={columns} className='py-2' />
 
-      <Modal size='lg' title="Asignar permiso a menú" open={openModal} onOpenChange={() => setOpenModal(!openModal)}>
+      <Modal
+        size='lg'
+        title='Asignar permiso a menú'
+        open={openModal}
+        onOpenChange={() => setOpenModal(!openModal)}>
         <RegisterMenuPermission />
       </Modal>
 
-      <Modal size='lg' open={openModalUpdate} onOpenChange={() => setOpenModalUpdate(!openModalUpdate)} title={t("modal.edit_title")} showCloseButton={true} hideDefaultFooter={true}>
-        <UpdateMenuPermission initialValues={editingMenuPermission} handleClose={() => setOpenModalUpdate(false)} />
+      <Modal
+        size='lg'
+        open={openModalUpdate}
+        onOpenChange={() => setOpenModalUpdate(!openModalUpdate)}
+        title={t("modal.edit_title")}
+        showCloseButton={true}
+        hideDefaultFooter={true}>
+        <UpdateMenuPermission
+          initialValues={editingMenuPermission}
+          handleClose={() => setOpenModalUpdate(false)}
+        />
       </Modal>
     </section>
   );

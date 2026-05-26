@@ -12,11 +12,9 @@ import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
 import { useState, useEffect, useMemo } from "react";
 import { ICompany } from "@/server/domains/access-control/account/companies";
-import {
-  getAllApplications,
-  getAllCompanyAction,
-} from "../actions/company-applications.action";
 import { IApplication } from "@/server/domains/access-control/security/applications";
+import { getAllApplicationsServerAction } from "@/app/[locale]/(protected)/security/applications/actions";
+import { getAllCompaniesServerAction } from "@/app/[locale]/(protected)/account/companies/actions";
 
 // Define types for mock data
 interface CompanyOption {
@@ -64,7 +62,7 @@ export const FormCompanyApplication = ({
     try {
       setCompanyData((prev) => ({ ...prev, loading: true, error: null }));
 
-      const companies = await getAllCompanyAction();
+      const companies = await getAllCompaniesServerAction();
 
       setCompanyData({
         data: companies,
@@ -97,7 +95,7 @@ export const FormCompanyApplication = ({
     try {
       setApplications((prev) => ({ ...prev, loading: true, error: null }));
 
-      const applications = await getAllApplications();
+      const applications = await getAllApplicationsServerAction();
       console.log("applications", applications);
       setApplications({
         data: applications,

@@ -11,13 +11,14 @@ import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
 import { IApplication } from "@/server/domains/access-control/security/applications";
 import { useEffect, useMemo, useState } from "react";
-import { getAllApplications } from "../actions/modules-applications.action";
-import { FormSelectField } from "@repo/ui/form";
+import { FormSelectField, FormTreeSelectField } from "@repo/ui/form";
+import { type TreeSelectNode } from "@repo/ui/inputs/scenes/tree-select";
 import {
   IModuleApplication,
   getModuleApplications,
 } from "@/server/domains/access-control/security/modules_applications";
 import { getAllModuleApplicationsServerAction } from "@/app/[locale]/(protected)/security/modules-applications/actions";
+import { getAllApplicationsServerAction } from "@/app/[locale]/(protected)/security/applications/actions";
 
 export const FormModuleApplication = ({
   initialValues,
@@ -49,6 +50,7 @@ export const FormModuleApplication = ({
   });
 
   const {
+    getValues,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -61,7 +63,7 @@ export const FormModuleApplication = ({
     try {
       setApplications((prev) => ({ ...prev, loading: true, error: null }));
 
-      const applications = await getAllApplications();
+      const applications = await getAllApplicationsServerAction();
       console.log("applications", applications);
       setApplications({
         data: applications,
@@ -115,7 +117,53 @@ export const FormModuleApplication = ({
     }
   };
 
-  // Memoizar opciones para evitar recálculos
+  // Construir árbol jerárquico de módulos
+  const buildModuleTree = (modules: IModuleApplication[]): TreeSelectNode[] => {
+    const map = new Map<number, TreeSelectNode>();
+    const roots: TreeSelectNode[] = [];
+
+    // Filtrar módulos sin ID y crear mapa
+    const validModules = modules.filter((m) => m.id_modules_application != null);
+
+    // Primera pasada: crear nodos
+    validModules.forEach((module) => {
+      map.set(module.id_modules_application!, {
+        value: module.id_modules_application!.toString(),
+        label: module.name,
+        children: [],
+      });
+    });
+
+    // Segunda pasada: construir jerarquía
+    validModules.forEach((module) => {
+      const node = map.get(module.id_modules_application!);
+      if (!node) return;
+
+      if (module.parent_module_application_id === null || module.parent_module_application_id === undefined) {
+        // Nodo raíz
+        roots.push(node);
+      } else {
+        // Nodo hijo
+        const parent = map.get(module.parent_module_application_id);
+        if (parent) {
+          if (!parent.children) parent.children = [];
+          parent.children.push(node);
+        } else {
+          // Si no encuentra padre, agregar como raíz
+          roots.push(node);
+        }
+      }
+    });
+
+    return roots;
+  };
+
+  // Memoizar árbol de módulos
+  const moduleTree = useMemo(() => {
+    return buildModuleTree(moduleApplicationsData.data);
+  }, [moduleApplicationsData.data]);
+
+  // Memoizar opciones planas para compatibilidad (si se necesita)
   const opcionesModuleApplications = useMemo(() => {
     return moduleApplicationsData.data
       .filter((nivel) => nivel.id_modules_application != null) // Filtrar módulos sin ID
@@ -167,14 +215,17 @@ export const FormModuleApplication = ({
           className='col-span-12'
         />
 
-        <FormSelectField
+        <FormTreeSelectField
           controller={{ control, name: "parent_module_application_id" }}
           label={t("fields.parent_module_application_id")}
-          data={opcionesModuleApplications}
-          placeholder='Seleccionar aplicación...'
-          error={errors.parent_module_application_id?.message}
+          nodes={moduleTree}
+          placeholder='Seleccionar módulo padre...'
+          searchPlaceholder='Buscar módulo...'
+          error={errors.parent_module_application_id?.message?.toString()}
           className='w-full col-span-12 md:col-span-6'
-          description='Aplicación asignada'
+          description='Selecciona el módulo padre en la jerarquía'
+          emptyMessage='No hay módulos disponibles'
+          showClear={true}
         />
 
         <FormField
