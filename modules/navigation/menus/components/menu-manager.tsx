@@ -497,6 +497,7 @@ export const MenuManager = ({
   }, [menus]);
 
   const handleModalClose = () => {
+    console.log("hola")
     setOpenModal((prev) => !prev);
   };
 
@@ -720,7 +721,7 @@ export const MenuManager = ({
             </p>
           </div>
           <div className='flex items-center gap-2'>
-            <Button variant='outline' size='sm' onClick={handleCreate}>
+            <Button variant='outline' size='sm' onClick={handleModalClose}>
               <HiPlus className='mr-2 h-4 w-4' />
               Add Menu
             </Button>
@@ -899,7 +900,7 @@ export const MenuManager = ({
         </div>
         <Modal
           size='lg'
-          title={editingMenu ? "Editar menú" : "Crear menú"}
+          title={"Crear menú"}
           open={openModal}
           onOpenChange={handleModalClose}>
           <RegisterMenu availableMenus={initialData} />

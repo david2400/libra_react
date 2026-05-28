@@ -488,6 +488,7 @@
       "editButton": "Editar Menú",
       "fields": {
         "name": "Nombre",
+        "description": "Descripción",
         "label": "Etiqueta",
         "icon": "Ícono",
         "path": "Ruta",
@@ -495,12 +496,12 @@
         "order": "Orden",
         "parent": "Menú Padre",
         "parentId": "Menú Padre",
-        "application_id": "ID de Aplicación",
+        "application_id": "Aplicación",
         "protocol": "Protocolo",
         "subdomain": "Subdominio",
         "port": "Puerto",
         "sort_order": "Orden de Clasificación",
-        "parent_id": "ID de Menú Padre",
+        "parent_id": "Menú Padre",
         "visible": "Visible"
       },
       "modal": {

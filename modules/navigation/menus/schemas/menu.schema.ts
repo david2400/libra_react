@@ -5,11 +5,15 @@ export const validationMenu = () => {
   const v = useValidationMessages();
 
   return z.object({
+    application_id: z.coerce
+      .number({ invalid_type_error: v.invalidFormat })
+      .int()
+      .positive({ message: v.required }),
     name: z.string().min(1, { message: v.required }),
-    label: z.string().optional(),
+    description: z.string().optional(),
+    path: z.string().min(1, { message: v.required }),
     icon: z.string().optional(),
-    path: z.string().optional(),
-    parentId: z.coerce
+    parent_menu_id: z.coerce
       .number({ invalid_type_error: v.invalidFormat })
       .int()
       .optional()
@@ -17,6 +21,11 @@ export const validationMenu = () => {
     order: z.coerce
       .number({ invalid_type_error: v.invalidFormat })
       .int()
-      .optional(),
+      .optional()
+      .nullable(),
+    visible: z.coerce
+      .boolean({ invalid_type_error: v.invalidFormat })
+      .optional()
+      .nullable(),
   });
 };

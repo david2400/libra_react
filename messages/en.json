@@ -456,11 +456,20 @@
       "editButton": "Edit Menu",
       "fields": {
         "name": "Name",
+        "description": "Description",
         "label": "Label",
         "icon": "Icon",
         "url": "URL",
         "order": "Order",
-        "parent": "Parent Menu"
+        "parent": "Parent Menu",
+        "application_id": "Application",
+        "protocol": "Protocol",
+        "subdomain": "Subdomain",
+        "port": "Port",
+        "path": "Path",
+        "sort_order": "Sort Order",
+        "parent_id": "Parent Menu",
+        "visible": "Visible"
       },
       "modal": {
         "create_title": "Create Menu",

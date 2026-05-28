@@ -8,10 +8,10 @@ export interface ICreateMenu {
   name: string;
   description?: string;
   path: string;
-  order: number;
-  parent_menu_id: number;
-  icon: string;
-  visible: boolean;
+  order?: number | null;
+  parent_menu_id?: number | null;
+  icon?: string;
+  visible?: boolean;
 }
 
 export interface IUpdateMenu extends ICreateMenu {

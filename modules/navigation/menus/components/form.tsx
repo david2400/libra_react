@@ -17,7 +17,10 @@ import {
 } from "../models/menu.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createMenuServerAction, updateMenuServerAction } from "@/app/[locale]/(protected)/navigation/menus/actions";
+import {
+  createMenuServerAction,
+  updateMenuServerAction,
+} from "@/app/[locale]/(protected)/navigation/menus/actions";
 
 const FormBase = ({
   initialValues,
@@ -41,25 +44,27 @@ interface IRegisterMenuProps extends IFormAddProps {
 
 export const RegisterMenu = ({ availableMenus }: IRegisterMenuProps = {}) => {
   const router = useRouter();
-  const { useTranslations } = require('next-intl');
-  const t = useTranslations('navigation.menus.messages');
-  const tMessages = useTranslations('messages');
+  const { useTranslations } = require("next-intl");
+  const t = useTranslations("navigation.menus.messages");
+  const tMessages = useTranslations("messages");
 
   const defaultValues: IMenuCreateRequest = {
+    application_id: 0,
     name: "",
-    label: "",
-    icon: "",
+    description: "",
     path: "",
-    parentId: undefined,
     order: 0,
+    parent_menu_id: 0,
+    icon: "",
+    visible: true,
   };
 
   const handleSubmit: SubmitHandler<IMenuCreateRequest> = async (values) => {
     try {
       const result = await createMenuServerAction(values);
-      
+
       Swal.fire({
-        title: t('createSuccess'),
+        title: t("createSuccess"),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -69,8 +74,8 @@ export const RegisterMenu = ({ availableMenus }: IRegisterMenuProps = {}) => {
       });
     } catch (error) {
       Swal.fire({
-        title: tMessages('createError', { entity: 'menú' }),
-        text: (error as any)?.message || tMessages('unexpectedError'),
+        title: tMessages("createError", { entity: "menú" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
         icon: "error",
       });
     }
@@ -95,18 +100,18 @@ export const UpdateMenu = ({
   availableMenus,
 }: IUpdateMenuProps) => {
   const router = useRouter();
-  const { useTranslations } = require('next-intl');
-  const t = useTranslations('navigation.menus.messages');
-  const tMessages = useTranslations('messages');
+  const { useTranslations } = require("next-intl");
+  const t = useTranslations("navigation.menus.messages");
+  const tMessages = useTranslations("messages");
 
   const handleSubmit: SubmitHandler<IMenuUpdateRequest> = async (values) => {
-    if (!values.id) return;
-    
+    if (!values.id_menu) return;
+
     try {
-      const result = await updateMenuServerAction(values.id, values);
-      
+      const result = await updateMenuServerAction(values.id_menu, values);
+
       Swal.fire({
-        title: t('updateSuccess'),
+        title: t("updateSuccess"),
         icon: "success",
         timer: 3000,
         showConfirmButton: false,
@@ -116,8 +121,8 @@ export const UpdateMenu = ({
       });
     } catch (error) {
       Swal.fire({
-        title: tMessages('updateError', { entity: 'menú' }),
-        text: (error as any)?.message || tMessages('unexpectedError'),
+        title: tMessages("updateError", { entity: "menú" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
         icon: "error",
       });
     }

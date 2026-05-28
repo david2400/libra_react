@@ -10,8 +10,8 @@ import { Buttons } from "@repo/ui/buttons/scenes";
 import { RegisterApplication, UpdateApplication } from "./form";
 import { HiOutlineSquares2X2, HiOutlinePlusCircle } from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
-import { IApplication } from "@/modules/security/applications";
-import type { IApplicationUpdateRequest } from "@/modules/security/applications";
+import { IApplication } from "@/server/domains/access-control/security/applications";
+import { IApplicationUpdateRequest } from "../models/application.interface";
 
 interface IApplicationManagerProps {
   initialData: IApplication[];
@@ -118,14 +118,16 @@ export const ApplicationManager = ({
         enableSorting: false,
         cell: ({ row }) => (
           console.log(row.original),
-          <div className='flex gap-2'>
-            <Buttons
-              size='sm'
-              variant='outline'
-              onClick={() => handleEdit(row.original)}>
-              Editar
-            </Buttons>
-          </div>
+          (
+            <div className='flex gap-2'>
+              <Buttons
+                size='sm'
+                variant='outline'
+                onClick={() => handleEdit(row.original)}>
+                Editar
+              </Buttons>
+            </div>
+          )
         ),
       },
     ],
@@ -198,7 +200,7 @@ export const ApplicationManager = ({
 
       <Modal
         size='lg'
-        title={editingApplication ? "Editar aplicación" : "Crear aplicación"}
+        title={"Crear aplicación"}
         open={openModal}
         onOpenChange={handleModalClose}>
         <RegisterApplication />

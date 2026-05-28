@@ -4,10 +4,6 @@ import { IApplication } from '../applications';
 import { IModuleApplication } from '../modules_applications';
 import { IRolePermission } from '../role_permissions';
 
-// --- IPermission Types -------------------------------------------------------------
-
-
-
 export interface ICreatePermission {
   name: string;
   description?: string;
