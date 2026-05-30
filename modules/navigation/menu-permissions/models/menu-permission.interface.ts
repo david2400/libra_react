@@ -11,3 +11,13 @@ export interface MenuItem {
     path: string;
     children?: MenuItem[];
 }
+
+
+export interface IMenuRolePermission {
+    menu_id: number;
+    role_id: number;
+    can_view: boolean;
+    can_create: boolean;
+    can_edit: boolean;
+    can_delete: boolean;
+}

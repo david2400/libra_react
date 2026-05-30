@@ -41,27 +41,20 @@ import {
   RiCheckDoubleLine,
 } from "react-icons/ri";
 import type {
+  IMenuRolePermission,
   MenuItem,
 } from "../models/menu-permission.interface";
-import { PermissionType } from "@/modules/security/permissions/models/permission.interface";
 import type { IApplication } from "@/server/domains/access-control/security/applications";
 import type { IRole } from "@/server/domains/access-control/security/roles";
 import type { IMenu } from "@/server/domains/access-control/navigation/menus";
-
-interface IMenuRolePermission {
-  menu_id: number;
-  role_id: number;
-  canView: boolean;
-  canCreate: boolean;
-  canEdit: boolean;
-  canDelete: boolean;
-}
 import {
   getApplicationsServerAction,
   getRolesByApplicationServerAction,
   getMenusByApplicationServerAction,
   getMenuPermissionsServerAction,
 } from "@/app/[locale]/(protected)/navigation/menu-permissions/actions";
+
+type MenuPermissionAction = "view" | "create" | "edit" | "delete";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   RiDashboardLine,
@@ -128,7 +121,7 @@ interface MenuItemRowProps {
   selectedRole: number | null;
   onPermissionChange: (
     menuId: string,
-    type: PermissionType,
+    type: MenuPermissionAction,
     value: boolean,
   ) => void;
   searchQuery: string;
@@ -170,7 +163,7 @@ function MenuItemRow({
 
   // Calculate child permission states for indeterminate
   const getChildrenPermissionState = (
-    type: PermissionType,
+    type: MenuPermissionAction,
   ): "all" | "none" | "some" => {
     if (!menu.children) return "none";
     const childPerms = menu.children
@@ -184,7 +177,7 @@ function MenuItemRow({
     if (childPerms.length === 0) return "none";
 
     const key =
-      `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof IMenuRolePermission;
+      `can_${type}` as keyof IMenuRolePermission;
     const allChecked = childPerms.every((p) => p && p[key] === true);
     const noneChecked = childPerms.every((p) => !p || p[key] === false);
 
@@ -232,10 +225,10 @@ function MenuItemRow({
 
         {/* IPermission Checkboxes */}
         <div className='flex items-center gap-8'>
-          {(["view", "create", "edit", "delete"] as PermissionType[]).map(
+          {(["view", "create", "edit", "delete"] as MenuPermissionAction[]).map(
             (type) => {
               const key =
-                `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof IMenuRolePermission;
+                `can_${type}` as keyof IMenuRolePermission;
               const checked = permission ? (permission[key] as boolean) : false;
               const childState = hasChildren
                 ? getChildrenPermissionState(type)
@@ -245,7 +238,7 @@ function MenuItemRow({
               return (
                 <div key={type} className='w-12 flex justify-center'>
                   <PermissionCheckbox
-                    checked={checked || (hasChildren && childState === "all")}
+                    checked={Boolean(checked || (hasChildren && childState === "all"))}
                     indeterminate={indeterminate}
                     onChange={() => onPermissionChange(menu.id, type, !checked)}
                   />
@@ -399,10 +392,10 @@ export function MenuPermissionsManager() {
     return permissionsData.map(p => ({
       menu_id: p.menu_id,
       role_id: p.role_id,
-      canView: p.canView || false,
-      canCreate: p.canCreate || false,
-      canEdit: p.canEdit || false,
-      canDelete: p.canDelete || false,
+      can_view: p.can_view || false,
+      can_create: p.can_create || false,
+      can_edit: p.can_edit || false,
+      can_delete: p.can_delete || false,
     }));
   };
 
@@ -445,7 +438,7 @@ export function MenuPermissionsManager() {
 
   const handlePermissionChange = (
     menuId: string,
-    type: PermissionType,
+    type: MenuPermissionAction,
     value: boolean,
   ) => {
     if (!selectedRole) return;
@@ -458,7 +451,7 @@ export function MenuPermissionsManager() {
       );
 
       const key =
-        `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof IMenuRolePermission;
+        `can_${type}` as keyof IMenuRolePermission;
 
       if (existingIndex !== -1) {
         newPermissions[existingIndex] = {
@@ -469,10 +462,10 @@ export function MenuPermissionsManager() {
         newPermissions.push({
           menu_id: Number(menuId),
           role_id: selectedRole,
-          canView: type === "view" ? value : false,
-          canCreate: type === "create" ? value : false,
-          canEdit: type === "edit" ? value : false,
-          canDelete: type === "delete" ? value : false,
+          can_view: type === "view" ? value : false,
+          can_create: type === "create" ? value : false,
+          can_edit: type === "edit" ? value : false,
+          can_delete: type === "delete" ? value : false,
         });
       }
 
@@ -492,10 +485,10 @@ export function MenuPermissionsManager() {
             newPermissions.push({
               menu_id: Number(child.id),
               role_id: selectedRole,
-              canView: type === "view" ? value : false,
-              canCreate: type === "create" ? value : false,
-              canEdit: type === "edit" ? value : false,
-              canDelete: type === "delete" ? value : false,
+              can_view: type === "view" ? value : false,
+              can_create: type === "create" ? value : false,
+              can_edit: type === "edit" ? value : false,
+              can_delete: type === "delete" ? value : false,
             });
           }
         });
@@ -529,19 +522,19 @@ export function MenuPermissionsManager() {
       allPermissions.push({
         menu_id: Number(menu.id),
         role_id: selectedRole,
-        canView: true,
-        canCreate: true,
-        canEdit: true,
-        canDelete: true,
+        can_view: true,
+        can_create: true,
+        can_edit: true,
+        can_delete: true,
       });
       menu.children?.forEach((child) => {
         allPermissions.push({
           menu_id: Number(child.id),
           role_id: selectedRole,
-          canView: true,
-          canCreate: true,
-          canEdit: true,
-          canDelete: true,
+          can_view: true,
+          can_create: true,
+          can_edit: true,
+          can_delete: true,
         });
       });
     });
@@ -571,10 +564,10 @@ export function MenuPermissionsManager() {
       (acc, m) => acc + 1 + (m.children?.length || 0),
       0,
     );
-    const viewCount = rolePermissions.filter((p) => p.canView).length;
-    const createCount = rolePermissions.filter((p) => p.canCreate).length;
-    const editCount = rolePermissions.filter((p) => p.canEdit).length;
-    const deleteCount = rolePermissions.filter((p) => p.canDelete).length;
+    const viewCount = rolePermissions.filter((p) => p.can_view).length;
+    const createCount = rolePermissions.filter((p) => p.can_create).length;
+    const editCount = rolePermissions.filter((p) => p.can_edit).length;
+    const deleteCount = rolePermissions.filter((p) => p.can_delete).length;
 
     return { totalMenus, viewCount, createCount, editCount, deleteCount };
   }, [permissions, selectedRole]);
