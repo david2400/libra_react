@@ -82,6 +82,14 @@ export const accessControlTags = {
   companyApplications: () => 'access-control:company-applications' as const,
   companyApplication: (id: number | string) => `access-control:company-application:${id}` as const,
   
+  // User-Applications
+  userApplications: () => 'access-control:user-applications' as const,
+  userApplication: (id: number | string) => `access-control:user-application:${id}` as const,
+  
+  // Application-Categories
+  applicationCategories: () => 'access-control:application-categories' as const,
+  applicationCategory: (id: number | string) => `access-control:application-category:${id}` as const,
+  
   // Authorization
   authorization: () => 'access-control:authorization' as const,
   

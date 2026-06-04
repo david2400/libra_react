@@ -1,4 +1,4 @@
-﻿// --- Modules Applications Management IModule Exports -------------------------------
+// --- User Applications Management Module Exports ---------------------------------------
 
 // Export all types
 export * from './types';

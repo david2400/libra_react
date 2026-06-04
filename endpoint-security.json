@@ -7,10 +7,18 @@
       "name": "Essenza Development Team",
       "email": "dev@essenza.com"
     },
-    "license": { "name": "Proprietary", "url": "https://essenza.com/license" },
+    "license": {
+      "name": "Proprietary",
+      "url": "https://essenza.com/license"
+    },
     "version": "v1.0.0"
   },
-  "servers": [{ "url": "/", "description": "Default Server" }],
+  "servers": [
+    {
+      "url": "/",
+      "description": "Default Server"
+    }
+  ],
   "tags": [
     {
       "name": "Policy Management",
@@ -35,13 +43,19 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "permissionId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -49,7 +63,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/UserPermissionDto" }
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionDto"
+                }
               }
             }
           }
@@ -63,13 +79,19 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "permissionId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "requestBody": {
@@ -87,7 +109,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/UserPermissionDto" }
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionDto"
+                }
               }
             }
           }
@@ -101,16 +125,26 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "permissionId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/access_control/roles/{id}": {
@@ -124,20 +158,31 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
             }
           }
         }
@@ -152,13 +197,18 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateRoleDto" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRoleDto"
+              }
             }
           },
           "required": true
@@ -167,13 +217,21 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
             }
           }
         }
@@ -188,12 +246,19 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         ],
         "responses": {
-          "404": { "description": "Not found" },
-          "204": { "description": "No Content" }
+          "404": {
+            "description": "Not found"
+          },
+          "204": {
+            "description": "No Content"
+          }
         }
       }
     },
@@ -208,13 +273,19 @@
             "name": "permissionId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "roleId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -222,7 +293,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/RolePermission" }
+                "schema": {
+                  "$ref": "#/components/schemas/RolePermission"
+                }
               }
             }
           },
@@ -230,7 +303,9 @@
             "description": "Not found",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/RolePermission" }
+                "schema": {
+                  "$ref": "#/components/schemas/RolePermission"
+                }
               }
             }
           }
@@ -246,13 +321,19 @@
             "name": "permissionId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "roleId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "requestBody": {
@@ -270,7 +351,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/RolePermission" }
+                "schema": {
+                  "$ref": "#/components/schemas/RolePermission"
+                }
               }
             }
           },
@@ -278,7 +361,9 @@
             "description": "Not found",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/RolePermission" }
+                "schema": {
+                  "$ref": "#/components/schemas/RolePermission"
+                }
               }
             }
           }
@@ -294,18 +379,28 @@
             "name": "permissionId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "roleId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
-          "404": { "description": "Not found" },
-          "204": { "description": "No Content" }
+          "404": {
+            "description": "Not found"
+          },
+          "204": {
+            "description": "No Content"
+          }
         }
       }
     },
@@ -320,14 +415,21 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Policy" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Policy"
+                }
+              }
             }
           }
         }
@@ -342,13 +444,18 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdatePolicyDto" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePolicyDto"
+              }
             }
           },
           "required": true
@@ -357,7 +464,11 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Policy" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Policy"
+                }
+              }
             }
           }
         }
@@ -372,10 +483,17 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/access_control/permissions/{id}": {
@@ -389,20 +507,31 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
             }
           }
         }
@@ -417,13 +546,18 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdatePermissionDto" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePermissionDto"
+              }
             }
           },
           "required": true
@@ -432,13 +566,21 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
             }
           },
           "404": {
             "description": "Not found",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
             }
           }
         }
@@ -453,106 +595,19 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "404": { "description": "Not found" },
-          "204": { "description": "No Content" }
-        }
-      }
-    },
-    "/api/access_control/modules-applications/{id}": {
-      "get": {
-        "tags": ["ModulesApplications"],
-        "summary": "Get module application by ID",
-        "description": "Returns a module application by its ID",
-        "operationId": "getById_3",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int32" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
-              }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
             }
-          },
+          }
+        ],
+        "responses": {
           "404": {
-            "description": "Not found",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "tags": ["ModulesApplications"],
-        "summary": "Update module application",
-        "description": "Updates an existing module application by ID",
-        "operationId": "update_4",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int32" }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateModulesApplicationDto"
-              }
-            }
+            "description": "Not found"
           },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
-              }
-            }
+          "204": {
+            "description": "No Content"
           }
-        }
-      },
-      "delete": {
-        "tags": ["ModulesApplications"],
-        "summary": "Delete module application",
-        "description": "Deletes a module application by ID",
-        "operationId": "delete_4",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int32" }
-          }
-        ],
-        "responses": {
-          "404": { "description": "Not found" },
-          "204": { "description": "No Content" }
         }
       }
     },
@@ -567,13 +622,19 @@
             "name": "companyId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "applicationId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -581,7 +642,9 @@
             "description": "License deactivated",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           },
@@ -589,7 +652,9 @@
             "description": "Assignment not found",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           }
@@ -607,13 +672,19 @@
             "name": "companyId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "applicationId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -621,7 +692,9 @@
             "description": "Assignment not found",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           },
@@ -629,7 +702,9 @@
             "description": "License activated",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           }
@@ -641,13 +716,16 @@
         "tags": ["Applications"],
         "summary": "Get application by ID",
         "description": "Returns an application by its ID",
-        "operationId": "getById_4",
+        "operationId": "getById_3",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -655,7 +733,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/Application" }
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
               }
             }
           },
@@ -663,7 +743,9 @@
             "description": "Not found",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/Application" }
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
               }
             }
           }
@@ -673,19 +755,24 @@
         "tags": ["Applications"],
         "summary": "Update application",
         "description": "Updates an existing application by ID",
-        "operationId": "update_5",
+        "operationId": "update_4",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/UpdateApplicationDto" }
+              "schema": {
+                "$ref": "#/components/schemas/UpdateApplicationDto"
+              }
             }
           },
           "required": true
@@ -695,7 +782,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/Application" }
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
               }
             }
           },
@@ -703,7 +792,9 @@
             "description": "Not found",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/Application" }
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
               }
             }
           }
@@ -713,18 +804,194 @@
         "tags": ["Applications"],
         "summary": "Delete application",
         "description": "Deletes an application by ID",
+        "operationId": "delete_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found"
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/access_control/application-categories/{id}": {
+      "get": {
+        "tags": ["Application Categories"],
+        "summary": "Get application category by ID",
+        "description": "Returns an application category by its ID",
+        "operationId": "getById_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationCategory"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationCategory"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Application Categories"],
+        "summary": "Update application category",
+        "description": "Updates an existing application category by ID",
+        "operationId": "update_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateApplicationCategoryDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationCategory"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationCategory"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Application Categories"],
+        "summary": "Delete application category",
+        "description": "Deletes an application category by ID",
         "operationId": "delete_5",
         "parameters": [
           {
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
-          "404": { "description": "Not found" },
-          "204": { "description": "No Content" }
+          "404": {
+            "description": "Not found"
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/access_control/api/user-applications": {
+      "put": {
+        "tags": ["user-application-controller"],
+        "operationId": "update_6",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserApplicationDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserApplication"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["user-application-controller"],
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserApplicationDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserApplication"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -737,7 +1004,9 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/AssignPolicyRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/AssignPolicyRequest"
+              }
             }
           },
           "required": true
@@ -746,7 +1015,11 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/UserPolicy" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPolicy"
+                }
+              }
             }
           }
         }
@@ -763,7 +1036,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                  "items": {
+                    "$ref": "#/components/schemas/UserPermissionDto"
+                  }
                 }
               }
             }
@@ -772,7 +1047,7 @@
       },
       "post": {
         "tags": ["User Permissions"],
-        "operationId": "create",
+        "operationId": "create_1",
         "requestBody": {
           "content": {
             "application/json": {
@@ -788,7 +1063,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/UserPermissionDto" }
+                "schema": {
+                  "$ref": "#/components/schemas/UserPermissionDto"
+                }
               }
             }
           }
@@ -804,7 +1081,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "requestBody": {
@@ -827,7 +1107,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                  "items": {
+                    "$ref": "#/components/schemas/UserPermissionDto"
+                  }
                 }
               }
             }
@@ -846,7 +1128,9 @@
             "name": "name",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -856,7 +1140,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Role" }
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
                 }
               }
             }
@@ -867,11 +1153,13 @@
         "tags": ["Roles"],
         "summary": "Create role",
         "description": "Creates a new role",
-        "operationId": "create_1",
+        "operationId": "create_2",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateRoleDto" }
+              "schema": {
+                "$ref": "#/components/schemas/CreateRoleDto"
+              }
             }
           },
           "required": true
@@ -880,13 +1168,21 @@
           "400": {
             "description": "Bad request",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
             }
           },
           "201": {
             "description": "Created",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Role" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Role"
+                }
+              }
             }
           }
         }
@@ -903,13 +1199,19 @@
             "name": "roleId",
             "in": "query",
             "required": false,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "permissionId",
             "in": "query",
             "required": false,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -919,7 +1221,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/RolePermission" }
+                  "items": {
+                    "$ref": "#/components/schemas/RolePermission"
+                  }
                 }
               }
             }
@@ -930,7 +1234,7 @@
         "tags": ["RolePermissions"],
         "summary": "Create role-permission",
         "description": "Creates a new role-permission relation",
-        "operationId": "create_2",
+        "operationId": "create_3",
         "requestBody": {
           "content": {
             "application/json": {
@@ -946,7 +1250,9 @@
             "description": "Bad request",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/RolePermission" }
+                "schema": {
+                  "$ref": "#/components/schemas/RolePermission"
+                }
               }
             }
           },
@@ -954,7 +1260,9 @@
             "description": "Created",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/RolePermission" }
+                "schema": {
+                  "$ref": "#/components/schemas/RolePermission"
+                }
               }
             }
           }
@@ -972,7 +1280,10 @@
             "name": "applicationId",
             "in": "query",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -982,7 +1293,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Policy" }
+                  "items": {
+                    "$ref": "#/components/schemas/Policy"
+                  }
                 }
               }
             }
@@ -997,7 +1310,9 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreatePolicyDto" }
+              "schema": {
+                "$ref": "#/components/schemas/CreatePolicyDto"
+              }
             }
           },
           "required": true
@@ -1006,7 +1321,11 @@
           "200": {
             "description": "OK",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Policy" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Policy"
+                }
+              }
             }
           }
         }
@@ -1023,19 +1342,27 @@
             "name": "name",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "aplicationsId",
             "in": "query",
             "required": false,
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "moduleAplicationId",
             "in": "query",
             "required": false,
-            "schema": { "type": "integer", "format": "int32" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1045,7 +1372,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Permission" }
+                  "items": {
+                    "$ref": "#/components/schemas/Permission"
+                  }
                 }
               }
             }
@@ -1056,11 +1385,13 @@
         "tags": ["Permissions"],
         "summary": "Create permission",
         "description": "Creates a new permission",
-        "operationId": "create_3",
+        "operationId": "create_4",
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreatePermissionDto" }
+              "schema": {
+                "$ref": "#/components/schemas/CreatePermissionDto"
+              }
             }
           },
           "required": true
@@ -1069,13 +1400,21 @@
           "400": {
             "description": "Bad request",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
             }
           },
           "201": {
             "description": "Created",
             "content": {
-              "*/*": { "schema": { "$ref": "#/components/schemas/Permission" } }
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Permission"
+                }
+              }
             }
           }
         }
@@ -1090,7 +1429,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "requestBody": {
@@ -1099,7 +1441,9 @@
               "schema": {
                 "uniqueItems": true,
                 "type": "array",
-                "items": { "type": "string" }
+                "items": {
+                  "type": "string"
+                }
               }
             }
           },
@@ -1108,7 +1452,13 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "type": "boolean" } } }
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
         }
       }
@@ -1122,7 +1472,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "requestBody": {
@@ -1131,106 +1484,22 @@
               "schema": {
                 "uniqueItems": true,
                 "type": "array",
-                "items": { "type": "string" }
+                "items": {
+                  "type": "string"
+                }
               }
             }
           },
           "required": true
         },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": { "*/*": { "schema": { "type": "boolean" } } }
-          }
-        }
-      }
-    },
-    "/api/access_control/modules-applications": {
-      "get": {
-        "tags": ["ModulesApplications"],
-        "summary": "List module applications (paginated)",
-        "description": "Returns all module applications with pagination. Supports optional filters: name, aplicationId",
-        "operationId": "getAll_3",
-        "parameters": [
-          {
-            "name": "name",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "aplicationId",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32" }
-          },
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 0 }
-          },
-          {
-            "name": "size",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "integer", "format": "int32", "default": 20 }
-          },
-          {
-            "name": "sortBy",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "string", "default": "name" }
-          },
-          {
-            "name": "sortDir",
-            "in": "query",
-            "required": false,
-            "schema": { "type": "string", "default": "asc" }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/PageModulesApplication"
+                  "type": "boolean"
                 }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["ModulesApplications"],
-        "summary": "Create module application",
-        "description": "Creates a new module application",
-        "operationId": "create_4",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateModulesApplicationDto"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
-              }
-            }
-          },
-          "201": {
-            "description": "Created",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/ModulesApplication" }
               }
             }
           }
@@ -1242,7 +1511,7 @@
         "tags": ["Company Applications Management"],
         "summary": "List all company applications",
         "description": "Returns all company-application relationships",
-        "operationId": "getAll_4",
+        "operationId": "getAll_3",
         "responses": {
           "200": {
             "description": "OK",
@@ -1250,7 +1519,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/CompanyApplication" }
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyApplication"
+                  }
                 }
               }
             }
@@ -1277,7 +1548,9 @@
             "description": "Bad request",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           },
@@ -1285,7 +1558,9 @@
             "description": "Application assigned",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           }
@@ -1303,13 +1578,19 @@
             "name": "companyId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "applicationId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1317,7 +1598,9 @@
             "description": "Already assigned",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           },
@@ -1325,7 +1608,9 @@
             "description": "Application assigned",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           }
@@ -1341,13 +1626,19 @@
             "name": "companyId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "applicationId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1355,7 +1646,9 @@
             "description": "Assignment not found",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           },
@@ -1363,7 +1656,9 @@
             "description": "Application revoked",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           }
@@ -1379,7 +1674,9 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/AuthorizationRequest" }
+              "schema": {
+                "$ref": "#/components/schemas/AuthorizationRequest"
+              }
             }
           },
           "required": true
@@ -1403,13 +1700,15 @@
         "tags": ["Applications"],
         "summary": "List applications",
         "description": "Returns all applications",
-        "operationId": "getAll_5",
+        "operationId": "getAll_4",
         "parameters": [
           {
             "name": "name",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1419,7 +1718,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Application" }
+                  "items": {
+                    "$ref": "#/components/schemas/Application"
+                  }
                 }
               }
             }
@@ -1434,7 +1735,9 @@
         "requestBody": {
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateApplicationDto" }
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationDto"
+              }
             }
           },
           "required": true
@@ -1444,7 +1747,9 @@
             "description": "Bad request",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/Application" }
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
               }
             }
           },
@@ -1452,7 +1757,80 @@
             "description": "Created",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/Application" }
+                "schema": {
+                  "$ref": "#/components/schemas/Application"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/application-categories": {
+      "get": {
+        "tags": ["Application Categories"],
+        "summary": "List application categories",
+        "description": "Returns all application categories",
+        "operationId": "getAll_5",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationCategory"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Application Categories"],
+        "summary": "Create application category",
+        "description": "Creates a new application category",
+        "operationId": "create_7",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationCategoryDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationCategory"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationCategory"
+                }
               }
             }
           }
@@ -1470,7 +1848,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1480,7 +1861,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/UserPolicy" }
+                  "items": {
+                    "$ref": "#/components/schemas/UserPolicy"
+                  }
                 }
               }
             }
@@ -1497,7 +1880,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1507,7 +1893,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                  "items": {
+                    "$ref": "#/components/schemas/UserPermissionDto"
+                  }
                 }
               }
             }
@@ -1524,7 +1912,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1534,7 +1925,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                  "items": {
+                    "$ref": "#/components/schemas/UserPermissionDto"
+                  }
                 }
               }
             }
@@ -1551,7 +1944,10 @@
             "name": "permissionId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1561,7 +1957,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/UserPermissionDto" }
+                  "items": {
+                    "$ref": "#/components/schemas/UserPermissionDto"
+                  }
                 }
               }
             }
@@ -1578,7 +1976,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1589,7 +1990,9 @@
                 "schema": {
                   "uniqueItems": true,
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Permission" }
+                  "items": {
+                    "$ref": "#/components/schemas/Permission"
+                  }
                 }
               }
             }
@@ -1606,7 +2009,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1617,7 +2023,9 @@
                 "schema": {
                   "uniqueItems": true,
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Permission" }
+                  "items": {
+                    "$ref": "#/components/schemas/Permission"
+                  }
                 }
               }
             }
@@ -1634,25 +2042,38 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "permissionCode",
             "in": "query",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "requiredLevel",
             "in": "query",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
-            "content": { "*/*": { "schema": { "type": "boolean" } } }
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
         }
       }
@@ -1666,7 +2087,10 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1677,94 +2101,9 @@
                 "schema": {
                   "uniqueItems": true,
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Permission" }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/access_control/modules-applications/{id}/descendants": {
-      "get": {
-        "tags": ["ModulesApplications"],
-        "summary": "Get all descendants of a module",
-        "description": "Returns all descendants (children, grandchildren, etc.) of a module",
-        "operationId": "getDescendants",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int32" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/ModulesApplication" }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/access_control/modules-applications/{id}/children": {
-      "get": {
-        "tags": ["ModulesApplications"],
-        "summary": "Get children of a module",
-        "description": "Returns direct children of a module",
-        "operationId": "getChildren",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int32" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/ModulesApplication" }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/access_control/modules-applications/roots": {
-      "get": {
-        "tags": ["ModulesApplications"],
-        "summary": "Get root modules by application",
-        "description": "Returns root modules (no parent) for an application",
-        "operationId": "getRootModules",
-        "parameters": [
-          {
-            "name": "aplicationId",
-            "in": "query",
-            "required": true,
-            "schema": { "type": "integer", "format": "int32" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "array",
-                  "items": { "$ref": "#/components/schemas/ModulesApplication" }
+                  "items": {
+                    "$ref": "#/components/schemas/Permission"
+                  }
                 }
               }
             }
@@ -1783,7 +2122,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1791,7 +2133,9 @@
             "description": "OK",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           },
@@ -1799,7 +2143,9 @@
             "description": "Not found",
             "content": {
               "*/*": {
-                "schema": { "$ref": "#/components/schemas/CompanyApplication" }
+                "schema": {
+                  "$ref": "#/components/schemas/CompanyApplication"
+                }
               }
             }
           }
@@ -1817,7 +2163,10 @@
             "name": "companyId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1827,7 +2176,9 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/CompanyApplication" }
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyApplication"
+                  }
                 }
               }
             }
@@ -1846,7 +2197,10 @@
             "name": "companyId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
         "responses": {
@@ -1856,7 +2210,178 @@
               "*/*": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/CompanyApplication" }
+                  "items": {
+                    "$ref": "#/components/schemas/CompanyApplication"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/api/user-applications/{userId}/{applicationId}": {
+      "get": {
+        "tags": ["user-application-controller"],
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserApplication"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["user-application-controller"],
+        "operationId": "delete_6",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/access_control/api/user-applications/user/{userId}": {
+      "get": {
+        "tags": ["user-application-controller"],
+        "operationId": "findByUserId_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserApplication"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/api/user-applications/check/{userId}/{applicationId}": {
+      "get": {
+        "tags": ["user-application-controller"],
+        "operationId": "checkAccess",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/api/user-applications/application/{applicationId}": {
+      "get": {
+        "tags": ["user-application-controller"],
+        "operationId": "findByApplicationId",
+        "parameters": [
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserApplication"
+                  }
                 }
               }
             }
@@ -1875,22 +2400,35 @@
             "name": "userId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "policyId",
             "in": "path",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           {
             "name": "applicationId",
             "in": "query",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" }
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
           }
         ],
-        "responses": { "200": { "description": "OK" } }
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     }
   },
@@ -1899,108 +2437,274 @@
       "UpdateUserPermissionDto": {
         "type": "object",
         "properties": {
-          "level": { "type": "string" },
-          "isActive": { "type": "boolean" },
-          "expiresAt": { "type": "string", "format": "date" }
+          "level": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date"
+          }
         }
       },
       "UserPermissionDto": {
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "userId": { "type": "integer", "format": "int64" },
-          "permissionId": { "type": "integer", "format": "int64" },
-          "level": { "type": "string" },
-          "isActive": { "type": "boolean" },
-          "expiresAt": { "type": "string", "format": "date" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "level": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date"
+          }
         }
       },
       "UpdateRoleDto": {
         "required": ["description", "idRole", "manageUsers", "name"],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "manageUsers": { "type": "boolean" },
-          "requiresApproval": { "type": "boolean" },
-          "approvalWorkflow": { "type": "string" },
-          "idRole": { "type": "integer", "format": "int32" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "manageUsers": {
+            "type": "boolean"
+          },
+          "requiresApproval": {
+            "type": "boolean"
+          },
+          "approvalWorkflow": {
+            "type": "string"
+          },
+          "idRole": {
+            "type": "integer",
+            "format": "int32"
+          }
         }
       },
       "Role": {
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "idRole": { "type": "integer", "format": "int32" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "manageUsers": { "type": "boolean" },
-          "requiresApproval": { "type": "boolean" },
-          "approvalWorkflow": { "type": "string" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idRole": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "manageUsers": {
+            "type": "boolean"
+          },
+          "requiresApproval": {
+            "type": "boolean"
+          },
+          "approvalWorkflow": {
+            "type": "string"
+          }
         }
       },
       "UpdateRolePermissionDto": {
         "required": ["level", "permissionId", "roleId"],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "level": { "type": "string" },
-          "permissionId": { "type": "integer", "format": "int64" },
-          "roleId": { "type": "integer", "format": "int32" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "level": {
+            "type": "string"
+          },
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          }
         }
       },
       "RolePermission": {
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "level": { "type": "string" },
-          "permissionId": { "type": "integer", "format": "int64" },
-          "roleId": { "type": "integer", "format": "int32" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "level": {
+            "type": "string"
+          },
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          }
         }
       },
       "PolicyConditionDto": {
         "type": "object",
         "properties": {
-          "idCondition": { "type": "integer", "format": "int64" },
-          "conditionType": { "type": "string" },
-          "key": { "type": "string" },
-          "operator": { "type": "string" },
-          "value": { "type": "string" }
+          "idCondition": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "conditionType": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
         }
       },
       "PolicyStatementDto": {
         "type": "object",
         "properties": {
-          "idStatement": { "type": "integer", "format": "int64" },
-          "sid": { "type": "string" },
-          "effect": { "type": "string", "enum": ["ALLOW", "DENY"] },
-          "actions": { "type": "array", "items": { "type": "string" } },
-          "resources": { "type": "array", "items": { "type": "string" } },
-          "order": { "type": "integer", "format": "int32" },
+          "idStatement": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sid": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string",
+            "enum": ["ALLOW", "DENY"]
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
           "conditions": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PolicyConditionDto" }
+            "items": {
+              "$ref": "#/components/schemas/PolicyConditionDto"
+            }
           }
         }
       },
@@ -2014,69 +2718,173 @@
         ],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "version": { "type": "string" },
-          "defaultEffect": { "type": "string", "enum": ["ALLOW", "DENY"] },
-          "isActive": { "type": "boolean" },
-          "priority": { "type": "integer", "format": "int32" },
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "version": {
+            "type": "string"
+          },
+          "defaultEffect": {
+            "type": "string",
+            "enum": ["ALLOW", "DENY"]
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
           "statements": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PolicyStatementDto" }
+            "items": {
+              "$ref": "#/components/schemas/PolicyStatementDto"
+            }
           },
-          "idPolicy": { "type": "integer", "format": "int64" }
+          "idPolicy": {
+            "type": "integer",
+            "format": "int64"
+          }
         }
       },
       "Policy": {
         "type": "object",
         "properties": {
-          "idPolicy": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "version": { "type": "string" },
-          "defaultEffect": { "type": "string", "enum": ["ALLOW", "DENY"] },
+          "idPolicy": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "version": {
+            "type": "string"
+          },
+          "defaultEffect": {
+            "type": "string",
+            "enum": ["ALLOW", "DENY"]
+          },
           "statements": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PolicyStatement" }
+            "items": {
+              "$ref": "#/components/schemas/PolicyStatement"
+            }
           },
-          "isActive": { "type": "boolean" },
-          "priority": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
+          "isActive": {
+            "type": "boolean"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "PolicyCondition": {
         "type": "object",
         "properties": {
-          "idCondition": { "type": "integer", "format": "int64" },
-          "statementId": { "type": "integer", "format": "int64" },
-          "conditionType": { "type": "string" },
-          "key": { "type": "string" },
-          "operator": { "type": "string" },
-          "value": { "type": "string" }
+          "idCondition": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "statementId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "conditionType": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
         }
       },
       "PolicyStatement": {
         "type": "object",
         "properties": {
-          "idStatement": { "type": "integer", "format": "int64" },
-          "policyId": { "type": "integer", "format": "int64" },
-          "sid": { "type": "string" },
-          "effect": { "type": "string", "enum": ["ALLOW", "DENY"] },
-          "actions": { "type": "array", "items": { "type": "string" } },
-          "resources": { "type": "array", "items": { "type": "string" } },
+          "idStatement": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "policyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sid": {
+            "type": "string"
+          },
+          "effect": {
+            "type": "string",
+            "enum": ["ALLOW", "DENY"]
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "conditions": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PolicyCondition" }
+            "items": {
+              "$ref": "#/components/schemas/PolicyCondition"
+            }
           },
-          "order": { "type": "integer", "format": "int32" }
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          }
         }
       },
       "UpdatePermissionDto": {
@@ -2089,18 +2897,44 @@
         ],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "maxLength": 100, "minLength": 0, "type": "string" },
-          "description": { "maxLength": 500, "minLength": 0, "type": "string" },
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          },
           "permissionType": {
             "type": "string",
             "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
           },
-          "resource": { "maxLength": 200, "minLength": 0, "type": "string" },
+          "resource": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
           "action": {
             "type": "string",
             "enum": [
@@ -2116,8 +2950,14 @@
               "REJECT"
             ]
           },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "moduleId": { "type": "integer", "format": "int64" },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "moduleId": {
+            "type": "integer",
+            "format": "int64"
+          },
           "httpMethod": {
             "maxLength": 10,
             "minLength": 0,
@@ -2129,31 +2969,79 @@
             "minLength": 0,
             "type": "string"
           },
-          "uiComponent": { "maxLength": 200, "minLength": 0, "type": "string" },
-          "featureFlag": { "maxLength": 100, "minLength": 0, "type": "string" },
-          "priority": { "minimum": 0, "type": "integer", "format": "int32" },
-          "cacheTtl": { "minimum": 0, "type": "integer", "format": "int32" },
-          "isSensitive": { "type": "boolean" },
-          "metadata": { "maxLength": 2000, "minLength": 0, "type": "string" },
-          "idPermission": { "type": "integer", "format": "int64" }
+          "uiComponent": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "featureFlag": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "priority": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "cacheTtl": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "isSensitive": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": "string"
+          },
+          "idPermission": {
+            "type": "integer",
+            "format": "int64"
+          }
         }
       },
       "Permission": {
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "idPermission": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idPermission": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
           "permissionType": {
             "type": "string",
             "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
           },
-          "resource": { "type": "string" },
+          "resource": {
+            "type": "string"
+          },
           "action": {
             "type": "string",
             "enum": [
@@ -2169,195 +3057,590 @@
               "REJECT"
             ]
           },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "moduleId": { "type": "integer", "format": "int64" },
-          "httpMethod": { "type": "string" },
-          "endpointPath": { "type": "string" },
-          "uiComponent": { "type": "string" },
-          "featureFlag": { "type": "string" },
-          "priority": { "type": "integer", "format": "int32" },
-          "cacheTtl": { "type": "integer", "format": "int32" },
-          "isSensitive": { "type": "boolean" },
-          "metadata": { "type": "string" },
-          "applicationPermission": { "type": "boolean" },
-          "uiPermission": { "type": "boolean" },
-          "apiPermission": { "type": "boolean" },
-          "systemPermission": { "type": "boolean" }
-        }
-      },
-      "UpdateModulesApplicationDto": {
-        "required": [
-          "applicationId",
-          "description",
-          "idModulesAplication",
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "parentModuleId": { "type": "integer", "format": "int32" },
-          "idModulesAplication": { "type": "integer", "format": "int32" }
-        }
-      },
-      "ModulesApplication": {
-        "type": "object",
-        "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "idModulesAplication": { "type": "integer", "format": "int32" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "aplicationId": { "type": "integer", "format": "int64" },
-          "parentModuleId": { "type": "integer", "format": "int32" },
-          "level": { "type": "integer", "format": "int32" },
-          "path": { "type": "string" }
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "moduleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "httpMethod": {
+            "type": "string"
+          },
+          "endpointPath": {
+            "type": "string"
+          },
+          "uiComponent": {
+            "type": "string"
+          },
+          "featureFlag": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cacheTtl": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isSensitive": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "type": "string"
+          },
+          "applicationPermission": {
+            "type": "boolean"
+          },
+          "apiPermission": {
+            "type": "boolean"
+          },
+          "systemPermission": {
+            "type": "boolean"
+          },
+          "uiPermission": {
+            "type": "boolean"
+          }
         }
       },
       "CompanyApplication": {
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "idCompanyApplication": { "type": "integer", "format": "int64" },
-          "companyId": { "type": "integer", "format": "int64" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "licenseStartDate": { "type": "string", "format": "date" },
-          "licenseEndDate": { "type": "string", "format": "date" },
-          "isActive": { "type": "boolean" },
-          "userLimit": { "type": "integer", "format": "int32" },
-          "currentUsers": { "type": "integer", "format": "int32" },
-          "subscriptionType": { "type": "string" },
-          "autoRenew": { "type": "boolean" },
-          "notes": { "type": "string" },
-          "licenseValid": { "type": "boolean" },
-          "subscriptionActive": { "type": "boolean" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idCompanyApplication": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "companyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "licenseStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "licenseEndDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "userLimit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentUsers": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subscriptionType": {
+            "type": "string"
+          },
+          "autoRenew": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "subscriptionActive": {
+            "type": "boolean"
+          },
+          "licenseValid": {
+            "type": "boolean"
+          }
         }
       },
       "UpdateApplicationDto": {
-        "required": ["idApplication", "name", "publicationDate"],
+        "required": [
+          "applicationId",
+          "idApplication",
+          "name",
+          "publicationDate"
+        ],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "maintenanceMode": { "type": "boolean" },
-          "publicationDate": { "type": "string", "format": "date" },
-          "idApplication": { "type": "integer", "format": "int64" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "parentModuleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maintenanceMode": {
+            "type": "boolean"
+          },
+          "publicationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "path": {
+            "type": "string"
+          },
+          "idApplication": {
+            "type": "integer",
+            "format": "int64"
+          }
         }
       },
       "Application": {
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "idApplication": { "type": "integer", "format": "int64" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "route": { "type": "string" },
-          "maintenanceMode": { "type": "boolean" },
-          "publicationDate": { "type": "string", "format": "date" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idApplication": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "route": {
+            "type": "string"
+          },
+          "maintenanceMode": {
+            "type": "boolean"
+          },
+          "publicationDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "UpdateApplicationCategoryDto": {
+        "required": ["idApplicationCategory", "name"],
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "idApplicationCategory": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApplicationCategory": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idApplicationCategory": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateUserApplicationDto": {
+        "required": ["applicationId", "userId"],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accessLevel": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conditions": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "UserApplication": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accessLevel": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conditions": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "applicationName": {
+            "type": "string"
+          }
         }
       },
       "AssignPolicyRequest": {
         "type": "object",
         "properties": {
-          "userId": { "type": "integer", "format": "int64" },
-          "policyId": { "type": "integer", "format": "int64" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "isActive": { "type": "boolean" },
-          "expiresAt": { "type": "string", "format": "date" }
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "policyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date"
+          }
         }
       },
       "UserPolicy": {
         "type": "object",
         "properties": {
-          "userId": { "type": "integer", "format": "int64" },
-          "policyId": { "type": "integer", "format": "int64" },
-          "isActive": { "type": "boolean" },
-          "expiresAt": { "type": "string", "format": "date" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" }
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "policyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
         }
       },
       "CreateUserPermissionDto": {
         "type": "object",
         "properties": {
-          "userId": { "type": "integer", "format": "int64" },
-          "permissionId": { "type": "integer", "format": "int64" },
-          "level": { "type": "string" },
-          "isActive": { "type": "boolean" },
-          "expiresAt": { "type": "string", "format": "date" }
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "level": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date"
+          }
         }
       },
       "CreateRoleDto": {
         "required": ["description", "manageUsers", "name"],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "manageUsers": { "type": "boolean" },
-          "requiresApproval": { "type": "boolean" },
-          "approvalWorkflow": { "type": "string" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "manageUsers": {
+            "type": "boolean"
+          },
+          "requiresApproval": {
+            "type": "boolean"
+          },
+          "approvalWorkflow": {
+            "type": "string"
+          }
         }
       },
       "CreateRolePermissionDto": {
         "required": ["level", "permissionId", "roleId"],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "level": { "type": "string" },
-          "permissionId": { "type": "integer", "format": "int64" },
-          "roleId": { "type": "integer", "format": "int32" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "level": {
+            "type": "string"
+          },
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int32"
+          }
         }
       },
       "CreatePolicyDto": {
         "required": ["applicationId", "defaultEffect", "description", "name"],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "version": { "type": "string" },
-          "defaultEffect": { "type": "string", "enum": ["ALLOW", "DENY"] },
-          "isActive": { "type": "boolean" },
-          "priority": { "type": "integer", "format": "int32" },
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "version": {
+            "type": "string"
+          },
+          "defaultEffect": {
+            "type": "string",
+            "enum": ["ALLOW", "DENY"]
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
           "statements": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/PolicyStatementDto" }
+            "items": {
+              "$ref": "#/components/schemas/PolicyStatementDto"
+            }
           }
         }
       },
@@ -2365,18 +3648,44 @@
         "required": ["action", "name", "permissionType", "resource"],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "maxLength": 100, "minLength": 0, "type": "string" },
-          "description": { "maxLength": 500, "minLength": 0, "type": "string" },
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string"
+          },
           "permissionType": {
             "type": "string",
             "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
           },
-          "resource": { "maxLength": 200, "minLength": 0, "type": "string" },
+          "resource": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
           "action": {
             "type": "string",
             "enum": [
@@ -2392,8 +3701,14 @@
               "REJECT"
             ]
           },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "moduleId": { "type": "integer", "format": "int64" },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "moduleId": {
+            "type": "integer",
+            "format": "int64"
+          },
           "httpMethod": {
             "maxLength": 10,
             "minLength": 0,
@@ -2405,27 +3720,34 @@
             "minLength": 0,
             "type": "string"
           },
-          "uiComponent": { "maxLength": 200, "minLength": 0, "type": "string" },
-          "featureFlag": { "maxLength": 100, "minLength": 0, "type": "string" },
-          "priority": { "minimum": 0, "type": "integer", "format": "int32" },
-          "cacheTtl": { "minimum": 0, "type": "integer", "format": "int32" },
-          "isSensitive": { "type": "boolean" },
-          "metadata": { "maxLength": 2000, "minLength": 0, "type": "string" }
-        }
-      },
-      "CreateModulesApplicationDto": {
-        "required": ["applicationId", "description", "name"],
-        "type": "object",
-        "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "parentModuleId": { "type": "integer", "format": "int32" }
+          "uiComponent": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "featureFlag": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "priority": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "cacheTtl": {
+            "minimum": 0,
+            "type": "integer",
+            "format": "int32"
+          },
+          "isSensitive": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "maxLength": 2000,
+            "minLength": 0,
+            "type": "string"
+          }
         }
       },
       "CreateCompanyApplicationDto": {
@@ -2437,103 +3759,254 @@
         ],
         "type": "object",
         "properties": {
-          "companyId": { "type": "integer", "format": "int64" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "route": { "type": "string" },
-          "licenseStartDate": { "type": "string", "format": "date" },
-          "licenseEndDate": { "type": "string", "format": "date" },
-          "isActive": { "type": "boolean" },
-          "userLimit": { "type": "integer", "format": "int32" },
-          "subscriptionType": { "type": "string" },
-          "autoRenew": { "type": "boolean" },
-          "notes": { "type": "string" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "companyId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "route": {
+            "type": "string"
+          },
+          "licenseStartDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "licenseEndDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "userLimit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subscriptionType": {
+            "type": "string"
+          },
+          "autoRenew": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string"
+          }
         }
       },
       "AuthorizationRequest": {
         "type": "object",
         "properties": {
-          "userId": { "type": "integer", "format": "int64" },
-          "applicationId": { "type": "integer", "format": "int64" },
-          "action": { "type": "string" },
-          "resource": { "type": "string" },
-          "ipAddress": { "type": "string" },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "action": {
+            "type": "string"
+          },
+          "resource": {
+            "type": "string"
+          },
+          "ipAddress": {
+            "type": "string"
+          },
           "userAttributes": {
             "type": "object",
-            "additionalProperties": { "type": "object" }
+            "additionalProperties": {
+              "type": "object"
+            }
           },
           "resourceAttributes": {
             "type": "object",
-            "additionalProperties": { "type": "object" }
+            "additionalProperties": {
+              "type": "object"
+            }
           },
           "environmentAttributes": {
             "type": "object",
-            "additionalProperties": { "type": "object" }
+            "additionalProperties": {
+              "type": "object"
+            }
           }
         }
       },
       "AuthorizationResponse": {
         "type": "object",
         "properties": {
-          "effect": { "type": "string", "enum": ["ALLOW", "DENY"] },
-          "reason": { "type": "string" },
+          "effect": {
+            "type": "string",
+            "enum": ["ALLOW", "DENY"]
+          },
+          "reason": {
+            "type": "string"
+          },
           "evaluatedPolicies": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "allowed": { "type": "boolean" }
+          "allowed": {
+            "type": "boolean"
+          }
         }
       },
       "CreateApplicationDto": {
-        "required": ["name", "publicationDate"],
+        "required": ["applicationId", "name", "publicationDate"],
         "type": "object",
         "properties": {
-          "deleted": { "type": "boolean" },
-          "usrCrea": { "type": "integer", "format": "int32" },
-          "usrMod": { "type": "integer", "format": "int32" },
-          "createdAt": { "type": "string", "format": "date-time" },
-          "updatedAt": { "type": "string", "format": "date-time" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "maintenanceMode": { "type": "boolean" },
-          "publicationDate": { "type": "string", "format": "date" }
-        }
-      },
-      "PageModulesApplication": {
-        "type": "object",
-        "properties": {
-          "totalPages": { "type": "integer", "format": "int32" },
-          "totalElements": { "type": "integer", "format": "int64" },
-          "first": { "type": "boolean" },
-          "last": { "type": "boolean" },
-          "size": { "type": "integer", "format": "int32" },
-          "content": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/ModulesApplication" }
+          "deleted": {
+            "type": "boolean"
           },
-          "number": { "type": "integer", "format": "int32" },
-          "sort": { "$ref": "#/components/schemas/SortObject" },
-          "numberOfElements": { "type": "integer", "format": "int32" },
-          "pageable": { "$ref": "#/components/schemas/PageableObject" },
-          "empty": { "type": "boolean" }
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "parentModuleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maintenanceMode": {
+            "type": "boolean"
+          },
+          "publicationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "path": {
+            "type": "string"
+          }
         }
       },
-      "PageableObject": {
+      "CreateApplicationCategoryDto": {
+        "required": ["name"],
         "type": "object",
         "properties": {
-          "offset": { "type": "integer", "format": "int64" },
-          "sort": { "$ref": "#/components/schemas/SortObject" },
-          "paged": { "type": "boolean" },
-          "unpaged": { "type": "boolean" },
-          "pageNumber": { "type": "integer", "format": "int32" },
-          "pageSize": { "type": "integer", "format": "int32" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
         }
       },
-      "SortObject": {
+      "CreateUserApplicationDto": {
+        "required": ["accessLevel", "applicationId", "userId"],
         "type": "object",
         "properties": {
-          "empty": { "type": "boolean" },
-          "sorted": { "type": "boolean" },
-          "unsorted": { "type": "boolean" }
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "accessLevel": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conditions": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
         }
       }
     },

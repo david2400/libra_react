@@ -3,16 +3,6 @@ import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/ty
 
 // --- IUser Types ---------------------------------------------------------
 
-export interface IUser extends IAuditInfo {
-  id_user: number;
-  username: string;
-  password: string;
-  last_login?: string;
-  refresh_token?: string;
-  status: string;
-  company_id?: number;
-  client_id?: number;
-}
 
 export interface ICreateUser {
   username: string;
@@ -26,7 +16,10 @@ export interface ICreateUser {
 
 export interface IUpdateUser extends ICreateUser {
   id_user?: number;
+}
 
+
+export interface IUser extends IAuditInfo, IUpdateUser {
 }
 
 // --- IUser List Types -------------------------------------------------
