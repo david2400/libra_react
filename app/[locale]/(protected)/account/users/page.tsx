@@ -26,7 +26,7 @@ const UsersPage: NextPage = async () => {
 
     const usersData: IUser[] = Array.isArray(userResponse)
       ? userResponse
-      : userResponse?.data || [];
+      : userResponse?.content || [];
 
     return <UserManager initialData={usersData} />;
   } catch (error) {

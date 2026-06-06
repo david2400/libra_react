@@ -30,7 +30,7 @@ const ProfilesPage: NextPage = async () => {
     // Extract the data array from the paginated response
     const profileData: IProfile[] = Array.isArray(profileResponse)
       ? profileResponse
-      : profileResponse?.data || [];
+      : profileResponse?.content || [];
 
     return <ProfileManager initialData={profileData} />;
   } catch (error) {

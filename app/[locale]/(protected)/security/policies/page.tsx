@@ -29,7 +29,7 @@ const PoliciesPage: NextPage = async () => {
     // Extract the data array from the paginated response
     const policiesData: IPolicy[] = Array.isArray(policiesResponse)
       ? policiesResponse
-      : policiesResponse?.data || [];
+      : policiesResponse?.content || [];
 
     return <PolicyManager initialData={policiesData} />;
   } catch (error) {

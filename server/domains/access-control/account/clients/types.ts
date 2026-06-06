@@ -1,44 +1,52 @@
 ﻿import 'server-only';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import { ICompany } from '../companies';
-import { IAuditInfo } from '@/server/lib/types';
+import type { IAuditInfo } from '@/server/lib/types';
+import type { ICompany } from '../companies';
 
 // --- Client Types -------------------------------------------------------------
-export interface IClient extends IAuditInfo {
-  id: string | number;
-  name: string;
-  email?: string;
-  phone?: string;
-  company_name?: string;
-  contact_person?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-}
 
+
+/**
+ * Payload para crear un nuevo cliente
+ * Todos los campos obligatorios según la entidad
+ */
 export interface ICreateClient {
-  name: string;
-  email?: string;
-  phone?: string;
-  company_name?: string;
-  contact_person?: string;
-  address?: string;
-  city?: string;
-  country?: string;
+  first_name: string;
+  second_name?: string;
+  first_last_name: string;
+  second_last_name?: string;
+  type_id: string;
+  card_id: string;
+  sex: string;
+  gender: string;
+  status?: string;
 }
 
+/**
+ * Payload para actualizar un cliente existente
+ * Todos los campos son opcionales excepto el ID
+ */
 export interface IUpdateClient {
-  name?: string;
-  email?: string;
-  phone?: string;
-  company_name?: string;
-  contact_person?: string;
-  address?: string;
-  city?: string;
-  country?: string;
-  is_active?: boolean;
+  id_client?: number;
+  first_name?: string;
+  second_name?: string;
+  first_last_name?: string;
+  second_last_name?: string;
+  type_id?: string;
+  card_id?: string;
+  sex?: string;
+  gender?: string;
+  status?: string;
 }
 
+
+
+/**
+ * Interface principal de Client basada en la entidad del backend
+ * Representa una persona (cliente) con información personal completa
+ */
+export interface IClient extends IAuditInfo, IUpdateClient {
+}
 // --- Client-ICompany Relationships Types ---------------------------------------
 
 export interface IClientCompany {

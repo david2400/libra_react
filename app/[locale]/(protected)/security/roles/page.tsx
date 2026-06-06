@@ -31,7 +31,7 @@ const RolesPage: NextPage = async () => {
     // Extract the data array from the paginated response
     const rolesData: IRole[] = Array.isArray(rolesResponse)
       ? rolesResponse
-      : rolesResponse?.data || [];
+      : rolesResponse?.content || [];
 
     return <RoleManager initialData={rolesData} />;
   } catch (error) {

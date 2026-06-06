@@ -39,3 +39,38 @@ export async function deleteUserServerAction(id: number) {
 
   return result.data;
 }
+
+// Alias para compatibilidad con el módulo de clients
+export { createUserServerAction as createUserAction };
+export { updateUserServerAction as updateUserAction };
+export { deleteUserServerAction as deleteUserAction };
+
+// Nueva acción para obtener usuarios por cliente
+export async function getUsersByClientAction(clientId: number) {
+  try {
+    const { usersRepository } = await import('@/server/domains/access-control/account/users');
+    
+    const result = await usersRepository.list({ 
+      client_id: clientId 
+    });
+
+    if (!result) {
+      return [];
+    }
+
+    // Si es una respuesta paginada, retornar el contenido
+    if ('content' in result && Array.isArray(result.content)) {
+      return result.content;
+    }
+
+    // Si es un array directo, retornarlo
+    if (Array.isArray(result)) {
+      return result;
+    }
+
+    return [];
+  } catch (error) {
+    console.error('Error loading users by client:', error);
+    return [];
+  }
+}

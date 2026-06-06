@@ -32,7 +32,7 @@ const PermissionsPage: NextPage = async () => {
 
     const permissionsData: IPermission[] = Array.isArray(permissionsResponse)
       ? permissionsResponse
-      : permissionsResponse?.data || [];
+      : permissionsResponse?.content || [];
 
     return <PermissionManager initialData={permissionsData} />;
   } catch (error) {

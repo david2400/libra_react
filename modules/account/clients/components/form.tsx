@@ -7,9 +7,10 @@ import { IFormAddProps, IFormProps, IFormUpdateProps } from "@repo/ui/form/model
 import { FormClient } from "../scenes/formClient";
 import { validationClient } from "../schemas/client.schema";
 import { IClientCreateRequest, IClientUpdateRequest } from "../models/client.interface";
-import { clientsApi } from "@/lib/api";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { createClientServerAction } from "@/app/[locale]/(protected)/account/clients/actions";
 
 const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>) => {
   return <FormClient initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
@@ -20,16 +21,28 @@ export const RegisterClient = ({}: IFormAddProps = {}) => {
   const { useTranslations } = require('next-intl');
   const t = useTranslations('account.clients.messages');
   const tMessages = useTranslations('messages');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const defaultValues: IClientCreateRequest = {
-    name: "",
-    email: "",
-    phone: "",
+    first_name: "",
+    second_name: "",
+    first_last_name: "",
+    second_last_name: "",
+    type_id: "CC",
+    card_id: "",
+    sex: "M",
+    gender: "Masculino",
+    status: "Activo",
   };
 
   const handleSubmit: SubmitHandler<IClientCreateRequest> = async (values) => {
+    if (isSubmitting) return;
+    
+    setIsSubmitting(true);
     try {
-      const result = await clientsApi.create(values);
+      // Importación dinámica de server action
+   
+      const result = await createClientServerAction(values);
       
       Swal.fire({
         title: t('createSuccess'),
@@ -44,6 +57,8 @@ export const RegisterClient = ({}: IFormAddProps = {}) => {
         text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -55,12 +70,19 @@ export const UpdateClient = ({ initialValues }: IFormUpdateProps<IClientUpdateRe
   const { useTranslations } = require('next-intl');
   const t = useTranslations('account.clients.messages');
   const tMessages = useTranslations('messages');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit: SubmitHandler<IClientUpdateRequest> = async (values) => {
-    if (!values.id) return;
+    if (!values.id_client || isSubmitting) return;
     
+    setIsSubmitting(true);
     try {
-      const result = await clientsApi.update(values.id, values);
+      // Importación dinámica de server action
+      const { updateClientServerAction } = await import(
+        "@/app/[locale]/(protected)/account/clients/actions"
+      );
+      
+      const result = await updateClientServerAction(values.id_client, values);
       
       Swal.fire({
         title: t('updateSuccess'),
@@ -75,6 +97,8 @@ export const UpdateClient = ({ initialValues }: IFormUpdateProps<IClientUpdateRe
         text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 

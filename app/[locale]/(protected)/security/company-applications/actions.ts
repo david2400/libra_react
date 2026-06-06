@@ -37,5 +37,5 @@ export async function deleteCompanyApplicationServerAction(companyApplicationId:
 export async function getAllCompaniesServerAction(): Promise<IApplication[]> {
   const result = await getApplications();
 
-  return result.data ?? [];
+  return result.content ?? [];
 }

@@ -33,7 +33,7 @@ const CompanyApplicationsPage: NextPage = async () => {
     // Extract the data array from the paginated response
     const serverApplications: ICompanyApplication[] = Array.isArray(companyApplicationsResponse)
       ? companyApplicationsResponse
-      : companyApplicationsResponse?.data || [];
+      : companyApplicationsResponse?.content || [];
 
     // Transform server types to client types (convert Date to string)
 

@@ -46,5 +46,5 @@ export async function getAllCompaniesServerAction(): Promise<ICompany[]> {
 
   return Array.isArray(result)
     ? result
-    : result?.data || [];
+    : result?.content || [];
 }
