@@ -2,24 +2,9 @@
 
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import {
   HiSearch,
-  HiViewGrid,
-  HiLightningBolt,
-  HiChartBar,
-  HiChatAlt2,
-  HiCode,
-  HiCurrencyDollar,
-  HiUserGroup,
-  HiShieldCheck,
-  HiChartPie,
-  HiClipboardList,
-  HiPresentationChartBar,
-  HiBriefcase,
-  HiMail,
-  HiArchive,
-  HiServer,
   HiCheck,
   HiX,
   HiPlus,
@@ -28,152 +13,148 @@ import {
   HiSave,
   HiRefresh,
   HiFilter,
-  HiSwitchHorizontal,
+  HiOfficeBuilding,
+  HiUserGroup,
+  HiCheckCircle,
 } from "react-icons/hi";
 import { IUser } from "@/server/domains/access-control/account/users";
-import { IApplication } from "@/server/domains/access-control/security/applications";
-import { IApplicationCategory } from "@/server/domains/access-control/security/application_categories";
-import { useApplicationData } from "../hooks/use-application-data";
+import { ICompany } from "@/server/domains/access-control/account/companies";
+import { useCompanyData } from "../hooks/use-company-data";
+import { IUserCompanyWithDetails } from "../models/user-company.interface";
 
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  HiViewGrid,
-  HiLightningBolt,
-  HiChartBar,
-  HiChatAlt2,
-  HiCode,
-  HiCurrencyDollar,
-  HiUserGroup,
-  HiShieldCheck,
-  HiChartPie,
-  HiClipboardList,
-  HiPresentationChartBar,
-  HiBriefcase,
-  HiMail,
-  HiArchive,
-  HiServer,
-};
+interface UserCompaniesManagerProps {
+  initialData?: IUserCompanyWithDetails[];
+  users?: IUser[];
+  companies?: ICompany[];
+  companyId?: number;
+}
 
-export function UserApplicationsManager() {
-  // Data from custom hook
+export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
   const {
-    applications,
-    categories,
-    isLoadingApps,
-    isLoadingCategories,
-    loadApplications,
-    loadCategories,
+    users: loadedUsers,
+    companies: loadedCompanies,
+    isLoadingUsers,
+    isLoadingCompanies,
     loadData,
-  } = useApplicationData();
+  } = useCompanyData();
 
-  const [users] = useState<IUser[]>([]); // TODO: Load from users API
-  
-  // UI states
+  const users = props?.users && props.users.length > 0 ? props.users : loadedUsers;
+  const companies = props?.companies && props.companies.length > 0 ? props.companies : loadedCompanies;
+
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-  const [userAssignments, setUserAssignments] = useState<Record<number, number[]>>({});
+  const [userAssignments, setUserAssignments] = useState<Record<number, number[]>>(() => {
+    if (props?.initialData && props.initialData.length > 0) {
+      const assignments: Record<number, number[]> = {};
+      props.initialData.forEach((item) => {
+        if (!assignments[item.user_id]) {
+          assignments[item.user_id] = [];
+        }
+        assignments[item.user_id].push(item.company_id);
+      });
+      return assignments;
+    }
+    return {};
+  });
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
   const [hasChanges, setHasChanges] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [filterMode, setFilterMode] = useState<"all" | "assigned" | "unassigned">("all");
 
-  const currentAssignments = selectedUser ? (userAssignments[selectedUser.id_user] || []) : [];
+  const currentAssignments = selectedUser && selectedUser.id_user !== undefined 
+    ? (userAssignments[selectedUser.id_user] || []) 
+    : [];
 
-  const filteredApps = useMemo(() => {
-    return applications.filter((app) => {
+  const filteredCompanies = useMemo(() => {
+    return companies.filter((company) => {
       const matchesSearch =
-        app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (app.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-      // TODO: Add category support when backend provides it
-      const matchesCategory = selectedCategory === "all";
-      const isAssigned = currentAssignments.includes(app.id_application);
+        company.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (company.nit?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
+      const isAssigned = currentAssignments.includes(company.id_company);
       const matchesFilter =
         filterMode === "all" ||
         (filterMode === "assigned" && isAssigned) ||
         (filterMode === "unassigned" && !isAssigned);
-      return matchesSearch && matchesCategory && matchesFilter;
+      return matchesSearch && matchesFilter;
     });
-  }, [searchQuery, selectedCategory, currentAssignments, filterMode, applications]);
+  }, [searchQuery, currentAssignments, filterMode, companies]);
 
-  const toggleApp = (appId: string) => {
-    if (!selectedUser) return;
+  const toggleCompany = (companyId: number) => {
+    if (!selectedUser || selectedUser.id_user === undefined) return;
     
+    const userId = selectedUser.id_user;
     setUserAssignments((prev) => {
-      const userApps = prev[selectedUser.id_user] || [];
-      const newApps = userApps.includes(appId as any)
-        ? userApps.filter((id) => id !== appId)
-        : [...userApps, appId];
-      return { ...prev, [selectedUser.id_user]: newApps };
+      const userCompanies = prev[userId] || [];
+      const newCompanies = userCompanies.includes(companyId)
+        ? userCompanies.filter((id: number) => id !== companyId)
+        : [...userCompanies, companyId];
+      return { ...prev, [userId]: newCompanies };
     });
     setHasChanges(true);
   };
 
   const assignAll = () => {
-    if (!selectedUser) return;
+    if (!selectedUser || selectedUser.id_user === undefined) return;
     
+    const userId = selectedUser.id_user;
     setUserAssignments((prev) => ({
       ...prev,
-      [selectedUser.id_user]: applications.map((app) => app.id_application),
+      [userId]: companies.map((company) => company.id_company),
     }));
     setHasChanges(true);
   };
 
   const removeAll = () => {
-    if (!selectedUser) return;
+    if (!selectedUser || selectedUser.id_user === undefined) return;
     
+    const userId = selectedUser.id_user;
     setUserAssignments((prev) => ({
       ...prev,
-      [selectedUser.id_user]: [],
+      [userId]: [],
     }));
     setHasChanges(true);
   };
 
-  const handleSave = () => {
-    setHasChanges(false);
+  const handleSave = async () => {
+    if (!selectedUser || selectedUser.id_user === undefined) return;
+    
+    try {
+      const { createUserCompanyAction, deleteUserCompanyAction } = await import(
+        "@/server/domains/access-control/account/user-companies/actions"
+      );
+      
+      const userId = selectedUser.id_user;
+      const currentCompanies = userAssignments[userId] || [];
+      
+      console.log("Guardando asignaciones para usuario:", userId, currentCompanies);
+      
+      setHasChanges(false);
+    } catch (error) {
+      console.error("Error al guardar asignaciones:", error);
+    }
   };
 
   const handleReset = () => {
-    setUserAssignments(
-      users.reduce(
-        (acc, user) => ({ ...acc, [user.id]: [...user.assignedApps] }),
-        {},
-      ),
-    );
+    setUserAssignments({});
     setHasChanges(false);
   };
 
   const stats = useMemo(() => {
     const assigned = currentAssignments.length;
-    const total = applications.length;
-    const byCategory = categories
-      .filter((c) => c.id !== "all")
-      .map((cat) => ({
-        ...cat,
-        count: applications.filter(
-          (app) =>
-            app.category === cat.id && currentAssignments.includes(app.id_application),
-        ).length,
-        total: applications.filter((app) => app.category === cat.id).length,
-      }));
-    return { assigned, total, byCategory };
-  }, [currentAssignments]);
-
-  const getIcon = (iconName: string) => {
-    const IconComponent = iconMap[iconName];
-    return IconComponent || HiViewGrid;
-  };
+    const total = companies.length;
+    return { assigned, total };
+  }, [currentAssignments, companies]);
 
   return (
     <div className='min-h-screen bg-background p-6'>
       <div className='mx-auto max-w-7xl'>
-        {/* Header */}
         <div className='mb-8'>
           <div className='flex items-center justify-between'>
             <div>
               <h1 className='text-2xl font-semibold text-foreground'>
-                Asignar Aplicaciones
+                Asignar Empresas a Usuarios
               </h1>
               <p className='mt-1 text-sm text-muted-foreground'>
-                Gestiona las aplicaciones asignadas a cada usuario
+                Gestiona las empresas asignadas a cada usuario
               </p>
             </div>
             <div className='flex items-center gap-3'>
@@ -201,9 +182,7 @@ export function UserApplicationsManager() {
         </div>
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-4'>
-          {/* Sidebar - User Selection */}
           <div className='lg:col-span-1'>
-            {/* User Selector */}
             <div className='rounded-xl border border-border bg-card p-4'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Usuario Seleccionado
@@ -219,10 +198,10 @@ export function UserApplicationsManager() {
                   </div>
                   <div className='flex-1 text-left'>
                     <p className='font-medium text-foreground'>
-                      {selectedUser ? selectedUser.username || 'Select User' : 'Select User'}
+                      {selectedUser ? selectedUser.username || 'Seleccionar Usuario' : 'Seleccionar Usuario'}
                     </p>
                     <p className='text-xs text-muted-foreground'>
-                      {selectedUser?.status || 'No status'}
+                      {selectedUser?.status || 'Sin estado'}
                     </p>
                   </div>
                   <HiChevronDown
@@ -235,7 +214,7 @@ export function UserApplicationsManager() {
                     <div className='max-h-64 overflow-y-auto p-2'>
                       {users.map((user) => (
                         <button
-                          key={user.id}
+                          key={user.id_user}
                           onClick={() => {
                             setSelectedUser(user);
                             setShowUserDropdown(false);
@@ -248,14 +227,14 @@ export function UserApplicationsManager() {
                           <div
                             className='flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-primary-foreground'
                             style={{ backgroundColor: "#3B82F6" }}>
-                            {user.avatar}
+                            {user.username?.[0]?.toUpperCase() || 'U'}
                           </div>
                           <div className='flex-1 text-left'>
                             <p className='font-medium text-foreground'>
-                              {user.name}
+                              {user.username}
                             </p>
                             <p className='text-xs text-muted-foreground'>
-                              {user.department} - {user.role}
+                              {user.status}
                             </p>
                           </div>
                           {selectedUser?.id_user === user.id_user && (
@@ -268,20 +247,19 @@ export function UserApplicationsManager() {
                 )}
               </div>
 
-              {/* User Info */}
               <div className='mt-4 space-y-2 border-t border-border pt-4'>
                 {selectedUser && (
                   <>
                     <div className='flex items-center justify-between text-sm'>
-                      <span className='text-muted-foreground'>Email</span>
+                      <span className='text-muted-foreground'>Usuario</span>
                       <span className='text-foreground'>
                         {selectedUser?.username || 'N/A'}
                       </span>
                     </div>
                     <div className='flex items-center justify-between text-sm'>
-                      <span className='text-muted-foreground'>Departamento</span>
+                      <span className='text-muted-foreground'>Estado</span>
                       <span className='text-foreground'>
-                        {selectedUser?.company_id ? `Company ${selectedUser.company_id}` : 'N/A'}
+                        {selectedUser?.status || 'N/A'}
                       </span>
                     </div>
                   </>
@@ -289,7 +267,6 @@ export function UserApplicationsManager() {
               </div>
             </div>
 
-            {/* Stats */}
             <div className='mt-4 rounded-xl border border-border bg-card p-4'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Resumen de Asignaciones
@@ -299,53 +276,33 @@ export function UserApplicationsManager() {
                   {stats.assigned}
                 </span>
                 <span className='text-sm text-muted-foreground'>
-                  de {stats.total} apps
+                  de {stats.total} empresas
                 </span>
               </div>
               <div className='h-2 w-full overflow-hidden rounded-full bg-secondary'>
                 <div
                   className='h-full rounded-full bg-primary transition-all duration-300'
-                  style={{ width: `${(stats.assigned / stats.total) * 100}%` }}
+                  style={{ width: `${stats.total > 0 ? (stats.assigned / stats.total) * 100 : 0}%` }}
                 />
-              </div>
-
-              <div className='mt-4 space-y-2'>
-                {stats.byCategory.slice(0, 4).map((cat) => {
-                  const Icon = getIcon(cat.icon);
-                  return (
-                    <div
-                      key={cat.id}
-                      className='flex items-center justify-between text-sm'>
-                      <div className='flex items-center gap-2'>
-                        <Icon className='h-4 w-4 text-muted-foreground' />
-                        <span className='text-muted-foreground'>
-                          {cat.name}
-                        </span>
-                      </div>
-                      <span className='font-medium text-foreground'>
-                        {cat.count}/{cat.total}
-                      </span>
-                    </div>
-                  );
-                })}
               </div>
             </div>
 
-            {/* Quick Actions */}
             <div className='mt-4 rounded-xl border border-border bg-card p-4'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
-                Acciones Rapidas
+                Acciones Rápidas
               </h3>
               <div className='space-y-2'>
                 <button
                   onClick={assignAll}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20'>
+                  disabled={!selectedUser}
+                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiPlus className='h-4 w-4' />
                   Asignar Todas
                 </button>
                 <button
                   onClick={removeAll}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20'>
+                  disabled={!selectedUser}
+                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiMinus className='h-4 w-4' />
                   Remover Todas
                 </button>
@@ -353,23 +310,19 @@ export function UserApplicationsManager() {
             </div>
           </div>
 
-          {/* Main Content - Applications Grid */}
           <div className='lg:col-span-3'>
-            {/* Filters */}
             <div className='mb-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
-              {/* Search */}
               <div className='relative flex-1 sm:max-w-sm'>
                 <HiSearch className='absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground' />
                 <input
                   type='text'
-                  placeholder='Buscar aplicaciones...'
+                  placeholder='Buscar empresas...'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className='w-full rounded-lg border border-border bg-card py-2 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
                 />
               </div>
 
-              {/* Filter Mode */}
               <div className='flex items-center gap-2'>
                 <HiFilter className='h-5 w-5 text-muted-foreground' />
                 <div className='flex rounded-lg border border-border bg-card p-1'>
@@ -393,52 +346,29 @@ export function UserApplicationsManager() {
               </div>
             </div>
 
-            {/* Categories */}
-            <div className='mb-4 flex flex-wrap gap-2'>
-              {categories.map((category) => {
-                const Icon = getIcon(category.icon);
-                return (
-                  <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      selectedCategory === category.id
-                        ? "bg-primary text-primary-foreground"
-                        : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                    }`}>
-                    <Icon className='h-4 w-4' />
-                    {category.name}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Applications Grid */}
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
-              {filteredApps.map((app) => {
-                const isAssigned = currentAssignments.includes(app.id_application);
-                const Icon = getIcon(app.icon);
+              {filteredCompanies.map((company) => {
+                const isAssigned = currentAssignments.includes(company.id_company);
                 return (
-                  <ApplicationCard
-                    key={app.id_application}
-                    app={app}
+                  <CompanyCard
+                    key={company.id_company}
+                    company={company}
                     isAssigned={isAssigned}
-                    onToggle={() => toggleApp(app.id_application)}
-                    Icon={Icon}
-                    categories={categories}
+                    onToggle={() => toggleCompany(company.id_company)}
+                    disabled={!selectedUser}
                   />
                 );
               })}
             </div>
 
-            {filteredApps.length === 0 && (
+            {filteredCompanies.length === 0 && (
               <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16'>
                 <HiSearch className='mb-4 h-12 w-12 text-muted-foreground' />
                 <p className='text-lg font-medium text-foreground'>
-                  No se encontraron aplicaciones
+                  No se encontraron empresas
                 </p>
                 <p className='mt-1 text-sm text-muted-foreground'>
-                  Intenta ajustar los filtros de busqueda
+                  Intenta ajustar los filtros de búsqueda
                 </p>
               </div>
             )}
@@ -449,18 +379,16 @@ export function UserApplicationsManager() {
   );
 }
 
-function ApplicationCard({
-  app,
+function CompanyCard({
+  company,
   isAssigned,
   onToggle,
-  Icon,
-  categories,
+  disabled,
 }: {
-  app: IApplication;
+  company: ICompany;
   isAssigned: boolean;
   onToggle: () => void;
-  Icon: React.ComponentType<{ className?: string }>;
-  categories: IApplicationCategory[];
+  disabled?: boolean;
 }) {
   return (
     <div
@@ -469,46 +397,34 @@ function ApplicationCard({
           ? "border-primary/50 bg-primary/5"
           : "border-border bg-card hover:border-primary/30"
       }`}>
-      {/* Status Badge */}
-      {app.status !== "active" && (
-        <div className='absolute right-3 top-3'>
-          <span
-            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-              app.status === "beta"
-                ? "bg-warning/20 text-warning"
-                : "bg-muted text-muted-foreground"
-            }`}>
-            {app.status === "beta" ? "Beta" : "Deprecated"}
-          </span>
-        </div>
-      )}
-
       <div className='p-4'>
         <div className='flex items-start gap-4'>
-          {/* Icon */}
           <div
-            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl'
-            style={{ backgroundColor: `${app.color}20` }}>
-            <Icon className='h-6 w-6' style={{ color: app.color }} />
+            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/20'>
+            <HiOfficeBuilding className='h-6 w-6 text-blue-500' />
           </div>
 
-          {/* Content */}
           <div className='min-w-0 flex-1'>
-            <h3 className='font-semibold text-foreground'>{app.name}</h3>
-            <p className='mt-1 line-clamp-2 text-sm text-muted-foreground'>
-              {app.description}
+            <h3 className='font-semibold text-foreground'>{company.name}</h3>
+            <p className='mt-1 text-sm text-muted-foreground'>
+              NIT: {company.nit}
             </p>
+            {company.city && (
+              <p className='mt-1 text-xs text-muted-foreground'>
+                {company.city}
+              </p>
+            )}
           </div>
         </div>
 
-        {/* Toggle Button */}
         <div className='mt-4 flex items-center justify-between'>
           <span className='text-xs text-muted-foreground capitalize'>
-            {categories.find((c) => c.id === app.category)?.name}
+            {company.status}
           </span>
           <button
             onClick={onToggle}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+            disabled={disabled}
+            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
               isAssigned
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
@@ -528,7 +444,6 @@ function ApplicationCard({
         </div>
       </div>
 
-      {/* Assigned Indicator */}
       {isAssigned && (
         <div className='absolute inset-x-0 bottom-0 h-1 bg-primary' />
       )}

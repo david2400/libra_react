@@ -13,6 +13,7 @@
 export { ClientManager } from './components/client-manager';
 export { ClientDetailModal } from './components/client-detail-modal';
 export { ClientUsersSection } from './components/client-users-section';
+export { CompanySelector } from './components/company-selector';
 export { RegisterClient, UpdateClient } from './components/form';
 
 // Hooks

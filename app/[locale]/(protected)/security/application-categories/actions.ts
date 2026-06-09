@@ -1,3 +1,5 @@
+"use server";
+
 import { getActiveApplicationCategories } from '@/server/domains/access-control/security/application_categories';
 import type { IApplicationCategory } from '@/server/domains/access-control/security/application_categories';
 

@@ -276,6 +276,37 @@
         "updateSuccess": "Usuario actualizado exitosamente",
         "deleteSuccess": "Usuario eliminado exitosamente"
       }
+    },
+    "userCompanies": {
+      "title": "Asignación de Empresas",
+      "description": "Gestiona las empresas asignadas a cada usuario",
+      "subtitle": "Asigna y administra empresas para cada usuario",
+      "createButton": "Nueva Asignación",
+      "editButton": "Editar Asignación",
+      "fields": {
+        "user": "Usuario",
+        "company": "Empresa",
+        "is_primary": "Empresa Principal",
+        "status": "Estado",
+        "access_level": "Nivel de Acceso",
+        "expires_at": "Fecha de Expiración",
+        "reason": "Razón"
+      },
+      "modal": {
+        "create_title": "Asignar Empresa a Usuario",
+        "edit_title": "Editar Asignación"
+      },
+      "metrics": {
+        "total": "Total de Asignaciones",
+        "active": "Asignaciones Activas",
+        "primary": "Asignaciones Principales",
+        "users": "Usuarios con Empresas"
+      },
+      "messages": {
+        "createSuccess": "Asignación creada exitosamente",
+        "updateSuccess": "Asignación actualizada exitosamente",
+        "deleteSuccess": "Asignación eliminada exitosamente"
+      }
     }
   },
   "security": {

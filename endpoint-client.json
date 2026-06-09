@@ -1,0 +1,1680 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Essenza Access Control API",
+    "description": "API para gestión de control de acceso, permisos, roles, usuarios y navegación",
+    "contact": {
+      "name": "Essenza Development Team",
+      "email": "dev@essenza.com"
+    },
+    "license": { "name": "Proprietary", "url": "https://essenza.com/license" },
+    "version": "v1.0.0"
+  },
+  "servers": [{ "url": "/", "description": "Default Server" }],
+  "tags": [
+    {
+      "name": "Internal Authentication",
+      "description": "Internal authentication endpoints using LoginUseCase"
+    },
+    { "name": "Authentication", "description": "JWT Authentication endpoints" },
+    {
+      "name": "Client Authentication",
+      "description": "Authentication endpoints for client users"
+    },
+    {
+      "name": "Employee Authentication",
+      "description": "Authentication endpoints for employee users"
+    }
+  ],
+  "paths": {
+    "/api/access_control/users/{id}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get user by ID",
+        "description": "Returns a user by its ID",
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/User" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/User" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Users"],
+        "summary": "Update user",
+        "description": "Updates an existing user by ID",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/User" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/User" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Users"],
+        "summary": "Delete user",
+        "description": "Deletes a user by ID",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/user-companies/user/{userId}/company/{companyId}": {
+      "put": {
+        "tags": ["User-Company Management"],
+        "summary": "Update user-company assignment",
+        "description": "Updates an existing user-company assignment",
+        "operationId": "updateUserCompany",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserCompanyDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCompanyResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCompanyResponseDto"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["User-Company Management"],
+        "summary": "Remove user from company",
+        "description": "Deletes a user-company assignment",
+        "operationId": "removeUserFromCompany",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/profiles/{id}": {
+      "get": {
+        "tags": ["Profiles"],
+        "summary": "Get profile by ID",
+        "description": "Returns a profile by its ID",
+        "operationId": "getById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Profile" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Profile" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Profiles"],
+        "summary": "Update profile",
+        "description": "Updates an existing profile by ID",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateProfileDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Profile" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Profile" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Profiles"],
+        "summary": "Delete profile",
+        "description": "Deletes a profile by ID",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/companies/{id}": {
+      "get": {
+        "tags": ["Companies"],
+        "summary": "Get company by ID",
+        "description": "Returns a company by its ID",
+        "operationId": "getById_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Company" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Company" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Companies"],
+        "summary": "Update company",
+        "description": "Updates an existing company by ID",
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateCompanyDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Company" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Company" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Companies"],
+        "summary": "Delete company",
+        "description": "Deletes a company by ID",
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/clients/{id}": {
+      "get": {
+        "tags": ["Clients"],
+        "summary": "Get client by ID",
+        "description": "Returns a client by its ID",
+        "operationId": "getById_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Client" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Client" } }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Clients"],
+        "summary": "Update client",
+        "description": "Updates an existing client by ID",
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateClientDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Client" } }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Client" } }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Clients"],
+        "summary": "Delete client",
+        "description": "Deletes a client by ID",
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "404": { "description": "Not found" },
+          "204": { "description": "No Content" }
+        }
+      }
+    },
+    "/api/access_control/users": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "List users",
+        "description": "Returns all users. Optional filter by username",
+        "operationId": "getAll",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/User" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Users"],
+        "summary": "Create user",
+        "description": "Creates a new user",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateUserDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/User" } }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/User" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-companies": {
+      "post": {
+        "tags": ["User-Company Management"],
+        "summary": "Assign user to company",
+        "description": "Creates a new user-company assignment",
+        "operationId": "assignUserToCompany",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateUserCompanyDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCompanyResponseDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserCompanyResponseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/profiles": {
+      "get": {
+        "tags": ["Profiles"],
+        "summary": "List profiles",
+        "description": "Returns all profiles. Optional filter by userId",
+        "operationId": "getAll_1",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Profile" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Profiles"],
+        "summary": "Create profile",
+        "description": "Creates a new profile",
+        "operationId": "create_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateProfileDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Profile" } }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Profile" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/companies": {
+      "get": {
+        "tags": ["Companies"],
+        "summary": "List companies",
+        "description": "Returns all companies. Optional filters: name, nit",
+        "operationId": "getAll_2",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "nit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Company" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Companies"],
+        "summary": "Create company",
+        "description": "Creates a new company",
+        "operationId": "create_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCompanyDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Company" } }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Company" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/clients": {
+      "get": {
+        "tags": ["Clients"],
+        "summary": "List clients",
+        "description": "Returns all clients. Optional filter by cardId",
+        "operationId": "getAll_3",
+        "parameters": [
+          {
+            "name": "cardId",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Client" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Clients"],
+        "summary": "Create client",
+        "description": "Creates a new client",
+        "operationId": "create_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateClientDto" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Client" } }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": { "schema": { "$ref": "#/components/schemas/Client" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/auth/validate": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Validate JWT token",
+        "description": "Validate token and return user information for cross-project validation",
+        "operationId": "validateToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenValidationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Token is invalid or expired",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenValidationResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Token is valid",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenValidationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/auth/refresh": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Refresh JWT token",
+        "description": "Generate new access token from refresh token",
+        "operationId": "refreshToken",
+        "requestBody": {
+          "content": { "application/json": { "schema": { "type": "string" } } },
+          "required": true
+        },
+        "responses": {
+          "401": {
+            "description": "Invalid or expired refresh token",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          },
+          "200": {
+            "description": "Token refreshed successfully",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Authenticate user",
+        "description": "Login with username and password to get JWT token",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          },
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/auth/employee/login": {
+      "post": {
+        "tags": ["Employee Authentication"],
+        "summary": "Employee login",
+        "description": "Authenticate employee user and get JWT tokens",
+        "operationId": "employeeLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EmployeeLoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "403": {
+            "description": "Account inactive or suspended",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "401": {
+            "description": "Invalid credentials or unauthorized",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "200": {
+            "description": "Authentication successful",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/api/access_control/auth/client/login": {
+      "post": {
+        "tags": ["Client Authentication"],
+        "summary": "Client login",
+        "description": "Authenticate client user and get JWT tokens",
+        "operationId": "clientLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ClientLoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "401": {
+            "description": "Invalid credentials or unauthorized",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "403": {
+            "description": "Account inactive or not verified",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          },
+          "200": {
+            "description": "Authentication successful",
+            "content": { "*/*": { "schema": { "type": "object" } } }
+          }
+        }
+      }
+    },
+    "/api/access_control/api/internal/auth/validate-credentials": {
+      "post": {
+        "tags": ["Internal Authentication"],
+        "summary": "Validate credentials only",
+        "description": "Validate user credentials without generating tokens",
+        "operationId": "validateCredentials",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Credentials validation result",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "object" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/api/internal/auth/login": {
+      "post": {
+        "tags": ["Internal Authentication"],
+        "summary": "Internal user login",
+        "description": "Internal login endpoint using LoginUseCase directly",
+        "operationId": "internalLogin",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          },
+          "200": {
+            "description": "Authentication successful",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/LoginResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-companies/user/{userId}": {
+      "get": {
+        "tags": ["User-Company Management"],
+        "summary": "Get user's companies",
+        "description": "Returns all companies assigned to a user",
+        "operationId": "getUserCompanies",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCompanyResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-companies/user/{userId}/active": {
+      "get": {
+        "tags": ["User-Company Management"],
+        "summary": "Get user's active companies",
+        "description": "Returns active and non-expired companies for a user",
+        "operationId": "getUserActiveCompanies",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCompanyResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-companies/company/{companyId}": {
+      "get": {
+        "tags": ["User-Company Management"],
+        "summary": "Get company's users",
+        "description": "Returns all users assigned to a company",
+        "operationId": "getCompanyUsers",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCompanyResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/user-companies/company/{companyId}/active": {
+      "get": {
+        "tags": ["User-Company Management"],
+        "summary": "Get company's active users",
+        "description": "Returns active and non-expired users for a company",
+        "operationId": "getCompanyActiveUsers",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCompanyResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/auth/employee/health": {
+      "get": {
+        "tags": ["Employee Authentication"],
+        "summary": "Health check",
+        "description": "Check if employee authentication service is available",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/auth/client/health": {
+      "get": {
+        "tags": ["Client Authentication"],
+        "summary": "Health check",
+        "description": "Check if client authentication service is available",
+        "operationId": "health_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/api/internal/auth/health": {
+      "get": {
+        "tags": ["Internal Authentication"],
+        "summary": "Health check",
+        "description": "Check if internal authentication service is available",
+        "operationId": "health_2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateUserDto": {
+        "required": ["idUser", "password", "username"],
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "lastLogin": { "type": "string", "format": "date" },
+          "refreshToken": { "type": "string" },
+          "status": { "type": "string" },
+          "companyId": { "type": "integer", "format": "int64" },
+          "clientId": { "type": "integer", "format": "int64" },
+          "idUser": { "type": "integer", "format": "int64" }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idUser": { "type": "integer", "format": "int64" },
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "lastLogin": { "type": "string", "format": "date" },
+          "refreshToken": { "type": "string" },
+          "status": { "type": "string" },
+          "companyId": { "type": "integer", "format": "int64" },
+          "clientId": { "type": "integer", "format": "int64" }
+        }
+      },
+      "UpdateUserCompanyDto": {
+        "type": "object",
+        "properties": {
+          "isActive": { "type": "boolean" },
+          "isPrimary": { "type": "boolean" },
+          "accessLevel": { "type": "string" },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "reason": { "type": "string" }
+        }
+      },
+      "UserCompanyResponseDto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "integer", "format": "int64" },
+          "companyId": { "type": "integer", "format": "int64" },
+          "companyName": { "type": "string" },
+          "companyNit": { "type": "string" },
+          "isActive": { "type": "boolean" },
+          "isPrimary": { "type": "boolean" },
+          "accessLevel": { "type": "string" },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "reason": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "UpdateProfileDto": {
+        "required": ["idProfile", "userId"],
+        "type": "object",
+        "properties": {
+          "userId": { "type": "integer", "format": "int64" },
+          "status": { "type": "string" },
+          "idProfile": { "type": "integer", "format": "int64" }
+        }
+      },
+      "Profile": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idProfile": { "type": "integer", "format": "int64" },
+          "userId": { "type": "integer", "format": "int64" },
+          "status": { "type": "string" }
+        }
+      },
+      "UpdateCompanyDto": {
+        "required": ["activeDate", "idCompany", "name", "nit"],
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "nit": { "type": "string" },
+          "activeDate": { "type": "string", "format": "date" },
+          "status": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "maxLength": 20, "minLength": 0, "type": "string" },
+          "website": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "contactPerson": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "address": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "city": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "state": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "country": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "postalCode": { "maxLength": 20, "minLength": 0, "type": "string" },
+          "legalRepresentative": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string"
+          },
+          "taxRegime": { "maxLength": 50, "minLength": 0, "type": "string" },
+          "economicActivity": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "employeeCount": {
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "timezone": { "maxLength": 50, "minLength": 0, "type": "string" },
+          "currency": { "maxLength": 3, "minLength": 0, "type": "string" },
+          "language": { "maxLength": 10, "minLength": 0, "type": "string" },
+          "isActive": { "type": "boolean" },
+          "isVerified": { "type": "boolean" },
+          "maxUsers": { "minimum": 1, "type": "integer", "format": "int32" },
+          "maxApplications": {
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "subscriptionType": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "subscriptionStartDate": { "type": "string", "format": "date" },
+          "subscriptionEndDate": { "type": "string", "format": "date" },
+          "idCompany": { "type": "integer", "format": "int64" }
+        }
+      },
+      "Company": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idCompany": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "nit": { "type": "string" },
+          "activeDate": { "type": "string", "format": "date" },
+          "status": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "website": { "type": "string" },
+          "contactPerson": { "type": "string" },
+          "address": { "type": "string" },
+          "city": { "type": "string" },
+          "state": { "type": "string" },
+          "country": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "legalRepresentative": { "type": "string" },
+          "taxRegime": { "type": "string" },
+          "economicActivity": { "type": "string" },
+          "employeeCount": { "type": "integer", "format": "int32" },
+          "timezone": { "type": "string" },
+          "currency": { "type": "string" },
+          "language": { "type": "string" },
+          "isActive": { "type": "boolean" },
+          "isVerified": { "type": "boolean" },
+          "verificationDate": { "type": "string", "format": "date" },
+          "maxUsers": { "type": "integer", "format": "int32" },
+          "maxApplications": { "type": "integer", "format": "int32" },
+          "subscriptionType": { "type": "string" },
+          "subscriptionStartDate": { "type": "string", "format": "date" },
+          "subscriptionEndDate": { "type": "string", "format": "date" },
+          "subscriptionActive": { "type": "boolean" }
+        }
+      },
+      "UpdateClientDto": {
+        "required": [
+          "cardId",
+          "firstLastName",
+          "firstName",
+          "gender",
+          "idClient",
+          "sex",
+          "typeId"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "firstName": { "type": "string" },
+          "secondName": { "type": "string" },
+          "firstLastName": { "type": "string" },
+          "secondLastName": { "type": "string" },
+          "typeId": { "type": "string" },
+          "cardId": { "type": "string" },
+          "sex": { "type": "string" },
+          "gender": { "type": "string" },
+          "status": { "type": "string" },
+          "idClient": { "type": "integer", "format": "int64" }
+        }
+      },
+      "Client": {
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "idClient": { "type": "integer", "format": "int64" },
+          "firstName": { "type": "string" },
+          "secondName": { "type": "string" },
+          "firstLastName": { "type": "string" },
+          "secondLastName": { "type": "string" },
+          "typeId": { "type": "string" },
+          "cardId": { "type": "string" },
+          "sex": { "type": "string" },
+          "gender": { "type": "string" },
+          "status": { "type": "string" }
+        }
+      },
+      "CreateUserDto": {
+        "required": ["password", "username"],
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "lastLogin": { "type": "string", "format": "date" },
+          "refreshToken": { "type": "string" },
+          "status": { "type": "string" },
+          "companyId": { "type": "integer", "format": "int64" },
+          "clientId": { "type": "integer", "format": "int64" }
+        }
+      },
+      "CreateUserCompanyDto": {
+        "required": ["companyId", "userId"],
+        "type": "object",
+        "properties": {
+          "userId": { "type": "integer", "format": "int64" },
+          "companyId": { "type": "integer", "format": "int64" },
+          "isActive": { "type": "boolean" },
+          "isPrimary": { "type": "boolean" },
+          "accessLevel": { "type": "string" },
+          "expiresAt": { "type": "string", "format": "date-time" },
+          "reason": { "type": "string" }
+        }
+      },
+      "CreateProfileDto": {
+        "required": ["userId"],
+        "type": "object",
+        "properties": {
+          "userId": { "type": "integer", "format": "int64" },
+          "status": { "type": "string" }
+        }
+      },
+      "CreateCompanyDto": {
+        "required": ["activeDate", "name", "nit"],
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "nit": { "type": "string" },
+          "activeDate": { "type": "string", "format": "date" },
+          "status": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "maxLength": 20, "minLength": 0, "type": "string" },
+          "website": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "contactPerson": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "address": { "maxLength": 255, "minLength": 0, "type": "string" },
+          "city": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "state": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "country": { "maxLength": 100, "minLength": 0, "type": "string" },
+          "postalCode": { "maxLength": 20, "minLength": 0, "type": "string" },
+          "legalRepresentative": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string"
+          },
+          "taxRegime": { "maxLength": 50, "minLength": 0, "type": "string" },
+          "economicActivity": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "employeeCount": {
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "timezone": { "maxLength": 50, "minLength": 0, "type": "string" },
+          "currency": { "maxLength": 3, "minLength": 0, "type": "string" },
+          "language": { "maxLength": 10, "minLength": 0, "type": "string" },
+          "isActive": { "type": "boolean" },
+          "isVerified": { "type": "boolean" },
+          "maxUsers": { "minimum": 1, "type": "integer", "format": "int32" },
+          "maxApplications": {
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32"
+          },
+          "subscriptionType": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "subscriptionStartDate": { "type": "string", "format": "date" },
+          "subscriptionEndDate": { "type": "string", "format": "date" }
+        }
+      },
+      "CreateClientDto": {
+        "required": [
+          "cardId",
+          "firstLastName",
+          "firstName",
+          "gender",
+          "sex",
+          "typeId"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": { "type": "boolean" },
+          "usrCrea": { "type": "integer", "format": "int32" },
+          "usrMod": { "type": "integer", "format": "int32" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "firstName": { "type": "string" },
+          "secondName": { "type": "string" },
+          "firstLastName": { "type": "string" },
+          "secondLastName": { "type": "string" },
+          "typeId": { "type": "string" },
+          "cardId": { "type": "string" },
+          "sex": { "type": "string" },
+          "gender": { "type": "string" },
+          "status": { "type": "string" }
+        }
+      },
+      "TokenValidationRequest": {
+        "required": ["token"],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "JWT access token to validate",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          }
+        },
+        "description": "Token validation request"
+      },
+      "TokenValidationResponse": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean",
+            "description": "Whether the token is valid",
+            "example": true
+          },
+          "userId": {
+            "type": "integer",
+            "description": "User ID from token",
+            "format": "int64",
+            "example": 42
+          },
+          "username": {
+            "type": "string",
+            "description": "Username from token",
+            "example": "admin"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email from token",
+            "example": "admin@company.com"
+          },
+          "companyId": {
+            "type": "integer",
+            "description": "Company ID from token",
+            "format": "int64",
+            "example": 5
+          },
+          "status": {
+            "type": "string",
+            "description": "User status",
+            "example": "ACTIVE"
+          },
+          "roles": {
+            "type": "array",
+            "description": "User roles",
+            "items": { "type": "string", "description": "User roles" }
+          },
+          "permissions": {
+            "type": "array",
+            "description": "User permissions",
+            "items": { "type": "string", "description": "User permissions" }
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Token expiration timestamp",
+            "format": "date-time"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if token is invalid",
+            "example": "Token expired"
+          }
+        },
+        "description": "Token validation response"
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "JWT refresh token (optional)"
+          },
+          "tokenType": {
+            "type": "string",
+            "description": "Token type",
+            "example": "Bearer"
+          },
+          "expiresAt": {
+            "type": "string",
+            "description": "Token expiration timestamp",
+            "format": "date-time"
+          },
+          "user": { "$ref": "#/components/schemas/UserInfo" }
+        },
+        "description": "Login response with JWT token and user information"
+      },
+      "UserInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID",
+            "format": "int64"
+          },
+          "username": { "type": "string", "description": "Username" },
+          "email": { "type": "string", "description": "Email" },
+          "companyId": {
+            "type": "integer",
+            "description": "Company ID",
+            "format": "int64"
+          },
+          "status": { "type": "string", "description": "User status" },
+          "roles": {
+            "type": "array",
+            "description": "User roles",
+            "items": { "type": "string", "description": "User roles" }
+          },
+          "permissions": {
+            "type": "array",
+            "description": "User permissions",
+            "items": { "type": "string", "description": "User permissions" }
+          }
+        },
+        "description": "User information"
+      },
+      "LoginRequest": {
+        "required": ["password", "username"],
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username or email",
+            "example": "admin"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password",
+            "example": "password123"
+          }
+        },
+        "description": "Login request payload"
+      },
+      "EmployeeLoginRequest": {
+        "required": ["password", "username"],
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "companyCode": { "type": "string" },
+          "rememberMe": { "type": "boolean" }
+        }
+      },
+      "ClientLoginRequest": {
+        "required": ["password", "username"],
+        "type": "object",
+        "properties": {
+          "username": { "type": "string" },
+          "password": { "type": "string" },
+          "rememberMe": { "type": "boolean" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer Authentication": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

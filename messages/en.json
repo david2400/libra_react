@@ -232,6 +232,37 @@
         "updateSuccess": "User updated successfully",
         "deleteSuccess": "User deleted successfully"
       }
+    },
+    "userCompanies": {
+      "title": "User-Company Assignments",
+      "description": "Manage company assignments for users",
+      "subtitle": "Assign and manage companies for each user",
+      "createButton": "New Assignment",
+      "editButton": "Edit Assignment",
+      "fields": {
+        "user": "User",
+        "company": "Company",
+        "is_primary": "Primary Company",
+        "status": "Status",
+        "access_level": "Access Level",
+        "expires_at": "Expires At",
+        "reason": "Reason"
+      },
+      "modal": {
+        "create_title": "Assign Company to User",
+        "edit_title": "Edit Assignment"
+      },
+      "metrics": {
+        "total": "Total Assignments",
+        "active": "Active Assignments",
+        "primary": "Primary Assignments",
+        "users": "Users with Companies"
+      },
+      "messages": {
+        "createSuccess": "Assignment created successfully",
+        "updateSuccess": "Assignment updated successfully",
+        "deleteSuccess": "Assignment deleted successfully"
+      }
     }
   },
   "security": {

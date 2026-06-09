@@ -2,56 +2,94 @@
 
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
 import { Buttons } from "@repo/ui/buttons/scenes";
 import { RegisterClient } from "./form";
-// import { ClientDetailModal } from "./client-detail-modal";
-import { EmptyState } from "./empty-state";
-import { HiOutlineUserCircle, HiOutlinePlusCircle } from "react-icons/hi2";
+import { EmptyState } from "../scenes/empty-state";
+import {
+  HiOutlineUserCircle,
+  HiOutlinePlusCircle,
+  HiOutlineUsers,
+  HiOutlinePencil,
+  HiOutlineBuildingOffice2,
+  HiOutlineChartBar,
+} from "react-icons/hi2";
 import { DataTable } from "@repo/ui/table/scenes";
 import { IClient } from "../models/client.interface";
 import { IUser } from "@/modules/account/users/models/user.interface";
+import { CompanySelector } from "./company-selector";
+import { ClientDetailModal } from "./client-detail-modal";
+
+interface ICompany {
+  id_company: number;
+  name: string;
+  nit: string;
+  status: string;
+}
 
 interface IClientManagerProps {
   initialData: IClient[];
   initialUsers?: IUser[];
+  userCompanies?: ICompany[];
 }
 
-export const ClientManager = ({ initialData, initialUsers = [] }: IClientManagerProps) => {
+export const ClientManager = ({
+  initialData,
+  initialUsers = [],
+  userCompanies = [],
+}: IClientManagerProps) => {
   const t = useTranslations("account.clients");
   const tCommon = useTranslations("common");
 
-  const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const [openDetailModal, setOpenDetailModal] = useState(false);
   const [editingClient, setEditingClient] = useState<IClient | null>(null);
   const [users, setUsers] = useState<IUser[]>(initialUsers);
+  const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(
+    userCompanies.length > 0 ? userCompanies[0].id_company : null
+  );
+
+  useEffect(() => {
+    if (userCompanies.length > 0 && !selectedCompanyId) {
+      setSelectedCompanyId(userCompanies[0].id_company);
+    }
+  }, [userCompanies, selectedCompanyId]);
+
+  const filteredClients = useMemo(() => {
+    return initialData;
+  }, [initialData]);
+
+  const filteredUsers = useMemo(() => {
+    if (!selectedCompanyId) return users;
+    return users.filter((user) => user.company_id === selectedCompanyId);
+  }, [users, selectedCompanyId]);
 
   const metrics = useMemo(() => {
-    const activeClients = initialData.filter((client) => client.status === 'active').length;
-    const uniqueGenders = new Set(initialData.map(c => c.gender).filter(Boolean)).size;
-    const totalUsers = users.length;
-    const activeUsers = users.filter(u => u.status === 'active').length;
+    const activeClients = filteredClients.filter(
+      (client) => client.status === "active",
+    ).length;
+    const totalUsers = filteredUsers.length;
+    const activeUsers = filteredUsers.filter((u) => u.status === "active").length;
 
     return {
-      totalClients: initialData.length,
+      totalClients: filteredClients.length,
       activeClients,
-      uniqueGenders,
       totalUsers,
       activeUsers,
     };
-  }, [initialData, users]);
+  }, [filteredClients, filteredUsers]);
 
   const handleEdit = (row: IClient) => {
     setEditingClient(row);
-    setOpenModalUpdate(true);
+    setOpenDetailModal(true);
   };
 
   // Calcular usuarios por cliente
   const getUserCountByClient = (clientId: number) => {
-    return users.filter(user => user.client_id === clientId).length;
+    return users.filter((user) => user.client_id === clientId).length;
   };
 
   const columns: ColumnDef<IClient>[] = useMemo(
@@ -61,13 +99,15 @@ export const ClientManager = ({ initialData, initialUsers = [] }: IClientManager
         header: t("fields.name"),
         cell: (info) => {
           const client = info.row.original;
-          const fullName = `${client.first_name} ${client.second_name || ''} ${client.first_last_name} ${client.second_last_name || ''}`.trim();
+          const fullName =
+            `${client.first_name} ${client.second_name || ""} ${client.first_last_name} ${client.second_last_name || ""}`.trim();
           const userCount = getUserCountByClient(client.id_client!);
           return (
             <div className='flex flex-col'>
               <span className='font-semibold text-foreground'>{fullName}</span>
               <span className='text-xs text-muted-foreground'>
-                {client.type_id}: {client.card_id} • {userCount} {userCount === 1 ? 'usuario' : 'usuarios'}
+                {client.type_id}: {client.card_id} • {userCount}{" "}
+                {userCount === 1 ? "usuario" : "usuarios"}
               </span>
             </div>
           );
@@ -93,32 +133,83 @@ export const ClientManager = ({ initialData, initialUsers = [] }: IClientManager
         cell: (info) => {
           const client = info.row.original;
           return (
-            <span className='text-sm'>{client.type_id}: {info.getValue<string>()}</span>
+            <span className='text-sm'>
+              {client.type_id}: {info.getValue<string>()}
+            </span>
+          );
+        },
+      },
+      {
+        header: "Usuarios",
+        accessorKey: "id_client",
+        cell: ({ row }) => {
+          const client = row.original;
+          const userCount = getUserCountByClient(client.id_client!);
+          return (
+            <div className='flex items-center gap-2'>
+              <div className='flex items-center gap-1.5'>
+                <HiOutlineUsers className='h-4 w-4 text-muted-foreground' />
+                <span
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                    userCount > 0
+                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                      : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                  }`}>
+                  {userCount}
+                </span>
+              </div>
+            </div>
           );
         },
       },
       {
         header: tCommon("status"),
-        accessorKey: "deleted",
+        accessorKey: "status",
         cell: ({ row }) => (
-          <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-            row.original.deleted !== false ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-          }`}>
-            {row.original.deleted !== false ? tCommon("active") : tCommon("inactive")}
+          <span
+            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+              row.original.status === "active"
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}>
+            {row.original.status === "active"
+              ? tCommon("active")
+              : tCommon("inactive")}
           </span>
         ),
       },
       {
         id: "actions",
         header: tCommon("actions"),
-        cell: ({ row }) => (
-          <Buttons size='sm' variant='outline' onClick={() => handleEdit(row.original)}>
-            {tCommon("edit")}
-          </Buttons>
-        ),
+        cell: ({ row }) => {
+          const client = row.original;
+          const userCount = getUserCountByClient(client.id_client!);
+
+          return (
+            <div className='flex items-center gap-2'>
+              <Buttons
+                size='sm'
+                variant='outline'
+                className='inline-flex items-center gap-1.5'
+                onClick={() => handleEdit(client)}>
+                <HiOutlinePencil className='h-3.5 w-3.5' />
+                Editar
+              </Buttons>
+
+              <Buttons
+                size='sm'
+                variant={userCount > 0 ? "default" : "outline"}
+                className='inline-flex items-center gap-1.5'
+                onClick={() => handleEdit(client)}>
+                <HiOutlineUsers className='h-3.5 w-3.5' />
+                {userCount > 0 ? `Ver ${userCount}` : "Agregar"}
+              </Buttons>
+            </div>
+          );
+        },
       },
     ],
-    [t, handleEdit],
+    [t, tCommon, handleEdit, getUserCountByClient, users],
   );
 
   const summaryCards = [
@@ -126,85 +217,133 @@ export const ClientManager = ({ initialData, initialUsers = [] }: IClientManager
       icon: HiOutlineUserCircle,
       label: "Total Clientes",
       value: metrics.totalClients,
-      accent: "from-orange-500/40 to-amber-500/40 text-orange-700",
+      gradient: "from-blue-500 to-cyan-500",
+      bgGradient: "from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950",
     },
     {
-      icon: HiOutlineUserCircle,
+      icon: HiOutlineChartBar,
       label: "Clientes Activos",
       value: metrics.activeClients,
-      accent: "from-yellow-500/40 to-orange-500/40 text-yellow-700",
+      gradient: "from-emerald-500 to-teal-500",
+      bgGradient: "from-emerald-50 to-teal-50 dark:from-emerald-950 dark:to-teal-950",
     },
     {
-      icon: HiOutlineUserCircle,
+      icon: HiOutlineUsers,
       label: "Total Usuarios",
       value: metrics.totalUsers,
-      accent: "from-amber-500/40 to-yellow-500/40 text-amber-700",
+      gradient: "from-violet-500 to-purple-500",
+      bgGradient: "from-violet-50 to-purple-50 dark:from-violet-950 dark:to-purple-950",
     },
     {
-      icon: HiOutlineUserCircle,
+      icon: HiOutlineUsers,
       label: "Usuarios Activos",
       value: metrics.activeUsers,
-      accent: "from-green-500/40 to-emerald-500/40 text-green-700",
+      gradient: "from-amber-500 to-orange-500",
+      bgGradient: "from-amber-50 to-orange-50 dark:from-amber-950 dark:to-orange-950",
     },
   ];
 
   return (
     <section className='mx-auto flex w-full flex-col gap-6 px-6'>
-      <article className='rounded-3xl border border-border/40 bg-gradient-to-br from-orange-600 via-amber-500 to-yellow-500 px-8 py-10 text-white shadow-2xl'>
-        <header className='space-y-4'>
-          <span className='inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-white/75'>
-            {t("title")}
-          </span>
-          <div className='space-y-2'>
-            <h1 className='text-4xl font-semibold leading-tight'>{t("description")}</h1>
-            <p className='text-white/80'>{t("subtitle")}</p>
+      <article className='rounded-2xl border border-border/40 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-8 py-8 shadow-2xl dark:from-slate-950 dark:via-slate-900 dark:to-slate-950'>
+        <header className='space-y-5'>
+          <div className='flex items-start justify-between'>
+            <div className='space-y-3'>
+              <div className='flex items-center gap-3'>
+                <div className='flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500'>
+                  <HiOutlineBuildingOffice2 className='h-6 w-6 text-white' />
+                </div>
+                <div>
+                  <h1 className='text-3xl font-bold text-white'>
+                    Gestión Empresarial
+                  </h1>
+                  <p className='text-sm text-slate-300'>Administra clientes y usuarios por empresa</p>
+                </div>
+              </div>
+            </div>
+            <Buttons
+              className='inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl'
+              onClick={() => setOpenModal(true)}>
+              <HiOutlinePlusCircle className='h-4 w-4' />
+              Nuevo Cliente
+            </Buttons>
           </div>
-          <Buttons
-            color='success'
-            className='inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-3 text-sm font-semibold text-primary transition hover:-translate-y-0.5 hover:bg-white'
-            onClick={() => setOpenModal(true)}>
-            <HiOutlinePlusCircle className='h-4 w-4' />
-            {t("createButton")}
-          </Buttons>
+
+          <div className='pt-2'>
+            <CompanySelector
+              companies={userCompanies}
+              selectedCompanyId={selectedCompanyId}
+              onCompanyChange={setSelectedCompanyId}
+            />
+          </div>
         </header>
       </article>
 
-      {initialData.length > 0 ? (
+      {filteredClients.length > 0 ? (
         <>
-          <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+          <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-4'>
             {summaryCards.map((card) => (
-              <div key={card.label} className={`rounded-2xl border border-border/40 bg-gradient-to-br ${card.accent} px-5 py-4 shadow-sm backdrop-blur`}>
-                <div className='flex items-center justify-between text-sm font-semibold text-white/80'>
-                  <span>{card.label}</span>
-                  <card.icon className='h-5 w-5 text-white/70' />
+              <div
+                key={card.label}
+                className={`group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br ${card.bgGradient} p-6 shadow-sm transition-all hover:shadow-md`}>
+                <div className='absolute right-0 top-0 h-24 w-24 translate-x-8 -translate-y-8 opacity-10'>
+                  <div className={`h-full w-full rounded-full bg-gradient-to-br ${card.gradient}`} />
                 </div>
-                <p className='mt-2 text-2xl font-semibold text-white'>{card.value}</p>
+                <div className='relative'>
+                  <div className='flex items-center justify-between'>
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${card.gradient}`}>
+                      <card.icon className='h-5 w-5 text-white' />
+                    </div>
+                  </div>
+                  <p className='mt-4 text-sm font-medium text-muted-foreground'>
+                    {card.label}
+                  </p>
+                  <p className='mt-1 text-3xl font-bold text-foreground'>
+                    {card.value}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
 
-          <DataTable data={initialData} columns={columns} className='py-2' />
+          <div className='rounded-2xl border border-border bg-card shadow-sm'>
+            <DataTable data={filteredClients} columns={columns} />
+          </div>
         </>
       ) : (
         <EmptyState onCreateClick={() => setOpenModal(true)} />
       )}
 
-      <Modal size='lg' title={t("modal.create_title")} open={openModal} onOpenChange={() => setOpenModal(!openModal)}>
+      <Modal
+        size='lg'
+        title='Crear Nuevo Cliente'
+        open={openModal}
+        onOpenChange={() => setOpenModal(!openModal)}>
         <RegisterClient />
       </Modal>
 
-      {/* <ClientDetailModal
+      <ClientDetailModal
         client={editingClient}
-        open={openModalUpdate}
+        open={openDetailModal}
         onClose={() => {
-          setOpenModalUpdate(false);
+          setOpenDetailModal(false);
           setEditingClient(null);
         }}
-        initialUsers={users}
-        onUserCreated={(user) => {
-          setUsers(prev => [...prev, user]);
+        initialUsers={filteredUsers.filter(
+          (u) => u.client_id === editingClient?.id_client
+        )}
+        onUserCreated={(user: IUser) => {
+          setUsers((prev) => [...prev, user]);
         }}
-      /> */}
+        onUserUpdated={(user: IUser) => {
+          setUsers((prev) =>
+            prev.map((u) => (u.id_user === user.id_user ? user : u))
+          );
+        }}
+        onUserDeleted={(userId: number) => {
+          setUsers((prev) => prev.filter((u) => u.id_user !== userId));
+        }}
+      />
     </section>
   );
 };

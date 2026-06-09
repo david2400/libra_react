@@ -1,0 +1,28 @@
+{
+  "account": {
+    "userCompanies": {
+      "title": "Asignación de Empresas",
+      "description": "Gestiona las empresas asignadas a cada usuario",
+      "fields": {
+        "user": "Usuario",
+        "company": "Empresa",
+        "is_primary": "Empresa Principal",
+        "status": "Estado"
+      },
+      "messages": {
+        "createSuccess": "Asignación creada exitosamente",
+        "updateSuccess": "Asignación actualizada exitosamente",
+        "deleteSuccess": "Asignación eliminada exitosamente",
+        "createError": "Error al crear la asignación",
+        "updateError": "Error al actualizar la asignación",
+        "deleteError": "Error al eliminar la asignación"
+      },
+      "modal": {
+        "create_title": "Asignar Empresa a Usuario",
+        "create_description": "Selecciona el usuario y la empresa a asignar",
+        "edit_title": "Editar Asignación",
+        "edit_description": "Modifica los detalles de la asignación de empresa"
+      }
+    }
+  }
+}
