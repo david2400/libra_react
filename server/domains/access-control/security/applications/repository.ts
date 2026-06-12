@@ -2,24 +2,24 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IApplication, 
-  ICreateApplication, 
+import type {
+  IApplication,
+  ICreateApplication,
   IUpdateApplication,
   IApplicationModule,
   ICreateApplicationModulePayload,
   IUpdateApplicationModulePayload,
   IApplicationHealth,
-  IHealthCheckResponse,
-  IBulkHealthCheckResponse,
+  IApplicationHealthCheck,
+  IApplicationHealthReport,
   IApplicationConfig,
   ICreateApplicationConfigPayload,
   IUpdateApplicationConfigPayload,
   IApplicationStats,
-  IApplicationOverview
+  IApplicationOverview,
+  IModuleApplication
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import { IModule } from '../modules_applications';
 
 // --- Applications Repository -----------------------------------------------------
 
@@ -73,19 +73,19 @@ export const applicationModulesRepository = {
     serverFetch.get<IPaginatedResponse<IApplicationModule>>('/api/access_control/application-modules', {
       params,
       revalidate: 120,
-      tags: [accessControlTags.applicationModules()],
+      tags: [accessControlTags.applications()],
     }),
 
   // Get application-module by IDs
   getById: (applicationId: string | number, moduleId: string | number) => 
     serverFetch.get<IApplicationModule>(`/api/access_control/application-modules/${applicationId}/${moduleId}`, {
       revalidate: 300,
-      tags: [accessControlTags.applicationModule(applicationId, moduleId)],
+      tags: [accessControlTags.application(applicationId)],
     }),
 
   // Get modules by application
   getModulesByApplication: (applicationId: string | number) => 
-    serverFetch.get<IModule[]>(`/api/access_control/application-modules/application/${applicationId}`, {
+    serverFetch.get<IModuleApplication[]>(`/api/access_control/application-modules/application/${applicationId}`, {
       revalidate: 120,
       tags: [accessControlTags.application(applicationId)],
     }),
@@ -94,7 +94,7 @@ export const applicationModulesRepository = {
   getApplicationsByModule: (moduleId: string | number) => 
     serverFetch.get<IApplication[]>(`/api/access_control/application-modules/module/${moduleId}`, {
       revalidate: 300,
-      tags: [accessControlTags.module(moduleId)],
+      tags: [accessControlTags.applications()],
     }),
 
   // Create application-module relationship
@@ -121,14 +121,14 @@ export const applicationModulesRepository = {
 export const applicationHealthRepository = {
   // Check single application health
   checkHealth: (applicationId: string | number) => 
-    serverFetch.get<IHealthCheckResponse>(`/api/access_control/applications/${applicationId}/health`, {
+    serverFetch.get<IApplicationHealthCheck>(`/api/access_control/applications/${applicationId}/health`, {
       revalidate: 30,
-      tags: [accessControlTags.applicationHealth(applicationId)],
+      tags: [accessControlTags.application(applicationId)],
     }),
 
   // Check all applications health
   checkAllHealth: () => 
-    serverFetch.get<IBulkHealthCheckResponse>('/api/access_control/applications/health/bulk', {
+    serverFetch.get<IApplicationHealthReport>('/api/access_control/applications/health/bulk', {
       revalidate: 30,
       tags: [accessControlTags.applications()],
     }),
@@ -138,7 +138,7 @@ export const applicationHealthRepository = {
     serverFetch.get<IPaginatedResponse<IApplicationHealth>>(`/api/access_control/applications/${applicationId}/health/history`, {
       params,
       revalidate: 300,
-      tags: [accessControlTags.applicationHealth(applicationId)],
+      tags: [accessControlTags.application(applicationId)],
     }),
 } as const;
 
@@ -150,14 +150,14 @@ export const applicationConfigRepository = {
     serverFetch.get<IPaginatedResponse<IApplicationConfig>>(`/api/access_control/applications/${applicationId}/config`, {
       params,
       revalidate: 120,
-      tags: [accessControlTags.applicationConfig(applicationId)],
+      tags: [accessControlTags.application(applicationId)],
     }),
 
   // Get config by key
   getByKey: (applicationId: string | number, key: string) => 
     serverFetch.get<IApplicationConfig>(`/api/access_control/applications/${applicationId}/config/${key}`, {
       revalidate: 300,
-      tags: [accessControlTags.applicationConfig(applicationId)],
+      tags: [accessControlTags.application(applicationId)],
     }),
 
   // Create config
@@ -186,7 +186,7 @@ export const applicationStatsRepository = {
   getStats: (applicationId: string | number) => 
     serverFetch.get<IApplicationStats>(`/api/access_control/applications/${applicationId}/stats`, {
       revalidate: 60,
-      tags: [accessControlTags.applicationStats(applicationId)],
+      tags: [accessControlTags.application(applicationId)],
     }),
 
   // Get all applications statistics

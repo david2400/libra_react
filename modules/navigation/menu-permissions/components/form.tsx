@@ -42,9 +42,8 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
   const tMessages = useTranslations("messages");
 
   const defaultValues: IMenuPermissionCreateRequest = {
-    menuId: 0,
-    permissionId: 0,
-    isActive: true,
+    menu_id: 0,
+    permission_id: 0,
   };
 
   const handleSubmit: SubmitHandler<IMenuPermissionCreateRequest> = async (
@@ -52,8 +51,8 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
   ) => {
     try {
       const result = await createMenuPermissionServerAction(
-        values.menuId,
-        values.permissionId,
+        values.menu_id,
+        values.permission_id,
         values,
       );
 
@@ -93,12 +92,12 @@ export const UpdateMenuPermission = ({
   const handleSubmit: SubmitHandler<IMenuPermissionUpdateRequest> = async (
     values,
   ) => {
-    if (!values.menuId || !values.permissionId) return;
+    if (!values.menu_id || !values.permission_id) return;
 
     try {
       const result = await updateMenuPermissionServerAction(
-        values.menuId,
-        values.permissionId,
+        values.menu_id,
+        values.permission_id,
         values,
       );
 

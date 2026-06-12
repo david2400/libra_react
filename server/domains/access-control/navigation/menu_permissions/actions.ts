@@ -41,7 +41,7 @@ export const createMenuPermissionAction = async (menuId: string | number, permis
       permission_id: permissionId,
       activity_type: 'permission_granted',
       description: 'IPermission granted to menu',
-      metadata: { is_active: payload.is_active }
+      metadata: { menu_id: payload.menu_id, permission_id: payload.permission_id }
     });
     
     return { success: true, data: menuPermission };

@@ -114,10 +114,13 @@ export interface IAuthorizationAudit {
   action: string;
   authorized: boolean;
   reason?: string;
+  policies_applied?: string[];
+  permissions_used?: string[];
   context?: IAuthorizationContext;
   timestamp: string;
   ip_address?: string;
   user_agent?: string;
+  response_time_ms?: number;
 }
 
 export interface IAuthorizationAuditFilter {
@@ -137,6 +140,8 @@ export interface IAuthorizationStats {
   denied_requests: number;
   average_response_time: number;
   cacheHitRate: number;
+  total_checks: number;
+  unauthorized_checks: number;
   topResources: Array<{
     resource: string;
     count: number;
@@ -157,4 +162,142 @@ export interface IAuthorizationOverview {
   policies: IPolicy[];
   recentAuthorizations: IAuthorizationLog[];
   stats: IAuthorizationStats;
+}
+
+// --- Cache Management Types -------------------------------------------------
+
+export interface ICacheManagementRequest {
+  action: 'clear' | 'invalidate' | 'warmup' | 'clear_all_cache' | 'clear_user_cache' | 'clear_expired';
+  pattern?: string;
+  user_id?: string | number;
+}
+
+// --- Audit Export Types -------------------------------------------------------
+
+export interface IAuditExportRequest {
+  format: 'json' | 'csv' | 'xlsx';
+  filters?: IAuthorizationAuditFilter;
+  date_range?: {
+    start: string;
+    end: string;
+  };
+}
+
+export interface IAuditExportResponse {
+  file_name: string;
+  record_count: number;
+  format: string;
+  generated_at: string;
+  download_url?: string;
+}
+
+export interface IAuditFilter extends IAuthorizationAuditFilter {
+  // Additional filter properties if needed
+}
+
+// --- Security Types -----------------------------------------------------------
+
+export interface ISecurityAlert {
+  id: string | number;
+  alert_type: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  description: string;
+  detected_at: string;
+  resolved_at?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface ISecurityRule {
+  id: string;
+  name: string;
+  description?: string;
+  conditions: Record<string, unknown>;
+  action: 'allow' | 'deny' | 'alert';
+  enabled: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+// --- Configuration Types ------------------------------------------------------
+
+export interface IConfigUpdateRequest {
+  key: string;
+  value: unknown;
+}
+
+export interface IAuthorizationConfig {
+  cache_enabled: boolean;
+  cache_ttl_seconds: number;
+  max_cache_size: number;
+  audit_enabled: boolean;
+  security_enabled: boolean;
+}
+
+// --- Additional Types ---------------------------------------------------------
+
+export interface IUserAuthorizationStats {
+  user_id: string | number;
+  total_requests: number;
+  total_checks: number;
+  authorized_requests: number;
+  denied_requests: number;
+  average_response_time: number;
+  cache_hit_rate: number;
+}
+
+export interface IPolicyEvaluationResult {
+  policy_id: string | number;
+  policy_name: string;
+  effect: 'allow' | 'deny';
+  matched_rules: string[];
+  evaluation_time_ms: number;
+}
+
+// --- Authorization Policy Types -----------------------------------------------
+
+export interface IAuthorizationPolicy {
+  id: string | number;
+  name: string;
+  description?: string;
+  rules: IPolicyRule[];
+  enabled: boolean;
+  priority?: number;
+}
+
+// --- Performance Types ---------------------------------------------------------
+
+export interface IPerformanceMetrics {
+  total_requests: number;
+  average_response_time: number;
+  cache_hit_rate: number;
+  error_rate: number;
+  period: {
+    start: string;
+    end: string;
+  };
+}
+
+export interface IResourcePerformance {
+  resource: string;
+  total_requests: number;
+  average_response_time: number;
+  error_count: number;
+  last_accessed: string;
+}
+
+export interface IUserPerformance {
+  user_id: string | number;
+  total_requests: number;
+  average_response_time: number;
+  cache_hit_rate: number;
+  last_activity: string;
+}
+
+// --- Cache Management Response ------------------------------------------------
+
+export interface ICacheManagementResponse {
+  cleared_entries: number;
+  invalidated_entries: number;
+  warmed_entries: number;
+  status: string;
 }

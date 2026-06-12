@@ -141,7 +141,7 @@ export const getPermissionWithRoles = cache(async (permissionId: string | number
   return {
     permission_id: permissionId,
     roles,
-    recent_activities: recentActivities.data,
+    recent_activities: recentActivities.content,
     total_roles: roles.length
   };
 });
@@ -154,7 +154,7 @@ export const getRolePermissionDashboard = cache(async () => {
   ]);
   
   // Combine data for dashboard
-  const dashboardData = rolePermissions.data.map(rolePermission => {
+  const dashboardData = rolePermissions.content.map((rolePermission: any) => {
     const stats = allStats.find(s => s.role_id === rolePermission.role_id && s.permission_id === rolePermission.permission_id);
     
     return {
@@ -171,7 +171,7 @@ export const getRolePermissionDashboard = cache(async () => {
   return {
     role_permissions: dashboardData,
     summary: {
-      total_relationships: rolePermissions.meta.total,
+      total_relationships: rolePermissions.total_elements,
       total_usage: allStats.reduce((sum, s) => sum + s.usage_count, 0),
       active_relationships: dashboardData.filter(rp => rp.is_active).length
     }
@@ -189,8 +189,8 @@ export const getRolePermissionUsagePatterns = cache(async (roleId: string | numb
   ]);
   
   // Process usage data
-  const usagePatterns = activities.data
-    .filter(activity => activity.activity_type === 'permission_used')
+  const usagePatterns = activities.content
+    .filter((activity: any) => activity.activity_type === 'permission_used')
     .map(activity => ({
       timestamp: activity.created_at,
       permission_id: activity.permission_id,
@@ -199,8 +199,8 @@ export const getRolePermissionUsagePatterns = cache(async (roleId: string | numb
     }));
   
   // Group by permission
-  const permissionUsagePatterns = permissions.map(permission => {
-    const permissionActivities = usagePatterns.filter(up => up.permission_id === permission.id);
+  const permissionUsagePatterns = permissions.map((permission: any) => {
+    const permissionActivities = usagePatterns.filter(up => up.permission_id === permission.id_permission);
     const permissionStats = stats.find(s => s.permission_id === permission.id);
     
     return {
@@ -231,8 +231,8 @@ export const getRolePermissionInheritanceAnalysis = cache(async (roleId: string 
   
   // Analyze inheritance
   const inheritedPermissions = inheritanceTree.inherited_permissions;
-  const directPermissionIds = directPermissions.map(p => p.id);
-  const inheritedPermissionIds = inheritedPermissions.map(ip => ip.permission.id);
+  const directPermissionIds = directPermissions.map((p: any) => p.id_permission);
+  const inheritedPermissionIds = inheritedPermissions.map((ip: any) => ip.permission.id_permission);
   
   const analysis = {
     direct_permissions: directPermissions.length,
@@ -317,48 +317,52 @@ export const getRolePermissionValidationSummary = cache(async (roleId: string | 
 });
 
 // Get role permission matrix analysis
-export const getRolePermissionMatrixAnalysis = cache(async () => {
-  const [matrix] = await Promise.all([
-    getRolePermissionMatrixAnalysis({ per_page: 1000 }) // Get comprehensive matrix
+export const getRolePermissionMatrixAnalysis = cache(async (params?: ListParams) => {
+  const [rolePermissions] = await Promise.all([
+    getRolePermissions({ per_page: 1000 }) // Get comprehensive matrix
   ]);
   
   // Analyze matrix data
+  const uniqueRoles = new Set(rolePermissions.content.map((rp: any) => rp.role_id));
+  const uniquePermissions = new Set(rolePermissions.content.map((rp: any) => rp.permission_id));
+  const activeAssignments = rolePermissions.content.filter((rp: any) => rp.is_active).length;
+
   const analysis = {
-    total_roles: matrix.total_roles,
-    total_permissions: matrix.total_permissions,
-    total_assignments: matrix.total_assignments,
-    active_assignments: matrix.active_assignments,
-    average_permissions_per_role: matrix.total_assignments / matrix.total_roles,
-    average_roles_per_permission: matrix.total_assignments / matrix.total_permissions,
-    assignment_density: (matrix.total_assignments / (matrix.total_roles * matrix.total_permissions)) * 100
+    total_roles: uniqueRoles.size,
+    total_permissions: uniquePermissions.size,
+    total_assignments: rolePermissions.total_elements,
+    active_assignments: activeAssignments,
+    average_permissions_per_role: uniqueRoles.size > 0 ? rolePermissions.total_elements / uniqueRoles.size : 0,
+    average_roles_per_permission: uniquePermissions.size > 0 ? rolePermissions.total_elements / uniquePermissions.size : 0,
+    assignment_density: (uniqueRoles.size * uniquePermissions.size) > 0 ? (rolePermissions.total_elements / (uniqueRoles.size * uniquePermissions.size)) * 100 : 0
   };
   
   // Group by resource type
-  const byResource = matrix.matrix.reduce((acc, item) => {
-    const resource = item.permission_resource || 'unknown';
+  const byResource = rolePermissions.content.reduce((acc: any, item: any) => {
+    const resource = item.permission?.resource || 'unknown';
     if (!acc[resource]) {
       acc[resource] = { count: 0, active: 0 };
     }
     acc[resource].count++;
-    if (item.isActive) acc[resource].active++;
+    if (item.is_active) acc[resource].active++;
     return acc;
   }, {} as Record<string, { count: number; active: number }>);
-  
+
   // Group by action type
-  const byAction = matrix.matrix.reduce((acc, item) => {
-    const action = item.permission_action || 'unknown';
+  const byAction = rolePermissions.content.reduce((acc: any, item: any) => {
+    const action = item.permission?.action || 'unknown';
     if (!acc[action]) {
       acc[action] = { count: 0, active: 0 };
     }
     acc[action].count++;
-    if (item.isActive) acc[action].active++;
+    if (item.is_active) acc[action].active++;
     return acc;
   }, {} as Record<string, { count: number; active: number }>);
-  
+
   return {
-    matrix: matrix.matrix,
+    matrix: rolePermissions.content,
     analysis,
-    by_resource: Object.entries(byResource).map(([resource, data]) => ({ resource, ...data })),
-    by_action: Object.entries(byAction).map(([action, data]) => ({ action, ...data }))
+    by_resource: Object.entries(byResource).map(([resource, data]) => ({ resource, count: (data as any).count, active: (data as any).active })),
+    by_action: Object.entries(byAction).map(([action, data]) => ({ action, count: (data as any).count, active: (data as any).active }))
   };
 });

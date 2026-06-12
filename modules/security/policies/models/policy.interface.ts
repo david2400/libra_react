@@ -1,6 +1,13 @@
-import type { policies } from '@/server/domains/access-control/security';
+import type { 
+  ICreatePolicy,
+  IUpdatePolicy,
+  IPolicy as IPolicyType,
+  IPolicyRule as IPolicyRuleType
+} from '@/server/domains/access-control/security/policies/types';
+import { PolicyEffect } from '@/server/domains/access-control/security/policies/types';
 
-export type IPolicyCreateRequest = policies.ICreatePolicy;
-export type IPolicyUpdateRequest = policies.IUpdatePolicy;
-export type IPolicy = policies.IPolicy;
-export type IPolicyRule = policies.IPolicyRule;
+export type IPolicyCreateRequest = ICreatePolicy;
+export type IPolicyUpdateRequest = IUpdatePolicy;
+export type IPolicy = IPolicyType;
+export type IPolicyRule = IPolicyRuleType;
+export { PolicyEffect };

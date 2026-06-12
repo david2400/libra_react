@@ -62,8 +62,8 @@ export const getPermissionsWithUsage = cache(async (params?: ListParams) => {
 
   // For each permission, get usage stats (this could be optimized with batch queries)
   const permissionsWithStats = await Promise.all(
-    permissions.data.map(async (permission) => {
-      const stats = await getPermissionUsageStats(permission.id);
+    permissions.content.map(async (permission: any) => {
+      const stats = await getPermissionUsageStats(permission.id_permission);
       return {
         ...permission,
         usage_stats: stats
@@ -73,6 +73,6 @@ export const getPermissionsWithUsage = cache(async (params?: ListParams) => {
 
   return {
     ...permissions,
-    data: permissionsWithStats
+    content: permissionsWithStats
   };
 });

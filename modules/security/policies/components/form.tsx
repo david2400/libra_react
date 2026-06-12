@@ -20,7 +20,7 @@ import {
   createPolicyServerAction,
   updatePolicyServerAction,
 } from "@/app/[locale]/(protected)/security/policies/actions";
-import { PolicyEffect } from "@/server/domains/access-control/security/policies";
+import { PolicyEffect } from "@/server/domains/access-control/security/policies/types";
 
 const FormBase = ({
   initialValues,

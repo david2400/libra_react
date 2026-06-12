@@ -13,21 +13,15 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  IAuthorizationRequest, 
+import type {
+  IAuthorizationRequest,
   IAuthorizationResponse,
-  IAuthorizationCheck,
-  IUser,
-  IPermission,
-  IRole,
   IAuthorizationStats,
-  IUserAuthorizationStats,
   IAuthorizationContext,
   IAuthorizationCacheEntry,
   ICacheManagementRequest,
   ICacheManagementResponse,
   IAuthorizationPolicy,
-  IPolicyEvaluationResult,
   IAuthorizationAudit,
   IAuditFilter,
   IAuditExportRequest,
@@ -37,9 +31,11 @@ import type {
   IUserPerformance,
   ISecurityAlert,
   ISecurityRule,
-  IAuthorizationConfig,
   IConfigUpdateRequest
 } from './types';
+import type { IUser } from '../../account/users';
+import type { IPermission } from '../permissions';
+import type { IRole } from '../roles';
 
 // --- Authorization Core Queries -----------------------------------------
 
@@ -68,7 +64,7 @@ export const getAllUserAuthorizationStats = cache((params?: ListParams) =>
 
 // --- Authorization Audit Queries ---------------------------------
 
-export const getAuthorizationAudit = cache((params?: ListParams & IAuditFilter) => 
+export const getAuthorizationAudit = cache((params?: ListParams) => 
   authorizationAuditRepository.list(params)
 );
 
@@ -152,11 +148,11 @@ export const getAuthorizationDashboard = cache(async (params?: { startDate?: str
   
   return {
     stats,
-    recent_audits: recentAudits.data,
-    security_alerts: securityAlerts.data,
+    recent_audits: recentAudits.content,
+    security_alerts: securityAlerts.content,
     performance_metrics: performanceMetrics,
     config,
-    health_score: calculate_health_score(stats, performanceMetrics, securityAlerts.data)
+    health_score: calculate_health_score(stats, performanceMetrics, securityAlerts.content)
   };
 });
 
@@ -172,10 +168,10 @@ export const getUserAuthorizationOverview = cache(async (userId: string | number
   return {
     user_id: userId,
     stats: userStats,
-    recent_audits: recentAudits.data,
-    performance: userPerformance.data[0] || null,
-    cache_entries: userCache.data,
-    cache_hit_rate: userStats.total_checks > 0 ? (userCache.data.reduce((sum, entry) => sum + entry.access_count, 0) / userStats.total_checks) : 0
+    recent_audits: recentAudits.content,
+    performance: userPerformance.content[0] || null,
+    cache_entries: userCache.content,
+    cache_hit_rate: userStats.total_checks > 0 ? (userCache.content.reduce((sum: number, entry: any) => sum + entry.access_count, 0) / userStats.total_checks) : 0
   };
 });
 
@@ -186,16 +182,16 @@ export const getResourceAuthorizationAnalysis = cache(async (resource: string, p
     getAuthorizationAudit({ params: { resource, ...params } })
   ]);
   
-  const resourceData = resourcePerformance.data.find(rp => rp.resource === resource);
+  const resourceData = resourcePerformance.content.find((rp: any) => rp.resource === resource);
   
   return {
     resource,
     performance: resourceData || null,
-    total_requests: relatedAudits.meta.total,
-    authorized_requests: relatedAudits.data.filter(a => a.authorized).length,
-    unauthorized_requests: relatedAudits.data.filter(a => !a.authorized).length,
-    authorization_rate: relatedAudits.meta.total > 0 ? (relatedAudits.data.filter(a => a.authorized).length / relatedAudits.meta.total) * 100 : 0,
-    most_common_actions: relatedAudits.data.reduce((acc, audit) => {
+    total_requests: relatedAudits.total_elements,
+    authorized_requests: relatedAudits.content.filter((a: any) => a.authorized).length,
+    unauthorized_requests: relatedAudits.content.filter((a: any) => !a.authorized).length,
+    authorization_rate: relatedAudits.total_elements > 0 ? (relatedAudits.content.filter((a: any) => a.authorized).length / relatedAudits.total_elements) * 100 : 0,
+    most_common_actions: relatedAudits.content.reduce((acc: any, audit: any) => {
       if (!acc[audit.action]) {
         acc[audit.action] = { count: 0, authorized: 0 };
       }
@@ -214,7 +210,7 @@ export const getAuthorizationSecurityOverview = cache(async () => {
     getAuthorizationAudit({ per_page: 50 })
   ]);
   
-  const alertsBySeverity = securityAlerts.data.reduce((acc, alert) => {
+  const alertsBySeverity = securityAlerts.content.reduce((acc: any, alert: any) => {
     if (!acc[alert.severity]) {
       acc[alert.severity] = 0;
     }
@@ -222,14 +218,14 @@ export const getAuthorizationSecurityOverview = cache(async () => {
     return acc;
   }, {} as Record<string, number>);
   
-  const unresolvedAlerts = securityAlerts.data.filter(alert => !alert.resolved_at);
+  const unresolvedAlerts = securityAlerts.content.filter((alert: any) => !alert.resolved_at);
   
   return {
-    total_alerts: securityAlerts.data.length,
+    total_alerts: securityAlerts.content.length,
     unresolved_alerts: unresolvedAlerts.length,
     alerts_by_severity: alertsBySeverity,
-    active_rules: securityRules.data.filter(rule => rule.isActive).length,
-    recent_suspicious_activity: recentAudits.data.filter(audit => 
+    active_rules: securityRules.content.filter((rule: any) => rule.isActive).length,
+    recent_suspicious_activity: recentAudits.content.filter((audit: any) => 
       audit.response_time_ms > 1000 || !audit.authorized
     ).length,
     security_score: calculate_security_score(unresolvedAlerts, alertsBySeverity)
@@ -245,13 +241,13 @@ export const getAuthorizationPerformanceAnalysis = cache(async (params?: { start
   ]);
   
   // Analyze slow requests
-  const slowResources = resourcePerformance.data.filter(rp => rp.average_response_time > 500);
-  const slowUsers = userPerformance.data.filter(up => up.average_response_time > 500);
+  const slowResources = resourcePerformance.content.filter((rp: any) => rp.average_response_time > 500);
+  const slowUsers = userPerformance.content.filter((up: any) => up.average_response_time > 500);
   
   // Calculate percentiles
   const allResponseTimes = [
-    ...resourcePerformance.data.map(rp => rp.average_response_time),
-    ...userPerformance.data.map(up => up.average_response_time)
+    ...resourcePerformance.content.map((rp: any) => rp.average_response_time),
+    ...userPerformance.content.map((up: any) => up.average_response_time)
   ];
   
   const sortedTimes = allResponseTimes.sort((a, b) => a - b);
@@ -280,22 +276,22 @@ export const getAuthorizationCacheAnalysis = cache(async () => {
   ]);
   
   // Analyze cache efficiency
-  const totalAccess = cacheEntries.data.reduce((sum, entry) => sum + entry.access_count, 0);
-  const expiredEntries = cacheEntries.data.filter(entry => new Date(entry.expires_at) < new Date());
-  const hotEntries = cacheEntries.data.filter(entry => entry.access_count > 10);
+  const totalAccess = cacheEntries.content.reduce((sum: number, entry: any) => sum + entry.access_count, 0);
+  const expiredEntries = cacheEntries.content.filter((entry: any) => new Date(entry.expires_at) < new Date());
+  const hotEntries = cacheEntries.content.filter((entry: any) => entry.access_count > 10);
   
   // Cache size estimation
-  const estimatedSize = JSON.stringify(cacheEntries.data).length / (1024 * 1024); // MB
+  const estimatedSize = JSON.stringify(cacheEntries.content).length / (1024 * 1024); // MB
   
   return {
-    total_entries: cacheEntries.data.length,
+    total_entries: cacheEntries.content.length,
     total_access_count: totalAccess,
     expired_entries: expiredEntries.length,
     hot_entries: hotEntries.length,
     estimated_size_mb: estimatedSize,
     cache_enabled: config.cache_enabled,
     cache_ttl_seconds: config.cache_ttl_seconds,
-    efficiency_score: calculate_cache_efficiency(cacheEntries.data, totalAccess)
+    efficiency_score: calculate_cache_efficiency(cacheEntries.content, totalAccess)
   };
 });
 

@@ -33,9 +33,15 @@ export interface IMenuHierarchy {
 }
 
 export interface IMenuTree {
-  root: IMenu[];
+  tree: MenuTreeNode[];
   total_menus: number;
   max_depth: number;
+  total_nodes?: number;
+}
+
+export interface MenuTreeNode {
+  menu: IMenu;
+  children: MenuTreeNode[];
 }
 
 // --- IMenu Statistics Types -----------------------------------------------------

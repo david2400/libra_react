@@ -14,9 +14,9 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
-import type { 
-  ICreateRolePermissionPayload, 
-  IUpdateRolePermissionPayload,
+import type {
+  ICreateRolePermission,
+  IUpdateRolePermission,
   IBulkRolePermissionPayload,
   IRolePermissionActivity,
   IRolePermissionValidationRequest,
@@ -25,7 +25,7 @@ import type {
 
 // --- IRole-IPermission Relationships Actions ---------------------------------
 
-export const createRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const createRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: ICreateRolePermission): Promise<ActionResultType<any>> => {
   try {
     const rolePermission = await rolePermissionsRepository.create(roleId, permissionId, payload);
     
@@ -67,7 +67,7 @@ export const createRolePermissionAction = async (roleId: string | number, permis
   }
 };
 
-export const updateRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const updateRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermission): Promise<ActionResultType<any>> => {
   try {
     const rolePermission = await rolePermissionsRepository.update(roleId, permissionId, payload);
     
@@ -235,7 +235,7 @@ export const bulkRemoveRolePermissionsAction = async (roleId: string | number, p
   }
 };
 
-export const bulkUpdateRolePermissionsAction = async (roleId: string | number, permissionIds: (string | number)[], payload: IUpdateRolePermissionPayload): Promise<ActionResultType<any>> => {
+export const bulkUpdateRolePermissionsAction = async (roleId: string | number, permissionIds: (string | number)[], payload: IUpdateRolePermission): Promise<ActionResultType<any>> => {
   try {
     const result = await rolePermissionBulkRepository.bulkUpdate(roleId, permissionIds, payload);
     

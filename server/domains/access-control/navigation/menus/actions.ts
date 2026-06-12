@@ -26,8 +26,8 @@ export const createMenuAction = async (payload: ICreateMenu): Promise<ActionResu
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.menus());
-    if (typeof menu.id === 'string' || typeof menu.id === 'number') {
-      await revalidateCacheTag(accessControlTags.menu(menu.id));
+    if (typeof menu.id_menu === 'string' || typeof menu.id_menu === 'number') {
+      await revalidateCacheTag(accessControlTags.menu(menu.id_menu));
     }
     
     return { success: true, data: menu };

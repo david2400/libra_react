@@ -2,10 +2,10 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
+import type {
   IUser,
-  ICreateUserPayload,
-  IUpdateUserPayload,
+  ICreateUser,
+  IUpdateUser,
   IUserListParams
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -29,13 +29,13 @@ export const usersRepository = {
     }),
 
   // Create user
-  create: (payload: ICreateUserPayload) => 
+  create: (payload: ICreateUser) => 
     serverFetch.post<IUser>('/api/access_control/users', payload, {
       revalidate: false,
     }),
 
   // Update user
-  update: (id: number, payload: IUpdateUserPayload) => 
+  update: (id: number, payload: IUpdateUser) => 
     serverFetch.put<IUser>(`/api/access_control/users/${id}`, payload, {
       revalidate: false,
     }),

@@ -11,9 +11,9 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
-import type { 
-  ICreateProfilePayload, 
-  IUpdateProfilePayload,
+import type {
+  ICreateProfile,
+  IUpdateProfile,
   IUpdateProfilePreferencesPayload,
   IProfileActivity,
   IEnableTwoFactorPayload,
@@ -23,20 +23,20 @@ import type {
 
 // --- Profiles Actions ---------------------------------------------------------
 
-export const createProfileAction = async (payload: ICreateProfilePayload): Promise<ActionResultType<any>> => {
+export const createProfileAction = async (payload: ICreateProfile): Promise<ActionResultType<any>> => {
   try {
     const profile = await profilesRepository.create(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.profiles());
-    await revalidateCacheTag(accessControlTags.user(payload.userId));
-    if (typeof profile.id === 'string' || typeof profile.id === 'number') {
-      await revalidateCacheTag(accessControlTags.profile(profile.id));
+    await revalidateCacheTag(accessControlTags.user(payload.user_id));
+    if (typeof profile.id_profile === 'string' || typeof profile.id_profile === 'number') {
+      await revalidateCacheTag(accessControlTags.profile(profile.id_profile));
     }
     
     // Log activity
     await profileActivityRepository.create({
-      profile_id: profile.id,
+      profile_id: profile.id_profile,
       activity_type: 'profile_update',
       description: 'IProfile created'
     });
@@ -64,7 +64,7 @@ export const createProfileAction = async (payload: ICreateProfilePayload): Promi
   }
 };
 
-export const updateProfileAction = async (id: string | number, payload: IUpdateProfilePayload): Promise<ActionResultType<any>> => {
+export const updateProfileAction = async (id: string | number, payload: IUpdateProfile): Promise<ActionResultType<any>> => {
   try {
     const profile = await profilesRepository.update(id, payload);
     

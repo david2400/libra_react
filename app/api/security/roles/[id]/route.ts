@@ -3,12 +3,13 @@ import { updateRoleAction, deleteRoleAction } from '@/server/domains/access-cont
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const { getRoleById } = await import('@/server/domains/access-control/security/roles');
     
-    const result = await getRoleById(params.id);
+    const result = await getRoleById(id);
     
     return NextResponse.json(result);
   } catch (error) {
@@ -22,11 +23,12 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const body = await request.json();
-    const result = await updateRoleAction(params.id, body);
+    const result = await updateRoleAction(id, body);
     
     if (result.success) {
       return NextResponse.json(result.data);
@@ -47,10 +49,11 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const result = await deleteRoleAction(params.id);
+    const { id } = await params;
+    const result = await deleteRoleAction(id);
     
     if (result.success) {
       return NextResponse.json({ message: 'Role deleted successfully' });

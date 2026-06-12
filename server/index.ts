@@ -13,7 +13,7 @@
 
 export { serverFetch } from './lib/server-fetch';
 export { env } from './lib/env';
-export type { ListParams, IPaginatedResponse, PaginationMeta, ServerFetchOptions, ActionResultType } from './lib/types';
+export type { ListParams, IPaginatedResponse, IPaginationMeta, ServerFetchOptions, ActionResultType } from './lib/types';
 export { ServerApiError } from './lib/types';
 export * from './lib/cache-tags';
 

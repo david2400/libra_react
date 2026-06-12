@@ -2,22 +2,15 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IAuthorizationRequest, 
+import type {
+  IAuthorizationRequest,
   IAuthorizationResponse,
-  IAuthorizationCheck,
-  IUser,
-  IPermission,
-  IRole,
   IAuthorizationStats,
-  IUserAuthorizationStats,
   IAuthorizationContext,
-  IContextEnrichment,
   IAuthorizationCacheEntry,
   ICacheManagementRequest,
   ICacheManagementResponse,
   IAuthorizationPolicy,
-  IPolicyEvaluationResult,
   IAuthorizationAudit,
   IAuditFilter,
   IAuditExportRequest,
@@ -27,9 +20,14 @@ import type {
   IUserPerformance,
   ISecurityAlert,
   ISecurityRule,
-  IAuthorizationConfig,
-  IConfigUpdateRequest
+  IConfigUpdateRequest,
+  IUserAuthorizationStats,
+  IPolicyEvaluationResult,
+  IAuthorizationConfig
 } from './types';
+import type { IUser } from '../../account/users';
+import type { IPermission } from '../permissions';
+import type { IRole } from '../roles';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- Authorization Core Repository -----------------------------------------

@@ -17,7 +17,7 @@ import {
 import { HiFolder, HiFolderOpen } from "react-icons/hi";
 import { BiCalendar, BiHash, BiFolder } from "react-icons/bi";
 import { MdDateRange } from "react-icons/md";
-import { IModuleApplication } from "../models/module-application.interface";
+import { IModuleApplication, IModuleApplicationUpdateRequest } from "../models/module-application.interface";
 import { Button } from "@repo/ui/buttons/scenes/button";
 import {
   Tooltip,
@@ -55,7 +55,7 @@ function getDepthColor(depth: number): string {
 function countChildren(module: IModuleApplication): number {
   if (!Array.isArray(module.parent_module_application) || module.parent_module_application.length === 0) return 0;
   return module.parent_module_application.reduce(
-    (acc, child) => acc + 1 + countChildren(child),
+    (acc: number, child: IModuleApplication) => acc + 1 + countChildren(child),
     0,
   );
 }
@@ -268,7 +268,7 @@ function ModuleItem({
       {/* Children */}
       {hasChildren && isExpanded && (
         <div className='border-l border-border/50 ml-3'>
-          {module.parent_module_application!.map((child, childIndex) => (
+          {module.parent_module_application!.map((child: IModuleApplication, childIndex: number) => (
             <ModuleItem
               key={child.id_modules_application || `child-${depth}-${childIndex}`}
               module={child}
@@ -277,10 +277,11 @@ function ModuleItem({
               onToggle={() => {
                 setExpandedIds((prev) => {
                   const next = new Set(prev);
-                  if (next.has(child.id_modules_application)) {
-                    next.delete(child.id_modules_application);
+                  const id = child.id_modules_application ?? childIndex;
+                  if (next.has(id)) {
+                    next.delete(id);
                   } else {
-                    next.add(child.id_modules_application);
+                    next.add(id);
                   }
                   return next;
                 });
@@ -370,7 +371,7 @@ export const ModuleApplicationManager = ({
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [editingModuleApplication, setEditingModuleApplication] =
-    useState<IModuleApplication | null>(null);
+    useState<IModuleApplicationUpdateRequest | null>(null);
   const [isCompactMode, setIsCompactMode] = useState(false);
 
   // Update modules when hierarchicalData changes
@@ -461,8 +462,10 @@ export const ModuleApplicationManager = ({
   };
 
   const handleEdit = (module: IModuleApplication) => {
-    setEditingModuleApplication(module);
-    setOpenModalUpdate(true);
+    if (module.id_modules_application) {
+      setEditingModuleApplication(module as IModuleApplicationUpdateRequest);
+      setOpenModalUpdate(true);
+    }
   };
 
   const handleDelete = (module: IModuleApplication) => {
@@ -596,10 +599,11 @@ export const ModuleApplicationManager = ({
                   onToggle={() => {
                     setExpandedIds((prev) => {
                       const next = new Set(prev);
-                      if (next.has(module.id_modules_application)) {
-                        next.delete(module.id_modules_application);
+                      const id = module.id_modules_application ?? index;
+                      if (next.has(id)) {
+                        next.delete(id);
                       } else {
-                        next.add(module.id_modules_application);
+                        next.add(id);
                       }
                       return next;
                     });

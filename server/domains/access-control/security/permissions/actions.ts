@@ -7,22 +7,22 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
-import type { 
-  ICreatePermissionPayload, 
-  IUpdatePermissionPayload,
+import type {
+  ICreatePermission,
+  IUpdatePermission,
 } from './types';
 import { rolePermissionsRepository } from '../role_permissions';
 
 // --- Permissions Actions ---------------------------------------------------------
 
-export const createPermissionAction = async (payload: ICreatePermissionPayload): Promise<ActionResultType<any>> => {
+export const createPermissionAction = async (payload: ICreatePermission): Promise<ActionResultType<any>> => {
   try {
     const permission = await permissionsRepository.create(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.permissions());
-    if (typeof permission.id === 'string' || typeof permission.id === 'number') {
-      await revalidateCacheTag(accessControlTags.permission(permission.id));
+    if (typeof permission.id_permission === 'string' || typeof permission.id_permission === 'number') {
+      await revalidateCacheTag(accessControlTags.permission(permission.id_permission));
     }
     
     return { success: true, data: permission };
@@ -48,7 +48,7 @@ export const createPermissionAction = async (payload: ICreatePermissionPayload):
   }
 };
 
-export const updatePermissionAction = async (id: string | number, payload: IUpdatePermissionPayload): Promise<ActionResultType<any>> => {
+export const updatePermissionAction = async (id: string | number, payload: IUpdatePermission): Promise<ActionResultType<any>> => {
   try {
     const permission = await permissionsRepository.update(id, payload);
     

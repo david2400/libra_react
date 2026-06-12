@@ -46,7 +46,7 @@ export const getUsersWithSummary = cache(async (params?: IUserListParams) => {
   ]);
   
   // Process users data
-  const processedUsers = users.data.map(user => ({
+  const processedUsers = users.content.map((user: IUser) => ({
     ...user,
     isActive: user.status === 'ACTIVE',
     days_since_last_login: user.last_login ? 
@@ -57,7 +57,7 @@ export const getUsersWithSummary = cache(async (params?: IUserListParams) => {
   return {
     users: processedUsers,
     summary: {
-      total: users.meta.total,
+      total: users.total_elements,
       active: processedUsers.filter(u => u.deleted).length,
       with_refresh_token: processedUsers.filter(u => u.has_refresh_token).length,
       logged_in_recently: processedUsers.filter(u => 

@@ -40,10 +40,11 @@ export const checkAuthorizationAction = async (request: IAuthorizationRequest): 
       reason: response.reason,
       policies_applied: response.policies_applied || [],
       permissions_used: response.permissions_used || [],
+      timestamp: new Date().toISOString(),
       context: {
         user_id: request.user_id,
         timestamp: new Date().toISOString(),
-        additional_context: request.context
+        metadata: request.context
       },
       response_time_ms: response.response_time
     });
@@ -84,6 +85,7 @@ export const checkAuthorizationWithContextAction = async (request: IAuthorizatio
       reason: response.reason,
       policies_applied: response.policies_applied || [],
       permissions_used: response.permissions_used || [],
+      timestamp: new Date().toISOString(),
       context,
       response_time_ms: response.response_time
     });
@@ -128,10 +130,11 @@ export const batchCheckAuthorizationAction = async (requests: IAuthorizationRequ
         reason: response.reason,
         policies_applied: response.policies_applied || [],
         permissions_used: response.permissions_used || [],
+        timestamp: new Date().toISOString(),
         context: {
           user_id: request.user_id,
           timestamp: new Date().toISOString(),
-          additional_context: request.context
+          metadata: request.context
         },
         response_time_ms: response.response_time
       });
@@ -167,11 +170,11 @@ export const manageAuthorizationCacheAction = async (request: ICacheManagementRe
     const response = await authorizationCacheRepository.manage(request);
     
     // Revalidate cache tags
-    if (request.clear_all_cache) {
+    if (request.action === 'clear_all_cache') {
       await revalidateCacheTag(accessControlTags.authSession());
       await revalidateCacheTag(accessControlTags.users());
-    } else if (request.clear_user_cache) {
-      await revalidateCacheTag(accessControlTags.user(request.clear_user_cache));
+    } else if (request.action === 'clear_user_cache' && request.user_id) {
+      await revalidateCacheTag(accessControlTags.user(request.user_id));
     }
     
     return { success: true, data: response };
@@ -199,7 +202,7 @@ export const manageAuthorizationCacheAction = async (request: ICacheManagementRe
 
 export const clearExpiredCacheAction = async (): Promise<ActionResultType<any>> => {
   try {
-    const response = await authorizationCacheRepository.clear_expired();
+    const response = await authorizationCacheRepository.clearExpired();
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -381,9 +384,9 @@ export const resolveSecurityAlertAction = async (id: string, resolvedBy: string 
   }
 };
 
-export const create_security_rule_action = async (rule: Omit<ISecurityRule, 'id' | 'createdAt' | 'updatedAt'>): Promise<ActionResultType<any>> => {
+export const create_security_rule_action = async (rule: Omit<ISecurityRule, 'id' | 'created_at' | 'updated_at'>): Promise<ActionResultType<any>> => {
   try {
-    const createdRule = await authorizationSecurityRepository.create_rule(rule);
+    const createdRule = await authorizationSecurityRepository.createRule(rule);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -413,7 +416,7 @@ export const create_security_rule_action = async (rule: Omit<ISecurityRule, 'id'
 
 export const update_security_rule_action = async (id: string, rule: Partial<ISecurityRule>): Promise<ActionResultType<any>> => {
   try {
-    const updatedRule = await authorizationSecurityRepository.update_rule(id, rule);
+    const updatedRule = await authorizationSecurityRepository.updateRule(id, rule);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());
@@ -443,7 +446,7 @@ export const update_security_rule_action = async (id: string, rule: Partial<ISec
 
 export const delete_security_rule_action = async (id: string): Promise<ActionResultType<void>> => {
   try {
-    await authorizationSecurityRepository.delete_rule(id);
+    await authorizationSecurityRepository.deleteRule(id);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.authSession());

@@ -10,9 +10,8 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  IProfile, 
-  IUser,
+import type {
+  IProfile,
   IProfilePreferences,
   IProfileActivity,
   IProfileActivityFilter,
@@ -20,6 +19,7 @@ import type {
   IProfileOverview,
   IProfileSecurity
 } from './types';
+import type { IUser } from '../users';
 
 // --- Profiles Queries ---------------------------------------------------------
 
@@ -100,10 +100,10 @@ export const getCompleteProfile = cache(async (profileId: string | number) => {
 export const getCompleteProfileByUser = cache(async (userId: string | number) => {
   const [profile, preferences, stats, security, recentActivities] = await Promise.all([
     getProfileByUserId(userId),
-    getProfileByUserId(userId).then(p => p ? getProfilePreferences(p.id) : null),
-    getProfileByUserId(userId).then(p => p ? getProfileStats(p.id) : null),
-    getProfileByUserId(userId).then(p => p ? getProfileSecurity(p.id) : null),
-    getProfileByUserId(userId).then(p => p ? getRecentProfileActivities(p.id, 10) : [])
+    getProfileByUserId(userId).then(p => p ? getProfilePreferences(p.id_profile) : null),
+    getProfileByUserId(userId).then(p => p ? getProfileStats(p.id_profile) : null),
+    getProfileByUserId(userId).then(p => p ? getProfileSecurity(p.id_profile) : null),
+    getProfileByUserId(userId).then(p => p ? getRecentProfileActivities(p.id_profile, 10) : [])
   ]);
   
   if (!profile) {
@@ -127,13 +127,13 @@ export const getProfilesDashboard = cache(async () => {
   ]);
   
   // Combine data for dashboard
-  const dashboardData = profiles.data.map(profile => {
-    const stats = allStats.find(s => s.profile_id === profile.id);
+  const dashboardData = profiles.content.map((profile: IProfile) => {
+    const stats = allStats.find(s => s.profile_id === profile.id_profile);
     
     return {
       ...profile,
       stats: stats || {
-        profile_id: profile.id,
+        profile_id: profile.id_profile,
         login_count: 0,
         profile_updates: 0,
         preference_changes: 0,
@@ -145,11 +145,11 @@ export const getProfilesDashboard = cache(async () => {
   return {
     profiles: dashboardData,
     summary: {
-      total_profiles: profiles.meta.total,
+      total_profiles: profiles.total_elements,
       total_logins: allStats.reduce((sum, s) => sum + s.login_count, 0),
       total_profile_updates: allStats.reduce((sum, s) => sum + s.profile_updates, 0),
       total_preference_changes: allStats.reduce((sum, s) => sum + s.preference_changes, 0),
-      active_profiles: dashboardData.filter(p => p.is_active).length
+      active_profiles: dashboardData.filter(p => (p as any).is_active).length
     }
   };
 });
@@ -161,7 +161,7 @@ export const getProfileActivityTrends = cache(async (profileId: string | number,
   ]);
   
   // Process activity data for trends
-  const trends = activities.data.map(activity => ({
+  const trends = activities.content.map((activity: IProfileActivity) => ({
     timestamp: activity.created_at,
     activity_type: activity.activity_type,
     description: activity.description,
@@ -169,7 +169,7 @@ export const getProfileActivityTrends = cache(async (profileId: string | number,
   }));
   
   // Group by activity type
-  const groupedTrends = trends.reduce((acc, trend) => {
+  const groupedTrends = trends.reduce((acc: Record<string, typeof trends>, trend: typeof trends[number]) => {
     if (!acc[trend.activity_type]) {
       acc[trend.activity_type] = [];
     }
@@ -184,7 +184,7 @@ export const getProfileActivityTrends = cache(async (profileId: string | number,
       total_activities: trends.length,
       activity_types: Object.keys(groupedTrends),
       most_common_activity: Object.entries(groupedTrends)
-        .sort(([,a], [,b]) => b.length - a.length)[0]?.[0] || 'none'
+        .sort(([,a], [,b]) => (b as any).length - (a as any).length)[0]?.[0] || 'none'
     }
   };
 });
@@ -193,7 +193,7 @@ export const getProfileActivityTrends = cache(async (profileId: string | number,
 export const getProfilesByTheme = cache(async (theme: 'light' | 'dark' | 'auto') => {
   const profiles = await getProfiles({ per_page: 100 });
   
-  const filteredProfiles = profiles.data.filter(profile => profile.theme === theme);
+  const filteredProfiles = profiles.content.filter((profile: IProfile) => profile.theme === theme);
   
   return {
     theme,
@@ -206,7 +206,7 @@ export const getProfilesByTheme = cache(async (theme: 'light' | 'dark' | 'auto')
 export const getProfilesByLanguage = cache(async (language: string) => {
   const profiles = await getProfiles({ per_page: 100 });
   
-  const filteredProfiles = profiles.data.filter(profile => profile.language === language);
+  const filteredProfiles = profiles.content.filter((profile: IProfile) => profile.language === language);
   
   return {
     language,
@@ -278,10 +278,10 @@ export const getProfilesWithSecurityIssues = cache(async () => {
   ]);
   
   const profilesWithSecurity = await Promise.all(
-    profiles.data.map(async (profile) => {
+    profiles.content.map(async (profile: IProfile) => {
       const [security, stats] = await Promise.all([
-        getProfileSecurity(profile.id),
-        getProfileStats(profile.id)
+        getProfileSecurity(profile.id_profile),
+        getProfileStats(profile.id_profile)
       ]);
       
       const issues = [];
@@ -316,7 +316,7 @@ export const getProfilesWithSecurityIssues = cache(async () => {
   return {
     profiles: withIssues,
     total_with_issues: withIssues.length,
-    total_profiles: profiles.data.length,
-    percentage_with_issues: (withIssues.length / profiles.data.length) * 100
+    total_profiles: profiles.content.length,
+    percentage_with_issues: (withIssues.length / profiles.content.length) * 100
   };
 });

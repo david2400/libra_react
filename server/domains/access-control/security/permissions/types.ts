@@ -1,7 +1,7 @@
 ﻿import 'server-only';
 import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IApplication } from '../applications';
-import { IModuleApplication } from '../modules_applications';
+import { IModuleApplication } from '../applications';
 import { IRolePermission } from '../role_permissions';
 
 export interface ICreatePermission {

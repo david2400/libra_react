@@ -20,7 +20,10 @@ import {
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { updateUserCompanyAction } from "@/server/domains/access-control/account/user-companies";
+import {
+  createUserCompanyServerAction,
+  updateUserCompanyServerAction,
+} from "@/app/[locale]/(protected)/account/user-companies/[idCompanie]/actions";
 
 interface FormBaseProps extends IFormProps<any> {
   users?: any[];
@@ -77,38 +80,30 @@ export const RegisterUserCompany = ({
   const handleSubmit: SubmitHandler<IUserCompanyCreateRequest> = async (
     values
   ) => {
-    try {
-      const { createUserCompanyAction } = await import(
-        "@/server/domains/access-control/account/user-companies/actions"
-      );
-      
-      const result = await createUserCompanyAction({
-        user_id: values.user_id,
-        company_id: values.company_id,
-        is_primary: values.is_primary,
+    const result = await createUserCompanyServerAction({
+      user_id: values.user_id,
+      company_id: values.company_id,
+      is_primary: values.is_primary,
+    })
+      .then(() => {
+        Swal.fire({
+          title: t("createSuccess"),
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+          willClose: () => {
+            onSuccess?.();
+            router.refresh();
+          },
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: tMessages("createError", { entity: "asignación" }),
+          text: (error as any)?.message || tMessages("unexpectedError"),
+          icon: "error",
+        });
       });
-
-      if (!result.success) {
-        throw new Error(result.error?.message || "Error al crear la asignación");
-      }
-
-      Swal.fire({
-        title: t("createSuccess"),
-        icon: "success",
-        timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          onSuccess?.();
-          router.refresh();
-        },
-      });
-    } catch (error) {
-      Swal.fire({
-        title: tMessages("createError", { entity: "asignación" }),
-        text: (error as any)?.message || tMessages("unexpectedError"),
-        icon: "error",
-      });
-    }
   };
 
   return (
@@ -145,38 +140,32 @@ export const UpdateUserCompany = ({
   ) => {
     if (!values.user_id || !values.company_id) return;
 
-    try {
- 
-      
-      const result = await updateUserCompanyAction(
-        values.user_id,
-        values.company_id,
-        {
-          is_primary: values.is_primary,
-        }
-      );
-
-      if (!result.success) {
-        throw new Error(result.error?.message || "Error al actualizar la asignación");
+    const result = await updateUserCompanyServerAction(
+      values.user_id,
+      values.company_id,
+      {
+        is_primary: values.is_primary,
       }
-
-      Swal.fire({
-        title: t("updateSuccess"),
-        icon: "success",
-        timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          handleClose?.(false);
-          router.refresh();
-        },
+    )
+      .then(() => {
+        Swal.fire({
+          title: t("updateSuccess"),
+          icon: "success",
+          timer: 3000,
+          showConfirmButton: false,
+          willClose: () => {
+            handleClose?.(false);
+            router.refresh();
+          },
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          title: tMessages("updateError", { entity: "asignación" }),
+          text: (error as any)?.message || tMessages("unexpectedError"),
+          icon: "error",
+        });
       });
-    } catch (error) {
-      Swal.fire({
-        title: tMessages("updateError", { entity: "asignación" }),
-        text: (error as any)?.message || tMessages("unexpectedError"),
-        icon: "error",
-      });
-    }
   };
 
   if (!initialValues) {

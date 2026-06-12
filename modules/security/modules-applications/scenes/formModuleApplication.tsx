@@ -13,11 +13,13 @@ import { IApplication } from "@/server/domains/access-control/security/applicati
 import { useEffect, useMemo, useState } from "react";
 import { FormSelectField, FormTreeSelectField } from "@repo/ui/form";
 import { type TreeSelectNode } from "@repo/ui/inputs/scenes/tree-select";
-import {
-  IModuleApplication,
-  getModuleApplications,
-} from "@/server/domains/access-control/security/modules_applications";
-import { getAllModuleApplicationsServerAction } from "@/app/[locale]/(protected)/security/modules-applications/actions";
+import { IModuleApplication } from "../models/module-application.interface";
+// TODO: Fix server domain imports for modules-applications
+// import {
+//   IModuleApplication,
+//   getModuleApplications,
+// } from "@/server/domains/access-control/security/modules_applications";
+// import { getAllModuleApplicationsServerAction } from "@/app/[locale]/(protected)/security/modules-applications/actions";
 import { getAllApplicationsServerAction } from "@/app/[locale]/(protected)/security/applications/actions";
 
 export const FormModuleApplication = ({
@@ -100,10 +102,11 @@ export const FormModuleApplication = ({
         error: null,
       }));
 
-      const applications = await getAllModuleApplicationsServerAction();
-      console.log("applications", applications);
+      // TODO: Implement server action call
+      // const applications = await getAllModuleApplicationsServerAction();
+      console.log("TODO: Load module applications");
       setModuleApplications({
-        data: applications,
+        data: [],
         loading: false,
         error: null,
       });
@@ -168,8 +171,8 @@ export const FormModuleApplication = ({
     return moduleApplicationsData.data
       .filter((nivel) => nivel.id_modules_application != null) // Filtrar módulos sin ID
       .map((nivel) => ({
-        id: nivel.id_modules_application.toString(),
-        value: nivel.id_modules_application.toString(),
+        id: nivel.id_modules_application!.toString(),
+        value: nivel.id_modules_application!.toString(),
         label: `${nivel.name}`,
         disabled: false,
       }))

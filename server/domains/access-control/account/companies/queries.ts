@@ -11,17 +11,17 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-// import type { 
-//   ICompany, 
-//   ICompanyClient,
-//   ICompanyStats,
-//   ICompanyOverview,
-//   ICompanyActivity,
-//   ICompanyActivityFilter,
-//   ICompanyConfig,
-//   ICompanyHealth,
-//   ICompanyHealthResponse
-// } from './types';
+import type {
+  ICompany,
+  ICompanyClient,
+  ICompanyStats,
+  ICompanyOverview,
+  ICompanyActivity,
+  ICompanyActivityFilter,
+  ICompanyConfig,
+  ICompanyHealth,
+  ICompanyHealthResponse
+} from './types';
 
 // --- Companies Queries ---------------------------------------------------------
 
@@ -130,8 +130,8 @@ export const getCompanyProfile = cache(async (companyId: string | number) => {
     stats,
     primary_clients: primaryClients,
     recent_activities: recentActivities,
-    configs: configs.data,
-    config_count: configs.meta.total
+    configs: Array.isArray(configs) ? configs : configs.content || [],
+    config_count: Array.isArray(configs) ? configs.length : configs.total_elements || 0
   };
 });
 
@@ -144,7 +144,7 @@ export const getCompaniesDashboard = cache(async () => {
   ]);
   
   // Combine data for dashboard
-  const dashboardData = companies.data.map(company => {
+  const dashboardData = companies.content.map((company: ICompany) => {
     const stats = allStats.find(s => s.company_id === company.id_company);
     const health = allHealth.find(h => h.company.id_company === company.id_company);
     
@@ -166,7 +166,7 @@ export const getCompaniesDashboard = cache(async () => {
   return {
     companies: dashboardData,
     summary: {
-      total_companies: companies.meta.total,
+      total_companies: companies.total_elements,
       total_clients: allStats.reduce((sum, s) => sum + s.total_clients, 0),
       total_users: allStats.reduce((sum, s) => sum + s.total_users, 0),
       healthy_companies: allHealth.filter(h => h.health.status === 'healthy').length,
@@ -183,7 +183,7 @@ export const getCompanyActivityTrends = cache(async (companyId: string | number,
   ]);
   
   // Process activity data for trends
-  const trends = activities.data.map(activity => ({
+  const trends = activities.content.map((activity: ICompanyActivity) => ({
     timestamp: activity.created_at,
     activity_type: activity.activity_type,
     description: activity.description,
@@ -191,7 +191,7 @@ export const getCompanyActivityTrends = cache(async (companyId: string | number,
   }));
   
   // Group by activity type
-  const groupedTrends = trends.reduce((acc, trend) => {
+  const groupedTrends = trends.reduce((acc: Record<string, typeof trends>, trend: typeof trends[number]) => {
     if (!acc[trend.activity_type]) {
       acc[trend.activity_type] = [];
     }
@@ -206,7 +206,7 @@ export const getCompanyActivityTrends = cache(async (companyId: string | number,
       total_activities: trends.length,
       activity_types: Object.keys(groupedTrends),
       most_common_activity: Object.entries(groupedTrends)
-        .sort(([,a], [,b]) => b.length - a.length)[0]?.[0] || 'none'
+        .sort(([,a], [,b]) => (b as any).length - (a as any).length)[0]?.[0] || 'none'
     }
   };
 });
@@ -250,7 +250,7 @@ export const getCompanyPerformanceMetrics = cache(async (companyId: string | num
   const clientGrowthRate = stats.total_clients > 0 ? (stats.active_clients / stats.total_clients) * 100 : 0;
   const userEngagementRate = stats.total_users > 0 ? (stats.active_sessions / stats.total_users) * 100 : 0;
   
-  const recentActivities = activities.data.filter(a => {
+  const recentActivities = activities.content.filter((a: ICompanyActivity) => {
     const activityDate = new Date(a.created_at);
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);

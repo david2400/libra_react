@@ -4,11 +4,11 @@ import { revalidateCacheTag } from '@/server/lib/cache-tags';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
 import { clientsRepository, clientCompaniesRepository, clientActivityRepository } from './repository';
-import type { ICreateClientPayload, IUpdateClientPayload, ICreateClientCompanyPayload, IUpdateClientCompanyPayload } from './types';
+import type { ICreateClient, IUpdateClient, ICreateClientCompany, IUpdateClientCompany, IClient, IClientCompany } from './types';
 
 // ─── Client Actions ─────────────────────────────────────────────────────────
 
-export const createClientAction = async (payload: ICreateClientPayload): Promise<ActionResultType> => {
+export const createClientAction = async (payload: ICreateClient): Promise<ActionResultType<IClient>> => {
   try {
     const client = await clientsRepository.create(payload);
     await revalidateCacheTag(accessControlTags.clients());
@@ -34,7 +34,7 @@ export const createClientAction = async (payload: ICreateClientPayload): Promise
   }
 };
 
-export const updateClientAction = async (id: string | number, payload: IUpdateClientPayload): Promise<ActionResultType> => {
+export const updateClientAction = async (id: string | number, payload: IUpdateClient): Promise<ActionResultType<IClient>> => {
   try {
     const client = await clientsRepository.update(id, payload);
     await revalidateCacheTag(accessControlTags.client(id));
@@ -93,8 +93,8 @@ export const deleteClientAction = async (id: string | number): Promise<ActionRes
 export const createClientCompanyAction = async (
   clientId: string | number, 
   companyId: string | number, 
-  payload: ICreateClientCompanyPayload
-): Promise<ActionResultType> => {
+  payload: ICreateClientCompany
+): Promise<ActionResultType<IClientCompany>> => {
   try {
     const clientCompany = await clientCompaniesRepository.create(clientId, companyId, payload);
     await revalidateCacheTag(accessControlTags.client(clientId));
@@ -124,8 +124,8 @@ export const createClientCompanyAction = async (
 export const updateClientCompanyAction = async (
   clientId: string | number, 
   companyId: string | number, 
-  payload: IUpdateClientCompanyPayload
-): Promise<ActionResultType> => {
+  payload: IUpdateClientCompany
+): Promise<ActionResultType<IClientCompany>> => {
   try {
     const clientCompany = await clientCompaniesRepository.update(clientId, companyId, payload);
     await revalidateCacheTag(accessControlTags.client(clientId));

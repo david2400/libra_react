@@ -3,7 +3,17 @@ import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/ty
 import { ICompany } from '../../account/companies';
 import { IPermission } from '../permissions';
 import { IMenu } from '../../navigation/menus';
-import { IModuleApplication } from '../modules_applications';
+
+// --- IModuleApplication Types (temporary inline definition) -------------------
+
+export interface IModuleApplication {
+  id_module: number;
+  name: string;
+  description?: string;
+  route?: string;
+  icon?: string;
+  is_active?: boolean;
+}
 
 // --- IApplication Types ---------------------------------------------------------
 

@@ -2,17 +2,14 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IRoleMenu, 
-  ICreateRoleMenuPayload, 
-  IUpdateRoleMenuPayload,
-  IRole,
-  IMenu,
+import type {
+  IRoleMenu,
+  ICreateRoleMenu,
+  IUpdateRoleMenu,
   IRoleMenuStats,
   IRoleMenuOverview,
   IBulkRoleMenuPayload,
   IBulkRoleMenuResponse,
-  IRoleMenuTreeResponse,
   IRoleMenuActivity,
   IRoleMenuActivityFilter,
   IRoleMenuValidationResult,
@@ -20,6 +17,8 @@ import type {
   IRoleMenuExportRequest,
   IRoleMenuExportResponse
 } from './types';
+import type { IRole } from '../../security/roles';
+import type { IMenu } from '../menus';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- IRole-IMenu Relationships Repository -------------------------------------
@@ -62,13 +61,13 @@ export const roleMenusRepository = {
     }),
 
   // Create role-menu relationship
-  create: (roleId: string | number, menuId: string | number, payload: ICreateRoleMenuPayload) => 
+  create: (roleId: string | number, menuId: string | number, payload: ICreateRoleMenu) => 
     serverFetch.post<IRoleMenu>(`/api/access_control/role-menus/${roleId}/${menuId}`, payload, {
       revalidate: false,
     }),
 
   // Update role-menu relationship
-  update: (roleId: string | number, menuId: string | number, payload: IUpdateRoleMenuPayload) => 
+  update: (roleId: string | number, menuId: string | number, payload: IUpdateRoleMenu) => 
     serverFetch.put<IRoleMenu>(`/api/access_control/role-menus/${roleId}/${menuId}`, payload, {
       revalidate: false,
     }),
@@ -121,7 +120,7 @@ export const roleMenuBulkRepository = {
     }),
 
   // Bulk update role-menu relationships
-  bulkUpdate: (roleId: string | number, menuIds: (string | number)[], payload: IUpdateRoleMenuPayload) => 
+  bulkUpdate: (roleId: string | number, menuIds: (string | number)[], payload: IUpdateRoleMenu) => 
     serverFetch.post<IBulkRoleMenuResponse>(`/api/access_control/role-menus/role/${roleId}/bulk-update`, { menu_ids: menuIds, ...payload }, {
       revalidate: false,
     }),
@@ -132,7 +131,7 @@ export const roleMenuBulkRepository = {
 export const roleMenuTreeRepository = {
   // Get role menu tree
   getTree: (roleId: string | number) => 
-    serverFetch.get<IRoleMenuTreeResponse>(`/api/access_control/role-menus/role/${roleId}/tree`, {
+    serverFetch.get<{ tree: any; total_nodes: number; max_depth: number }>(`/api/access_control/role-menus/role/${roleId}/tree`, {
       revalidate: 120,
       tags: [accessControlTags.role(roleId)],
     }),

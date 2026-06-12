@@ -13,9 +13,9 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
-import type { 
-  ICreateRoleMenuPayload, 
-  IUpdateRoleMenuPayload,
+import type {
+  ICreateRoleMenu,
+  IUpdateRoleMenu,
   IBulkRoleMenuPayload,
   IRoleMenuActivity,
   IRoleMenuValidationRequest,
@@ -24,7 +24,7 @@ import type {
 
 // --- IRole-IMenu Relationships Actions -----------------------------------------
 
-export const createRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: ICreateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const createRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: ICreateRoleMenu): Promise<ActionResultType<any>> => {
   try {
     const roleMenu = await roleMenusRepository.create(roleId, menuId, payload);
     
@@ -66,7 +66,7 @@ export const createRoleMenuAction = async (roleId: string | number, menuId: stri
   }
 };
 
-export const updateRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: IUpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const updateRoleMenuAction = async (roleId: string | number, menuId: string | number, payload: IUpdateRoleMenu): Promise<ActionResultType<any>> => {
   try {
     const roleMenu = await roleMenusRepository.update(roleId, menuId, payload);
     
@@ -79,7 +79,7 @@ export const updateRoleMenuAction = async (roleId: string | number, menuId: stri
     await roleMenuActivityRepository.create({
       role_id: roleId,
       menu_id: menuId,
-      activity_type: 'access_updated',
+      activity_type: 'menu_updated',
       description: 'IRole-menu access updated',
       metadata: { updated_fields: Object.keys(payload) }
     });
@@ -234,7 +234,7 @@ export const bulkRemoveRoleMenusAction = async (roleId: string | number, menuIds
   }
 };
 
-export const bulkUpdateRoleMenusAction = async (roleId: string | number, menuIds: (string | number)[], payload: IUpdateRoleMenuPayload): Promise<ActionResultType<any>> => {
+export const bulkUpdateRoleMenusAction = async (roleId: string | number, menuIds: (string | number)[], payload: IUpdateRoleMenu): Promise<ActionResultType<any>> => {
   try {
     const result = await roleMenuBulkRepository.bulkUpdate(roleId, menuIds, payload);
     
@@ -247,7 +247,7 @@ export const bulkUpdateRoleMenusAction = async (roleId: string | number, menuIds
       await roleMenuActivityRepository.create({
         role_id: roleId,
         menu_id: roleMenu.menu_id,
-        activity_type: 'access_updated',
+        activity_type: 'menu_updated',
         description: 'IRole-menu access updated (bulk operation)',
         metadata: { bulk_operation: true, updated_fields: Object.keys(payload) }
       });
@@ -346,16 +346,18 @@ export const validateRoleMenuTreeAction = async (roleId: string | number): Promi
     const results = await roleMenuValidationRepository.validateTree(roleId);
     
     // Log validation activity
-    await roleMenuActivityRepository.create({
-      role_id: roleId,
-      activity_type: 'other',
-      description: 'IRole menu tree validation performed',
-      metadata: { 
-        total_validations: results.length,
-        valid_count: results.filter(r => r.is_valid).length,
-        invalid_count: results.filter(r => !r.is_valid).length
-      }
-    });
+    // Skip activity logging as this is a role-level operation without specific menu_id
+    // await roleMenuActivityRepository.create({
+    //   role_id: roleId,
+    //   menu_id: 0, // Placeholder for role-level operation
+    //   activity_type: 'other',
+    //   description: 'IRole menu tree validation performed',
+    //   metadata: { 
+    //     total_validations: results.length,
+    //     valid_count: results.filter(r => r.is_valid).length,
+    //     invalid_count: results.filter(r => !r.is_valid).length
+    //   }
+    // });
     
     return { success: true, data: results };
   } catch (error) {
@@ -385,16 +387,18 @@ export const validateAllRoleMenusAction = async (): Promise<ActionResultType<any
     const results = await roleMenuValidationRepository.validateAll();
     
     // Log validation activity
-    await roleMenuActivityRepository.create({
-      role_id: 'system', // System activity
-      activity_type: 'other',
-      description: 'All role-menu relationships validation performed',
-      metadata: { 
-        total_validations: results.length,
-        valid_count: results.filter(r => r.is_valid).length,
-        invalid_count: results.filter(r => !r.is_valid).length
-      }
-    });
+    // Skip activity logging as this is a system-level operation without specific menu_id
+    // await roleMenuActivityRepository.create({
+    //   role_id: 'system',
+    //   menu_id: 0, // Placeholder for system-level operation
+    //   activity_type: 'other',
+    //   description: 'All role-menu relationships validation performed',
+    //   metadata: { 
+    //     total_validations: results.length,
+    //     valid_count: results.filter(r => r.is_valid).length,
+    //     invalid_count: results.filter(r => !r.is_valid).length
+    //   }
+    // });
     
     return { success: true, data: results };
   } catch (error) {
@@ -426,18 +430,20 @@ export const exportRoleMenusAction = async (request: IRoleMenuExportRequest): Pr
     const result = await roleMenuExportRepository.export(request);
     
     // Log export activity
-    await roleMenuActivityRepository.create({
-      role_id: 'system', // System activity
-      activity_type: 'other',
-      description: 'IRole-menu data exported',
-      metadata: { 
-        format: request.format,
-        include_stats: request.include_stats,
-        include_activity: request.include_activity,
-        file_name: result.file_name,
-        record_count: result.record_count
-      }
-    });
+    // Skip activity logging as this is a system-level operation without specific menu_id
+    // await roleMenuActivityRepository.create({
+    //   role_id: 'system',
+    //   menu_id: 0, // Placeholder for system-level operation
+    //   activity_type: 'other',
+    //   description: 'IRole-menu data exported',
+    //   metadata: { 
+    //     format: request.format,
+    //     include_stats: request.include_stats,
+    //     include_activity: request.include_activity,
+    //     file_name: result.file_name,
+    //     record_count: result.record_count
+    //   }
+    // });
     
     return { success: true, data: result };
   } catch (error) {

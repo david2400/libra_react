@@ -40,10 +40,12 @@ import {
   RiDeleteBinLine,
   RiCheckDoubleLine,
 } from "react-icons/ri";
-import type { MenuItem } from "../models/menu-permission.interface";
+import type { MenuItem, MenuPermission } from "../models/menu-permission.interface";
 import { menuItems, roles, initialPermissions } from "../mocks/data";
-import { PermissionType } from "@/modules/security/permissions/models/permission.interface";
-import { IPermission } from "@/server/domains/access-control/security/permissions";
+// import { PermissionType } from "@/modules/security/permissions/models/permission.interface";
+
+// Local type for menu permission actions
+type MenuPermissionType = "view" | "create" | "edit" | "delete";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   RiDashboardLine,
@@ -106,11 +108,11 @@ interface MenuItemRowProps {
   level: number;
   expanded: Set<string>;
   toggleExpand: (id: string) => void;
-  permissions: IPermission[];
+  permissions: MenuPermission[];
   selectedRole: string;
   onPermissionChange: (
     menuId: string,
-    type: PermissionType,
+    type: MenuPermissionType,
     value: boolean,
   ) => void;
   searchQuery: string;
@@ -152,13 +154,13 @@ function MenuItemRow({
 
   // Calculate child permission states for indeterminate
   const getChildrenPermissionState = (
-    type: PermissionType,
+    type: MenuPermissionType,
   ): "all" | "none" | "some" => {
     if (!menu.children) return "none";
     const childPerms = menu.children
       .map((child) =>
         permissions.find(
-          (p) => p.menu_ === child.id && p.roleId === selectedRole,
+          (p) => p.menuId === child.id && p.roleId === selectedRole,
         ),
       )
       .filter(Boolean);
@@ -166,7 +168,7 @@ function MenuItemRow({
     if (childPerms.length === 0) return "none";
 
     const key =
-      `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof IPermission;
+      `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof MenuPermission;
     const allChecked = childPerms.every((p) => p && p[key] === true);
     const noneChecked = childPerms.every((p) => !p || p[key] === false);
 
@@ -214,14 +216,11 @@ function MenuItemRow({
 
         {/* IPermission Checkboxes */}
         <div className='flex items-center gap-8'>
-          {(["view", "create", "edit", "delete"] as PermissionType[]).map(
+          {(["view", "create", "edit", "delete"] as MenuPermissionType[]).map(
             (type) => {
-              const key =
-                `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof IPermission;
-              const checked = permission ? (permission[key] as boolean) : false;
-              const childState = hasChildren
-                ? getChildrenPermissionState(type)
-                : "none";
+              const key = `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof MenuPermission;
+              const checked = permission ? (permission[key] as any) : false;
+              const childState = hasChildren ? getChildrenPermissionState(type) : "none";
               const indeterminate = hasChildren && childState === "some";
 
               return (
@@ -262,7 +261,7 @@ function MenuItemRow({
 
 export function MenuPermissionsManager() {
   const [permissions, setPermissions] =
-    useState<IPermission[]>(initialPermissions);
+    useState<MenuPermission[]>(initialPermissions);
   const [selectedRole, setSelectedRole] = useState(roles[0].id);
   const [searchQuery, setSearchQuery] = useState("");
   const [expanded, setExpanded] = useState<Set<string>>(
@@ -300,18 +299,18 @@ export function MenuPermissionsManager() {
 
   const handlePermissionChange = (
     menuId: string,
-    type: PermissionType,
+    type: MenuPermissionType,
     value: boolean,
   ) => {
     setHasChanges(true);
     setPermissions((prev) => {
       const newPermissions = [...prev];
       const existingIndex = newPermissions.findIndex(
-        (p) => p.menuId === menuId && p.role_id === selectedRole,
+        (p) => p.menuId === menuId && p.roleId === selectedRole,
       );
 
       const key =
-        `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof IPermission;
+        `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof MenuPermission;
 
       if (existingIndex !== -1) {
         newPermissions[existingIndex] = {
@@ -373,7 +372,7 @@ export function MenuPermissionsManager() {
 
   const grantAllPermissions = () => {
     setHasChanges(true);
-    const allPermissions: IPermission[] = [];
+    const allPermissions: MenuPermission[] = [];
     menuItems.forEach((menu) => {
       allPermissions.push({
         menuId: menu.id,

@@ -98,8 +98,8 @@ export const getApplicationProfile = cache(async (applicationId: string | number
     modules,
     health,
     stats,
-    configs: configs.data,
-    config_count: configs.meta.total
+    configs: configs.content,
+    config_count: configs.total_elements
   };
 });
 
@@ -112,7 +112,7 @@ export const getApplicationsDashboard = cache(async () => {
   ]);
 
   // Combine data for dashboard
-  const dashboardData = applications.data.map(app => {
+  const dashboardData = applications.content.map((app: any) => {
     const health = allHealth.results.find((h: any) => h.application_id === app.id_application);
     const stats = allStats.find((s: any) => s.application_id === app.id_application);
 
@@ -131,7 +131,7 @@ export const getApplicationsDashboard = cache(async () => {
   return {
     applications: dashboardData,
     summary: allHealth.summary,
-    total_applications: applications.meta.total
+    total_applications: applications.total_elements
   };
 });
 
@@ -142,7 +142,7 @@ export const getApplicationHealthTrends = cache(async (applicationId: string | n
   ]);
 
   // Process health data for trends
-  const trends = healthHistory.data.map(health => ({
+  const trends = healthHistory.content.map((health: any) => ({
     timestamp: health.last_checked,
     status: health.status,
     response_time: health.response_time
@@ -153,10 +153,10 @@ export const getApplicationHealthTrends = cache(async (applicationId: string | n
     trends,
     summary: {
       total_checks: trends.length,
-      healthy_count: trends.filter(t => t.status === 'healthy').length,
-      unhealthy_count: trends.filter(t => t.status === 'unhealthy').length,
-      degraded_count: trends.filter(t => t.status === 'degraded').length,
-      average_response_time: trends.reduce((sum, t) => sum + (t.response_time || 0), 0) / trends.length
+      healthy_count: trends.filter((t: any) => t.status === 'healthy').length,
+      unhealthy_count: trends.filter((t: any) => t.status === 'unhealthy').length,
+      degraded_count: trends.filter((t: any) => t.status === 'degraded').length,
+      average_response_time: trends.reduce((sum: number, t: any) => sum + (t.response_time || 0), 0) / trends.length
     }
   };
 });

@@ -7,14 +7,14 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
-import type { 
-  ICreateUserPayload, 
-  IUpdateUserPayload
+import type {
+  ICreateUser,
+  IUpdateUser
 } from './types';
 
 // --- Users Actions -------------------------------------------------
 
-export const createUserAction = async (payload: ICreateUserPayload): Promise<ActionResultType<any>> => {
+export const createUserAction = async (payload: ICreateUser): Promise<ActionResultType<any>> => {
   try {
     const user = await usersRepository.create(payload);
     
@@ -44,7 +44,7 @@ export const createUserAction = async (payload: ICreateUserPayload): Promise<Act
   }
 };
 
-export const updateUserAction = async (id: number, payload: IUpdateUserPayload): Promise<ActionResultType<any>> => {
+export const updateUserAction = async (id: number, payload: IUpdateUser): Promise<ActionResultType<any>> => {
   try {
     const user = await usersRepository.update(id, payload);
     

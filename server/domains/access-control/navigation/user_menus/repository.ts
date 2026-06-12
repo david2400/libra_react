@@ -2,15 +2,15 @@ import 'server-only';
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IUserMenu, 
-  ICreateUserMenuPayload, 
+import type {
+  IUserMenu,
+  ICreateUserMenuPayload,
   IUpdateUserMenuPayload,
-  IMenu,
-  IUser,
   IBulkUserMenuPayload,
   IBulkUserMenuResponse
 } from './types';
+import type { IMenu } from '../menus';
+import type { IUser } from '../../account/users';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- IUser-IMenu Relationships Repository ---------------------------------

@@ -4,8 +4,8 @@ import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type {
   IPermission,
-  ICreatePermissionPayload,
-  IUpdatePermissionPayload,
+  ICreatePermission,
+  IUpdatePermission,
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
@@ -28,13 +28,13 @@ export const permissionsRepository = {
     }),
 
   // Create permission
-  create: (payload: ICreatePermissionPayload) =>
+  create: (payload: ICreatePermission) =>
     serverFetch.post<IPermission>('/api/access_control/permissions', payload, {
       revalidate: false,
     }),
 
   // Update permission
-  update: (id: string | number, payload: IUpdatePermissionPayload) =>
+  update: (id: string | number, payload: IUpdatePermission) =>
     serverFetch.put<IPermission>(`/api/access_control/permissions/${id}`, payload, {
       revalidate: false,
     }),

@@ -1,5 +1,4 @@
-﻿import 'server-only';
-import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
+﻿import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IApplication } from '../applications';
 import { IUser } from '../../account/users';
 

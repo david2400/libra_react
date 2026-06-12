@@ -3,8 +3,6 @@ export type {
   IUserMenu,
   ICreateUserMenuPayload,
   IUpdateUserMenuPayload,
-  IMenu,
-  IUser,
   IBulkUserMenuPayload,
   IBulkUserMenuResponse
 } from './types';

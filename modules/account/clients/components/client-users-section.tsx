@@ -20,7 +20,10 @@ import {
 import { IUser } from "@/modules/account/users/models/user.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { updateUserServerAction } from "@/app/[locale]/(protected)/account/users/actions";
+import {
+  createUserAction,
+  updateUserAction,
+} from "@/server/domains/access-control/account/users/actions";
 
 interface ClientUsersSectionProps {
   clientId: number;
@@ -303,29 +306,27 @@ const UserQuickCreateForm: React.FC<UserQuickCreateFormProps> = ({
     setIsSubmitting(true);
 
     try {
-      const { createUserServerAction } = await import(
-        "@/app/[locale]/(protected)/account/users/actions"
-      );
-
-      const result = await createUserServerAction({
+      const result = await createUserAction({
         ...formData,
         client_id: clientId,
       });
 
-      if (result) {
-        Swal.fire({
-          title: "Usuario creado",
-          text: "El usuario se creó correctamente",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-        onSuccess(result as IUser);
+      if (!result.success) {
+        throw new Error(result.error?.message || "No se pudo crear el usuario");
       }
+
+      Swal.fire({
+        title: "Usuario creado",
+        text: "El usuario se creó correctamente",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      onSuccess(result.data as IUser);
     } catch (error) {
       Swal.fire({
         title: "Error",
-        text: "No se pudo crear el usuario",
+        text: (error as any)?.message || "No se pudo crear el usuario",
         icon: "error",
       });
     } finally {
@@ -423,22 +424,28 @@ const UserQuickEditForm: React.FC<UserQuickEditFormProps> = ({
     setIsSubmitting(true);
 
     try {
-      const result = await updateUserServerAction(user.id_user!, formData);
-
-      if (result) {
-        Swal.fire({
-          title: "Usuario actualizado",
-          text: "Los cambios se guardaron correctamente",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-        onSuccess({ ...user, ...formData });
+      if (!user.id_user) {
+        throw new Error("ID de usuario no válido");
       }
+
+      const result = await updateUserAction(user.id_user, formData);
+
+      if (!result.success) {
+        throw new Error(result.error?.message || "No se pudo actualizar el usuario");
+      }
+
+      Swal.fire({
+        title: "Usuario actualizado",
+        text: "Los cambios se guardaron correctamente",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      onSuccess({ ...user, ...formData });
     } catch (error) {
       Swal.fire({
         title: "Error",
-        text: "No se pudo actualizar el usuario",
+        text: (error as any)?.message || "No se pudo actualizar el usuario",
         icon: "error",
       });
     } finally {

@@ -1,5 +1,3 @@
-import axios, {AxiosError, AxiosInstance} from 'axios';
-
 export type ApiError = {
   message: string;
   status?: number;
@@ -17,19 +15,11 @@ const getBaseUrl = () => {
 };
 
 const normalizeApiError = (error: unknown): ApiError => {
-  if (axios.isAxiosError(error)) {
-    const axiosError = error as AxiosError<any>;
-    const status = axiosError.response?.status;
-    const data = axiosError.response?.data;
-
+  if (error instanceof Response) {
     return {
-      message:
-        data?.message ??
-        axiosError.message ??
-        'Ocurrió un error al procesar la solicitud. Intenta nuevamente.',
-      status,
-      code: data?.code ?? axiosError.code,
-      details: data ?? axiosError.toJSON(),
+      message: error.statusText || 'Ocurrió un error al procesar la solicitud. Intenta nuevamente.',
+      status: error.status,
+      details: error,
     };
   }
 
@@ -46,12 +36,81 @@ const normalizeApiError = (error: unknown): ApiError => {
   };
 };
 
-export const httpClient: AxiosInstance = axios.create({
-  baseURL: getBaseUrl() || undefined,
-  headers: {
-    'Content-Type': 'application/json',
+export const httpClient = {
+  async get<T>(url: string, options?: RequestInit): Promise<{ data: T }> {
+    const response = await fetch(`${getBaseUrl()}${url}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      ...options,
+    });
+
+    if (!response.ok) {
+      throw response;
+    }
+
+    const data = await response.json();
+    return { data };
   },
-});
+
+  async post<T>(url: string, body?: unknown, options?: RequestInit): Promise<{ data: T }> {
+    const response = await fetch(`${getBaseUrl()}${url}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      ...options,
+    });
+
+    if (!response.ok) {
+      throw response;
+    }
+
+    const data = await response.json();
+    return { data };
+  },
+
+  async put<T>(url: string, body?: unknown, options?: RequestInit): Promise<{ data: T }> {
+    const response = await fetch(`${getBaseUrl()}${url}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+      ...options,
+    });
+
+    if (!response.ok) {
+      throw response;
+    }
+
+    const data = await response.json();
+    return { data };
+  },
+
+  async delete<T>(url: string, options?: RequestInit): Promise<{ data: T }> {
+    const response = await fetch(`${getBaseUrl()}${url}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        ...options?.headers,
+      },
+      ...options,
+    });
+
+    if (!response.ok) {
+      throw response;
+    }
+
+    const data = await response.json();
+    return { data };
+  },
+};
 
 export const withApiError = async <T>(promise: Promise<T>): Promise<T> => {
   try {

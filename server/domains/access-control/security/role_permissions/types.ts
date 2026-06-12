@@ -15,6 +15,7 @@ export interface ICreateRolePermission {
   role_id: string | number;
   permission_id: string | number;
   level: string;
+  is_active?: boolean;
 }
 
 export interface IUpdateRolePermission extends ICreateRolePermission {

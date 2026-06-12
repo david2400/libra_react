@@ -127,7 +127,7 @@ export const getPermissionWithMenus = cache(async (permissionId: string | number
   return {
     permission_id: permissionId,
     menus,
-    recent_activities: recentActivities.data,
+    recent_activities: recentActivities.content,
     total_menus: menus.length
   };
 });
@@ -140,7 +140,7 @@ export const getMenuPermissionDashboard = cache(async () => {
   ]);
   
   // Combine data for dashboard
-  const dashboardData = menuPermissions.data.map(menuPermission => {
+  const dashboardData = menuPermissions.content.map((menuPermission: IMenuPermission) => {
     const stats = allStats.find(s => s.menu_id === menuPermission.menu_id && s.permission_id === menuPermission.permission_id);
     
     return {
@@ -157,9 +157,9 @@ export const getMenuPermissionDashboard = cache(async () => {
   return {
     menu_permissions: dashboardData,
     summary: {
-      total_relationships: menuPermissions.meta.total,
+      total_relationships: menuPermissions.total_elements,
       total_usage: allStats.reduce((sum, s) => sum + s.usage_count, 0),
-      active_relationships: dashboardData.filter(mp => mp.is_active).length
+      active_relationships: dashboardData.filter(mp => (mp as any).is_active).length
     }
   };
 });
@@ -175,7 +175,7 @@ export const getMenuPermissionUsagePatterns = cache(async (menuId: string | numb
   ]);
   
   // Process usage data
-  const usagePatterns = activities.data
+  const usagePatterns = activities.content
     .filter(activity => activity.activity_type === 'permission_used')
     .map(activity => ({
       timestamp: activity.created_at,
@@ -186,8 +186,8 @@ export const getMenuPermissionUsagePatterns = cache(async (menuId: string | numb
   
   // Group by permission
   const permissionUsagePatterns = permissions.map(permission => {
-    const permissionActivities = usagePatterns.filter(up => up.permission_id === permission.id);
-    const permissionStats = stats.find(s => s.permission_id === permission.id);
+    const permissionActivities = usagePatterns.filter(up => up.permission_id === permission.id_permission);
+    const permissionStats = stats.find(s => s.permission_id === permission.id_permission);
     
     return {
       permission,
@@ -217,8 +217,8 @@ export const getMenuPermissionInheritanceAnalysis = cache(async (menuId: string 
   
   // Analyze inheritance
   const inheritedPermissions = inheritanceTree.inherited_permissions;
-  const directPermissionIds = directPermissions.map(p => p.id);
-  const inheritedPermissionIds = inheritedPermissions.map(ip => ip.permission.id);
+  const directPermissionIds = directPermissions.map(p => p.id_permission);
+  const inheritedPermissionIds = inheritedPermissions.map(ip => ip.permission.id_permission);
   
   const analysis = {
     direct_permissions: directPermissions.length,
@@ -226,7 +226,7 @@ export const getMenuPermissionInheritanceAnalysis = cache(async (menuId: string 
     total_permissions: directPermissions.length + inheritedPermissions.length,
     inheritance_depth: Math.max(0, ...inheritedPermissions.map(ip => ip.inheritance_level)),
     inheritance_sources: inheritedPermissions.reduce((acc, ip) => {
-      const sourceId = ip.inherited_from.id;
+      const sourceId = ip.inherited_from.id_menu;
       if (!acc[sourceId]) {
         acc[sourceId] = 0;
       }

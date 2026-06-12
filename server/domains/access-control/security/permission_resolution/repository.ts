@@ -2,14 +2,14 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IPermission,
+import type {
   IEffectivePermission,
   IPermissionCheckRequest,
   IPermissionCheckResponse,
   IHasAnyPermissionRequest,
   IHasAllPermissionsRequest
 } from './types';
+import type { IPermission } from '../permissions';
 
 // --- IPermission Resolution Repository -----------------------------------------
 

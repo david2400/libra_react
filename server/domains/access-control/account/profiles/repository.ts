@@ -2,11 +2,10 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IProfile, 
-  ICreateProfilePayload, 
-  IUpdateProfilePayload,
-  IUser,
+import type {
+  IProfile,
+  ICreateProfile,
+  IUpdateProfile,
   IProfilePreferences,
   IUpdateProfilePreferencesPayload,
   IProfileActivity,
@@ -18,6 +17,7 @@ import type {
   IVerifyTwoFactorPayload,
   IAddTrustedDevicePayload
 } from './types';
+import type { IUser } from '../users';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- Profiles Repository -----------------------------------------------------
@@ -46,13 +46,13 @@ export const profilesRepository = {
     }),
 
   // Create profile
-  create: (payload: ICreateProfilePayload) => 
+  create: (payload: ICreateProfile) => 
     serverFetch.post<IProfile>('/api/access_control/profiles', payload, {
       revalidate: false,
     }),
 
   // Update profile
-  update: (id: string | number, payload: IUpdateProfilePayload) => 
+  update: (id: string | number, payload: IUpdateProfile) => 
     serverFetch.put<IProfile>(`/api/access_control/profiles/${id}`, payload, {
       revalidate: false,
     }),

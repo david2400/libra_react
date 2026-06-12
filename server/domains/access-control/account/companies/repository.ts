@@ -2,24 +2,24 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  ICompany, 
-  ICreateCompanyPayload, 
-  IUpdateCompanyPayload,
-  IClient,
+import type {
+  ICompany,
+  ICreateCompany,
+  IUpdateCompany,
   ICompanyClient,
-  ICreateCompanyClientPayload,
-  IUpdateCompanyClientPayload,
+  ICreateCompanyClient,
+  IUpdateCompanyClient,
   ICompanyStats,
   ICompanyOverview,
   ICompanyActivity,
   ICompanyActivityFilter,
   ICompanyConfig,
-  ICreateCompanyConfigPayload,
-  IUpdateCompanyConfigPayload,
+  ICreateCompanyConfig,
+  IUpdateCompanyConfig,
   ICompanyHealth,
   ICompanyHealthResponse
 } from './types';
+import type { IClient } from '../clients';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- Companies Repository -----------------------------------------------------
@@ -41,13 +41,13 @@ export const companiesRepository = {
     }),
 
   // Create company
-  create: (payload: ICreateCompanyPayload) => 
+  create: (payload: ICreateCompany) => 
     serverFetch.post<ICompany>('/api/access_control/companies', payload, {
       revalidate: false,
     }),
 
   // Update company
-  update: (id: string | number, payload: IUpdateCompanyPayload) => 
+  update: (id: string | number, payload: IUpdateCompany) => 
     serverFetch.put<ICompany>(`/api/access_control/companies/${id}`, payload, {
       revalidate: false,
     }),
@@ -106,13 +106,13 @@ export const companyClientsRepository = {
     }),
 
   // Create company-client relationship
-  create: (companyId: string | number, clientId: string | number, payload: ICreateCompanyClientPayload) => 
+  create: (companyId: string | number, clientId: string | number, payload: ICreateCompanyClient) => 
     serverFetch.post<ICompanyClient>(`/api/access_control/company-clients/${companyId}/${clientId}`, payload, {
       revalidate: false,
     }),
 
   // Update company-client relationship
-  update: (companyId: string | number, clientId: string | number, payload: IUpdateCompanyClientPayload) => 
+  update: (companyId: string | number, clientId: string | number, payload: IUpdateCompanyClient) => 
     serverFetch.put<ICompanyClient>(`/api/access_control/company-clients/${companyId}/${clientId}`, payload, {
       revalidate: false,
     }),
@@ -202,13 +202,13 @@ export const companyConfigRepository = {
     }),
 
   // Create config
-  create: (companyId: string | number, payload: ICreateCompanyConfigPayload) => 
+  create: (companyId: string | number, payload: ICreateCompanyConfig) => 
     serverFetch.post<ICompanyConfig>(`/api/access_control/companies/${companyId}/config`, payload, {
       revalidate: false,
     }),
 
   // Update config
-  update: (companyId: string | number, key: string, payload: IUpdateCompanyConfigPayload) => 
+  update: (companyId: string | number, key: string, payload: IUpdateCompanyConfig) => 
     serverFetch.put<ICompanyConfig>(`/api/access_control/companies/${companyId}/config/${key}`, payload, {
       revalidate: false,
     }),

@@ -791,7 +791,7 @@ export function MenuPermissionsManager() {
                   {users.map((user) => (
                     <button
                       key={user.id_user}
-                      onClick={() => handleUserChange(user.id_user)}
+                      onClick={() => user.id_user && handleUserChange(user.id_user)}
                       className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
                         selectedUser === user.id_user
                           ? "bg-blue-500 text-white shadow-lg scale-105"

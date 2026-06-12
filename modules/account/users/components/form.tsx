@@ -18,9 +18,9 @@ import Swal from "sweetalert2";
 
 import { useRouter } from "next/navigation";
 import {
-  createUserServerAction,
-  updateUserServerAction,
-} from "@/app/[locale]/(protected)/account/users/actions";
+  createUserAction,
+  updateUserAction,
+} from "@/server/domains/access-control/account/users/actions";
 
 const FormBase = ({
   initialValues,
@@ -46,8 +46,11 @@ export const RegisterUser = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IUserCreateRequest> = async (values) => {
-    const result = await createUserServerAction(values)
+    const result = await createUserAction(values)
       .then((result) => {
+        if (!result.success) {
+          throw new Error(result.error?.message || "Ocurrió un error inesperado");
+        }
         Swal.fire({
           title: "Usuario creado exitosamente",
           icon: "success",
@@ -82,10 +85,13 @@ export const UpdateUser = ({
   const handleSubmit: SubmitHandler<IUserUpdateRequest> = async (values) => {
     if (!values.id_user) return;
 
-    const result = await updateUserServerAction(values.id_user, values)
+    const result = await updateUserAction(values.id_user, values)
       .then((result) => {
+        if (!result.success) {
+          throw new Error(result.error?.message || "Ocurrió un error inesperado");
+        }
         Swal.fire({
-          title: "Usuario creado exitosamente",
+          title: "Usuario actualizado exitosamente",
           icon: "success",
           timer: 3000,
           showConfirmButton: false,

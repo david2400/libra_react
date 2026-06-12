@@ -7,13 +7,13 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  IUserMenu, 
-  IMenu,
-  IUser,
+import type {
+  IUserMenu,
   IBulkUserMenuPayload,
   IBulkUserMenuResponse
 } from './types';
+import type { IMenu } from '../menus';
+import type { IUser } from '../../account/users';
 
 // --- IUser-IMenu Relationships Queries ---------------------------------
 

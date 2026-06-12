@@ -40,7 +40,7 @@ export const getRoleProfile = cache(async (roleId: string | number) => {
   return {
     role,
     menus: roleMenus,
-    permissions: rolePermissions.data
+    permissions: rolePermissions.content
   };
 });
 

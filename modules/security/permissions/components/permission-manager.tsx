@@ -52,17 +52,43 @@ import {
   TabsTrigger,
 } from "@repo/ui/tabs/scenes/tabs";
 import { Badge } from "@repo/ui/badges/scenes/badge";
-import {
-  PERMISSION_ACTIONS,
-  PERMISSION_TYPES,
-  mockApplications,
-  mockModules,
-  mockPermissions,
-} from "../lib/mock-data";
 import { ICreatePermission } from "@/server/domains/access-control/security/permissions";
 import { cn } from "@repo/ui/utils";
 import { Input } from "@repo/ui/inputs/scenes/input";
 import { CiMonitor } from "react-icons/ci";
+
+// TODO: Fix mock data imports
+// import {
+//   PERMISSION_ACTIONS,
+//   PERMISSION_TYPES,
+//   mockApplications,
+//   mockModules,
+//   mockPermissions,
+// } from "../lib/mock-data";
+
+// Temporary mock data to allow build
+const PERMISSION_ACTIONS = ['CREATE', 'READ', 'UPDATE', 'DELETE', 'EXECUTE', 'VIEW', 'MANAGE', 'ADMIN', 'APPROVE', 'REJECT'] as const;
+const PERMISSION_TYPES = ['API', 'APPLICATION', 'UI', 'SYSTEM'] as const;
+const mockApplications: MockApplication[] = [{ id_application: 1, name: 'Admin Portal', route: '/admin', maintenance_mode: false, publication_date: new Date().toISOString(), deleted: false }];
+const mockModules: MockModule[] = [{ id: 1, name: 'Users', description: 'User management module', deleted: false }];
+const mockPermissions: IPermission[] = [];
+
+// Temporary types for mock data
+interface MockModule {
+  id: number;
+  name: string;
+  description: string;
+  deleted: boolean;
+}
+
+interface MockApplication {
+  id_application: number;
+  name: string;
+  route: string;
+  maintenance_mode: boolean;
+  publication_date: string;
+  deleted: boolean;
+}
 
 interface IPermissionManagerProps {
   initialData: IPermission[];

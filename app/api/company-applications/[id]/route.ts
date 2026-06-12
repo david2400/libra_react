@@ -3,11 +3,12 @@ import { updateCompanyApplicationAction } from '@/server/domains/access-control/
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
+    const { id } = await params;
+    const idNum = parseInt(id);
+    if (isNaN(idNum)) {
       return NextResponse.json(
         { message: 'Invalid ID' },
         { status: 400 }
@@ -15,7 +16,7 @@ export async function PUT(
     }
 
     const body = await request.json();
-    const result = await updateCompanyApplicationAction(id, body);
+    const result = await updateCompanyApplicationAction(idNum, body);
     
     if (result.success) {
       return NextResponse.json(result.data);
@@ -36,11 +37,12 @@ export async function PUT(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const id = parseInt(params.id);
-    if (isNaN(id)) {
+    const { id } = await params;
+    const idNum = parseInt(id);
+    if (isNaN(idNum)) {
       return NextResponse.json(
         { message: 'Invalid ID' },
         { status: 400 }
@@ -50,7 +52,7 @@ export async function GET(
     // Import the query function
     const { getCompanyApplicationById } = await import('@/server/domains/access-control/security/company_applications');
     
-    const result = await getCompanyApplicationById(id);
+    const result = await getCompanyApplicationById(idNum);
     
     if (!result) {
       return NextResponse.json(

@@ -12,10 +12,8 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  IRoleMenu, 
-  IRole,
-  IMenu,
+import type {
+  IRoleMenu,
   IRoleMenuStats,
   IRoleMenuOverview,
   IBulkRoleMenuPayload,
@@ -27,6 +25,8 @@ import type {
   IRoleMenuExportRequest,
   IRoleMenuExportResponse
 } from './types';
+import type { IRole } from '../../security/roles';
+import type { IMenu } from '../menus';
 
 // --- IRole-IMenu Relationships Queries -----------------------------------------
 
@@ -96,8 +96,7 @@ export const getRecentRoleMenuActivities = cache((roleId: string | number, limit
 
 // Get role with all menu relationships
 export const getRoleWithMenus = cache(async (roleId: string | number) => {
-  const [role, menus, activeMenus, recentActivities] = await Promise.all([
-    // We would need to import role repository here, for now using roleId
+  const [menus, activeMenus, recentActivities] = await Promise.all([
     getMenusByRole(roleId),
     getActiveMenusForRole(roleId),
     getRecentRoleMenuActivities(roleId, 10)
@@ -115,8 +114,7 @@ export const getRoleWithMenus = cache(async (roleId: string | number) => {
 
 // Get menu with all role relationships
 export const getMenuWithRoles = cache(async (menuId: string | number) => {
-  const [menu, roles, recentActivities] = await Promise.all([
-    // We would need to import menu repository here, for now using menuId
+  const [roles, recentActivities] = await Promise.all([
     getRolesByMenu(menuId),
     getActivitiesByMenu(menuId, { per_page: 10 })
   ]);
@@ -124,8 +122,8 @@ export const getMenuWithRoles = cache(async (menuId: string | number) => {
   return {
     menu_id: menuId,
     roles,
-    recent_activities: recentActivities,
-    total_roles: roles.length
+    recent_activities: recentActivities.content || [],
+    total_roles: Array.isArray(roles) ? roles.length : 0
   };
 });
 
@@ -137,7 +135,7 @@ export const getRoleMenuDashboard = cache(async () => {
   ]);
   
   // Combine data for dashboard
-  const dashboardData = roleMenus.data.map(roleMenu => {
+  const dashboardData = roleMenus.content.map((roleMenu: IRoleMenu) => {
     const stats = allStats.find(s => s.role_id === roleMenu.role_id && s.menu_id === roleMenu.menu_id);
     
     return {
@@ -154,9 +152,9 @@ export const getRoleMenuDashboard = cache(async () => {
   return {
     role_menus: dashboardData,
     summary: {
-      total_relationships: roleMenus.meta.total,
+      total_relationships: roleMenus.total_elements,
       total_access_count: allStats.reduce((sum, s) => sum + s.access_count, 0),
-      active_relationships: dashboardData.filter(rm => rm.is_active).length
+      active_relationships: dashboardData.filter((rm: any) => rm.is_active).length
     }
   };
 });
@@ -169,7 +167,7 @@ export const getRoleMenuAccessPatterns = cache(async (roleId: string | number, d
   ]);
   
   // Process access data
-  const accessPatterns = activities.data
+  const accessPatterns = activities.content
     .filter(activity => activity.activity_type === 'menu_accessed')
     .map(activity => ({
       timestamp: activity.created_at,
@@ -180,7 +178,7 @@ export const getRoleMenuAccessPatterns = cache(async (roleId: string | number, d
   
   // Group by menu
   const menuAccessPatterns = menus.map(menu => {
-    const menuActivities = accessPatterns.filter(ap => ap.menu_id === menu.id);
+    const menuActivities = accessPatterns.filter((ap: any) => ap.menu_id === menu.id_menu);
     
     return {
       menu,
@@ -209,7 +207,7 @@ export const getRoleMenuHierarchyAnalysis = cache(async (roleId: string | number
   ]);
   
   // Analyze hierarchy
-  const depthAnalysis = flatStructure.reduce((acc, item) => {
+  const depthAnalysis = flatStructure.reduce((acc: Record<number, number>, item: any) => {
     const depth = item.level;
     if (!acc[depth]) {
       acc[depth] = 0;
@@ -218,8 +216,8 @@ export const getRoleMenuHierarchyAnalysis = cache(async (roleId: string | number
     return acc;
   }, {} as Record<number, number>);
   
-  const pathAnalysis = flatStructure.map(item => ({
-    menuId: item.menu.id,
+  const pathAnalysis = flatStructure.map((item: any) => ({
+    menuId: item.menu.id_menu,
     path_length: item.path.length,
     path: item.path
   }));
@@ -231,7 +229,7 @@ export const getRoleMenuHierarchyAnalysis = cache(async (roleId: string | number
       total_nodes: menuTree.total_nodes,
       max_depth: menuTree.max_depth,
       depth_distribution: depthAnalysis,
-      average_path_length: pathAnalysis.reduce((sum, p) => sum + p.path_length, 0) / pathAnalysis.length
+      average_path_length: pathAnalysis.reduce((sum: number, p: any) => sum + p.path_length, 0) / pathAnalysis.length
     },
     paths: pathAnalysis
   };
@@ -268,8 +266,8 @@ export const getRoleMenuUsageStats = cache(async (roleId: string | number) => {
     )
   ]);
   
-  const menuStats = menus.map(menu => {
-    const stat = stats.find(s => s.menu_id === menu.id);
+  const menuStats = menus.map((menu: IMenu) => {
+    const stat = stats.find(s => s.menu_id === menu.id_menu);
     
     return {
       menu,

@@ -1,12 +1,15 @@
 import {useState, useEffect} from 'react';
-import axios from 'axios';
 
 const useFetch = () => {
   async function fetchData({pageParam = 1, options = {}, endpoint}: any) {
     try {
-      const response = await axios.get(endpoint);
+      const response = await fetch(endpoint);
 
-      return response.data;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
     } catch (error) {
       console.log(error);
     }

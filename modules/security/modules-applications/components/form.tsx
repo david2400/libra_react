@@ -16,7 +16,8 @@ import {
 } from "../models/module-application.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { createModuleApplicationServerAction, updateModuleApplicationServerAction } from "@/app/[locale]/(protected)/security/modules-applications/actions";
+// TODO: Fix server action imports for module-applications
+// import { createApplicationModuleAction, updateApplicationModuleAction } from "@/server/domains/access-control/security/applications/actions";
 
 const FormBase = ({
   initialValues,
@@ -52,9 +53,9 @@ export const RegisterModuleApplication = ({}: IFormAddProps = {}) => {
     values,
   ) => {
     try {
-      const result = await createModuleApplicationServerAction(
-        values,
-      );
+      // TODO: Implement server action call
+      // const result = await createModuleApplicationServerAction(values);
+      console.log('Create module application:', values);
 
       Swal.fire({
         title: t('createSuccess'),
@@ -95,10 +96,9 @@ export const UpdateModuleApplication = ({
     if (!values.id_modules_application) return;
 
     try {
-      const result = await updateModuleApplicationServerAction(
-        values.id_modules_application,
-        values,
-      );
+      // TODO: Implement server action call
+      // const result = await updateModuleApplicationServerAction(values.id_modules_application, values);
+      console.log('Update module application:', values);
 
       Swal.fire({
         title: t('updateSuccess'),

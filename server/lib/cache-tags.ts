@@ -103,20 +103,13 @@ export async function revalidateCacheTag(tag: string): Promise<void> {
   try {
     // Import revalidateTag dynamically to avoid build issues
     const { revalidateTag } = await import('next/cache');
-    
-    // In Next.js 16, revalidateTag expects (tag, options) where options is CacheLifeConfig
-    // We'll try with proper options first, then fallback
+
+    // In Next.js 16, revalidateTag expects (tag, options)
     try {
-      // Try Next.js 16+ API with proper options
-      await revalidateTag(tag, { tags: [tag] });
-    } catch {
-      try {
-        // Try with simple tag only
-        await revalidateTag(tag);
-      } catch {
-        // If all fails, just log and continue
-        console.warn(`Could not revalidate cache tag: ${tag}`);
-      }
+      await revalidateTag(tag, {});
+    } catch (error) {
+      // Log error but don't throw to avoid breaking the action
+      console.warn(`Failed to revalidate cache tag: ${tag}`, error);
     }
   } catch (error) {
     // Log error but don't throw to avoid breaking the action

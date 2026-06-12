@@ -8,15 +8,15 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  IPolicy, 
-  IUser,
+import type {
+  IPolicy,
   IUserPolicy,
   IPolicyEvaluationRequest,
   IPolicyEvaluationResponse,
   IBulkPolicyEvaluationRequest,
   IBulkPolicyEvaluationResponse
 } from './types';
+import type { IUser } from '../../account/users';
 
 // --- Policies Queries ---------------------------------------------------------
 
@@ -101,8 +101,8 @@ export const getPolicyMetrics = cache(async (policyId: string | number) => {
   ]);
   
   // Calculate metrics from evaluation history
-  const totalEvaluations = evaluationHistory.meta.total;
-  const allowedEvaluations = evaluationHistory.data.filter((evaluation: any) => evaluation.allowed).length;
+  const totalEvaluations = evaluationHistory.total_elements;
+  const allowedEvaluations = evaluationHistory.content.filter((evaluation: any) => evaluation.allowed).length;
   const deniedEvaluations = totalEvaluations - allowedEvaluations;
   
   return {
@@ -121,7 +121,7 @@ export const getPoliciesOverview = cache(async (params?: ListParams) => {
   
   // Get metrics for each policy (this could be optimized with batch queries)
   const policiesWithMetrics = await Promise.all(
-    policies.data.map(async (policy) => {
+    policies.content.map(async (policy: any) => {
       const [users] = await Promise.all([
         getUsersByPolicy(policy.id)
       ]);

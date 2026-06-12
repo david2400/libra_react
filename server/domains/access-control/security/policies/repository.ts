@@ -2,11 +2,10 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IPolicy, 
-  ICreatePolicyPayload, 
-  IUpdatePolicyPayload,
-  IUser,
+import type {
+  IPolicy,
+  ICreatePolicy,
+  IUpdatePolicy,
   IUserPolicy,
   ICreateUserPolicyPayload,
   IUpdateUserPolicyPayload,
@@ -15,6 +14,7 @@ import type {
   IBulkPolicyEvaluationRequest,
   IBulkPolicyEvaluationResponse
 } from './types';
+import type { IUser } from '../../account/users';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- Policies Repository ---------------------------------------------------------
@@ -36,13 +36,13 @@ export const policiesRepository = {
     }),
 
   // Create policy
-  create: (payload: ICreatePolicyPayload) => 
+  create: (payload: ICreatePolicy) => 
     serverFetch.post<IPolicy>('/api/access_control/policies', payload, {
       revalidate: false,
     }),
 
   // Update policy
-  update: (id: string | number, payload: IUpdatePolicyPayload) => 
+  update: (id: string | number, payload: IUpdatePolicy) =>
     serverFetch.put<IPolicy>(`/api/access_control/policies/${id}`, payload, {
       revalidate: false,
     }),

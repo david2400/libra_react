@@ -2,14 +2,13 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IClient, 
-  ICreateClientPayload, 
-  IUpdateClientPayload,
-  ICompany,
+import type {
+  IClient,
+  ICreateClient,
+  IUpdateClient,
   IClientCompany,
-  ICreateClientCompanyPayload,
-  IUpdateClientCompanyPayload,
+  ICreateClientCompany,
+  IUpdateClientCompany,
   IClientAuth,
   IClientLoginRequest,
   IClientLoginResponse,
@@ -20,6 +19,7 @@ import type {
   IClientActivity,
   IClientActivityFilter
 } from './types';
+import type { ICompany } from '../companies';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- Clients Repository ---------------------------------------------------------
@@ -41,13 +41,13 @@ export const clientsRepository = {
     }),
 
   // Create client
-  create: (payload: ICreateClientPayload) => 
+  create: (payload: ICreateClient) => 
     serverFetch.post<IClient>('/api/access_control/clients', payload, {
       revalidate: false,
     }),
 
   // Update client
-  update: (id: string | number, payload: IUpdateClientPayload) => 
+  update: (id: string | number, payload: IUpdateClient) => 
     serverFetch.put<IClient>(`/api/access_control/clients/${id}`, payload, {
       revalidate: false,
     }),
@@ -106,13 +106,13 @@ export const clientCompaniesRepository = {
     }),
 
   // Create client-company relationship
-  create: (clientId: string | number, companyId: string | number, payload: ICreateClientCompanyPayload) => 
+  create: (clientId: string | number, companyId: string | number, payload: ICreateClientCompany) => 
     serverFetch.post<IClientCompany>(`/api/access_control/client-companies/${clientId}/${companyId}`, payload, {
       revalidate: false,
     }),
 
   // Update client-company relationship
-  update: (clientId: string | number, companyId: string | number, payload: IUpdateClientCompanyPayload) => 
+  update: (clientId: string | number, companyId: string | number, payload: IUpdateClientCompany) => 
     serverFetch.put<IClientCompany>(`/api/access_control/client-companies/${clientId}/${companyId}`, payload, {
       revalidate: false,
     }),

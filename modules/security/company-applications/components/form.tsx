@@ -16,7 +16,6 @@ import {
 } from "../models/company-application.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { companyApplicationsClientApi } from "../api/client-api";
 import { createCompanyApplicationServerAction, updateCompanyApplicationServerAction } from "@/app/[locale]/(protected)/security/company-applications/actions";
 
 

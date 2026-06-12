@@ -17,7 +17,8 @@ import {
 } from "../models/role.interface";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
-import { updateApplicationAction } from "../../applications/api/actions";
+// TODO: Fix application action import
+// import { updateApplicationAction } from "../../applications/api/actions";
 import { createRoleServerAction, updateRoleServerAction } from "@/app/[locale]/(protected)/security/roles/actions";
 
 const FormBase = ({

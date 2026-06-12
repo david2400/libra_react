@@ -2,10 +2,10 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { 
-  IRolePermission, 
-  ICreateRolePermissionPayload, 
-  IUpdateRolePermissionPayload,
+import type {
+  IRolePermission,
+  ICreateRolePermission,
+  IUpdateRolePermission,
   IRolePermissionStats,
   IRolePermissionOverview,
   IBulkRolePermissionPayload,
@@ -67,13 +67,13 @@ export const rolePermissionsRepository = {
     }),
 
   // Create role-permission relationship
-  create: (roleId: string | number, permissionId: string | number, payload: ICreateRolePermissionPayload) => 
+  create: (roleId: string | number, permissionId: string | number, payload: ICreateRolePermission) => 
     serverFetch.post<IRolePermission>(`/api/access_control/role-permissions/${roleId}/${permissionId}`, payload, {
       revalidate: false,
     }),
 
   // Update role-permission relationship
-  update: (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermissionPayload) => 
+  update: (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermission) => 
     serverFetch.put<IRolePermission>(`/api/access_control/role-permissions/${roleId}/${permissionId}`, payload, {
       revalidate: false,
     }),
@@ -126,7 +126,7 @@ export const rolePermissionBulkRepository = {
     }),
 
   // Bulk update role-permission relationships
-  bulkUpdate: (roleId: string | number, permissionIds: (string | number)[], payload: IUpdateRolePermissionPayload) => 
+  bulkUpdate: (roleId: string | number, permissionIds: (string | number)[], payload: IUpdateRolePermission) => 
     serverFetch.post<IBulkRolePermissionResponse>(`/api/access_control/role-permissions/role/${roleId}/bulk-update`, { permission_ids: permissionIds, ...payload }, {
       revalidate: false,
     }),

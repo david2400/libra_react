@@ -9,9 +9,9 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
-import type { 
-  ICreatePolicyPayload, 
-  IUpdatePolicyPayload,
+import type {
+  ICreatePolicy,
+  IUpdatePolicy,
   ICreateUserPolicyPayload,
   IUpdateUserPolicyPayload,
   IPolicyEvaluationRequest,
@@ -22,14 +22,14 @@ import type {
 
 // --- Policies Actions ---------------------------------------------------------
 
-export const createPolicyAction = async (payload: ICreatePolicyPayload): Promise<ActionResultType<any>> => {
+export const createPolicyAction = async (payload: ICreatePolicy): Promise<ActionResultType<any>> => {
   try {
     const policy = await policiesRepository.create(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.policies());
-    if (typeof policy.id === 'string' || typeof policy.id === 'number') {
-      await revalidateCacheTag(accessControlTags.policy(policy.id));
+    if (typeof policy.id_policy === 'string' || typeof policy.id_policy === 'number') {
+      await revalidateCacheTag(accessControlTags.policy(policy.id_policy));
     }
     
     return { success: true, data: policy };
@@ -55,7 +55,7 @@ export const createPolicyAction = async (payload: ICreatePolicyPayload): Promise
   }
 };
 
-export const updatePolicyAction = async (id: string | number, payload: IUpdatePolicyPayload): Promise<ActionResultType<any>> => {
+export const updatePolicyAction = async (id: string | number, payload: IUpdatePolicy): Promise<ActionResultType<any>> => {
   try {
     const policy = await policiesRepository.update(id, payload);
     

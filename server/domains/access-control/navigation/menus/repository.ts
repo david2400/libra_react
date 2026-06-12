@@ -2,13 +2,11 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { ICreateMenuPayload, IUpdateMenuPayload } from './types';
+import type { ICreateMenu, IUpdateMenu, IMenuTree, IMenuHierarchy } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import { IMenu } from '@/modules/navigation/menus/models/menu.interface';
-import { IUser } from '@/modules/account/users/models/user.interface';
-import { IRoleMenu } from '@/modules/navigation/role-menus/models/role-menu.interface';
-import { IMenuPermission, IPermission } from '@/modules/navigation/menu-permissions/models/menu-permission.interface';
-import { ICreateMenuPermission, IUpdateMenuPermission } from '../menu_permissions';
+import type { IMenu } from './types';
+import type { ICreateMenuPermission, IUpdateMenuPermission } from '../menu_permissions/types';
+import type { IPermission } from '../../security/permissions';
 
 // --- Menus Repository ---------------------------------------------------------
 
@@ -29,13 +27,13 @@ export const menusRepository = {
     }),
 
   // Create menu
-  create: (payload: ICreateMenuPayload) => 
+  create: (payload: ICreateMenu) => 
     serverFetch.post<IMenu>('/api/access_control/menus', payload, {
       revalidate: false,
     }),
 
   // Update menu
-  update: (id: string | number, payload: IUpdateMenuPayload) => 
+  update: (id: string | number, payload: IUpdateMenu) => 
     serverFetch.put<IMenu>(`/api/access_control/menus/${id}`, payload, {
       revalidate: false,
     }),
@@ -48,7 +46,7 @@ export const menusRepository = {
 
   // Get menu tree
   getTree: (params?: ListParams) => 
-    serverFetch.get<IMenuTreeResponse>('/api/access_control/menus/tree', {
+    serverFetch.get<IMenuTree>('/api/access_control/menus/tree', {
       params,
       revalidate: 120,
       tags: [accessControlTags.menus()],
@@ -56,7 +54,7 @@ export const menusRepository = {
 
   // Get flat menu structure
   getFlat: (params?: ListParams) => 
-    serverFetch.get<FlatMenuResponse>('/api/access_control/menus/flat', {
+    serverFetch.get<{ menus: IMenu[] }>('/api/access_control/menus/flat', {
       params,
       revalidate: 120,
       tags: [accessControlTags.menus()],

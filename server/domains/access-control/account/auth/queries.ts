@@ -84,7 +84,7 @@ export const getAuthenticationServiceStatus = cache(async () => {
 export const getTokenValidationWithUserInfo = async (request: ITokenValidationRequest) => {
   const validation = await validateToken(request);
   
-  if (validation.valid && validation.userId) {
+  if (validation.valid && validation.user_id) {
     // This would typically fetch additional user info
     return {
       ...validation,

@@ -47,15 +47,14 @@ const UserCompaniesPage: NextPage = async () => {
     // MOCK DATA para desarrollo
     userCompaniesData = [
       {
-        id_user_company: 1,
         user_id: 1,
         company_id: 1,
         user_name: "admin",
         company_name: "Empresa Demo",
         company_nit: "123456789",
         is_primary: true,
-        status: "active",
-        assigned_date: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
     ];
   } catch (error) {
