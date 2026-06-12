@@ -8,7 +8,7 @@ export const validationUser = () => {
     username: z.string().min(1, { message: v.required }),
     password: z.string().min(6, { message: v.minLength(6) }).optional(),
     status: z.string().optional(),
-    companyId: z.coerce.number().optional(),
+    // companyId: z.coerce.number().optional(),
     clientId: z.coerce.number().optional(),
   });
 };

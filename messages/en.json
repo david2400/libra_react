@@ -5,7 +5,39 @@
       "saveApplication": "Create Application",
       "saveCompanyApplication": "Create Company Application",
       "savePermission": "Create Permission",
-      "saveModuleApplication": "Create Module"
+      "saveModuleApplication": "Create Module",
+      "saveUser": "Create User"
+    },
+    "account": {
+      "users": {
+        "title": "Users",
+        "description": "User Management",
+        "subtitle": "Manage system users",
+        "createButton": "Create User",
+        "editButton": "Edit User",
+        "fields": {
+          "username": "Username",
+          "email": "Email",
+          "firstName": "First Name",
+          "lastName": "Last Name",
+          "phone": "Phone",
+          "role": "Role",
+          "status": "Status",
+          "companyId": "Company",
+          "clientId": "Client",
+          "password": "Password",
+          "confirmPassword": "Confirm Password"
+        },
+        "modal": {
+          "create_title": "Create User",
+          "edit_title": "Edit User"
+        },
+        "messages": {
+          "createSuccess": "User created successfully",
+          "updateSuccess": "User updated successfully",
+          "deleteSuccess": "User deleted successfully"
+        }
+      }
     },
     "security": {
       "modulesApplications": {
@@ -26,7 +58,8 @@
     "saveApplication": "Create Application",
     "saveCompanyApplication": "Create Company Application",
     "savePermission": "Create Permission",
-    "saveModuleApplication": "Create Module"
+    "saveModuleApplication": "Create Module",
+    "saveUser": "Create User"
   },
   "common": {
     "welcome": "Welcome",
@@ -220,6 +253,7 @@
         "lastName": "Last Name",
         "phone": "Phone",
         "role": "Role",
+        "status": "Status",
         "password": "Password",
         "confirmPassword": "Confirm Password"
       },

@@ -41,6 +41,7 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
   const users = props?.users && props.users.length > 0 ? props.users : loadedUsers;
   const companies = props?.companies && props.companies.length > 0 ? props.companies : loadedCompanies;
 
+  const [selectedCompany, setSelectedCompany] = useState<ICompany | null>(null);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [userAssignments, setUserAssignments] = useState<Record<number, number[]>>(() => {
     if (props?.initialData && props.initialData.length > 0) {
@@ -58,11 +59,23 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showCompanyDropdown, setShowCompanyDropdown] = useState(false);
   const [filterMode, setFilterMode] = useState<"all" | "assigned" | "unassigned">("all");
 
-  const currentAssignments = selectedUser && selectedUser.id_user !== undefined 
-    ? (userAssignments[selectedUser.id_user] || []) 
+  const currentAssignments = selectedUser && selectedUser.id_user !== undefined
+    ? (userAssignments[selectedUser.id_user] || [])
     : [];
+
+  const filteredUsers = useMemo(() => {
+    if (!selectedCompany) {
+      return users;
+    }
+    return users.filter((user) => {
+      if (user.id_user === undefined) return false;
+      const userCompanies = userAssignments[user.id_user] || [];
+      return userCompanies.includes(selectedCompany.id_company);
+    });
+  }, [users, selectedCompany, userAssignments]);
 
   const filteredCompanies = useMemo(() => {
     return companies.filter((company) => {
@@ -80,7 +93,7 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
 
   const toggleCompany = (companyId: number) => {
     if (!selectedUser || selectedUser.id_user === undefined) return;
-    
+
     const userId = selectedUser.id_user;
     setUserAssignments((prev) => {
       const userCompanies = prev[userId] || [];
@@ -90,6 +103,12 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
       return { ...prev, [userId]: newCompanies };
     });
     setHasChanges(true);
+  };
+
+  const handleCompanySelect = (company: ICompany) => {
+    setSelectedCompany(company);
+    setSelectedUser(null);
+    setShowCompanyDropdown(false);
   };
 
   const assignAll = () => {
@@ -185,6 +204,85 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
           <div className='lg:col-span-1'>
             <div className='rounded-xl border border-border bg-card p-4'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
+                Empresa Seleccionada
+              </h3>
+              <div className='relative'>
+                <button
+                  onClick={() => setShowCompanyDropdown(!showCompanyDropdown)}
+                  className='flex w-full items-center gap-3 rounded-lg border border-border bg-secondary/50 p-3 transition-colors hover:bg-secondary'>
+                  <div
+                    className='flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/20'>
+                    <HiOfficeBuilding className='h-5 w-5 text-blue-500' />
+                  </div>
+                  <div className='flex-1 text-left'>
+                    <p className='font-medium text-foreground'>
+                      {selectedCompany ? selectedCompany.name : 'Seleccionar Empresa'}
+                    </p>
+                    <p className='text-xs text-muted-foreground'>
+                      {selectedCompany?.nit || 'Sin NIT'}
+                    </p>
+                  </div>
+                  <HiChevronDown
+                    className={`h-5 w-5 text-muted-foreground transition-transform ${showCompanyDropdown ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {showCompanyDropdown && (
+                  <div className='absolute left-0 right-0 top-full z-10 mt-2 rounded-lg border border-border bg-card shadow-xl'>
+                    <div className='max-h-64 overflow-y-auto p-2'>
+                      {companies.map((company) => (
+                        <button
+                          key={company.id_company}
+                          onClick={() => handleCompanySelect(company)}
+                          className={`flex w-full items-center gap-3 rounded-lg p-3 transition-colors ${
+                            selectedCompany?.id_company === company.id_company
+                              ? "bg-primary/10 text-primary"
+                              : "hover:bg-secondary"
+                          }`}>
+                          <div
+                            className='flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/20'>
+                            <HiOfficeBuilding className='h-4 w-4 text-blue-500' />
+                          </div>
+                          <div className='flex-1 text-left'>
+                            <p className='font-medium text-foreground'>
+                              {company.name}
+                            </p>
+                            <p className='text-xs text-muted-foreground'>
+                              {company.nit}
+                            </p>
+                          </div>
+                          {selectedCompany?.id_company === company.id_company && (
+                            <HiCheck className='h-5 w-5 text-primary' />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className='mt-4 space-y-2 border-t border-border pt-4'>
+                {selectedCompany && (
+                  <>
+                    <div className='flex items-center justify-between text-sm'>
+                      <span className='text-muted-foreground'>Empresa</span>
+                      <span className='text-foreground'>
+                        {selectedCompany?.name || 'N/A'}
+                      </span>
+                    </div>
+                    <div className='flex items-center justify-between text-sm'>
+                      <span className='text-muted-foreground'>NIT</span>
+                      <span className='text-foreground'>
+                        {selectedCompany?.nit || 'N/A'}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className='mt-4 rounded-xl border border-border bg-card p-4'>
+              <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Usuario Seleccionado
               </h3>
               <div className='relative'>
@@ -212,7 +310,7 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
                 {showUserDropdown && (
                   <div className='absolute left-0 right-0 top-full z-10 mt-2 rounded-lg border border-border bg-card shadow-xl'>
                     <div className='max-h-64 overflow-y-auto p-2'>
-                      {users.map((user) => (
+                      {filteredUsers.map((user) => (
                         <button
                           key={user.id_user}
                           onClick={() => {
