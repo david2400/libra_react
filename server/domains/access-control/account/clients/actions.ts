@@ -8,6 +8,43 @@ import type { ICreateClient, IUpdateClient, ICreateClientCompany, IUpdateClientC
 
 // ─── Client Actions ─────────────────────────────────────────────────────────
 
+export const getClientByIdServerAction = async (id: string | number): Promise<ActionResultType<IClient>> => {
+  try {
+    const client = await clientsRepository.getById(id);
+    return { success: true, data: client };
+  } catch (error) {
+    if (error instanceof ServerApiError) {
+      return {
+        success: false,
+        error: {
+          message: error.message,
+          code: error.code,
+          details: error.details
+        }
+      };
+    }
+    return {
+      success: false,
+      error: {
+        message: 'Failed to get client',
+        details: error
+      }
+    };
+  }
+};
+
+export const listClientsServerAction = async (): Promise<IClient[]> => {
+  try {
+    console.log("hol")
+    const clientsResponse = await clientsRepository.list();
+    console.log("hol", clientsResponse)
+    const clients = clientsResponse || [];
+    return clients;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const createClientAction = async (payload: ICreateClient): Promise<ActionResultType<IClient>> => {
   try {
     const client = await clientsRepository.create(payload);
@@ -91,8 +128,8 @@ export const deleteClientAction = async (id: string | number): Promise<ActionRes
 // ─── Client ICompany Actions ─────────────────────────────────────────────────
 
 export const createClientCompanyAction = async (
-  clientId: string | number, 
-  companyId: string | number, 
+  clientId: string | number,
+  companyId: string | number,
   payload: ICreateClientCompany
 ): Promise<ActionResultType<IClientCompany>> => {
   try {
@@ -122,8 +159,8 @@ export const createClientCompanyAction = async (
 };
 
 export const updateClientCompanyAction = async (
-  clientId: string | number, 
-  companyId: string | number, 
+  clientId: string | number,
+  companyId: string | number,
   payload: IUpdateClientCompany
 ): Promise<ActionResultType<IClientCompany>> => {
   try {
@@ -153,7 +190,7 @@ export const updateClientCompanyAction = async (
 };
 
 export const deleteClientCompanyAction = async (
-  clientId: string | number, 
+  clientId: string | number,
   companyId: string | number
 ): Promise<ActionResultType<void>> => {
   try {

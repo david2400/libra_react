@@ -9,6 +9,6 @@ export const validationUser = () => {
     password: z.string().min(6, { message: v.minLength(6) }).optional(),
     status: z.string().optional(),
     // companyId: z.coerce.number().optional(),
-    clientId: z.coerce.number().optional(),
+    client_id: z.coerce.number().optional(),
   });
 };

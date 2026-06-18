@@ -5,6 +5,15 @@ import { getTranslations } from "next-intl/server";
 
 import { UserManager } from "@/modules/account/users/components/user-manager";
 import { IUser, getUsers } from "@/server/domains/access-control/account/users";
+import {
+  listClientsServerAction,
+  type IClient,
+} from "@/server/domains/access-control/account/clients";
+import {
+  getCompaniesServerAction,
+  getUsersServerAction,
+} from "../user-companies/actions";
+import { type ICompany } from "@/server/domains/access-control/account/companies";
 
 export async function generateMetadata({
   params,
@@ -24,13 +33,25 @@ const UsersPage: NextPage = async () => {
   try {
     const userResponse = await getUsers();
 
-    const usersData: IUser[] = Array.isArray(userResponse)
+    const userData: IUser[] = Array.isArray(userResponse)
       ? userResponse
       : userResponse?.content || [];
-
-    return <UserManager initialData={usersData} />;
+    console.log("userData", userData);
+    return (
+      <UserManager
+        initialData={userData}
+        // companies={companiesData}
+        // clients={clientsData}
+      />
+    );
   } catch (error) {
-    return <UserManager initialData={[]} />;
+    return (
+      <UserManager
+        initialData={[]}
+        // companies={companiesData}
+        // clients={clientsData}
+      />
+    );
   }
 };
 

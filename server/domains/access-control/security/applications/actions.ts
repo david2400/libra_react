@@ -1,6 +1,7 @@
 ﻿'use server';
 
 import { revalidateCacheTag } from '@/server/lib/cache-tags';
+import { getApplications } from './queries';
 
 import { 
   applicationsRepository, 
@@ -21,6 +22,32 @@ import type {
 } from './types';
 
 // --- Applications Actions -----------------------------------------------------
+
+export const listApplicationsAction = async (): Promise<ActionResultType<any>> => {
+  try {
+    const applications = await getApplications();
+    return { success: true, data: applications };
+  } catch (error) {
+    if (error instanceof ServerApiError) {
+      return {
+        success: false,
+        error: {
+          message: error.message,
+          code: error.code,
+          details: error.details
+        }
+      };
+    }
+    
+    return {
+      success: false,
+      error: {
+        message: 'Failed to list applications',
+        details: error
+      }
+    };
+  }
+};
 
 export const createApplicationAction = async (payload: ICreateApplication): Promise<ActionResultType<any>> => {
   try {

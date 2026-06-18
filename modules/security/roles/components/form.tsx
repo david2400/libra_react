@@ -35,7 +35,7 @@ const FormBase = ({
   );
 };
 
-export const RegisterRole = ({}: IFormAddProps = {}) => {
+export const RegisterRole = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("security.roles.messages");
@@ -46,6 +46,7 @@ export const RegisterRole = ({}: IFormAddProps = {}) => {
     description: "",
     manage_users: false,
     requires_approval: false,
+    application_id: 0, // Temporary value, will be updated when user selects an application
     // approval_workflow: {},
   };
 

@@ -26,11 +26,12 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 export const applicationsRepository = {
   // List applications
   list: (params?: ListParams) => 
-    serverFetch.get<IPaginatedResponse<IApplication>>('/api/access_control/applications', {
+    serverFetch.get<IApplication[]>('/api/access_control/applications', {
       params,
       revalidate: 120,
       tags: [accessControlTags.applications()],
-    }),
+    }
+  ),
 
   // Get application by ID
   getById: (id: string | number) => 

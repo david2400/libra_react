@@ -1,6 +1,3 @@
-import 'server-only';
-
-import { cookies, headers as nextHeaders } from 'next/headers';
 import { env } from './env';
 import { ServerApiError, type ServerFetchOptions } from './types';
 
@@ -20,6 +17,8 @@ function buildUrl(path: string, params?: Record<string, unknown>): string {
 
 async function getAuthHeaders(): Promise<Record<string, string>> {
   try {
+    // Dynamic import to avoid importing next/headers in client context
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     const token =
       cookieStore.get('next-auth.session-token')?.value ??
@@ -29,14 +28,16 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
       return { Authorization: `Bearer ${token}` };
     }
   } catch {
-    // Outside of a request context (e.g. build time) – skip auth.
+    // Outside of a request context (e.g. build time) or client context – skip auth.
   }
   return {};
 }
 
 async function forwardedHeaders(): Promise<Record<string, string>> {
   try {
-    const reqHeaders = await nextHeaders();
+    // Dynamic import to avoid importing next/headers in client context
+    const { headers } = await import('next/headers');
+    const reqHeaders = await headers();
     const forwarded: Record<string, string> = {};
     const acceptLang = reqHeaders.get('accept-language');
     if (acceptLang) forwarded['Accept-Language'] = acceptLang;

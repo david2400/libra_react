@@ -3,7 +3,7 @@
 import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { ClientManager } from "@/modules/account/clients/components/client-manager";
+import { EnhancedClientManager } from "@/modules/account/clients/components/enhanced-client-manager";
 import type { IClient } from "@/server/domains/access-control/account/clients";
 import type { IUser } from "@/server/domains/access-control/account/users";
 import type { ICompany } from "@/server/domains/access-control/account/companies";
@@ -82,7 +82,7 @@ const ClientsPage: NextPage = async () => {
   }
 
   return (
-    <ClientManager 
+    <EnhancedClientManager 
       initialData={clientData} 
       initialUsers={userData}
       userCompanies={companyData}

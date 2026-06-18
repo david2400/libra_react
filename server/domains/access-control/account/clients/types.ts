@@ -1,5 +1,4 @@
-﻿import 'server-only';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+﻿import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import type { IAuditInfo } from '@/server/lib/types';
 import type { ICompany } from '../companies';
 

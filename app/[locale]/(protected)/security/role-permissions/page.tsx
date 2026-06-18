@@ -1,5 +1,6 @@
 /** @format */
 
+import { RolePermissionManager } from "@/modules/security/role-permissions/components/role-permission-manager";
 import { Metadata, NextPage } from "next";
 import { getTranslations } from "next-intl/server";
 
@@ -21,12 +22,14 @@ export async function generateMetadata({
 }
 
 const RolePermissionsPage: NextPage = async () => {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Role Permissions</h1>
-      <p className="text-muted-foreground">This feature is under construction.</p>
-    </div>
-  );
+  // const permissionsResponse = await getPermissions();
+
+  // const permissionsData: IPermission[] = Array.isArray(permissionsResponse)
+  //   ? permissionsResponse
+  //   : permissionsResponse?.content || [];
+
+  return <RolePermissionManager />;
+
 };
 
 export default RolePermissionsPage;

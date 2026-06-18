@@ -1,5 +1,4 @@
-﻿import 'server-only';
-import { cache } from 'react';
+﻿import { cache } from 'react';
 
 import { 
   usersRepository

@@ -1,5 +1,6 @@
 ﻿import 'server-only';
 import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
+import { IClient } from '../clients';
 
 // --- IUser Types ---------------------------------------------------------
 
@@ -15,11 +16,12 @@ export interface ICreateUser {
 }
 
 export interface IUpdateUser extends ICreateUser {
-  id_user?: number;
+  id_user: number;
 }
 
 
 export interface IUser extends IAuditInfo, IUpdateUser {
+  client: IClient
 }
 
 // --- IUser List Types -------------------------------------------------

@@ -122,6 +122,7 @@ export const FormMenu = ({
       }))
       .sort((a, b) => a.label.localeCompare(b.label)); // Ordenar alfabéticamente
   }, [applicationsData.data, initialValues?.id]);
+  
   console.log("opcionesApplications", errors);
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>

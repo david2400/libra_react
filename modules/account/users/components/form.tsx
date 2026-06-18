@@ -36,7 +36,7 @@ const FormBase = ({
   );
 };
 
-export const RegisterUser = ({}: IFormAddProps = {}) => {
+export const RegisterUser = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
 
   const defaultValues: IUserCreateRequest = {
@@ -49,7 +49,9 @@ export const RegisterUser = ({}: IFormAddProps = {}) => {
     const result = await createUserAction(values)
       .then((result) => {
         if (!result.success) {
-          throw new Error(result.error?.message || "Ocurrió un error inesperado");
+          throw new Error(
+            result.error?.message || "Ocurrió un error inesperado",
+          );
         }
         Swal.fire({
           title: "Usuario creado exitosamente",
@@ -83,12 +85,15 @@ export const UpdateUser = ({
   const router = useRouter();
 
   const handleSubmit: SubmitHandler<IUserUpdateRequest> = async (values) => {
-    if (!values.id_user) return;
+    console.log("values", values);
+    if (!initialValues?.id_user) return;
 
-    const result = await updateUserAction(values.id_user, values)
+    const result = await updateUserAction(initialValues.id_user, values)
       .then((result) => {
         if (!result.success) {
-          throw new Error(result.error?.message || "Ocurrió un error inesperado");
+          throw new Error(
+            result.error?.message || "Ocurrió un error inesperado",
+          );
         }
         Swal.fire({
           title: "Usuario actualizado exitosamente",

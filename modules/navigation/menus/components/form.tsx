@@ -54,7 +54,7 @@ export const RegisterMenu = ({ availableMenus }: IRegisterMenuProps = {}) => {
     description: "",
     path: "",
     order: 0,
-    parent_menu_id: 0,
+    parent_menu_id: null,
     icon: "",
     visible: true,
   };

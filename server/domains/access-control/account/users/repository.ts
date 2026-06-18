@@ -1,6 +1,4 @@
-﻿import 'server-only';
-
-import { serverFetch } from '@/server/lib';
+﻿import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type {
   IUser,
