@@ -84,8 +84,7 @@ export const menuPermissionsRepository = {
     }),
 
   getMenusPermission: (params: IMenuPermissionSearch) =>
-    serverFetch.post<IMenuPermission[]>('/api/access_control/menu-permissions/search', {
-      params,
+    serverFetch.post<IMenuPermission[]>('/api/access_control/menu-permissions/search', params, {
       revalidate: 120,
       tags: [accessControlTags.menuPermissions()],
     }),
@@ -144,10 +143,10 @@ export const menuPermissionBulkRepository = {
       revalidate: false,
     }),
 
-  // Bulk delete menu permissions by id. serverFetch.delete has no body support,
-  // so ids are passed as a comma-separated `ids` query param.
+  // Bulk delete menu permissions by id. Use POST with body for consistency
+  // with other bulk endpoints (many APIs expect POST for bulk delete).
   bulkDelete: <T = void>(ids: number[]) =>
-    serverFetch.delete<T>(`/api/access_control/menu-permissions/bulk?ids=${ids.join(',')}`, {
+    serverFetch.post<T>('/api/access_control/menu-permissions/bulk/delete', { ids }, {
       revalidate: false,
     }),
 } as const;

@@ -26,6 +26,5 @@ export interface IMenuRolePermission {
 
 // --- Bulk Operations (camelCase DTO re-exported from the backend domain) ------
 
-export type IMenuPermissionAssignmentType = menuPermissions.MenuPermissionAssignmentType;
 export type IBulkMenuPermissionItem = menuPermissions.IMenuPermissionBulkItem;
 export type IBulkMenuPermissionRequest = menuPermissions.IMenuPermissionBulkRequest;

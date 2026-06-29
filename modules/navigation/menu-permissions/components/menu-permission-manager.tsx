@@ -421,17 +421,24 @@ export function MenuPermissionsManager() {
         if (permissionsResult.success) {
           console.log('Permissions loaded:', permissionsResult.data);
           
-          // Transform the permissions to match IMenuRolePermission interface
-          const transformedPermissions: IMenuRolePermission[] = permissionsResult.data.map(p => ({
-            id_menu_permission: p.id_menu_permission, // keep backend id for update/delete
-            menu_id: p.menu_id,
-            // Fall back to the queried roleId (not 0) so it always matches selectedRole.
-            role_id: p.role_id ?? roleId,
-            can_view: p.consult_permission || false,
-            can_create: p.create_permission || false,
-            can_edit: p.update_permission || false,
-            can_delete: p.delete_permission || false,
-          }));
+          // Transform the permissions to match IMenuRolePermission interface.
+          // The backend serializes in camelCase, so read camelCase first and fall
+          // back to snake_case to stay robust to either contract.
+          const transformedPermissions: IMenuRolePermission[] = permissionsResult.data.map((raw) => {
+            const p = raw as Record<string, unknown> & typeof raw;
+            return {
+              // keep backend id for update/delete
+              id_menu_permission:
+                (p.id_menu_permission ?? (p as any).idMenuPermission) as number | null | undefined,
+              menu_id: (p.menu_id ?? (p as any).menuId) as number,
+              // Fall back to the queried roleId (not 0) so it always matches selectedRole.
+              role_id: (p.role_id ?? (p as any).roleId ?? roleId) as number,
+              can_view: Boolean(p.consult_permission ?? (p as any).consultPermission ?? false),
+              can_create: Boolean(p.create_permission ?? (p as any).createPermission ?? false),
+              can_edit: Boolean(p.update_permission ?? (p as any).updatePermission ?? false),
+              can_delete: Boolean(p.delete_permission ?? (p as any).deletePermission ?? false),
+            };
+          });
           
           setPermissions(transformedPermissions);
           setOriginalPermissions(transformedPermissions);
@@ -542,6 +549,7 @@ export function MenuPermissionsManager() {
   };
 
   // Map a UI permission row to the backend bulk DTO item (snake_case contract).
+  // Enviar siempre los flags (true/false) para que el backend actualice los permisos.
   const toBulkItem = (p: IMenuRolePermission): IBulkMenuPermissionItem => ({
     id_menu_permission: p.id_menu_permission ?? null,
     menu_id: p.menu_id,
@@ -564,39 +572,13 @@ export function MenuPermissionsManager() {
       const currentForRole = permissions.filter((p) => p.role_id === selectedRole);
 
       // Items to create/update:
-      // - existing rows (with id) are always sent so flag changes persist
-      // - new rows (no id) only when at least one permission is granted
-      const itemsToSave = currentForRole
-        .filter((p) => {
-          const hasAny = p.can_view || p.can_create || p.can_edit || p.can_delete;
-          return p.id_menu_permission != null || hasAny;
-        })
-        .map(toBulkItem);
+      // - Enviar todos los permisos del rol (incluyendo false) para que el backend los actualice
+      const itemsToSave = currentForRole.map(toBulkItem);
 
-      // Rows present originally but removed from state => delete by id.
-      const currentMenuIds = new Set(currentForRole.map((p) => p.menu_id));
-      const idsToDelete = originalPermissions
-        .filter(
-          (p) =>
-            p.role_id === selectedRole &&
-            p.id_menu_permission != null &&
-            !currentMenuIds.has(p.menu_id),
-        )
-        .map((p) => p.id_menu_permission as number);
-
-      const [saveResult, deleteResult] = await Promise.all([
-        bulkSaveMenuPermissionsAction(itemsToSave),
-        idsToDelete.length > 0
-          ? bulkDeleteMenuPermissionsAction(idsToDelete)
-          : Promise.resolve({ success: true as const, data: undefined }),
-      ]);
+      const saveResult = await bulkSaveMenuPermissionsAction(itemsToSave);
 
       if (!saveResult.success) {
         setSaveError(saveResult.error?.message ?? "No se pudieron guardar los permisos");
-        return;
-      }
-      if (!deleteResult.success) {
-        setSaveError(deleteResult.error?.message ?? "No se pudieron eliminar algunos permisos");
         return;
       }
 
@@ -654,7 +636,24 @@ export function MenuPermissionsManager() {
     if (!selectedRole) return;
 
     setHasChanges(true);
-    setPermissions((prev) => prev.filter((p) => p.role_id !== selectedRole));
+
+    // Marcar todos los permisos del rol seleccionado como false para que la UI los muestre desmarcados.
+    // El mapper toBulkItem omitirá los campos false para que el backend los ignore.
+    setPermissions((prev) => {
+      return prev.map((p) => {
+        if (p.role_id !== selectedRole) return p;
+        return {
+          ...p,
+          can_view: false,
+          can_create: false,
+          can_edit: false,
+          can_delete: false,
+        };
+      });
+    });
+
+    // No tocamos originalPermissions para que bulkDelete pueda limpiar los ids
+    // existentes (siguen teniendo id_menu_permission).
   };
 
   // Stats
