@@ -134,7 +134,8 @@ export const FormMenu = ({
           placeholder='Seleccionar aplicación...'
           error={errors.application_id?.message}
           className='w-full col-span-12 md:col-span-6'
-          description='Aplicación asignada'
+          triggerClassName='!w-full'
+          // description='Aplicación asignada'
         />
 
         <FormField
@@ -201,7 +202,8 @@ export const FormMenu = ({
           disabled={menusData.loading || !!menusData.error}
           error={errors.parent_menu_id?.message}
           className='w-full col-span-12 md:col-span-6'
-          description='Menú padre (opcional)'
+          triggerClassName='!w-full'
+          // description='Menú padre (opcional)'
         />
 
         <FormField

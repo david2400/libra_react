@@ -136,6 +136,21 @@ export interface ServerFetchOptions {
   signal?: AbortSignal;
   /** Extra headers merged into the request. */
   headers?: Record<string, string>;
+  /** Resilience patterns configuration. */
+  resilience?: {
+    /** Enable retry logic (default: true). */
+    retry?: boolean;
+    /** Enable circuit breaker (default: true). */
+    circuitBreaker?: boolean;
+    /** Enable rate limiting (default: false). */
+    rateLimit?: boolean;
+    /** Enable request queue (default: false). */
+    queue?: boolean;
+    /** Health check service name to verify before request. */
+    healthCheck?: string;
+    /** Service name for circuit breaker and rate limiting. */
+    serviceName?: string;
+  };
 }
 
 // ─── Action result types ────────────────────────────────────────────────────

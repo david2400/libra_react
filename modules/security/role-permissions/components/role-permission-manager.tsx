@@ -1,5 +1,3 @@
-/** @format */
-
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
@@ -45,7 +43,11 @@ import {
 } from "react-icons/ri";
 import type { MenuItem, MenuPermission } from "../models/menu-permission.interface";
 import { menuItems, roles, initialPermissions } from "../mocks/data";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@repo/ui/inputs/scenes/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SearchableSelect } from "@repo/ui/inputs/scenes/select";
+import { IRoleSearch } from "@/server/domains/access-control/security/roles";
+import { IMenuSearch } from "@/server/domains/access-control/navigation/menus";
+import { listRolesByApplicationAction } from "../actions/role.actions";
+import { listMenusByApplicationAction } from "../actions/menu.actions";
 // import { getApplications } from "@/server/domains/access-control/security/applications";
 
 // import { PermissionType } from "@/modules/security/permissions/models/permission.interface";
@@ -266,11 +268,9 @@ function MenuItemRow({
 export function RolePermissionManager() {
   const [permissions, setPermissions] =
     useState<MenuPermission[]>(initialPermissions);
-  const [selectedApplication, setSelectedApplication] = useState<string | null>(null);
+  const [selectedApplication, setSelectedApplication] = useState<number | null>(null);
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [applicationSearchQuery, setApplicationSearchQuery] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(
     new Set(menuItems.map((m) => m.id)),
   );
@@ -281,20 +281,13 @@ export function RolePermissionManager() {
   // Real data from server actions
   const [applications, setApplications] = useState<any[]>([]);
   const [roles, setRoles] = useState<any[]>([]);
-  const [applicationError, setApplicationError] = useState<string | null>(null);
-  const [rolesError, setRolesError] = useState<string | null>(null);
-
-  // Filter applications based on search query
-  const filteredApplications = applications.filter((app: any) =>
-    app.name.toLowerCase().includes(applicationSearchQuery.toLowerCase()) ||
-    (app.code && app.code.toLowerCase().includes(applicationSearchQuery.toLowerCase()))
-  );
+  const [menus, setMenus] = useState<any[]>([]);
 
   // Load applications on mount
   useEffect(() => {
     const loadApplications = async () => {
       try {
-        const { listApplicationsAction } = await import('../actions/actions');
+        const { listApplicationsAction } = await import('../actions/role.actions');
         const result = await listApplicationsAction();
         console.log(result);
         // Handle both possible response structures
@@ -303,7 +296,6 @@ export function RolePermissionManager() {
       } catch (error) {
         console.error('Error loading applications:', error);
         setApplications([]);
-        setApplicationError('Failed to load applications');
       }
     };
 
@@ -317,28 +309,40 @@ export function RolePermissionManager() {
   const currentRoles = roles;
 
   // Reset role when application changes
-  const handleApplicationChange = (appId: string) => {
+  const handleApplicationChange = (appId: number) => {
     setSelectedApplication(appId);
-    loadRoles(Number(appId));
+    loadRoles({ application_id: appId });
+    loadMenus({ application_id: appId });
   };
 
-  const loadRoles = async (appId: number) => {
-    if (!selectedApplication) return;
+  const loadRoles = async (params: IRoleSearch) => {
 
     try {
-      const { listRolesByApplicationAction } = await import('../actions/actions');
-      const result = await listRolesByApplicationAction(selectedApplication);
-      if (result.success) {
-        setRoles(result.data);
-        // Auto-select first role if available
-        if (result.data.length > 0 && !selectedRole) {
-          setSelectedRole(result.data[0].id_role);
-        }
-      } else {
-        setRolesError(result.error?.message || 'Error loading roles');
-      }
+      console.log('Loading roles for application:', params);
+      const result = await listRolesByApplicationAction(params);
+      console.log('Loading roles for application:', result);
+      setRoles(result);
+      // Auto-select first role if available
+      // if (result.data.length > 0 && !selectedRole) {
+      //   setSelectedRole(result.data[0].id_role);
+      // }
     } catch (error) {
-      setRolesError('Failed to load roles');
+
+    }
+  };
+
+  const loadMenus = async (params: IMenuSearch) => {
+    try {
+      console.log('Loading menus for application:', params);
+      const result = await listMenusByApplicationAction(params);
+      console.log('Loading menus for application:', result);
+      setMenus(result);
+      // Auto-select first menu if available
+      // if (result.data.length > 0 && !selectedMenu) {
+      //   setSelectedMenu(result.data[0].id_menu);
+      // }
+    } catch (error) {
+      console.error('Failed to load menus:', error);
     }
   };
 
@@ -348,7 +352,7 @@ export function RolePermissionManager() {
 
     setIsLoading(true);
     try {
-      const { listPermissionsByRoleAction } = await import('../actions/actions');
+      const { listPermissionsByRoleAction } = await import('../actions/role.actions');
       const result = await listPermissionsByRoleAction(roleId);
 
       if (result.success) {
@@ -377,12 +381,12 @@ export function RolePermissionManager() {
     loadPermissionsForRole(roleId);
   };
 
-  // Initialize permissions on component mount
-  useEffect(() => {
-    if (currentRoles.length > 0 && currentRoles[0].id_role) {
-      loadPermissionsForRole(currentRoles[0].id_role);
-    }
-  }, [selectedApplication]); // eslint-disable-line react-hooks/exhaustive-deps
+  // // Initialize permissions on component mount
+  // useEffect(() => {
+  //   if (currentRoles.length > 0 && currentRoles[0].id_role) {
+  //     loadPermissionsForRole(currentRoles[0].id_role);
+  //   }
+  // }, [selectedApplication]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selectedRoleData = currentRoles.find((r) => r.id_role === selectedRole);
 
@@ -587,121 +591,40 @@ export function RolePermissionManager() {
                   Seleccionar Aplicación
                 </label>
                 <div className='relative'>
-                  {/* Custom Dropdown with Search */}
-                  <div 
-                    className={`w-full h-14 bg-gradient-to-r from-background via-background to-background border-2 ${applications.length === 0 ? 'border-muted cursor-not-allowed opacity-50' : 'border-border hover:border-primary/50 focus:border-primary focus:ring-2 focus:ring-primary/20'} transition-all duration-300 rounded-xl cursor-pointer overflow-hidden shadow-sm hover:shadow-md`}
-                    onClick={() => applications.length > 0 && setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    <div className='flex items-center gap-3 px-4 h-full'>
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 ${selectedApplication ? 'bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg' : 'bg-muted/50'}`}>
-                        {selectedApplication ? (
-                          <RiGlobalLine className='w-4 h-4 text-primary animate-pulse' />
-                        ) : (
-                          <RiAppsLine className='w-4 h-4 text-muted-foreground' />
-                        )}
-                      </div>
-                      <div className='flex-1 text-left'>
-                        <p className={`text-sm transition-colors duration-200 ${selectedApplication ? 'text-primary font-semibold' : 'text-muted-foreground'}`}>
-                          {selectedApplication 
-                            ? applications.find(a => a.id_application === selectedApplication)?.name
-                            : 'Seleccione una aplicación'
-                          }
-                        </p>
-                        {selectedApplication && applications.find(a => a.id_application === selectedApplication)?.code && (
-                          <p className='text-xs text-primary/70 font-mono mt-0.5'>
-                            {applications.find(a => a.id_application === selectedApplication)?.code}
-                          </p>
-                        )}
-                      </div>
-                      <RiArrowDownSLine className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                    </div>
-                  </div>
-
-                  {/* Custom Dropdown Content */}
-                  {isDropdownOpen && applications.length > 0 && (
-                    <div className='absolute top-full left-0 right-0 mt-2 bg-gradient-to-br from-background via-background/95 to-background/90 backdrop-blur-xl border-2 border-border/50 shadow-2xl rounded-2xl z-50 animate-in fade-in-0 slide-in-from-top-2 duration-300 overflow-hidden'>
-                      {/* Search Input */}
-                      <div className='p-4 border-b border-border/30 bg-gradient-to-r from-primary/5 to-transparent'>
-                        <div className='relative'>
-                          <RiSearchLine className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary/60' />
-                          <input
-                            type='text'
-                            placeholder='Buscar aplicación...'
-                            value={applicationSearchQuery}
-                            onChange={(e) => setApplicationSearchQuery(e.target.value)}
-                            className='w-full pl-10 pr-10 py-3 bg-background/80 border border-border/50 rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200'
-                            autoFocus
-                          />
-                          {applicationSearchQuery && (
-                            <button
-                              onClick={() => setApplicationSearchQuery('')}
-                              className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1'
-                            >
-                              <RiCloseLine className='w-4 h-4' />
-                            </button>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Applications List */}
-                      <div className='max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-border/20 scrollbar-track-transparent'>
-                        {filteredApplications.length > 0 ? (
-                          filteredApplications.map((app, index) => (
-                            <div
-                              key={app.id_application}
-                              onClick={() => {
-                                handleApplicationChange(app.id_application);
-                                setIsDropdownOpen(false);
-                                setApplicationSearchQuery('');
-                              }}
-                              className={`group px-4 py-3 border-b border-border/10 last:border-b-0 cursor-pointer transition-all duration-200 hover:bg-gradient-to-r hover:from-primary/8 hover:to-primary/3 ${selectedApplication === app.id_application ? 'bg-gradient-to-r from-primary/10 to-primary/5 border-l-2 border-l-primary' : ''}`}
-                              style={{ animationDelay: `${index * 30}ms` }}
-                            >
-                              <div className='flex items-center gap-3'>
-                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${selectedApplication === app.id_application ? 'bg-gradient-to-br from-primary/20 to-primary/10 shadow-lg' : 'bg-gradient-to-br from-primary/10 to-primary/5'}`}>
-                                  <RiGlobalLine className={`w-5 h-5 transition-colors duration-200 ${selectedApplication === app.id_application ? 'text-primary' : 'text-primary/80 group-hover:text-primary'}`} />
-                                </div>
-                                <div className='flex-1'>
-                                  <p className={`font-medium transition-colors duration-200 ${selectedApplication === app.id_application ? 'text-primary' : 'text-foreground group-hover:text-primary'}`}>
-                                    {app.name}
-                                  </p>
-                                  {app.code && (
-                                    <p className='text-xs text-muted-foreground/70 font-mono mt-0.5 group-hover:text-primary/60 transition-colors duration-200'>
-                                      Código: {app.code}
-                                    </p>
-                                  )}
-                                </div>
-                                {selectedApplication === app.id_application && (
-                                  <div className='w-6 h-6 bg-primary rounded-full flex items-center justify-center animate-scale-in'>
-                                    <RiCheckLine className='w-4 h-4 text-primary-foreground' />
-                                  </div>
-                                )}
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div className='p-8 text-center'>
-                            <div className='w-16 h-16 bg-muted/50 rounded-full flex items-center justify-center mx-auto mb-4'>
-                              <RiSearchLine className='w-8 h-8 text-muted-foreground' />
-                            </div>
-                            <p className='text-muted-foreground font-medium'>No se encontraron aplicaciones</p>
-                            <p className='text-sm text-muted-foreground/60 mt-1'>Intenta con otra búsqueda</p>
+                  {/* Searchable Select for Applications */}
+                  <SearchableSelect
+                    value={selectedApplication ? String(selectedApplication) : undefined}
+                    onValueChange={(value) => {
+                      console.log('Selected application:', value);
+                      handleApplicationChange(Number(value))
+                    }}
+                    disabled={applications.length === 0}
+                    placeholder='Seleccione una aplicación'
+                    searchPlaceholder='Buscar aplicación...'
+                    emptyMessage='No se encontraron aplicaciones'
+                    triggerClassName='!h-16 data-[size=default]:h-16 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
+                    options={applications.map((app) => ({
+                      value: String(app.id_application),
+                      keywords: app.code ?? '',
+                      label: (
+                        <div className='flex items-center gap-3'>
+                          <div className='w-8 h-8 rounded-lg flex items-center justify-center bg-[hsl(var(--primary)/0.12)]'>
+                            <RiGlobalLine className='w-4 h-4 text-[hsl(var(--primary))]' />
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Click outside to close */}
-                  {isDropdownOpen && (
-                    <div 
-                      className='fixed inset-0 z-40' 
-                      onClick={() => {
-                        setIsDropdownOpen(false);
-                        setApplicationSearchQuery('');
-                      }}
-                    />
-                  )}
+                          <div className='flex-1 text-left'>
+                            <p className='text-sm font-medium text-[hsl(var(--foreground))]'>
+                              {app.name}
+                            </p>
+                            {app.code && (
+                              <p className='text-xs text-[hsl(var(--muted-foreground))] font-mono mt-0.5'>
+                                {app.code}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ),
+                    }))}
+                  />
                 </div>
               </div>
               <div className='border-t border-border pt-4'>

@@ -1,8 +1,8 @@
 ﻿import 'server-only';
 import { cache } from 'react';
 
-import { 
-  menuPermissionsRepository, 
+import {
+  menuPermissionsRepository,
   menuPermissionStatsRepository,
   menuPermissionBulkRepository,
   menuPermissionValidationRepository,
@@ -13,122 +13,118 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  IMenuPermission, 
-  IMenuPermissionStats,
-  IMenuPermissionOverview,
-  IBulkMenuPermissionPayload,
-  IBulkMenuPermissionResponse,
+import type {
+  IMenuPermission,
   IMenuPermissionValidationResult,
-  IMenuPermissionValidationRequest,
-  IMenuPermissionActivity,
-  IMenuPermissionActivityFilter,
-  IMenuPermissionExportRequest,
-  IMenuPermissionExportResponse,
-  IMenuPermissionInheritanceTree,
-  IMenuPermissionConflict,
-  IMenuPermissionConflictResolution
+
 } from './types';
 
-// --- IMenu-IPermission Relationships Queries ---------------------------------
+// --- MenuPermission Entity Queries (Based on Java MenuPermissionEntity) ---------
 
-export const getMenuPermissions = cache((params?: ListParams) => 
+export const getMenuPermissions = cache((params?: ListParams) =>
   menuPermissionsRepository.list(params)
 );
 
-export const getMenuPermissionById = cache((menuId: string | number, permissionId: string | number) => 
-  menuPermissionsRepository.getById(menuId, permissionId)
+export const getMenuPermissionById = cache((idMenuPermission: number) =>
+  menuPermissionsRepository.getById(idMenuPermission)
 );
 
-export const getPermissionsByMenu = cache((menuId: string | number) => 
-  menuPermissionsRepository.getPermissionsByMenu(menuId)
+export const getMenuPermissionsByMenu = cache((menuId: number) =>
+  menuPermissionsRepository.list({ menu_id: menuId })
 );
 
-export const getMenusByPermission = cache((permissionId: string | number) => 
-  menuPermissionsRepository.getMenusByPermission(permissionId)
+export const getMenuPermissionsByRole = cache((roleId: number) =>
+  menuPermissionsRepository.list({ role_id: roleId })
 );
 
-export const getActivePermissionsForMenu = cache((menuId: string | number) => 
+export const getMenuPermissionsByUser = cache((userId: number) =>
+  menuPermissionsRepository.list({ user_id: userId })
+);
+
+export const getActiveMenuPermissions = cache((menuId: number) =>
   menuPermissionsRepository.getActivePermissions(menuId)
 );
 
-// --- IMenu-IPermission Statistics Queries ---------------------------------
+// --- MenuPermission Statistics Queries ---------------------------------------
 
-export const getMenuPermissionStats = cache((menuId: string | number, permissionId: string | number) => 
-  menuPermissionStatsRepository.getStats(menuId, permissionId)
+export const getMenuPermissionStats = cache((idMenuPermission: number) =>
+  menuPermissionStatsRepository.getStats(idMenuPermission, 0) // Temporal hasta que se actualice el repository
 );
 
-export const getAllMenuPermissionStats = cache(() => 
+export const getAllMenuPermissionStats = cache(() =>
   menuPermissionStatsRepository.getAllStats()
 );
 
-export const getMenuPermissionOverview = cache((menuId: string | number, permissionId: string | number) => 
-  menuPermissionStatsRepository.getOverview(menuId, permissionId)
+export const getMenuPermissionOverview = cache((idMenuPermission: number) =>
+  menuPermissionStatsRepository.getOverview(idMenuPermission, 0) // Temporal hasta que se actualice el repository
 );
 
 // --- IMenu-IPermission Inheritance Queries ---------------------------------
 
-export const getInheritedPermissionsForMenu = cache((menuId: string | number) => 
+export const getInheritedPermissionsForMenu = cache((menuId: number) =>
   menuPermissionInheritanceRepository.getInheritedPermissions(menuId)
 );
 
-export const getMenuPermissionInheritanceTree = cache((menuId: string | number) => 
+export const getMenuPermissionInheritanceTree = cache((menuId: number) =>
   menuPermissionInheritanceRepository.getInheritanceTree(menuId)
 );
 
 // --- IMenu-IPermission Activity Queries ---------------------------------
 
-export const getMenuPermissionActivities = cache((params?: ListParams) => 
+export const getMenuPermissionActivities = cache((params?: ListParams) =>
   menuPermissionActivityRepository.list(params)
 );
 
-export const getActivitiesByMenu = cache((menuId: string | number, params?: ListParams) => 
+export const getActivitiesByMenu = cache((menuId: number, params?: ListParams) =>
   menuPermissionActivityRepository.getByMenu(menuId, params)
 );
 
-export const getActivitiesByPermission = cache((permissionId: string | number, params?: ListParams) => 
+export const getActivitiesByPermission = cache((permissionId: number, params?: ListParams) =>
   menuPermissionActivityRepository.getByPermission(permissionId, params)
 );
 
-export const getRecentMenuPermissionActivities = cache((menuId: string | number, limit?: number) => 
+export const getRecentMenuPermissionActivities = cache((menuId: number, limit?: number) =>
   menuPermissionActivityRepository.getRecent(menuId, limit)
 );
 
 // --- Composite Queries (BFF patterns) -------------------------------------------
 
 // Get menu with all permission relationships
-export const getMenuWithPermissions = cache(async (menuId: string | number) => {
+export const getMenuWithPermissions = cache(async (menuId: number) => {
   const [permissions, activePermissions, inheritedPermissions, recentActivities] = await Promise.all([
-    getPermissionsByMenu(menuId),
-    getActivePermissionsForMenu(menuId),
+    getMenuPermissionsByMenu(menuId),
+    getActiveMenuPermissions(menuId),
     getInheritedPermissionsForMenu(menuId),
     getRecentMenuPermissionActivities(menuId, 10)
   ]);
-  
+
   return {
     menu_id: menuId,
     permissions,
     active_permissions: activePermissions,
     inherited_permissions: inheritedPermissions,
     recent_activities: recentActivities,
-    total_permissions: permissions.length,
+    total_permissions: permissions.content.length,
     active_count: activePermissions.length,
     inherited_count: inheritedPermissions.length
   };
 });
 
-// Get permission with all menu relationships
-export const getPermissionWithMenus = cache(async (permissionId: string | number) => {
-  const [menus, recentActivities] = await Promise.all([
-    getMenusByPermission(permissionId),
-    getActivitiesByPermission(permissionId, { per_page: 10 })
+// Get menu permission with all related data (updated for new entity)
+export const getMenuPermissionWithDetails = cache(async (idMenuPermission: number) => {
+  const [permission, recentActivities] = await Promise.all([
+    getMenuPermissionById(idMenuPermission),
+    getRecentMenuPermissionActivities(idMenuPermission, 10)
   ]);
-  
+
   return {
-    permission_id: permissionId,
-    menus,
-    recent_activities: recentActivities.content,
-    total_menus: menus.length
+    permission,
+    recent_activities: recentActivities,
+    details: {
+      assignment_type: permission?.assignment_type,
+      priority: permission?.priority,
+      is_expired: permission?.is_expired
+    }
   };
 });
 
@@ -138,22 +134,21 @@ export const getMenuPermissionDashboard = cache(async () => {
     getMenuPermissions({ per_page: 100 }),
     getAllMenuPermissionStats()
   ]);
-  
+
   // Combine data for dashboard
   const dashboardData = menuPermissions.content.map((menuPermission: IMenuPermission) => {
-    const stats = allStats.find(s => s.menu_id === menuPermission.menu_id && s.permission_id === menuPermission.permission_id);
-    
+    const stats = allStats.find(s => s.menu_id === menuPermission.menu_id);
+
     return {
       ...menuPermission,
       stats: stats || {
         menu_id: menuPermission.menu_id,
-        permission_id: menuPermission.permission_id,
         usage_count: 0,
         created_at: menuPermission.created_at || ''
       }
     };
   });
-  
+
   return {
     menu_permissions: dashboardData,
     summary: {
@@ -165,67 +160,68 @@ export const getMenuPermissionDashboard = cache(async () => {
 });
 
 // Get menu permission usage patterns
-export const getMenuPermissionUsagePatterns = cache(async (menuId: string | number, days: number = 30) => {
+export const getMenuPermissionUsagePatterns = cache(async (menuId: number, days: number = 30) => {
   const [permissions, activities, stats] = await Promise.all([
-    getPermissionsByMenu(menuId),
+    getMenuPermissionsByMenu(menuId),
     getActivitiesByMenu(menuId, { per_page: days * 24 }), // Assuming hourly checks
-    getAllMenuPermissionStats().then(allStats => 
+    getAllMenuPermissionStats().then(allStats =>
       allStats.filter(s => s.menu_id === menuId)
     )
   ]);
-  
+
   // Process usage data
   const usagePatterns = activities.content
-    .filter(activity => activity.activity_type === 'permission_used')
-    .map(activity => ({
+    .filter((activity: any) => activity.activity_type === 'permission_used')
+    .map((activity: any) => ({
       timestamp: activity.created_at,
-      permission_id: activity.permission_id,
+      menu_permission_id: activity.menu_id, // Usar menu_id en lugar de permission_id
       description: activity.description,
       metadata: activity.metadata
     }));
-  
+
   // Group by permission
-  const permissionUsagePatterns = permissions.map(permission => {
-    const permissionActivities = usagePatterns.filter(up => up.permission_id === permission.id_permission);
-    const permissionStats = stats.find(s => s.permission_id === permission.id_permission);
-    
+  const permissionUsagePatterns = (permissions as any).content?.map((permission: any) => {
+    const permissionActivities = usagePatterns.filter((up: any) => up.menu_permission_id === permission.id_menu_permission);
+    const permissionStats = stats.find((s: any) => s.id_menu_permission === permission.id_menu_permission);
+
     return {
       permission,
       usage_count: permissionActivities.length,
       last_used: permissionActivities.length > 0 ? permissionActivities[0].timestamp : permissionStats?.last_used,
       usage_frequency: permissionActivities.length / days // uses per day
     };
-  });
-  
+  }) || [];
+
   return {
     menuId: menuId,
-    patterns: permissionUsagePatterns.sort((a, b) => b.usage_count - a.usage_count),
+    patterns: permissionUsagePatterns.content.sort((a: any, b: any) => b.usage_count - a.usage_count),
     summary: {
       total_uses: usagePatterns.length,
-      unique_permissions_used: permissionUsagePatterns.filter(p => p.usage_count > 0).length,
+      unique_permissions_used: permissionUsagePatterns.filter((p: any) => p.usage_count > 0).length,
       most_used_permission: permissionUsagePatterns[0]?.permission || null
     }
   };
 });
 
 // Get menu permission inheritance analysis
-export const getMenuPermissionInheritanceAnalysis = cache(async (menuId: string | number) => {
+export const getMenuPermissionInheritanceAnalysis = cache(async (menuId: number) => {
   const [inheritanceTree, directPermissions] = await Promise.all([
     getMenuPermissionInheritanceTree(menuId),
-    getPermissionsByMenu(menuId)
+    getMenuPermissionsByMenu(menuId)
   ]);
-  
+
   // Analyze inheritance
   const inheritedPermissions = inheritanceTree.inherited_permissions;
-  const directPermissionIds = directPermissions.map(p => p.id_permission);
-  const inheritedPermissionIds = inheritedPermissions.map(ip => ip.permission.id_permission);
-  
+  const directPermissionsList = (directPermissions as any).content || [];
+  const directPermissionIds = directPermissionsList.map((p: any) => p.id_menu_permission);
+  const inheritedPermissionIds = inheritedPermissions.map((ip: any) => ip.permission.id_menu_permission);
+
   const analysis = {
-    direct_permissions: directPermissions.length,
+    direct_permissions: directPermissionsList.length,
     inherited_permissions: inheritedPermissions.length,
-    total_permissions: directPermissions.length + inheritedPermissions.length,
-    inheritance_depth: Math.max(0, ...inheritedPermissions.map(ip => ip.inheritance_level)),
-    inheritance_sources: inheritedPermissions.reduce((acc, ip) => {
+    total_permissions: directPermissionsList.length + inheritedPermissions.length,
+    inheritance_depth: Math.max(0, ...inheritedPermissions.map((ip: any) => ip.inheritance_level)),
+    inheritance_sources: inheritedPermissions.reduce((acc: any, ip: any) => {
       const sourceId = ip.inherited_from.id_menu;
       if (!acc[sourceId]) {
         acc[sourceId] = 0;
@@ -234,7 +230,7 @@ export const getMenuPermissionInheritanceAnalysis = cache(async (menuId: string 
       return acc;
     }, {} as Record<string | number, number>)
   };
-  
+
   return {
     menuId: menuId,
     inheritance_tree: inheritanceTree,
@@ -247,11 +243,11 @@ export const getMenuPermissionInheritanceAnalysis = cache(async (menuId: string 
 });
 
 // Get menu permission conflict analysis
-export const getMenuPermissionConflictAnalysis = cache(async (menuId: string | number) => {
+export const getMenuPermissionConflictAnalysis = cache(async (menuId: number) => {
   const [conflicts] = await Promise.all([
     menuPermissionConflictRepository.detectConflicts(menuId)
   ]);
-  
+
   // Analyze conflicts
   const conflictAnalysis = {
     total_conflicts: conflicts.length,
@@ -269,7 +265,7 @@ export const getMenuPermissionConflictAnalysis = cache(async (menuId: string | n
       return acc;
     }, {} as Record<string, number>)
   };
-  
+
   return {
     menu_id: menuId,
     conflicts,
@@ -280,12 +276,12 @@ export const getMenuPermissionConflictAnalysis = cache(async (menuId: string | n
 });
 
 // Get menu permission validation summary
-export const getMenuPermissionValidationSummary = cache(async (menuId: string | number) => {
+export const getMenuPermissionValidationSummary = cache(async (menuId: number) => {
   const [validationResults] = await Promise.all([
     // This would call the validation repository
     Promise.resolve([] as IMenuPermissionValidationResult[])
   ]);
-  
+
   const summary = {
     total_validations: validationResults.length,
     valid_count: validationResults.filter(v => v.is_valid).length,
@@ -293,7 +289,7 @@ export const getMenuPermissionValidationSummary = cache(async (menuId: string | 
     error_count: validationResults.reduce((sum, v) => sum + v.errors.length, 0),
     warning_count: validationResults.reduce((sum, v) => sum + v.warnings.length, 0)
   };
-  
+
   return {
     menuId: menuId,
     validation_results: validationResults,

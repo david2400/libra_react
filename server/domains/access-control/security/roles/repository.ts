@@ -6,6 +6,7 @@ import type {
   IRole,
   ICreateRole,
   IUpdateRole,
+  IRoleSearch,
 
 } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
@@ -16,6 +17,13 @@ export const rolesRepository = {
   // List roles
   list: (params?: ListParams) =>
     serverFetch.get<IPaginatedResponse<IRole>>('/api/access_control/roles', {
+      params,
+      revalidate: 120,
+      tags: [accessControlTags.roles()],
+    }),
+  // List roles
+  getRoles: (params: IRoleSearch) =>
+    serverFetch.post<IRole[]>('/api/access_control/roles/search', {
       params,
       revalidate: 120,
       tags: [accessControlTags.roles()],

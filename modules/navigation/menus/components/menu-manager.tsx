@@ -60,6 +60,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SearchableSelect,
 } from "@repo/ui/inputs/scenes/select";
 // import { mockMenus, mockApplications, mockModules } from "../lib/mock-data";
 import { IApplication } from "@/server/domains/access-control/security/applications";
@@ -432,6 +433,9 @@ export const MenuManager = ({
   const [menus, setMenus] = useState<IMenu[]>(initialData);
   // const [menus, setMenus] = useState<IMenu[]>(mockMenus);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedApplication, setSelectedApplication] = useState<number | null>(
+    initialApplications.length > 0 ? initialApplications[0].id_application : null
+  );
   const [expandedIds, setExpandedIds] = useState<Set<number>>(() => {
     // Initially expand first 2 levels
     const ids = new Set<number>();
@@ -790,20 +794,22 @@ export const MenuManager = ({
             <span className='text-sm font-medium text-foreground'>
               Application:
             </span>
-            <Select defaultValue='1'>
-              <SelectTrigger className='w-40 bg-secondary border-border'>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {initialApplications.map((app) => (
-                  <SelectItem
-                    key={app.id_application}
-                    value={String(app.id_application)}>
-                    {app.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SearchableSelect
+              value={selectedApplication ? String(selectedApplication) : undefined}
+              onValueChange={(value) => {
+                // Manejar el cambio de aplicación
+                setSelectedApplication(Number(value));
+              }}
+              placeholder='Seleccione una aplicación'
+              searchPlaceholder='Buscar aplicación...'
+              emptyMessage='No se encontraron aplicaciones'
+              triggerClassName='w-auto bg-secondary border-border'
+              options={initialApplications.map((app) => ({
+                value: String(app.id_application),
+                label: app.name,
+                keywords: app.name, // Para búsqueda
+              }))}
+            />
           </div>
 
           <div className='flex items-center gap-4 ml-auto text-sm text-muted-foreground'>
@@ -849,6 +855,7 @@ export const MenuManager = ({
         {/* Menu Tree */}
         <div className='rounded-lg border border-border bg-card overflow-hidden'>
           <DndContext
+            id='menu-manager-dnd'
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragStart={handleDragStart}

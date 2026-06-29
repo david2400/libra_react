@@ -2,7 +2,7 @@
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
-import type { ICreateMenu, IUpdateMenu, IMenuTree, IMenuHierarchy } from './types';
+import type { ICreateMenu, IUpdateMenu, IMenuTree, IMenuHierarchy, IMenuSearch } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import type { IMenu } from './types';
 import type { ICreateMenuPermission, IUpdateMenuPermission } from '../menu_permissions/types';
@@ -13,7 +13,7 @@ import type { IPermission } from '../../security/permissions';
 export const menusRepository = {
   // List menus
   list: (params?: ListParams) => 
-    serverFetch.get<IPaginatedResponse<IMenu>>('/api/access_control/menus', {
+    serverFetch.get<IMenu[]>('/api/access_control/menus', {
       params,
       revalidate: 120,
       tags: [accessControlTags.menus()],
@@ -79,6 +79,14 @@ export const menusRepository = {
     serverFetch.get<IMenu[]>(`/api/access_control/menus/${menuId}/path`, {
       revalidate: 300,
       tags: [accessControlTags.menu(menuId)],
+    }),
+
+  // Search menus by parameters
+  getMenus: (params: IMenuSearch) =>
+    serverFetch.post<IMenu[]>('/api/access_control/menus/search', {
+      params,
+      revalidate: 120,
+      tags: [accessControlTags.menus()],
     }),
 } as const;
 

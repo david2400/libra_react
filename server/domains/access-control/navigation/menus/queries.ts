@@ -7,7 +7,7 @@ import {
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import type { MenuTreeNode } from './types';
-import { getMenuPermissions, getPermissionsByMenu } from '../menu_permissions';
+import { getMenuPermissions, getMenuPermissionsByMenu } from '../menu_permissions';
 import { getMenusByRole, getRolesByMenu } from '../role_menus';
 import { getMenusByUser, getUsersByMenu } from '../user_menus';
 import { IPermission } from '../../security/permissions';
@@ -48,16 +48,17 @@ export const getMenuPath = cache((menuId: string | number) =>
 
 // Get menu with all relationships
 export const getMenuProfile = cache(async (menuId: string | number) => {
+  const numericMenuId = typeof menuId === 'string' ? parseInt(menuId, 10) : menuId;
   const [menu, permissions, roles, users] = await Promise.all([
     getMenuById(menuId),
-    getPermissionsByMenu(menuId),
+    getMenuPermissionsByMenu(numericMenuId),
     getRolesByMenu(menuId),
     getUsersByMenu(menuId)
   ]);
   
   return {
     menu,
-    permissions,
+    permissions: permissions.content,
     roles,
     users
   };
@@ -159,18 +160,19 @@ export const getMenuHierarchyStats = cache(async () => {
 
 // Get menu usage statistics
 export const getMenuUsageStats = cache(async (menuId: string | number) => {
+  const numericMenuId = typeof menuId === 'string' ? parseInt(menuId, 10) : menuId;
   const [menu, permissions, roles, users] = await Promise.all([
     getMenuById(menuId),
-    getPermissionsByMenu(menuId),
+    getMenuPermissionsByMenu(numericMenuId),
     getRolesByMenu(menuId),
     getUsersByMenu(menuId)
   ]);
   
   return {
     menu,
-    permission_count: permissions.length,
+    permission_count: permissions.content.length,
     role_count: roles.length,
     user_count: users.length,
-    total_usage: permissions.length + roles.length + users.length
+    total_usage: permissions.content.length + roles.length + users.length
   };
 });

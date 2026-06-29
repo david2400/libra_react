@@ -1,14 +1,6 @@
-/** @format */
-
 "use client";
 
-import {
-  useState,
-  useMemo,
-  useEffect,
-  useCallback,
-  useTransition,
-} from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   RiDashboardLine,
   RiUserLine,
@@ -45,32 +37,26 @@ import {
   RiEditLine,
   RiDeleteBinLine,
   RiCheckDoubleLine,
+  RiAppsLine,
+  RiGlobalLine,
+  RiDatabase2Line,
 } from "react-icons/ri";
-import type {
-  IMenuRolePermission,
-  MenuItem,
-} from "../models/menu-permission.interface";
+import type { MenuItem, IMenuRolePermission } from "../models/menu-permission.interface";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SearchableSelect } from "@repo/ui/inputs/scenes/select";
 import type { IApplication } from "@/server/domains/access-control/security/applications";
 import type { IRole } from "@/server/domains/access-control/security/roles";
 import type { IMenu } from "@/server/domains/access-control/navigation/menus";
-import type { IUser } from "@/server/domains/access-control/account/users";
+import { listApplicationsAction, listRolesByApplicationAction } from "../actions/role.actions";
+import { listMenusByApplicationAction } from "../actions/menu.actions";
 import {
-  getApplicationsServerAction,
-  getRolesByApplicationServerAction,
-  getMenusByApplicationServerAction,
-  getMenuPermissionsServerAction,
-  getUsersByApplicationServerAction,
-  getUserPermissionProfileServerAction,
-} from "@/app/[locale]/(protected)/navigation/menu-permissions/actions";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@repo/ui/inputs/scenes/select";
+  getMenuPermissionsByRoleAction,
+  bulkSaveMenuPermissionsAction,
+  bulkDeleteMenuPermissionsAction,
+} from "@/server/domains/access-control/navigation/menu_permissions/actions";
+import type { IBulkMenuPermissionItem } from "../models/menu-permission.interface";
 
-type MenuPermissionAction = "view" | "create" | "edit" | "delete";
+// Local type for menu permission actions
+type MenuPermissionType = "view" | "create" | "edit" | "delete";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   RiDashboardLine,
@@ -137,7 +123,7 @@ interface MenuItemRowProps {
   selectedRole: number | null;
   onPermissionChange: (
     menuId: string,
-    type: MenuPermissionAction,
+    type: MenuPermissionType,
     value: boolean,
   ) => void;
   searchQuery: string;
@@ -179,7 +165,7 @@ function MenuItemRow({
 
   // Calculate child permission states for indeterminate
   const getChildrenPermissionState = (
-    type: MenuPermissionAction,
+    type: MenuPermissionType,
   ): "all" | "none" | "some" => {
     if (!menu.children) return "none";
     const childPerms = menu.children
@@ -240,7 +226,7 @@ function MenuItemRow({
 
         {/* IPermission Checkboxes */}
         <div className='flex items-center gap-8'>
-          {(["view", "create", "edit", "delete"] as MenuPermissionAction[]).map(
+          {(["view", "create", "edit", "delete"] as MenuPermissionType[]).map(
             (type) => {
               const key = `can_${type}` as keyof IMenuRolePermission;
               const checked = permission ? (permission[key] as boolean) : false;
@@ -294,23 +280,20 @@ export function MenuPermissionsManager() {
   );
   const [roles, setRoles] = useState<IRole[]>([]);
   const [selectedRole, setSelectedRole] = useState<number | null>(null);
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [permissions, setPermissions] = useState<IMenuRolePermission[]>([]);
-  const [userPermissions, setUserPermissions] = useState<IMenuRolePermission[]>([]);
+  const [originalPermissions, setOriginalPermissions] = useState<IMenuRolePermission[]>([]);
+  const [saveError, setSaveError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [hasChanges, setHasChanges] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoadingApps, setIsLoadingApps] = useState(true);
   const [isLoadingRoles, setIsLoadingRoles] = useState(false);
-  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [isLoadingMenus, setIsLoadingMenus] = useState(false);
-  const [isPending, startTransition] = useTransition();
+  const [isLoadingPermissions, setIsLoadingPermissions] = useState(false);
 
   const selectedRoleData = roles.find((r) => r.id_role === selectedRole);
-  const selectedUserData = users.find((u) => u.id_user === selectedUser);
 
   useEffect(() => {
     loadApplications();
@@ -319,7 +302,7 @@ export function MenuPermissionsManager() {
   const loadApplications = async () => {
     try {
       setIsLoadingApps(true);
-      const apps = await getApplicationsServerAction();
+      const apps = await listApplicationsAction();
       console.log("Apps received:", apps);
 
       if (apps && Array.isArray(apps)) {
@@ -340,33 +323,20 @@ export function MenuPermissionsManager() {
     try {
       setIsLoadingRoles(true);
       setIsLoadingMenus(true);
-      setIsLoadingUsers(true);
-
-      const [rolesData, menusData, permissionsData, usersData] = await Promise.all([
-        getRolesByApplicationServerAction(applicationId),
-        getMenusByApplicationServerAction(applicationId),
-        getMenuPermissionsServerAction(applicationId),
-        getUsersByApplicationServerAction(applicationId),
+      
+      const [rolesData, menusData] = await Promise.all([
+        listRolesByApplicationAction({ application_id: applicationId }),
+        listMenusByApplicationAction({ application_id: applicationId }),
       ]);
 
       console.log("Roles data:", rolesData);
       console.log("Menus data:", menusData);
-      console.log("Permissions data:", permissionsData);
-      console.log("Users data:", usersData);
 
       const validRoles = Array.isArray(rolesData) ? rolesData : [];
       const validMenus = Array.isArray(menusData) ? menusData : [];
-      const validPermissions = Array.isArray(permissionsData)
-        ? permissionsData
-        : [];
-      const validUsers = Array.isArray(usersData) ? usersData : [];
 
       setRoles(validRoles);
-      setUsers(validUsers);
       setMenuItems(transformMenusToMenuItems(validMenus));
-      setPermissions(
-        transformPermissionsToMenuRolePermissions(validPermissions),
-      );
 
       if (validRoles.length > 0) {
         setSelectedRole(validRoles[0].id_role);
@@ -374,26 +344,17 @@ export function MenuPermissionsManager() {
         setSelectedRole(null);
       }
 
-      if (validUsers.length > 0) {
-        setSelectedUser(validUsers[0].id_user);
-      } else {
-        setSelectedUser(null);
-      }
-
       const menuIds = validMenus.map((m) => m.id_menu.toString());
       setExpanded(new Set(menuIds));
     } catch (error) {
       console.error("Error loading roles and menus:", error);
       setRoles([]);
-      setUsers([]);
       setMenuItems([]);
       setPermissions([]);
       setSelectedRole(null);
-      setSelectedUser(null);
     } finally {
       setIsLoadingRoles(false);
       setIsLoadingMenus(false);
-      setIsLoadingUsers(false);
     }
   };
 
@@ -440,44 +401,60 @@ export function MenuPermissionsManager() {
     }));
   };
 
-  const handleApplicationChange = useCallback((applicationId: number) => {
-    startTransition(() => {
-      loadRolesAndMenus(applicationId);
+  const handleApplicationChange = (appId: number) => {
+    setSelectedApplication(appId);
+    loadRolesAndMenus(appId);
+  };
 
-      setHasChanges(false);
-    });
-  }, []);
-
-  const handleRoleChange = useCallback((roleId: number) => {
+  const handleRoleChange = async (roleId: number) => {
     setSelectedRole(roleId);
-  }, []);
-
-  const handleUserChange = useCallback(async (userId: number) => {
-    setSelectedUser(userId);
+    setHasChanges(false); // Reset changes when switching roles
     
-    // Load user permissions when user is selected
-    try {
-      const userProfile = await getUserPermissionProfileServerAction(userId);
-      if (userProfile && userProfile.effectivePermissions) {
-        // Transform effective permissions to menu role permissions format
-        const userPerms = userProfile.effectivePermissions.map((p: any) => ({
-          menu_id: p.menu_id,
-          role_id: userId, // Use user_id as role_id for user permissions
-          can_view: p.can_view || false,
-          can_create: p.can_create || false,
-          can_edit: p.can_edit || false,
-          can_delete: p.can_delete || false,
-        }));
-        setUserPermissions(userPerms);
-      } else {
-        setUserPermissions([]);
+    // Load permissions for the selected role
+    if (roleId) {
+      try {
+        setIsLoadingPermissions(true);
+        console.log('Loading permissions for role:', roleId);
+        
+        const permissionsResult = await getMenuPermissionsByRoleAction(roleId);
+        
+        if (permissionsResult.success) {
+          console.log('Permissions loaded:', permissionsResult.data);
+          
+          // Transform the permissions to match IMenuRolePermission interface
+          const transformedPermissions: IMenuRolePermission[] = permissionsResult.data.map(p => ({
+            id_menu_permission: p.id_menu_permission, // keep backend id for update/delete
+            menu_id: p.menu_id,
+            // Fall back to the queried roleId (not 0) so it always matches selectedRole.
+            role_id: p.role_id ?? roleId,
+            can_view: p.consult_permission || false,
+            can_create: p.create_permission || false,
+            can_edit: p.update_permission || false,
+            can_delete: p.delete_permission || false,
+          }));
+          
+          setPermissions(transformedPermissions);
+          setOriginalPermissions(transformedPermissions);
+        } else {
+          console.error('Error loading permissions:', permissionsResult.error);
+          setPermissions([]);
+          setOriginalPermissions([]);
+        }
+      } catch (error) {
+        console.error('Error loading permissions:', error);
+        setPermissions([]);
+        setOriginalPermissions([]);
+      } finally {
+        setIsLoadingPermissions(false);
       }
-    } catch (error) {
-      console.error("Error loading user permissions:", error);
-      setUserPermissions([]);
+    } else {
+      setPermissions([]);
+      setOriginalPermissions([]);
+      setIsLoadingPermissions(false);
     }
-  }, []);
+  };
 
+  
   const toggleExpand = (id: string) => {
     setExpanded((prev) => {
       const newSet = new Set(prev);
@@ -505,7 +482,7 @@ export function MenuPermissionsManager() {
 
   const handlePermissionChange = (
     menuId: string,
-    type: MenuPermissionAction,
+    type: MenuPermissionType,
     value: boolean,
   ) => {
     if (!selectedRole) return;
@@ -564,12 +541,74 @@ export function MenuPermissionsManager() {
     });
   };
 
+  // Map a UI permission row to the backend bulk DTO item (snake_case contract).
+  const toBulkItem = (p: IMenuRolePermission): IBulkMenuPermissionItem => ({
+    id_menu_permission: p.id_menu_permission ?? null,
+    menu_id: p.menu_id,
+    role_id: p.role_id,
+    user_id: null,
+    create_permission: p.can_create,
+    update_permission: p.can_edit,
+    delete_permission: p.can_delete,
+    consult_permission: p.can_view,
+    deleted: false,
+  });
+
   const handleSave = async () => {
+    if (!selectedRole) return;
+
     setIsSaving(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    setHasChanges(false);
+    setSaveError(null);
+
+    try {
+      const currentForRole = permissions.filter((p) => p.role_id === selectedRole);
+
+      // Items to create/update:
+      // - existing rows (with id) are always sent so flag changes persist
+      // - new rows (no id) only when at least one permission is granted
+      const itemsToSave = currentForRole
+        .filter((p) => {
+          const hasAny = p.can_view || p.can_create || p.can_edit || p.can_delete;
+          return p.id_menu_permission != null || hasAny;
+        })
+        .map(toBulkItem);
+
+      // Rows present originally but removed from state => delete by id.
+      const currentMenuIds = new Set(currentForRole.map((p) => p.menu_id));
+      const idsToDelete = originalPermissions
+        .filter(
+          (p) =>
+            p.role_id === selectedRole &&
+            p.id_menu_permission != null &&
+            !currentMenuIds.has(p.menu_id),
+        )
+        .map((p) => p.id_menu_permission as number);
+
+      const [saveResult, deleteResult] = await Promise.all([
+        bulkSaveMenuPermissionsAction(itemsToSave),
+        idsToDelete.length > 0
+          ? bulkDeleteMenuPermissionsAction(idsToDelete)
+          : Promise.resolve({ success: true as const, data: undefined }),
+      ]);
+
+      if (!saveResult.success) {
+        setSaveError(saveResult.error?.message ?? "No se pudieron guardar los permisos");
+        return;
+      }
+      if (!deleteResult.success) {
+        setSaveError(deleteResult.error?.message ?? "No se pudieron eliminar algunos permisos");
+        return;
+      }
+
+      setHasChanges(false);
+      // Reload to pick up newly created ids and the canonical backend state.
+      await handleRoleChange(selectedRole);
+    } catch (error) {
+      console.error("Error saving permissions:", error);
+      setSaveError("Error de conexi\u00f3n al guardar permisos");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleReset = () => {
@@ -583,25 +622,26 @@ export function MenuPermissionsManager() {
     if (!selectedRole) return;
 
     setHasChanges(true);
+    // Preserve existing backend ids so a "grant all" updates rather than duplicates.
+    const idByMenu = new Map<number, number | null | undefined>(
+      permissions
+        .filter((p) => p.role_id === selectedRole)
+        .map((p) => [p.menu_id, p.id_menu_permission]),
+    );
+    const buildPermission = (menuId: number): IMenuRolePermission => ({
+      id_menu_permission: idByMenu.get(menuId) ?? null,
+      menu_id: menuId,
+      role_id: selectedRole,
+      can_view: true,
+      can_create: true,
+      can_edit: true,
+      can_delete: true,
+    });
     const allPermissions: IMenuRolePermission[] = [];
     menuItems.forEach((menu) => {
-      allPermissions.push({
-        menu_id: Number(menu.id),
-        role_id: selectedRole,
-        can_view: true,
-        can_create: true,
-        can_edit: true,
-        can_delete: true,
-      });
+      allPermissions.push(buildPermission(Number(menu.id)));
       menu.children?.forEach((child) => {
-        allPermissions.push({
-          menu_id: Number(child.id),
-          role_id: selectedRole,
-          can_view: true,
-          can_create: true,
-          can_edit: true,
-          can_delete: true,
-        });
+        allPermissions.push(buildPermission(Number(child.id)));
       });
     });
     setPermissions((prev) => {
@@ -619,34 +659,20 @@ export function MenuPermissionsManager() {
 
   // Stats
   const stats = useMemo(() => {
-    if (!selectedRole && !selectedUser) {
-      return {
-        totalMenus: 0,
-        viewCount: 0,
-        createCount: 0,
-        editCount: 0,
-        deleteCount: 0,
-      };
-    }
-
-    // Use role permissions if role is selected, otherwise use user permissions
-    const currentPermissions = selectedRole 
-      ? permissions.filter((p) => p.role_id === selectedRole)
-      : selectedUser 
-      ? userPermissions.filter((p) => p.role_id === selectedUser)
-      : [];
-      
+    const rolePermissions = permissions.filter(
+      (p) => p.role_id === selectedRole,
+    );
     const totalMenus = menuItems.reduce(
       (acc, m) => acc + 1 + (m.children?.length || 0),
       0,
     );
-    const viewCount = currentPermissions.filter((p) => p.can_view).length;
-    const createCount = currentPermissions.filter((p) => p.can_create).length;
-    const editCount = currentPermissions.filter((p) => p.can_edit).length;
-    const deleteCount = currentPermissions.filter((p) => p.can_delete).length;
+    const viewCount = rolePermissions.filter((p) => p.can_view).length;
+    const createCount = rolePermissions.filter((p) => p.can_create).length;
+    const editCount = rolePermissions.filter((p) => p.can_edit).length;
+    const deleteCount = rolePermissions.filter((p) => p.can_delete).length;
 
     return { totalMenus, viewCount, createCount, editCount, deleteCount };
-  }, [permissions, userPermissions, selectedRole, selectedUser]);
+  }, [permissions, selectedRole]);
 
   return (
     <div className='min-h-screen bg-background p-6'>
@@ -689,36 +715,96 @@ export function MenuPermissionsManager() {
           </div>
         </div>
 
+        {saveError && (
+          <div className='flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
+            <RiCloseLine className='w-4 h-4 shrink-0' />
+            <span>{saveError}</span>
+          </div>
+        )}
+
         {/* Application Selector */}
         <div className='bg-card rounded-xl border border-border p-4'>
-          <label className='text-sm font-medium text-muted-foreground mb-2 block'>
-            Seleccionar Aplicación
-          </label>
-          {isLoadingApps ? (
-            <div className='flex items-center gap-2 text-muted-foreground'>
-              <div className='w-4 h-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin' />
-              Cargando aplicaciones...
+          <div className='flex flex-col gap-4'>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2'>
+                <RiAppsLine className='w-4 h-4' />
+                Seleccionar Aplicación
+              </label>
+              <div className='relative'>
+                {/* Searchable Select for Applications */}
+                <SearchableSelect
+                  value={selectedApplication ? String(selectedApplication) : undefined}
+                  onValueChange={(value) => {
+                    console.log('Selected application:', value);
+                    handleApplicationChange(Number(value))
+                  }}
+                  disabled={applications.length === 0}
+                  placeholder='Seleccione una aplicación'
+                  searchPlaceholder='Buscar aplicación...'
+                  emptyMessage='No se encontraron aplicaciones'
+                  triggerClassName='!h-16 data-[size=default]:h-16 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
+                  options={applications.map((app) => ({
+                    value: String(app.id_application),
+                    keywords: app.route ?? '',
+                    label: (
+                      <div className='flex items-center gap-3'>
+                        <div className='w-8 h-8 rounded-lg flex items-center justify-center bg-[hsl(var(--primary)/0.12)]'>
+                          <RiGlobalLine className='w-4 h-4 text-[hsl(var(--primary))]' />
+                        </div>
+                        <div className='flex-1 text-left'>
+                          <p className='text-sm font-medium text-[hsl(var(--foreground))]'>
+                            {app.name}
+                          </p>
+                          {app.route && (
+                            <p className='text-xs text-[hsl(var(--muted-foreground))] font-mono mt-0.5'>
+                              {app.route}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ),
+                  }))}
+                />
+              </div>
             </div>
-          ) : (
-            <Select
-              value={selectedApplication?.toString() || ""}
-              onValueChange={(value) => handleApplicationChange(Number(value))}
-              disabled={applications.length === 0}>
-              <SelectTrigger className='w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'>
-                <SelectValue placeholder='Seleccione' />
-              </SelectTrigger>
-              <SelectContent className='bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg'>
-                {applications.map((app) => (
-                  <SelectItem
-                    key={app.id_application}
-                    value={app.id_application.toString()}
-                    className='hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700'>
-                    {app.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
+            <div className='border-t border-border pt-4'>
+              <div className='flex items-center gap-2 mb-3'>
+                <RiDatabase2Line className='w-4 h-4 text-muted-foreground' />
+                <p className='text-sm font-medium text-muted-foreground'>Aplicación seleccionada</p>
+              </div>
+              {selectedApplication && applications.find(a => a.id_application === selectedApplication) ? (
+                <div className='bg-primary/5 border border-primary/20 rounded-lg p-3'>
+                  <div className='flex items-center gap-3'>
+                    <div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center'>
+                      <RiGlobalLine className='w-5 h-5 text-primary' />
+                    </div>
+                    <div className='flex-1'>
+                      <p className='font-semibold text-foreground text-sm'>
+                        {applications.find(a => a.id_application === selectedApplication)?.name}
+                      </p>
+                      {applications.find(a => a.id_application === selectedApplication)?.route && (
+                        <p className='text-xs text-primary font-mono mt-0.5'>
+                          {applications.find(a => a.id_application === selectedApplication)?.route}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className='bg-muted/30 border border-muted rounded-lg p-3'>
+                  <div className='flex items-center gap-3 text-muted-foreground'>
+                    <div className='w-10 h-10 bg-muted rounded-lg flex items-center justify-center'>
+                      <RiAppsLine className='w-5 h-5' />
+                    </div>
+                    <div>
+                      <p className='font-medium text-sm'>Sin aplicación seleccionada</p>
+                      <p className='text-xs mt-0.5'>Selecciona una aplicación para continuar</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Role Selector */}
@@ -759,67 +845,30 @@ export function MenuPermissionsManager() {
                 <p className='text-sm text-muted-foreground'>
                   Rol seleccionado
                 </p>
-                <p className='font-medium text-foreground'>
-                  {selectedRoleData.name}
-                </p>
-                <p className='text-xs text-muted-foreground mt-0.5'>
-                  {selectedRoleData.description}
-                </p>
+                {isLoadingPermissions ? (
+                  <div className='flex items-center gap-2'>
+                    <div className='w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin' />
+                    <span className='text-sm'>Cargando permisos...</span>
+                  </div>
+                ) : (
+                  <>
+                    <p className='font-medium text-foreground'>
+                      {selectedRoleData.name}
+                    </p>
+                    <p className='text-xs text-muted-foreground mt-0.5'>
+                      {selectedRoleData.description}
+                    </p>
+                    <p className='text-xs text-primary mt-1'>
+                      {permissions.length} permisos cargados
+                    </p>
+                  </>
+                )}
               </div>
             )}
           </div>
         </div>
 
-        {/* User Selector */}
-        <div className='bg-card rounded-xl border border-border p-4'>
-          <div className='flex flex-col md:flex-row md:items-center gap-4'>
-            <div className='flex-1'>
-              <label className='text-sm font-medium text-muted-foreground mb-2 block'>
-                Seleccionar Usuario
-              </label>
-              {isLoadingUsers ? (
-                <div className='flex items-center gap-2 text-muted-foreground'>
-                  <div className='w-4 h-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin' />
-                  Cargando usuarios...
-                </div>
-              ) : users.length === 0 ? (
-                <p className='text-sm text-muted-foreground'>
-                  No hay usuarios disponibles para esta aplicación
-                </p>
-              ) : (
-                <div className='flex flex-wrap gap-2'>
-                  {users.map((user) => (
-                    <button
-                      key={user.id_user}
-                      onClick={() => user.id_user && handleUserChange(user.id_user)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                        selectedUser === user.id_user
-                          ? "bg-blue-500 text-white shadow-lg scale-105"
-                          : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
-                      }`}>
-                      <RiUserLine className='w-4 h-4' />
-                      <span className='font-medium'>{user.username}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-            {selectedUserData && (
-              <div className='border-l border-border pl-4 hidden md:block'>
-                <p className='text-sm text-muted-foreground'>
-                  Usuario seleccionado
-                </p>
-                <p className='font-medium text-foreground'>
-                  {selectedUserData.username}
-                </p>
-                <p className='text-xs text-muted-foreground mt-0.5'>
-                  Estado: {selectedUserData.status}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
+        
         {/* Stats */}
         <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
           <div className='bg-card rounded-xl border border-border p-4'>
@@ -959,9 +1008,9 @@ export function MenuPermissionsManager() {
               <div className='flex items-center justify-center py-12 text-muted-foreground'>
                 <p>No hay menús disponibles para esta aplicación</p>
               </div>
-            ) : !selectedRole && !selectedUser ? (
+            ) : !selectedRole ? (
               <div className='flex items-center justify-center py-12 text-muted-foreground'>
-                <p>Selecciona un rol o un usuario para gestionar permisos</p>
+                <p>Selecciona un rol para gestionar permisos</p>
               </div>
             ) : (
               menuItems.map((menu) => (
@@ -971,8 +1020,8 @@ export function MenuPermissionsManager() {
                   level={0}
                   expanded={expanded}
                   toggleExpand={toggleExpand}
-                  permissions={selectedRole ? permissions : userPermissions}
-                  selectedRole={selectedRole || selectedUser}
+                  permissions={permissions}
+                  selectedRole={selectedRole}
                   onPermissionChange={handlePermissionChange}
                   searchQuery={searchQuery}
                 />
@@ -994,23 +1043,9 @@ export function MenuPermissionsManager() {
                     {selectedRoleData.name}
                   </span>
                 </>
-              ) : selectedUserData ? (
-                <>
-                  {stats.viewCount +
-                    stats.createCount +
-                    stats.editCount +
-                    stats.deleteCount}{" "}
-                  permisos efectivos para{" "}
-                  <span className='font-medium text-foreground'>
-                    {selectedUserData.username}
-                  </span>
-                  <span className='text-xs text-muted-foreground ml-1'>
-                    (incluye permisos de roles)
-                  </span>
-                </>
               ) : (
-                "Selecciona un rol o un usuario para ver los permisos"
-              )}
+            "Selecciona un rol para ver los permisos"
+          )}
             </p>
             <div className='flex items-center gap-2'>
               <span className='flex items-center gap-1 text-xs text-muted-foreground'>

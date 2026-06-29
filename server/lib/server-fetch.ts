@@ -1,5 +1,6 @@
 import { env } from './env';
 import { ServerApiError, type ServerFetchOptions } from './types';
+import { resilienceManager, type ResilienceConfig } from './resilience';
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -150,46 +151,66 @@ async function serverRequest<T>(
   } = {},
 ): Promise<T> {
   try {
-    const { body, params, revalidate, tags, signal, headers: extraHeaders } = opts;
+    const { body, params, revalidate, tags, signal, headers: extraHeaders, resilience } = opts;
 
-    const [authHeaders, fwdHeaders] = await Promise.all([
-      getAuthHeaders(),
-      forwardedHeaders(),
-    ]);
+    // Extract service name for resilience patterns
+    const serviceName = resilience?.serviceName || new URL(path, env.apiBaseUrl).hostname;
+    
+    // Create the base request function
+    const makeRequest = async (): Promise<T> => {
+      const [authHeaders, fwdHeaders] = await Promise.all([
+        getAuthHeaders(),
+        forwardedHeaders(),
+      ]);
 
-    const url = buildUrl(path, params);
+      const url = buildUrl(path, params);
 
-    const fetchOptions: RequestInit & { next?: Record<string, unknown> } = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...authHeaders,
-        ...fwdHeaders,
-        ...extraHeaders,
-      },
-      signal,
-      next: {},
+      const fetchOptions: RequestInit & { next?: Record<string, unknown> } = {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          ...authHeaders,
+          ...fwdHeaders,
+          ...extraHeaders,
+        },
+        signal,
+        next: {},
+      };
+
+      // Cache strategy
+      if (revalidate !== undefined) {
+        fetchOptions.next!.revalidate = revalidate;
+      }
+      if (tags?.length) {
+        fetchOptions.next!.tags = tags;
+      }
+
+      // Only attach body for methods that support it
+      if (body !== undefined && method !== 'GET' && method !== 'HEAD') {
+        fetchOptions.body = JSON.stringify(body);
+      }
+
+      if (env.isDev) {
+        console.log(`[server-fetch] ${method} ${url}`);
+      }
+      const response = await fetch(url, fetchOptions);
+      return handleResponse<T>(response);
     };
 
-    // Cache strategy
-    if (revalidate !== undefined) {
-      fetchOptions.next!.revalidate = revalidate;
-    }
-    if (tags?.length) {
-      fetchOptions.next!.tags = tags;
-    }
-
-    // Only attach body for methods that support it
-    if (body !== undefined && method !== 'GET' && method !== 'HEAD') {
-      fetchOptions.body = JSON.stringify(body);
+    // Apply resilience patterns if enabled
+    if (resilience) {
+      return await resilienceManager.execute(serviceName, makeRequest, {
+        retry: resilience.retry,
+        circuitBreaker: resilience.circuitBreaker,
+        rateLimit: resilience.rateLimit,
+        queue: resilience.queue,
+        healthCheck: resilience.healthCheck,
+      });
     }
 
-    if (env.isDev) {
-      console.log(`[server-fetch] ${method} ${url}`);
-    }
-    const response = await fetch(url, fetchOptions);
-    return handleResponse<T>(response);
+    // Fallback to original behavior
+    return await makeRequest();
   } catch (error) {
     console.error(error);
     throw error;

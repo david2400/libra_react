@@ -18,6 +18,18 @@ export interface IUpdateMenu extends ICreateMenu {
   id_menu: number;
 }
 
+export interface IMenuSearch {
+  id_menu?: number;
+  name?: string;
+  description?: string;
+  path?: string;
+  order?: number;
+  parent_menu_id?: number;
+  icon?: string;
+  visible?: boolean;
+  application_id?: number;
+}
+
 export interface IMenu extends IAuditInfo, IUpdateMenu {
   parent_menu?: IMenu;
   children?: IMenu[];

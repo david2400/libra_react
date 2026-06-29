@@ -39,7 +39,7 @@ export const FormRole = ({
     const loadApplications = async () => {
       try {
         setApplicationsLoading(true);
-        const { listApplicationsAction } = await import('../../role-permissions/actions/actions');
+        const { listApplicationsAction } = await import('../../role-permissions/actions/role.actions');
         const result = await listApplicationsAction();
         setApplications(Array.isArray(result) ? result : []);
       } catch (error) {

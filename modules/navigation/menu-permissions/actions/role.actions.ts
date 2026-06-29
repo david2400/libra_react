@@ -5,6 +5,7 @@ import { rolesRepository } from '@/server/domains/access-control/security/roles/
 import { rolePermissionsRepository } from '@/server/domains/access-control/security/role_permissions/repository';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
 import { IApplication } from '@/server/domains/access-control/security/applications';
+import { IRoleSearch } from '@/server/domains/access-control/security/roles';
 
 // --- Applications Actions ----------------------------------------------------
 
@@ -71,37 +72,19 @@ export const listRolesAction = async (): Promise<ActionResultType<any[]>> => {
   }
 };
 
-export const listRolesByApplicationAction = async (applicationId: string | number): Promise<ActionResultType<any[]>> => {
+export const listRolesByApplicationAction = async (params: IRoleSearch): Promise<any[]> => {
   try {
     // For now, we'll get all roles and filter by application_id
     // In a real implementation, you might have a specific endpoint for this
-    const response = await rolesRepository.list();
-    const allRoles = response.content || [];
+    const response = await rolesRepository.getRoles(params);
+    const allRoles = response || [];
 
-    // Filter roles by application_id
-    const applicationRoles = allRoles.filter((role: any) =>
-      role.application_id === applicationId
-    );
-
-    return { success: true, data: applicationRoles };
+    console.log('Loading roles for application:', params);
+    console.log('Loading roles for application:', response);
+    console.log('Loading roles for application:', allRoles);
+    return allRoles;
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to load roles for application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 

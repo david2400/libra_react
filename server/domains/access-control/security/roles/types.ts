@@ -6,7 +6,7 @@ import { IApplication } from '../applications';
 
 export interface ICreateRole {
   name: string;
-  description: string;
+  description?: string;
   manage_users: boolean;
   application_id: number;
   requires_approval?: boolean;
@@ -24,4 +24,14 @@ export interface IRole extends IAuditInfo, IUpdateRole {
 }
 
 
+
+export interface IRoleSearch {
+  id_role?: number;
+  name?: string;
+  description?: string;
+  manage_users?: boolean;
+  application_id?: number;
+  requires_approval?: boolean;
+  approval_workflow?: JSON;
+}
 
