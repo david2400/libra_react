@@ -40,7 +40,7 @@ const FormBase = ({
   );
 };
 
-export const RegisterApplication = ({}: IFormAddProps = {}) => {
+export const RegisterApplication = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("security.applications.messages");
@@ -49,10 +49,9 @@ export const RegisterApplication = ({}: IFormAddProps = {}) => {
   const defaultValues: IApplicationCreateRequest = {
     name: "",
     description: "",
-    route: "",
     publication_date: "",
-    company_id: undefined,
     maintenance_mode: false,
+    application_category_id: null
   };
 
   const handleSubmit: SubmitHandler<IApplicationCreateRequest> = async (
@@ -100,31 +99,31 @@ export const UpdateApplication = ({
   const handleSubmit: SubmitHandler<IApplicationUpdateRequest> = async (
     values,
   ) => {
-    if (!values.id_application) return;
+    // if (!values.id_application) return;
 
-    const result = await updateApplicationServerAction(
-      values.id_application,
-      values,
-    )
-      .then((values) => {
-        Swal.fire({
-          title: t("updateSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            handleClose && handleClose(false);
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
+    // const result = await updateApplicationServerAction(
+    //   values.id_application,
+    //   values,
+    // )
+    //   .then((values) => {
+        // Swal.fire({
+        //   title: t("updateSuccess"),
+        //   icon: "success",
+        //   timer: 3000,
+        //   showConfirmButton: false,
+        //   willClose: () => {
+        //     handleClose && handleClose(false);
+        //     router.refresh();
+        //   },
+        // });
+      // })
+      // .catch((error) => {
         Swal.fire({
           title: tMessages("updateError", { entity: "aplicación" }),
-          text: (error as any)?.message || tMessages("unexpectedError"),
+          text: "gola",//(error as any)?.message || tMessages("unexpectedError"),
           icon: "error",
         });
-      });
+      // });
   };
 
   if (!initialValues) {

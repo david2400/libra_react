@@ -13,6 +13,7 @@ import {
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
+import type { IMenu } from '../menus/types';
 import type {
   IMenuPermission,
   IMenuPermissionValidationResult,
@@ -40,6 +41,21 @@ export const getMenuPermissionsByRole = cache((roleId: number) =>
 export const getMenuPermissionsByUser = cache((userId: number) =>
   menuPermissionsRepository.list({ user_id: userId })
 );
+
+export const getMenusByRole = cache(async (roleId: string | number) => {
+  const permissions = await menuPermissionsRepository.getMenusPermission({
+    role_id: Number(roleId),
+  });
+  const menus = permissions
+    .map((p) => p.menu)
+    .filter((m): m is IMenu => !!m);
+  return menus;
+});
+
+export const getMenusByPermission = cache(async (permissionId: string | number) => {
+  const menus = await menuPermissionsRepository.getMenusByPermission(Number(permissionId));
+  return Array.isArray(menus) ? menus : [];
+});
 
 export const getActiveMenuPermissions = cache((menuId: number) =>
   menuPermissionsRepository.getActivePermissions(menuId)

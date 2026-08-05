@@ -7,7 +7,7 @@ import {
 import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import { getPermissionsByRole, getRolePermissions, rolePermissionsRepository } from '../role_permissions';
-import { getMenusByRole } from '../../navigation/role_menus';
+import { getMenusByRole } from '../../navigation/menu_permissions';
 
 // --- Roles Queries -----------------------------------------------------------
 

@@ -8,8 +8,6 @@ import { accessControlTags } from '@/server/lib/cache-tags';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 import type { MenuTreeNode } from './types';
 import { getMenuPermissions, getMenuPermissionsByMenu } from '../menu_permissions';
-import { getMenusByRole, getRolesByMenu } from '../role_menus';
-import { getMenusByUser, getUsersByMenu } from '../user_menus';
 import { IPermission } from '../../security/permissions';
 
 
@@ -49,18 +47,18 @@ export const getMenuPath = cache((menuId: string | number) =>
 // Get menu with all relationships
 export const getMenuProfile = cache(async (menuId: string | number) => {
   const numericMenuId = typeof menuId === 'string' ? parseInt(menuId, 10) : menuId;
-  const [menu, permissions, roles, users] = await Promise.all([
+  const [menu, permissions] = await Promise.all([
     getMenuById(menuId),
     getMenuPermissionsByMenu(numericMenuId),
-    getRolesByMenu(menuId),
-    getUsersByMenu(menuId)
+    // getRolesByMenu(menuId),
+    // getUsersByMenu(menuId)
   ]);
   
   return {
     menu,
     permissions: permissions.content,
-    roles,
-    users
+    // roles,
+    // users
   };
 });
 
@@ -98,7 +96,7 @@ export const getMenuTreeWithPermissions = cache(async (params?: ListParams) => {
 // Get user accessible menu tree
 export const getUserMenuTree = cache(async (userId: string | number) => {
   const [userMenus, menuTree] = await Promise.all([
-    getMenusByUser(userId),
+    // getMenusByUser(userId),
     getMenuTree()
   ]);
   
@@ -121,8 +119,8 @@ export const getUserMenuTree = cache(async (userId: string | number) => {
 
 // Get role accessible menu tree
 export const getRoleMenuTree = cache(async (roleId: string | number) => {
-  const [roleMenus, menuTree] = await Promise.all([
-    getMenusByRole(roleId),
+  const [roleMenus] = await Promise.all([
+    // getMenusByRole(roleId),
     getMenuTree()
   ]);
   
@@ -161,18 +159,16 @@ export const getMenuHierarchyStats = cache(async () => {
 // Get menu usage statistics
 export const getMenuUsageStats = cache(async (menuId: string | number) => {
   const numericMenuId = typeof menuId === 'string' ? parseInt(menuId, 10) : menuId;
-  const [menu, permissions, roles, users] = await Promise.all([
+  const [menu, permissions] = await Promise.all([
     getMenuById(menuId),
     getMenuPermissionsByMenu(numericMenuId),
-    getRolesByMenu(menuId),
-    getUsersByMenu(menuId)
+    // getRolesByMenu(menuId),
+    // getUsersByMenu(menuId)
   ]);
   
   return {
     menu,
     permission_count: permissions.content.length,
-    role_count: roles.length,
-    user_count: users.length,
-    total_usage: permissions.content.length + roles.length + users.length
+    total_usage: permissions.content.length 
   };
 });

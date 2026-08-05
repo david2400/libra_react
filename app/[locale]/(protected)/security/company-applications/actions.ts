@@ -1,7 +1,7 @@
 'use server';
 
 import { IApplication, getApplications } from "@/server/domains/access-control/security/applications";
-import { ICreateCompanyApplication, IUpdateCompanyApplication, createCompanyApplicationAction, deleteCompanyApplicationAction, updateCompanyApplicationAction } from "@/server/domains/access-control/security/company_applications";
+import { ICompanyApplication, ICreateCompanyApplication, IUpdateCompanyApplication, createCompanyApplicationAction, deleteCompanyApplicationAction, getCompanyApplications, updateCompanyApplicationAction } from "@/server/domains/access-control/security/company_applications";
 
 export async function createCompanyApplicationServerAction(payload: ICreateCompanyApplication) {
   const result = await createCompanyApplicationAction(payload);
@@ -37,5 +37,13 @@ export async function deleteCompanyApplicationServerAction(companyApplicationId:
 export async function getAllCompaniesServerAction(): Promise<IApplication[]> {
   const result = await getApplications();
 
-  return result.content ?? [];
+  return result ?? [];
+}
+
+export async function getCompanyApplicationsServerAction(): Promise<ICompanyApplication[]> {
+  const result = await getCompanyApplications();
+
+  return Array.isArray(result)
+    ? result
+    : (result as any)?.content || [];
 }

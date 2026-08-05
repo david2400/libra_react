@@ -24,7 +24,7 @@ import { CSS } from "@dnd-kit/utilities";
 import React, { useCallback, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@repo/ui/modals/scenes";
-import { RegisterMenu, UpdateMenu } from "./form";
+import { RegisterApplicationCategory, UpdateApplicationCategory } from "./form";
 import {
   HiPlus,
   HiSave,
@@ -39,7 +39,7 @@ import {
   HiChevronRight as HiChevronRightIcon,
 } from "react-icons/hi";
 import { LuMaximize2, LuMinimize2, LuGripVertical } from "react-icons/lu";
-import { IMenu, IMenuWithDepth } from "../models/menu.interface";
+import { IApplicationCategory, IApplicationCategoryWithDepth } from "../models/applicationCategory.interface";
 import { Button } from "@repo/ui/buttons/scenes/button";
 import {
   Tooltip,
@@ -52,7 +52,6 @@ import { cn } from "@repo/ui/utils";
 import { BsTrash2 } from "react-icons/bs";
 import { Badge } from "@repo/ui/badges/scenes/badge";
 import { CgCornerDownRight } from "react-icons/cg";
-import { ICreateMenu } from "@/server/domains/access-control/navigation/menus";
 import { Input } from "@repo/ui/inputs/scenes/input";
 import {
   Select,
@@ -64,6 +63,7 @@ import {
 } from "@repo/ui/inputs/scenes/select";
 // import { mockMenus, mockApplications, mockModules } from "../lib/mock-data";
 import { IApplication } from "@/server/domains/access-control/security/applications";
+import { ICreateApplicationCategory, IUpdateApplicationCategory } from "@/server/domains/access-control/security/application_categories";
 
 // type IconName = keyof typeof LucideIcons;
 
@@ -74,53 +74,11 @@ import { IApplication } from "@/server/domains/access-control/security/applicati
 //   return Icon;
 // }
 
-const emptyFormData: ICreateMenu = {
-  application_id: 1,
+const emptyFormData: ICreateApplicationCategory = {
   name: "",
   description: "",
-  path: "",
-  order: 0,
-  parent_menu_id: 0,
-  icon: "LayoutDashboard",
-  visible: true,
+  application_category_id: null,
 };
-
-// Build a nested menu tree from a flat list (backend returns flat menus)
-function buildMenuTree(flatMenus: IMenu[]): IMenu[] {
-  if (!flatMenus?.length) return [];
-
-  const map = new Map<number, IMenu & { children: IMenu[] }>();
-
-  flatMenus.forEach((menu) => {
-    map.set(menu.id_menu, { ...menu, children: menu.children ? [...menu.children] : [] } as IMenu & { children: IMenu[] });
-  });
-
-  const roots: IMenu[] = [];
-  map.forEach((menu) => {
-    const parentId = menu.parent_menu_id;
-    if (parentId == null || parentId === 0) {
-      roots.push(menu);
-    } else {
-      const parent = map.get(parentId);
-      if (parent) {
-        parent.children.push(menu);
-      } else {
-        roots.push(menu); // orphan, treat as root
-      }
-    }
-  });
-
-  const sortByOrder = (a: IMenu, b: IMenu) => (a.order ?? 0) - (b.order ?? 0);
-  const sortRecursively = (items: IMenu[]) => {
-    items.sort(sortByOrder);
-    items.forEach((item) => {
-      if (item.children?.length) sortRecursively(item.children);
-    });
-  };
-  sortRecursively(roots);
-
-  return roots;
-}
 
 // Generate depth colors for visual hierarchy
 const DEPTH_COLORS = [
@@ -147,7 +105,7 @@ function getDepthColor(depth: number): string {
 }
 
 // Calculate total children count recursively
-function countChildren(menu: IMenu): number {
+function countChildren(menu: IApplicationCategory): number {
   if (!menu.children || menu.children.length === 0) return 0;
   return menu.children.reduce(
     (acc, child) => acc + 1 + countChildren(child),
@@ -155,21 +113,60 @@ function countChildren(menu: IMenu): number {
   );
 }
 
+// Get the full path breadcrumb
+function getMenuBreadcrumb(
+  menu: IApplicationCategory,
+  allMenus: IApplicationCategory[],
+  maxParts = 3,
+): string {
+  const parts: string[] = [menu.name];
+  let current = menu;
+
+  const findParent = (
+    parentId: number | undefined,
+    menus: IApplicationCategory[],
+  ): IApplicationCategory | undefined => {
+    for (const m of menus) {
+      if (m.id_application_category === parentId) return m;
+      if (m.children) {
+        const found = findParent(parentId, m.children);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  };
+
+  while (current.application_category_id) {
+    const parent = findParent(current.application_category_id, allMenus);
+    if (parent) {
+      parts.unshift(parent.name);
+      current = parent;
+    } else {
+      break;
+    }
+  }
+
+  if (parts.length > maxParts) {
+    return `.../${parts.slice(-maxParts).join("/")}`;
+  }
+  return parts.join("/");
+}
+
 interface SortableMenuItemProps {
-  menu: IMenu;
+  menu: IApplicationCategory;
   depth: number;
   isExpanded: boolean;
   onToggle: () => void;
-  onEdit: (menu: IMenu) => void;
-  onDelete: (menu: IMenu) => void;
-  onToggleVisibility: (menu: IMenu) => void;
+  onEdit: (menu: IApplicationCategory) => void;
+  onDelete: (menu: IApplicationCategory) => void;
+  onToggleVisibility: (menu: IApplicationCategory) => void;
   expandedIds: Set<number>;
   setExpandedIds: React.Dispatch<React.SetStateAction<Set<number>>>;
-  allMenus: IMenu[];
+  allMenus: IApplicationCategory[];
   isCompactMode: boolean;
 }
 
-function MenuItemOverlay({ menu }: { menu: IMenu }) {
+function MenuItemOverlay({ menu }: { menu: IApplicationCategory }) {
   // const Icon = getIcon(menu.icon);
   return (
     <div className='flex items-center gap-3 rounded-lg border border-primary bg-card p-3 shadow-xl'>
@@ -204,7 +201,7 @@ function SortableMenuItem({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: menu.id_menu });
+  } = useSortable({ id: menu.id_application_category });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -303,29 +300,18 @@ function SortableMenuItem({
                 <span
                   className={cn(
                     "font-medium truncate",
-                    !menu.visible && "text-muted-foreground",
                     isCompactMode ? "text-sm" : "text-base",
                   )}>
                   {menu.name}
                 </span>
-                {!menu.visible && (
-                  <Badge
-                    variant='outline'
-                    className='text-xs bg-secondary/50 shrink-0'>
-                    Hidden
-                  </Badge>
-                )}
+
                 {hasChildren && (
                   <Badge variant='secondary' className='text-xs shrink-0'>
                     {childCount}
                   </Badge>
                 )}
               </div>
-              {!isCompactMode && menu.path && (
-                <p className='text-xs text-muted-foreground truncate'>
-                  {menu.path}
-                </p>
-              )}
+
             </div>
           </div>
         </div>
@@ -340,14 +326,14 @@ function SortableMenuItem({
                   size='icon'
                   className={cn("h-7 w-7", isCompactMode && "h-6 w-6")}
                   onClick={() => onToggleVisibility(menu)}>
-                  {menu.visible ? (
-                    <HiEye className='h-3.5 w-3.5 text-muted-foreground' />
-                  ) : (
-                    <HiEyeOff className='h-3.5 w-3.5 text-muted-foreground' />
-                  )}
+                  {/* {menu.visible ? ( */}
+                  <HiEye className='h-3.5 w-3.5 text-muted-foreground' />
+                  {/* // ) : ( */}
+                  {/* <HiEyeOff className='h-3.5 w-3.5 text-muted-foreground' /> */}
+                  {/* // )} */}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>{menu.visible ? "Hide" : "Show"}</TooltipContent>
+              {/* <TooltipContent>{menu.visible ? "Hide" : "Show"}</TooltipContent> */}
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -385,17 +371,17 @@ function SortableMenuItem({
         <div className='border-l border-border/50 ml-3'>
           {menu.children!.map((child) => (
             <SortableMenuItem
-              key={child.id_menu}
+              key={child.id_application_category}
               menu={child}
               depth={depth + 1}
-              isExpanded={expandedIds.has(child.id_menu)}
+              isExpanded={expandedIds.has(child.id_application_category)}
               onToggle={() => {
                 setExpandedIds((prev) => {
                   const next = new Set(prev);
-                  if (next.has(child.id_menu)) {
-                    next.delete(child.id_menu);
+                  if (next.has(child.id_application_category)) {
+                    next.delete(child.id_application_category);
                   } else {
-                    next.add(child.id_menu);
+                    next.add(child.id_application_category);
                   }
                   return next;
                 });
@@ -415,33 +401,28 @@ function SortableMenuItem({
   );
 }
 
-interface IMenuManagerProps {
-  initialData: IMenu[];
-  initialApplications: IApplication[];
+interface IApplicationCategoryManagerProps {
+  initialData: IApplicationCategory[];
 }
 
-export const MenuManager = ({
+export const ApplicationCategoryManager = ({
   initialData,
-  initialApplications,
-}: IMenuManagerProps) => {
+}: IApplicationCategoryManagerProps) => {
   const t = useTranslations("navigation.menus");
   const tOptions = useTranslations("common");
   const tActions = useTranslations("common");
-
   console.log(initialData)
-  const [menus, setMenus] = useState<IMenu[]>(() => buildMenuTree(initialData));
-  // const [menus, setMenus] = useState<IMenu[]>(mockMenus);
+  const [menus, setMenus] = useState<IApplicationCategory[]>(initialData);
+  // const [menus, setMenus] = useState<IApplicationCategory[]>(mockMenus);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedApplication, setSelectedApplication] = useState<number | null>(
-    initialApplications.length > 0 ? initialApplications[0].id_application : null
-  );
+
   const [expandedIds, setExpandedIds] = useState<Set<number>>(() => {
     // Initially expand first 2 levels
     const ids = new Set<number>();
-    const collectIds = (items: IMenu[], depth = 0) => {
+    const collectIds = (items: IApplicationCategory[], depth = 0) => {
       items.forEach((item) => {
         if (depth < 2) {
-          ids.add(item.id_menu);
+          ids.add(item.id_application_category);
           if (item.children) collectIds(item.children, depth + 1);
         }
       });
@@ -453,9 +434,9 @@ export const MenuManager = ({
   const [openModal, setOpenModal] = useState(false);
   const [activeId, setActiveId] = useState<number | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingMenu, setEditingMenu] = useState<IMenu | null>(null);
-  const [formData, setFormData] = useState<ICreateMenu>(emptyFormData);
-  const [deleteMenu, setDeleteMenu] = useState<IMenu | null>(null);
+  const [editingMenu, setEditingMenu] = useState<IApplicationCategory | null>(null);
+  const [formData, setFormData] = useState<ICreateApplicationCategory>(emptyFormData);
+  const [deleteMenu, setDeleteMenu] = useState<IApplicationCategory | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
 
@@ -475,8 +456,8 @@ export const MenuManager = ({
   };
 
   const flatMenus = useMemo(() => {
-    const result: IMenuWithDepth[] = [];
-    const flatten = (items: IMenu[], depth = 0) => {
+    const result: IApplicationCategoryWithDepth[] = [];
+    const flatten = (items: IApplicationCategory[], depth = 0) => {
       items.forEach((item) => {
         result.push({ ...item, depth });
         if (item.children) flatten(item.children, depth + 1);
@@ -489,7 +470,7 @@ export const MenuManager = ({
   // Calculate max depth
   const maxDepth = useMemo(() => {
     let max = 0;
-    const findMaxDepth = (items: IMenu[], depth = 0) => {
+    const findMaxDepth = (items: IApplicationCategory[], depth = 0) => {
       items.forEach((item) => {
         max = Math.max(max, depth);
         if (item.children) findMaxDepth(item.children, depth + 1);
@@ -507,12 +488,11 @@ export const MenuManager = ({
   const filteredMenus = useMemo(() => {
     if (!searchQuery) return menus;
 
-    const filterMenus = (items: IMenu[]): IMenu[] => {
+    const filterMenus = (items: IApplicationCategory[]): IApplicationCategory[] => {
       return items
         .map((item) => {
           const matchesSearch =
-            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.path?.toLowerCase().includes(searchQuery.toLowerCase());
+            item.name.toLowerCase().includes(searchQuery.toLowerCase());
           const filteredChildren = item.children
             ? filterMenus(item.children)
             : undefined;
@@ -521,21 +501,46 @@ export const MenuManager = ({
             matchesSearch ||
             (filteredChildren && filteredChildren.length > 0)
           ) {
-            return { ...item, children: filteredChildren } as IMenu;
+            return { ...item, children: filteredChildren } as IApplicationCategory;
           }
           return null;
         })
-        .filter((item) => item !== null) as IMenu[];
+        .filter((item) => item !== null) as IApplicationCategory[];
     };
 
     return filterMenus(menus);
   }, [menus, searchQuery]);
 
+  // Get all possible parent options with their depth for indentation
+  const getParentOptions = useCallback(() => {
+    const options: {
+      id: number;
+      name: string;
+      depth: number;
+      path: string;
+    }[] = [];
+    const traverse = (items: IApplicationCategory[], depth = 0, pathParts: string[] = []) => {
+      items.forEach((item) => {
+        if (editingMenu && item.id_application_category === editingMenu.id_application_category) return;
+        const currentPath = [...pathParts, item.name];
+        options.push({
+          id: item.id_application_category,
+          name: item.name,
+          depth,
+          path: currentPath.join(" / "),
+        });
+        if (item.children) traverse(item.children, depth + 1, currentPath);
+      });
+    };
+    traverse(menus);
+    return options;
+  }, [menus, editingMenu]);
+
   const expandAll = () => {
     const allIds = new Set<number>();
-    const collectIds = (items: IMenu[]) => {
+    const collectIds = (items: IApplicationCategory[]) => {
       items.forEach((item) => {
-        allIds.add(item.id_menu);
+        allIds.add(item.id_application_category);
         if (item.children) collectIds(item.children);
       });
     };
@@ -560,36 +565,37 @@ export const MenuManager = ({
     }
   };
 
-  const handleEdit = (menu: IMenu) => {
+  const handleCreate = () => {
+    setEditingMenu(null);
+    setFormData(emptyFormData);
+    setIsDialogOpen(true);
+  };
+
+  const handleEdit = (menu: IApplicationCategory) => {
     setEditingMenu(menu);
     setFormData({
-      application_id: menu.application_id,
       name: menu.name,
       description: menu.description,
       // protocol: menu.protocol || "https",
       // subdomain: menu.subdomain || "",
       // url: menu.url || "",
       // port: menu.port,
-      path: menu.path || "",
-      order: menu.order,
       // sort_order: menu.sort_order || 0,
-      parent_menu_id: menu.parent_menu_id,
-      icon: menu.icon || "LayoutDashboard",
-      visible: menu.visible,
+      application_category_id: menu.application_category_id,
     });
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (menu: IMenu) => {
+  const handleDelete = (menu: IApplicationCategory) => {
     setDeleteMenu(menu);
   };
 
   const confirmDelete = () => {
     if (!deleteMenu) return;
 
-    const removeMenu = (items: IMenu[]): IMenu[] => {
+    const removeMenu = (items: IApplicationCategory[]): IApplicationCategory[] => {
       return items
-        .filter((item) => item.id_menu !== deleteMenu.id_menu)
+        .filter((item) => item.id_application_category !== deleteMenu.id_application_category)
         .map((item) => ({
           ...item,
           children: item.children ? removeMenu(item.children) : undefined,
@@ -601,11 +607,11 @@ export const MenuManager = ({
     setHasChanges(true);
   };
 
-  const handleToggleVisibility = (menu: IMenu) => {
-    const toggleVisibility = (items: IMenu[]): IMenu[] => {
+  const handleToggleVisibility = (menu: IApplicationCategory) => {
+    const toggleVisibility = (items: IApplicationCategory[]): IApplicationCategory[] => {
       return items.map((item) => {
-        if (item.id_menu === menu.id_menu) {
-          return { ...item, visible: !item.visible };
+        if (item.id_application_category === menu.id_application_category) {
+          return { ...item, visible: true };
         }
         if (item.children) {
           return { ...item, children: toggleVisibility(item.children) };
@@ -622,10 +628,10 @@ export const MenuManager = ({
     if (!formData.name.trim()) return;
 
     if (editingMenu) {
-      const updateMenu = (items: IMenu[]): IMenu[] => {
+      const updateMenu = (items: IApplicationCategory[]): IApplicationCategory[] => {
         return items.map((item) => {
-          if (item.id_menu === editingMenu.id_menu) {
-            return { ...item, ...formData, id_menu: item.id_menu };
+          if (item.id_application_category === editingMenu.id_application_category) {
+            return { ...item, ...formData, id_application_category: item.id_application_category };
           }
           if (item.children) {
             return { ...item, children: updateMenu(item.children) };
@@ -635,17 +641,18 @@ export const MenuManager = ({
       };
       setMenus(updateMenu(menus));
     } else {
-      const newMenu: IMenu = {
+      const newMenu: IApplicationCategory = {
         ...formData,
-        id_menu: Date.now(),
+        id_application_category: Date.now(),
+        applications: [],
         children: [],
         deleted: false,
       };
 
-      if (formData.parent_menu_id) {
-        const addToParent = (items: IMenu[]): IMenu[] => {
+      if (formData.application_category_id) {
+        const addToParent = (items: IApplicationCategory[]): IApplicationCategory[] => {
           return items.map((item) => {
-            if (item.id_menu === formData.parent_menu_id) {
+            if (item.id_application_category === formData.application_category_id) {
               return {
                 ...item,
                 children: [...(item.children || []), newMenu],
@@ -675,7 +682,7 @@ export const MenuManager = ({
   };
 
   const activeMenu = activeId
-    ? flatMenus.find((m) => m.id_menu === activeId)
+    ? flatMenus.find((m) => m.id_application_category === activeId)
     : null;
   const totalMenus = flatMenus.length;
 
@@ -686,7 +693,7 @@ export const MenuManager = ({
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
           <div>
             <h1 className='text-2xl font-semibold text-foreground'>
-              Menu Builder
+              Categoria Application
             </h1>
             <p className='mt-1 text-sm text-muted-foreground'>
               Build hierarchical menus with up to 16+ levels of nesting.
@@ -695,7 +702,7 @@ export const MenuManager = ({
           <div className='flex items-center gap-2'>
             <Button variant='outline' size='sm' onClick={handleModalClose}>
               <HiPlus className='mr-2 h-4 w-4' />
-              Add Menu
+              Add Categoria Application
             </Button>
             <Button
               size='sm'
@@ -757,28 +764,6 @@ export const MenuManager = ({
 
         {/* Stats Bar */}
         <div className='flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4'>
-          <div className='flex items-center gap-2'>
-            <HiFolder className='h-5 w-5 text-muted-foreground' />
-            <span className='text-sm font-medium text-foreground'>
-              Application:
-            </span>
-            <SearchableSelect
-              value={selectedApplication ? String(selectedApplication) : undefined}
-              onValueChange={(value) => {
-                // Manejar el cambio de aplicación
-                setSelectedApplication(Number(value));
-              }}
-              placeholder='Seleccione una aplicación'
-              searchPlaceholder='Buscar aplicación...'
-              emptyMessage='No se encontraron aplicaciones'
-              triggerClassName='w-auto bg-secondary border-border'
-              options={initialApplications.map((app) => ({
-                value: String(app.id_application),
-                label: app.name,
-                keywords: app.name, // Para búsqueda
-              }))}
-            />
-          </div>
 
           <div className='flex items-center gap-4 ml-auto text-sm text-muted-foreground'>
             <span>
@@ -829,22 +814,22 @@ export const MenuManager = ({
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}>
             <SortableContext
-              items={flatMenus.map((m) => m.id_menu)}
+              items={flatMenus.map((m) => m.id_application_category)}
               strategy={verticalListSortingStrategy}>
               <div className='divide-y divide-border/30'>
                 {filteredMenus.map((menu) => (
                   <SortableMenuItem
-                    key={menu.id_menu}
+                    key={menu.id_application_category}
                     menu={menu}
                     depth={0}
-                    isExpanded={expandedIds.has(menu.id_menu)}
+                    isExpanded={expandedIds.has(menu.id_application_category)}
                     onToggle={() => {
                       setExpandedIds((prev) => {
                         const next = new Set(prev);
-                        if (next.has(menu.id_menu)) {
-                          next.delete(menu.id_menu);
+                        if (next.has(menu.id_application_category)) {
+                          next.delete(menu.id_application_category);
                         } else {
-                          next.add(menu.id_menu);
+                          next.add(menu.id_application_category);
                         }
                         return next;
                       });
@@ -878,7 +863,7 @@ export const MenuManager = ({
           title={"Crear menú"}
           open={openModal}
           onOpenChange={handleModalClose}>
-          <RegisterMenu availableMenus={initialData} />
+          <RegisterApplicationCategory availableMenus={initialData} />
         </Modal>
 
         <Modal
@@ -889,7 +874,7 @@ export const MenuManager = ({
           description={t("modal.edit_description")}
           showCloseButton={true}
           hideDefaultFooter={true}>
-          <UpdateMenu
+          <UpdateApplicationCategory
             initialValues={editingMenu}
             availableMenus={initialData}
             handleClose={handleModalCloseEdit}

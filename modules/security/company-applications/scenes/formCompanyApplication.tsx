@@ -166,7 +166,8 @@ export const FormCompanyApplication = ({
             placeholder='Seleccionar empresa...'
             error={errors.company_id?.message}
             className='w-full col-span-12 md:col-span-6'
-            description='Empresa asignada'
+            // description='Empresa asignada'
+            triggerClassName='!w-full'
           />
 
           <FormSelectField
@@ -176,7 +177,8 @@ export const FormCompanyApplication = ({
             placeholder='Seleccionar aplicación...'
             error={errors.application_id?.message}
             className='w-full col-span-12 md:col-span-6'
-            description='Aplicación asignada'
+            // description='Aplicación asignada'
+            triggerClassName='!w-full'
           />
         </div>
       </div>

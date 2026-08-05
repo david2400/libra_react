@@ -112,7 +112,7 @@ export const getApplicationsDashboard = cache(async () => {
   ]);
 
   // Combine data for dashboard
-  const dashboardData = applications.content.map((app: any) => {
+  const dashboardData = applications.map((app: any) => {
     const health = allHealth.results.find((h: any) => h.application_id === app.id_application);
     const stats = allStats.find((s: any) => s.application_id === app.id_application);
 
@@ -131,7 +131,7 @@ export const getApplicationsDashboard = cache(async () => {
   return {
     applications: dashboardData,
     summary: allHealth.summary,
-    total_applications: applications.total_elements
+    // total_applications: applications.total_elements
   };
 });
 

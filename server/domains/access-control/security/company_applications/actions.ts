@@ -26,6 +26,24 @@ export const createCompanyApplicationAction = async (payload: ICreateCompanyAppl
     
     return { success: true, data: companyApplication };
   } catch (error) {
+    if (error instanceof ServerApiError && error.status === 409) {
+      try {
+        const byCompany = await companyApplicationsRepository.getByCompany(payload.company_id);
+        const existing = byCompany.find((ca) => ca.application_id === payload.application_id);
+
+        if (existing) {
+          await revalidateCacheTag(accessControlTags.companyApplications());
+          if (typeof existing.id_company_application === 'string' || typeof existing.id_company_application === 'number') {
+            await revalidateCacheTag(accessControlTags.companyApplication(existing.id_company_application));
+          }
+
+          return { success: true, data: existing };
+        }
+      } catch {
+        // fall through to the original error response
+      }
+    }
+
     if (error instanceof ServerApiError) {
       return {
         success: false,
@@ -36,7 +54,7 @@ export const createCompanyApplicationAction = async (payload: ICreateCompanyAppl
         }
       };
     }
-    
+
     return {
       success: false,
       error: {

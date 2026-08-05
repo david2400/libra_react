@@ -43,7 +43,7 @@ import {
 } from "react-icons/ri";
 import type { MenuItem, MenuPermission } from "../models/menu-permission.interface";
 import { menuItems, roles, initialPermissions } from "../mocks/data";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, SearchableSelect } from "@repo/ui/inputs/scenes/select";
+import { SearchableSelect } from "@repo/ui/inputs/scenes/select";
 import { IRoleSearch } from "@/server/domains/access-control/security/roles";
 import { IMenuSearch } from "@/server/domains/access-control/navigation/menus";
 import { listRolesByApplicationAction } from "../actions/role.actions";

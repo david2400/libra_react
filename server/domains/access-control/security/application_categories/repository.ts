@@ -1,4 +1,4 @@
-import 'server-only';
+// import 'server-only';
 
 import { serverFetch } from '@/server/lib';
 import { accessControlTags } from '@/server/lib/cache-tags';
@@ -14,7 +14,7 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 export const applicationCategoriesRepository = {
   // List all categories
   list: (params?: ListParams) =>
-    serverFetch.get<IPaginatedResponse<IApplicationCategory>>('/api/access_control/application-categories', {
+    serverFetch.get<IApplicationCategory[]>('/api/access_control/application-categories', {
       params,
       revalidate: 300,
       tags: [accessControlTags.applicationCategories()],

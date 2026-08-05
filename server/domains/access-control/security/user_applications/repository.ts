@@ -11,75 +11,100 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- User Applications Repository ---------------------------------------------
 
+
 export const userApplicationsRepository = {
   // List all user applications
   list: (params?: ListParams) =>
-    serverFetch.get<IPaginatedResponse<IUserApplication>>('/api/access_control/user-applications', {
-      params,
-      revalidate: 120,
-      tags: [accessControlTags.userApplications()],
-    }),
+    serverFetch
+      .get<IPaginatedResponse<IUserApplication> | IUserApplication[]>('/api/access_control/api/user-applications', {
+        params,
+        revalidate: 120,
+        tags: [accessControlTags.userApplications()],
+      })
+      .then((res) => res),
 
   // Get user application by ID
   getById: (id: string | number) =>
-    serverFetch.get<IUserApplication>(`/api/access_control/user-applications/${id}`, {
-      revalidate: 300,
-      tags: [accessControlTags.userApplication(id)],
-    }),
+    serverFetch
+      .get<IUserApplication>(`/api/access_control/api/user-applications/${id}`, {
+        revalidate: 300,
+        tags: [accessControlTags.userApplication(id)],
+      })
+      .then((data) => data),
 
   // Create user application
-  create: (payload: ICreateUserApplication) =>
-    serverFetch.post<IUserApplication>('/api/access_control/user-applications', payload, {
+  create: async (payload: ICreateUserApplication) => {
+    console.log('[user-applications:create] payload:', JSON.stringify(payload));
+    const userApplication = await serverFetch.post<IUserApplication>('/api/access_control/api/user-applications', payload, {
       revalidate: false,
-    }),
+    });
+    return userApplication;
+  },
 
   // Update user application
-  update: (id: string | number, payload: IUpdateUserApplication) =>
-    serverFetch.put<IUserApplication>(`/api/access_control/user-applications/${id}`, payload, {
+  update: async (id: string | number, payload: IUpdateUserApplication) => {
+    console.log('[user-applications:update] payload:', JSON.stringify(payload));
+    const userApplication = await serverFetch.put<IUserApplication>(`/api/access_control/api/user-applications/${id}`, payload, {
       revalidate: false,
-    }),
+    });
+    return userApplication;
+  },
 
   // Delete user application
   delete: (id: string | number) =>
-    serverFetch.delete<void>(`/api/access_control/user-applications/${id}`, {
+    serverFetch.delete<void>(`/api/access_control/api/user-applications/${id}`, {
       revalidate: false,
     }),
 
   // Get applications by user
   getByUser: (userId: string | number) =>
-    serverFetch.get<IUserApplication[]>(`/api/access_control/user-applications/user/${userId}`, {
-      revalidate: 180,
-      tags: [accessControlTags.userApplications()],
-    }),
+    serverFetch
+      .get<IUserApplication[]>(`/api/access_control/api/user-applications/user/${userId}`, {
+        revalidate: 180,
+        tags: [accessControlTags.userApplications()],
+      })
+      .then((res) => (Array.isArray(res) ? res : [])),
 
   // Get active applications by user
   getActiveByUser: (userId: string | number) =>
-    serverFetch.get<IUserApplication[]>(`/api/access_control/user-applications/user/${userId}/active`, {
-      revalidate: 120,
-      tags: [accessControlTags.userApplications()],
-    }),
+    serverFetch
+      .get<IUserApplication[]>(`/api/access_control/api/user-applications/user/${userId}`, {
+        revalidate: 120,
+        tags: [accessControlTags.userApplications()],
+      })
+      .then((res) => {
+        const apps = Array.isArray(res) ? res : [];
+        return apps.filter((app: any) => app.is_active ?? app.isActive);
+      }),
 
   // Assign application to user (quick assign)
-  assignApplication: (userId: string | number, applicationId: string | number) =>
-    serverFetch.post<IUserApplication>(`/api/access_control/user-applications/user/${userId}/application/${applicationId}`, {}, {
-      revalidate: false,
-    }),
+  assignApplication: (payload: ICreateUserApplication) =>
+    serverFetch
+      .post<IUserApplication>('/api/access_control/api/user-applications', payload, {
+        revalidate: false,
+      }),
 
   // Revoke application from user
   revokeApplication: (userId: string | number, applicationId: string | number) =>
-    serverFetch.delete<IUserApplication>(`/api/access_control/user-applications/user/${userId}/application/${applicationId}`, {
-      revalidate: false,
-    }),
+    serverFetch
+      .delete<IUserApplication>(`/api/access_control/api/user-applications/${userId}/${applicationId}`, {
+        revalidate: false,
+      })
+      .then((data) => data),
 
   // Activate application license
   activateLicense: (userId: string | number, applicationId: string | number) =>
-    serverFetch.put<IUserApplication>(`/api/access_control/user-applications/user/${userId}/application/${applicationId}/activate`, {}, {
-      revalidate: false,
-    }),
+    serverFetch
+      .put<IUserApplication>(`/api/access_control/api/user-applications/user/${userId}/application/${applicationId}/activate`, {}, {
+        revalidate: false,
+      })
+      .then((data) => data),
 
   // Deactivate application license
   deactivateLicense: (userId: string | number, applicationId: string | number) =>
-    serverFetch.put<IUserApplication>(`/api/access_control/user-applications/user/${userId}/application/${applicationId}/deactivate`, {}, {
-      revalidate: false,
-    }),
+    serverFetch
+      .put<IUserApplication>(`/api/access_control/api/user-applications/user/${userId}/application/${applicationId}/deactivate`, {}, {
+        revalidate: false,
+      })
+      .then((data) => data),
 } as const;

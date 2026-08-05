@@ -29,14 +29,24 @@
       "description": "APIs for authorization decisions"
     },
     {
+      "name": "User Applications Management",
+      "description": "Endpoints for managing user-application assignments"
+    },
+    {
       "name": "User Policy Assignment",
       "description": "APIs for assigning policies to users"
+    },
+    {
+      "name": "Application Permission Management",
+      "description": "Operations for managing application permissions with hierarchical category support"
     }
   ],
   "paths": {
     "/api/access_control/user-permissions/{userId}/{permissionId}": {
       "get": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "findById",
         "parameters": [
           {
@@ -72,7 +82,9 @@
         }
       },
       "put": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "update",
         "parameters": [
           {
@@ -118,7 +130,9 @@
         }
       },
       "delete": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "delete",
         "parameters": [
           {
@@ -149,7 +163,9 @@
     },
     "/api/access_control/roles/{id}": {
       "get": {
-        "tags": ["Roles"],
+        "tags": [
+          "Roles"
+        ],
         "summary": "Get role by ID",
         "description": "Returns a role by its ID",
         "operationId": "getById",
@@ -188,7 +204,9 @@
         }
       },
       "put": {
-        "tags": ["Roles"],
+        "tags": [
+          "Roles"
+        ],
         "summary": "Update role",
         "description": "Updates an existing role by ID",
         "operationId": "update_1",
@@ -237,7 +255,9 @@
         }
       },
       "delete": {
-        "tags": ["Roles"],
+        "tags": [
+          "Roles"
+        ],
         "summary": "Delete role",
         "description": "Deletes a role by ID",
         "operationId": "delete_1",
@@ -264,7 +284,9 @@
     },
     "/api/access_control/role-permissions/{permissionId}/{roleId}": {
       "get": {
-        "tags": ["RolePermissions"],
+        "tags": [
+          "RolePermissions"
+        ],
         "summary": "Get role-permission by composite ID",
         "description": "Returns a role-permission by permissionId and roleId",
         "operationId": "getById_1",
@@ -312,7 +334,9 @@
         }
       },
       "put": {
-        "tags": ["RolePermissions"],
+        "tags": [
+          "RolePermissions"
+        ],
         "summary": "Update role-permission",
         "description": "Updates an existing role-permission by composite key",
         "operationId": "update_2",
@@ -370,7 +394,9 @@
         }
       },
       "delete": {
-        "tags": ["RolePermissions"],
+        "tags": [
+          "RolePermissions"
+        ],
         "summary": "Delete role-permission",
         "description": "Deletes a role-permission relation by composite key",
         "operationId": "delete_2",
@@ -406,7 +432,9 @@
     },
     "/api/access_control/policies/{id}": {
       "get": {
-        "tags": ["Policy Management"],
+        "tags": [
+          "Policy Management"
+        ],
         "summary": "Get policy by ID",
         "description": "Retrieve a specific policy by its ID",
         "operationId": "getPolicyById",
@@ -435,7 +463,9 @@
         }
       },
       "put": {
-        "tags": ["Policy Management"],
+        "tags": [
+          "Policy Management"
+        ],
         "summary": "Update policy",
         "description": "Update an existing authorization policy",
         "operationId": "updatePolicy",
@@ -474,7 +504,9 @@
         }
       },
       "delete": {
-        "tags": ["Policy Management"],
+        "tags": [
+          "Policy Management"
+        ],
         "summary": "Delete policy",
         "description": "Delete an authorization policy",
         "operationId": "deletePolicy",
@@ -498,7 +530,9 @@
     },
     "/api/access_control/permissions/{id}": {
       "get": {
-        "tags": ["Permissions"],
+        "tags": [
+          "Permissions"
+        ],
         "summary": "Get permission by ID",
         "description": "Returns a permission by its ID",
         "operationId": "getById_2",
@@ -537,7 +571,9 @@
         }
       },
       "put": {
-        "tags": ["Permissions"],
+        "tags": [
+          "Permissions"
+        ],
         "summary": "Update permission",
         "description": "Updates an existing permission by ID",
         "operationId": "update_3",
@@ -586,7 +622,9 @@
         }
       },
       "delete": {
-        "tags": ["Permissions"],
+        "tags": [
+          "Permissions"
+        ],
         "summary": "Delete permission",
         "description": "Deletes a permission by ID",
         "operationId": "delete_3",
@@ -613,7 +651,9 @@
     },
     "/api/access_control/company-applications/company/{companyId}/application/{applicationId}/deactivate": {
       "put": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "Deactivate application license",
         "description": "Deactivates a company's license for an application",
         "operationId": "deactivateLicense",
@@ -663,7 +703,9 @@
     },
     "/api/access_control/company-applications/company/{companyId}/application/{applicationId}/activate": {
       "put": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "Activate application license",
         "description": "Activates a company's license for an application",
         "operationId": "activateLicense",
@@ -713,7 +755,9 @@
     },
     "/api/access_control/applications/{id}": {
       "get": {
-        "tags": ["Applications"],
+        "tags": [
+          "Applications"
+        ],
         "summary": "Get application by ID",
         "description": "Returns an application by its ID",
         "operationId": "getById_3",
@@ -752,7 +796,9 @@
         }
       },
       "put": {
-        "tags": ["Applications"],
+        "tags": [
+          "Applications"
+        ],
         "summary": "Update application",
         "description": "Updates an existing application by ID",
         "operationId": "update_4",
@@ -801,7 +847,9 @@
         }
       },
       "delete": {
-        "tags": ["Applications"],
+        "tags": [
+          "Applications"
+        ],
         "summary": "Delete application",
         "description": "Deletes an application by ID",
         "operationId": "delete_4",
@@ -828,7 +876,9 @@
     },
     "/api/access_control/application-categories/{id}": {
       "get": {
-        "tags": ["Application Categories"],
+        "tags": [
+          "Application Categories"
+        ],
         "summary": "Get application category by ID",
         "description": "Returns an application category by its ID",
         "operationId": "getById_4",
@@ -867,7 +917,9 @@
         }
       },
       "put": {
-        "tags": ["Application Categories"],
+        "tags": [
+          "Application Categories"
+        ],
         "summary": "Update application category",
         "description": "Updates an existing application category by ID",
         "operationId": "update_5",
@@ -916,7 +968,9 @@
         }
       },
       "delete": {
-        "tags": ["Application Categories"],
+        "tags": [
+          "Application Categories"
+        ],
         "summary": "Delete application category",
         "description": "Deletes an application category by ID",
         "operationId": "delete_5",
@@ -943,7 +997,11 @@
     },
     "/api/access_control/api/user-applications": {
       "put": {
-        "tags": ["user-application-controller"],
+        "tags": [
+          "User Applications Management"
+        ],
+        "summary": "Update user application assignment",
+        "description": "Updates an existing user-application assignment",
         "operationId": "update_6",
         "requestBody": {
           "content": {
@@ -957,7 +1015,27 @@
         },
         "responses": {
           "200": {
-            "description": "OK",
+            "description": "Assignment updated",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserApplication"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserApplication"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Assignment not found",
             "content": {
               "*/*": {
                 "schema": {
@@ -969,7 +1047,11 @@
         }
       },
       "post": {
-        "tags": ["user-application-controller"],
+        "tags": [
+          "User Applications Management"
+        ],
+        "summary": "Create user application assignment",
+        "description": "Assigns an application to a user with specific permissions and validity",
         "operationId": "create",
         "requestBody": {
           "content": {
@@ -982,8 +1064,18 @@
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserApplication"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Assignment created",
             "content": {
               "*/*": {
                 "schema": {
@@ -997,7 +1089,9 @@
     },
     "/api/access_control/user-policies": {
       "post": {
-        "tags": ["User Policy Assignment"],
+        "tags": [
+          "User Policy Assignment"
+        ],
         "summary": "Assign policy to user",
         "description": "Assign a policy to a specific user",
         "operationId": "assignPolicy",
@@ -1027,7 +1121,9 @@
     },
     "/api/access_control/user-permissions": {
       "get": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "findAll",
         "responses": {
           "200": {
@@ -1046,7 +1142,9 @@
         }
       },
       "post": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "create_1",
         "requestBody": {
           "content": {
@@ -1074,7 +1172,9 @@
     },
     "/api/access_control/user-permissions/user/{userId}/bulk": {
       "post": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "assignBulk",
         "parameters": [
           {
@@ -1119,7 +1219,9 @@
     },
     "/api/access_control/roles": {
       "get": {
-        "tags": ["Roles"],
+        "tags": [
+          "Roles"
+        ],
         "summary": "List roles",
         "description": "Returns all roles. Optional filter by name",
         "operationId": "getAll",
@@ -1150,7 +1252,9 @@
         }
       },
       "post": {
-        "tags": ["Roles"],
+        "tags": [
+          "Roles"
+        ],
         "summary": "Create role",
         "description": "Creates a new role",
         "operationId": "create_2",
@@ -1188,9 +1292,46 @@
         }
       }
     },
+    "/api/access_control/roles/search": {
+      "post": {
+        "tags": [
+          "Roles"
+        ],
+        "summary": "Search roles",
+        "description": "Search roles by example with multiple criteria",
+        "operationId": "search",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RoleDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Role"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/access_control/role-permissions": {
       "get": {
-        "tags": ["RolePermissions"],
+        "tags": [
+          "RolePermissions"
+        ],
         "summary": "List role-permissions",
         "description": "Returns all role-permission relations. Optional filters: roleId, permissionId",
         "operationId": "getAll_1",
@@ -1231,7 +1372,9 @@
         }
       },
       "post": {
-        "tags": ["RolePermissions"],
+        "tags": [
+          "RolePermissions"
+        ],
         "summary": "Create role-permission",
         "description": "Creates a new role-permission relation",
         "operationId": "create_3",
@@ -1271,7 +1414,9 @@
     },
     "/api/access_control/policies": {
       "get": {
-        "tags": ["Policy Management"],
+        "tags": [
+          "Policy Management"
+        ],
         "summary": "Get all policies",
         "description": "Retrieve all policies for a specific application",
         "operationId": "getAllPolicies",
@@ -1303,7 +1448,9 @@
         }
       },
       "post": {
-        "tags": ["Policy Management"],
+        "tags": [
+          "Policy Management"
+        ],
         "summary": "Create policy",
         "description": "Create a new authorization policy",
         "operationId": "createPolicy",
@@ -1333,7 +1480,9 @@
     },
     "/api/access_control/permissions": {
       "get": {
-        "tags": ["Permissions"],
+        "tags": [
+          "Permissions"
+        ],
         "summary": "List permissions",
         "description": "Returns all permissions. Supports optional filters: name, aplicationsId, moduleAplicationId",
         "operationId": "getAll_2",
@@ -1382,7 +1531,9 @@
         }
       },
       "post": {
-        "tags": ["Permissions"],
+        "tags": [
+          "Permissions"
+        ],
         "summary": "Create permission",
         "description": "Creates a new permission",
         "operationId": "create_4",
@@ -1422,7 +1573,9 @@
     },
     "/api/access_control/permission-resolution/user/{userId}/has-any-permission": {
       "post": {
-        "tags": ["Permission Resolution"],
+        "tags": [
+          "Permission Resolution"
+        ],
         "operationId": "hasAnyPermission",
         "parameters": [
           {
@@ -1465,7 +1618,9 @@
     },
     "/api/access_control/permission-resolution/user/{userId}/has-all-permissions": {
       "post": {
-        "tags": ["Permission Resolution"],
+        "tags": [
+          "Permission Resolution"
+        ],
         "operationId": "hasAllPermissions",
         "parameters": [
           {
@@ -1508,7 +1663,9 @@
     },
     "/api/access_control/company-applications": {
       "get": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "List all company applications",
         "description": "Returns all company-application relationships",
         "operationId": "getAll_3",
@@ -1529,7 +1686,9 @@
         }
       },
       "post": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "Assign application to company",
         "description": "Creates a new license for a company to use an application",
         "operationId": "create_5",
@@ -1569,7 +1728,9 @@
     },
     "/api/access_control/company-applications/company/{companyId}/application/{applicationId}": {
       "post": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "Assign application to company",
         "description": "Quick assign application to company with default settings",
         "operationId": "assignApplication",
@@ -1617,7 +1778,9 @@
         }
       },
       "delete": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "Revoke application from company",
         "description": "Removes company's access to an application",
         "operationId": "revokeApplication",
@@ -1667,7 +1830,9 @@
     },
     "/api/access_control/authorization/check": {
       "post": {
-        "tags": ["Authorization"],
+        "tags": [
+          "Authorization"
+        ],
         "summary": "Check authorization",
         "description": "Evaluate if a user is authorized to perform an action on a resource",
         "operationId": "checkAuthorization",
@@ -1697,7 +1862,9 @@
     },
     "/api/access_control/applications": {
       "get": {
-        "tags": ["Applications"],
+        "tags": [
+          "Applications"
+        ],
         "summary": "List applications",
         "description": "Returns all applications",
         "operationId": "getAll_4",
@@ -1728,7 +1895,9 @@
         }
       },
       "post": {
-        "tags": ["Applications"],
+        "tags": [
+          "Applications"
+        ],
         "summary": "Create application",
         "description": "Creates a new application",
         "operationId": "create_6",
@@ -1768,7 +1937,9 @@
     },
     "/api/access_control/application-categories": {
       "get": {
-        "tags": ["Application Categories"],
+        "tags": [
+          "Application Categories"
+        ],
         "summary": "List application categories",
         "description": "Returns all application categories",
         "operationId": "getAll_5",
@@ -1799,7 +1970,9 @@
         }
       },
       "post": {
-        "tags": ["Application Categories"],
+        "tags": [
+          "Application Categories"
+        ],
         "summary": "Create application category",
         "description": "Creates a new application category",
         "operationId": "create_7",
@@ -1837,9 +2010,63 @@
         }
       }
     },
+    "/api/access_control/api/application-permissions": {
+      "post": {
+        "tags": [
+          "Application Permission Management"
+        ],
+        "summary": "Create a new application permission",
+        "description": "Create a new permission for a specific application category with user or role assignment",
+        "operationId": "createApplicationPermission",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApplicationPermissionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Application permission created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/access_control/user-policies/user/{userId}": {
       "get": {
-        "tags": ["User Policy Assignment"],
+        "tags": [
+          "User Policy Assignment"
+        ],
         "summary": "Get user policies",
         "description": "Retrieve all active policies assigned to a user",
         "operationId": "getUserPolicies",
@@ -1873,7 +2100,9 @@
     },
     "/api/access_control/user-permissions/user/{userId}": {
       "get": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "findByUserId",
         "parameters": [
           {
@@ -1905,7 +2134,9 @@
     },
     "/api/access_control/user-permissions/user/{userId}/active": {
       "get": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "findActiveByUserId",
         "parameters": [
           {
@@ -1937,7 +2168,9 @@
     },
     "/api/access_control/user-permissions/permission/{permissionId}": {
       "get": {
-        "tags": ["User Permissions"],
+        "tags": [
+          "User Permissions"
+        ],
         "operationId": "findByPermissionId",
         "parameters": [
           {
@@ -1969,7 +2202,9 @@
     },
     "/api/access_control/permission-resolution/user/{userId}/user-permissions": {
       "get": {
-        "tags": ["Permission Resolution"],
+        "tags": [
+          "Permission Resolution"
+        ],
         "operationId": "getUserPermissions",
         "parameters": [
           {
@@ -2002,7 +2237,9 @@
     },
     "/api/access_control/permission-resolution/user/{userId}/role-permissions": {
       "get": {
-        "tags": ["Permission Resolution"],
+        "tags": [
+          "Permission Resolution"
+        ],
         "operationId": "getRolePermissions",
         "parameters": [
           {
@@ -2035,7 +2272,9 @@
     },
     "/api/access_control/permission-resolution/user/{userId}/has-permission": {
       "get": {
-        "tags": ["Permission Resolution"],
+        "tags": [
+          "Permission Resolution"
+        ],
         "operationId": "hasPermission",
         "parameters": [
           {
@@ -2080,7 +2319,9 @@
     },
     "/api/access_control/permission-resolution/user/{userId}/effective": {
       "get": {
-        "tags": ["Permission Resolution"],
+        "tags": [
+          "Permission Resolution"
+        ],
         "operationId": "getEffectivePermissions",
         "parameters": [
           {
@@ -2113,7 +2354,9 @@
     },
     "/api/access_control/company-applications/{id}": {
       "get": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "Get company application by ID",
         "description": "Returns a specific company-application relationship",
         "operationId": "getById_5",
@@ -2154,7 +2397,9 @@
     },
     "/api/access_control/company-applications/company/{companyId}": {
       "get": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "Get applications by company",
         "description": "Returns all applications assigned to a specific company",
         "operationId": "getApplicationsByCompany",
@@ -2188,7 +2433,9 @@
     },
     "/api/access_control/company-applications/company/{companyId}/active": {
       "get": {
-        "tags": ["Company Applications Management"],
+        "tags": [
+          "Company Applications Management"
+        ],
         "summary": "Get active applications by company",
         "description": "Returns only active applications for a company",
         "operationId": "getActiveApplicationsByCompany",
@@ -2222,7 +2469,11 @@
     },
     "/api/access_control/api/user-applications/{userId}/{applicationId}": {
       "get": {
-        "tags": ["user-application-controller"],
+        "tags": [
+          "User Applications Management"
+        ],
+        "summary": "Get assignment by user and application",
+        "description": "Returns a specific user-application assignment",
         "operationId": "findById_1",
         "parameters": [
           {
@@ -2254,11 +2505,25 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserApplication"
+                }
+              }
+            }
           }
         }
       },
       "delete": {
-        "tags": ["user-application-controller"],
+        "tags": [
+          "User Applications Management"
+        ],
+        "summary": "Delete user application assignment",
+        "description": "Removes the assignment between a user and an application",
         "operationId": "delete_6",
         "parameters": [
           {
@@ -2281,15 +2546,22 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
+          "204": {
+            "description": "Assignment deleted"
+          },
+          "404": {
+            "description": "Assignment not found"
           }
         }
       }
     },
     "/api/access_control/api/user-applications/user/{userId}": {
       "get": {
-        "tags": ["user-application-controller"],
+        "tags": [
+          "User Applications Management"
+        ],
+        "summary": "Get applications by user",
+        "description": "Returns all application assignments for a user",
         "operationId": "findByUserId_1",
         "parameters": [
           {
@@ -2321,7 +2593,11 @@
     },
     "/api/access_control/api/user-applications/check/{userId}/{applicationId}": {
       "get": {
-        "tags": ["user-application-controller"],
+        "tags": [
+          "User Applications Management"
+        ],
+        "summary": "Check user application access",
+        "description": "Checks if a user has active access to an application",
         "operationId": "checkAccess",
         "parameters": [
           {
@@ -2353,13 +2629,27 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Assignment not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
           }
         }
       }
     },
     "/api/access_control/api/user-applications/application/{applicationId}": {
       "get": {
-        "tags": ["user-application-controller"],
+        "tags": [
+          "User Applications Management"
+        ],
+        "summary": "Get users by application",
+        "description": "Returns all user assignments for an application",
         "operationId": "findByApplicationId",
         "parameters": [
           {
@@ -2389,9 +2679,195 @@
         }
       }
     },
+    "/api/access_control/api/application-permissions/{id}": {
+      "get": {
+        "tags": [
+          "Application Permission Management"
+        ],
+        "summary": "Get application permission by ID",
+        "description": "Retrieve a specific application permission by its unique identifier",
+        "operationId": "getApplicationPermissionById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Application permission ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Application permission not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "Application permission found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/api/application-permissions/user/{userId}": {
+      "get": {
+        "tags": [
+          "Application Permission Management"
+        ],
+        "summary": "Get permissions for a user",
+        "description": "Retrieve all effective permissions for a specific user across all application categories",
+        "operationId": "getPermissionsByUserId",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationPermission"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "User permissions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found or no permissions",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationPermission"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/api/application-permissions/user/{userId}/application/{applicationId}": {
+      "get": {
+        "tags": [
+          "Application Permission Management"
+        ],
+        "summary": "Get permissions for a user in a specific category",
+        "description": "Retrieve effective permissions for a specific user in a particular application category",
+        "operationId": "getPermissionsByUserIdAndApplication",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "User ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "description": "Application ID",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "User or category not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationPermission"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ApplicationPermission"
+                  }
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "User category permissions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/access_control/user-policies/user/{userId}/policy/{policyId}": {
       "delete": {
-        "tags": ["User Policy Assignment"],
+        "tags": [
+          "User Policy Assignment"
+        ],
         "summary": "Revoke policy from user",
         "description": "Remove a policy assignment from a user",
         "operationId": "revokePolicy",
@@ -2492,7 +2968,13 @@
         }
       },
       "UpdateRoleDto": {
-        "required": ["description", "idRole", "manageUsers", "name"],
+        "required": [
+          "applicationId",
+          "description",
+          "idRole",
+          "manageUsers",
+          "name"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -2528,6 +3010,10 @@
           },
           "approvalWorkflow": {
             "type": "string"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
           },
           "idRole": {
             "type": "integer",
@@ -2575,11 +3061,19 @@
           },
           "approvalWorkflow": {
             "type": "string"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
       "UpdateRolePermissionDto": {
-        "required": ["level", "permissionId", "roleId"],
+        "required": [
+          "level",
+          "permissionId",
+          "roleId"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -2682,7 +3176,10 @@
           },
           "effect": {
             "type": "string",
-            "enum": ["ALLOW", "DENY"]
+            "enum": [
+              "ALLOW",
+              "DENY"
+            ]
           },
           "actions": {
             "type": "array",
@@ -2752,7 +3249,10 @@
           },
           "defaultEffect": {
             "type": "string",
-            "enum": ["ALLOW", "DENY"]
+            "enum": [
+              "ALLOW",
+              "DENY"
+            ]
           },
           "isActive": {
             "type": "boolean"
@@ -2795,7 +3295,10 @@
           },
           "defaultEffect": {
             "type": "string",
-            "enum": ["ALLOW", "DENY"]
+            "enum": [
+              "ALLOW",
+              "DENY"
+            ]
           },
           "statements": {
             "type": "array",
@@ -2861,7 +3364,10 @@
           },
           "effect": {
             "type": "string",
-            "enum": ["ALLOW", "DENY"]
+            "enum": [
+              "ALLOW",
+              "DENY"
+            ]
           },
           "actions": {
             "type": "array",
@@ -2928,7 +3434,12 @@
           },
           "permissionType": {
             "type": "string",
-            "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
+            "enum": [
+              "API",
+              "APPLICATION",
+              "UI",
+              "SYSTEM"
+            ]
           },
           "resource": {
             "maxLength": 200,
@@ -3037,7 +3548,12 @@
           },
           "permissionType": {
             "type": "string",
-            "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
+            "enum": [
+              "API",
+              "APPLICATION",
+              "UI",
+              "SYSTEM"
+            ]
           },
           "resource": {
             "type": "string"
@@ -3177,7 +3693,6 @@
       },
       "UpdateApplicationDto": {
         "required": [
-          "applicationId",
           "idApplication",
           "name",
           "publicationDate"
@@ -3209,14 +3724,6 @@
           "description": {
             "type": "string"
           },
-          "applicationId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "parentModuleId": {
-            "type": "integer",
-            "format": "int32"
-          },
           "maintenanceMode": {
             "type": "boolean"
           },
@@ -3224,8 +3731,9 @@
             "type": "string",
             "format": "date"
           },
-          "path": {
-            "type": "string"
+          "applicationCategoryId": {
+            "type": "integer",
+            "format": "int64"
           },
           "idApplication": {
             "type": "integer",
@@ -3265,20 +3773,24 @@
           "description": {
             "type": "string"
           },
-          "route": {
-            "type": "string"
-          },
           "maintenanceMode": {
             "type": "boolean"
           },
           "publicationDate": {
             "type": "string",
             "format": "date"
+          },
+          "applicationCategoryId": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
       "UpdateApplicationCategoryDto": {
-        "required": ["idApplicationCategory", "name"],
+        "required": [
+          "idApplicationCategory",
+          "name"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -3305,6 +3817,10 @@
           },
           "description": {
             "type": "string"
+          },
+          "parentCategoryApplicationId": {
+            "type": "integer",
+            "format": "int64"
           },
           "idApplicationCategory": {
             "type": "integer",
@@ -3343,11 +3859,27 @@
           },
           "description": {
             "type": "string"
+          },
+          "parentCategoryApplicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "parentApplicationCategory": {
+            "$ref": "#/components/schemas/ApplicationCategory"
+          },
+          "applications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Application"
+            }
           }
         }
       },
       "UpdateUserApplicationDto": {
-        "required": ["applicationId", "userId"],
+        "required": [
+          "applicationId",
+          "userId"
+        ],
         "type": "object",
         "properties": {
           "userId": {
@@ -3514,7 +4046,12 @@
         }
       },
       "CreateRoleDto": {
-        "required": ["description", "manageUsers", "name"],
+        "required": [
+          "applicationId",
+          "description",
+          "manageUsers",
+          "name"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -3550,11 +4087,63 @@
           },
           "approvalWorkflow": {
             "type": "string"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "RoleDto": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idRole": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "manageUsers": {
+            "type": "boolean"
+          },
+          "requiresApproval": {
+            "type": "boolean"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
       "CreateRolePermissionDto": {
-        "required": ["level", "permissionId", "roleId"],
+        "required": [
+          "level",
+          "permissionId",
+          "roleId"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -3590,7 +4179,12 @@
         }
       },
       "CreatePolicyDto": {
-        "required": ["applicationId", "defaultEffect", "description", "name"],
+        "required": [
+          "applicationId",
+          "defaultEffect",
+          "description",
+          "name"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -3627,7 +4221,10 @@
           },
           "defaultEffect": {
             "type": "string",
-            "enum": ["ALLOW", "DENY"]
+            "enum": [
+              "ALLOW",
+              "DENY"
+            ]
           },
           "isActive": {
             "type": "boolean"
@@ -3645,7 +4242,12 @@
         }
       },
       "CreatePermissionDto": {
-        "required": ["action", "name", "permissionType", "resource"],
+        "required": [
+          "action",
+          "name",
+          "permissionType",
+          "resource"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -3679,7 +4281,12 @@
           },
           "permissionType": {
             "type": "string",
-            "enum": ["API", "APPLICATION", "UI", "SYSTEM"]
+            "enum": [
+              "API",
+              "APPLICATION",
+              "UI",
+              "SYSTEM"
+            ]
           },
           "resource": {
             "maxLength": 200,
@@ -3860,7 +4467,10 @@
         "properties": {
           "effect": {
             "type": "string",
-            "enum": ["ALLOW", "DENY"]
+            "enum": [
+              "ALLOW",
+              "DENY"
+            ]
           },
           "reason": {
             "type": "string"
@@ -3877,7 +4487,10 @@
         }
       },
       "CreateApplicationDto": {
-        "required": ["applicationId", "name", "publicationDate"],
+        "required": [
+          "name",
+          "publicationDate"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -3904,14 +4517,6 @@
           },
           "description": {
             "type": "string"
-          },
-          "applicationId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "parentModuleId": {
-            "type": "integer",
-            "format": "int32"
           },
           "maintenanceMode": {
             "type": "boolean"
@@ -3920,13 +4525,16 @@
             "type": "string",
             "format": "date"
           },
-          "path": {
-            "type": "string"
+          "applicationCategoryId": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
       "CreateApplicationCategoryDto": {
-        "required": ["name"],
+        "required": [
+          "name"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -3953,11 +4561,19 @@
           },
           "description": {
             "type": "string"
+          },
+          "parentCategoryApplicationId": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
       "CreateUserApplicationDto": {
-        "required": ["accessLevel", "applicationId", "userId"],
+        "required": [
+          "accessLevel",
+          "applicationId",
+          "userId"
+        ],
         "type": "object",
         "properties": {
           "deleted": {
@@ -4006,6 +4622,114 @@
           },
           "reason": {
             "type": "string"
+          }
+        }
+      },
+      "CreateApplicationPermissionDto": {
+        "required": [
+          "applicationId"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "consultPermission": {
+            "type": "boolean"
+          },
+          "executePermission": {
+            "type": "boolean"
+          },
+          "adminPermission": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ApplicationPermission": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idApplicationPermission": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "application": {
+            "$ref": "#/components/schemas/Application"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "consultPermission": {
+            "type": "boolean"
+          },
+          "executePermission": {
+            "type": "boolean"
+          },
+          "adminPermission": {
+            "type": "boolean"
           }
         }
       }

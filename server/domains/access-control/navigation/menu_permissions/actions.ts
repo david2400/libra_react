@@ -363,6 +363,44 @@ export const getMenuPermissionsByRoleAction = async (roleId: number): Promise<Ac
   }
 };
 
+// Get all menu permissions for a specific user
+export const getMenuPermissionsByUserAction = async (userId: number): Promise<ActionResultType<IMenuPermission[]>> => {
+  try {
+    const permissions = await menuPermissionsRepository.getMenusPermission({ user_id: userId });
+
+    const enhancedPermissions = permissions.map(p => {
+      return {
+        ...p,
+        is_expired: p.expires_at ? new Date() > new Date(p.expires_at) : false
+      } as IMenuPermission;
+    });
+
+    return {
+      success: true,
+      data: enhancedPermissions
+    };
+  } catch (error) {
+    if (error instanceof ServerApiError) {
+      return {
+        success: false,
+        error: {
+          message: error.message,
+          code: error.code,
+          details: error.details
+        }
+      };
+    }
+
+    return {
+      success: false,
+      error: {
+        message: 'Failed to get menu permissions by user',
+        details: error
+      }
+    };
+  }
+};
+
 // --- MenuPermission Bulk Operations (Simplified) ------------------------------
 
 export const bulkAssignMenuPermissionsAction = async (payload: IBulkMenuPermissionPayload): Promise<ActionResultType<IBulkMenuPermissionResponse>> => {

@@ -1,64 +1,31 @@
-import 'server-only';
 import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IApplication } from '../applications';
 
-// --- IApplicationCategory Types -------------------------------------------------------------
-
-export interface IApplicationCategory extends IAuditInfo {
-  id_application_category: number;
-  name: string;
-  description?: string;
-  icon?: string;
-  color?: string;
-  parent_category_id?: number;
-  level?: number;
-  is_active: boolean;
-  sort_order?: number;
-  // parent_category?: IApplicationCategory;
-  // child_categories?: IApplicationCategory[];
-  // applications?: IApplication[];
-}
 
 export interface ICreateApplicationCategory {
   name: string;
   description?: string;
-  icon?: string;
-  color?: string;
-  parent_category_id?: number;
-  level?: number;
-  is_active: boolean;
-  sort_order?: number;
+  application_category_id?: number | null
 }
 
 export interface IUpdateApplicationCategory extends ICreateApplicationCategory {
-  id_application_category?: number;
+  id_application_category: number;
 }
+
+
+// --- IApplicationCategory Types -------------------------------------------------------------
+
+export interface IApplicationCategory extends IAuditInfo, IUpdateApplicationCategory {
+  parent_category_application?: IApplicationCategory
+  applications?: IApplication[]
+  children?: IApplicationCategory[];
+}
+
 
 export interface IApplicationCategoryParams extends ListParams {
   parent_category_id?: number;
   is_active?: boolean;
   level?: number;
-}
-
-// --- Repository and Query Types -----------------------------------------------------------
-
-export interface IApplicationCategoryRepository {
-  findAll(params?: IApplicationCategoryParams): Promise<IPaginatedResponse<IApplicationCategory>>;
-  findById(id: number): Promise<IApplicationCategory | null>;
-  findByParentId(parentId: number): Promise<IApplicationCategory[]>;
-  findActive(): Promise<IApplicationCategory[]>;
-  findRootCategories(): Promise<IApplicationCategory[]>;
-  create(data: ICreateApplicationCategory): Promise<IApplicationCategory>;
-  update(id: number, data: IUpdateApplicationCategory): Promise<IApplicationCategory>;
-  delete(id: number): Promise<void>;
-}
-
-export interface IApplicationCategoryQueries {
-  findAll(params?: IApplicationCategoryParams): Promise<IPaginatedResponse<IApplicationCategory>>;
-  findById(id: number): Promise<IApplicationCategory | null>;
-  findByParentId(parentId: number): Promise<IApplicationCategory[]>;
-  findActive(): Promise<IApplicationCategory[]>;
-  findRootCategories(): Promise<IApplicationCategory[]>;
 }
 
 // --- Application-Category Relationship Types -----------------------------------------

@@ -5,6 +5,7 @@ import {
   userApplicationsRepository,
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
+import type { IUserApplication } from './types';
 import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- User Applications Queries -----------------------------------------------
@@ -23,11 +24,11 @@ export const getActiveUserApplications = cache(() =>
 
 // --- User-specific Queries -------------------------------------------------
 
-export const getApplicationsByUser = cache((userId: string | number) =>
+export const getApplicationsByUser = cache((userId: string | number): Promise<IUserApplication[]> =>
   userApplicationsRepository.getByUser(userId)
 );
 
-export const getActiveApplicationsByUser = cache((userId: string | number) =>
+export const getActiveApplicationsByUser = cache((userId: string | number): Promise<IUserApplication[]> =>
   userApplicationsRepository.getActiveByUser(userId)
 );
 

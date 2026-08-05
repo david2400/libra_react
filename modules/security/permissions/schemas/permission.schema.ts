@@ -18,9 +18,12 @@ export const validationPermission = () => {
       required_error: v.required 
     }),
     
-    // Asignación a Aplicación y Módulo
-    application_id: z.number().optional(),
-    module_id: z.number().optional(),
+    // Asignación a Aplicación
+    application_id: z.coerce
+      .number({ invalid_type_error: v.invalidFormat })
+      .int()
+      .positive({ message: v.required })
+      .optional(),
     
     // Configuración Específica por Tipo
     api_type: z.enum(['REST', 'GraphQL', 'gRPC', 'SOAP', 'WebSockets', 'RPC (general)']).optional(),

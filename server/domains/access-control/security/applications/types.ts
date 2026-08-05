@@ -3,6 +3,7 @@ import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/ty
 import { ICompany } from '../../account/companies';
 import { IPermission } from '../permissions';
 import { IMenu } from '../../navigation/menus';
+import { ICompanyApplication } from '@/modules/security/company-applications/models/company-application.interface';
 
 // --- IModuleApplication Types (temporary inline definition) -------------------
 
@@ -17,27 +18,23 @@ export interface IModuleApplication {
 
 // --- IApplication Types ---------------------------------------------------------
 
-export interface IApplication extends IAuditInfo {
-  id_application: number;
-  name: string;
-  description?: string;
-  route: string;
-  maintenance_mode: boolean;
-  publication_date: string;
-  company_id?: number;
-}
-
 export interface ICreateApplication {
   name: string;
   description?: string;
-  route: string;
   maintenance_mode?: boolean;
   publication_date: string;
-  company_id?: number;
+  application_category_id?: number | null;
 }
 
 export interface IUpdateApplication extends ICreateApplication {
   id_application: number;
+}
+
+
+export interface IApplication extends IUpdateApplication, IAuditInfo {
+  company_applications?: ICompanyApplication[]
+  permissions?: IPermission[]
+  menu?: IMenu[]
 }
 
 

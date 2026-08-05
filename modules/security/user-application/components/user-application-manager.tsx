@@ -24,12 +24,20 @@ import {
   HiX,
   HiPlus,
   HiMinus,
-  HiChevronDown,
   HiSave,
   HiRefresh,
   HiFilter,
   HiSwitchHorizontal,
 } from "react-icons/hi";
+import Swal from "sweetalert2";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@repo/ui/inputs/scenes/select";
 // TODO: Fix type imports for user-application manager
 // import { IUser } from "@/server/domains/access-control/account/users";
 // import { IApplication } from "@/server/domains/access-control/security/applications";
@@ -47,6 +55,7 @@ interface IUser {
   status?: string;
   company_id?: number;
   assignedApps?: number[];
+  client?: { name?: string };
 }
 
 interface IApplication {
@@ -67,6 +76,12 @@ interface IApplicationCategory {
   name?: string;
 }
 import { useApplicationData } from "../hooks/use-application-data";
+import { getUsersServerAction } from "@/app/[locale]/(protected)/account/user-companies/actions";
+import {
+  getUserApplicationsByUserServerAction,
+  assignApplicationToUserServerAction,
+  revokeApplicationFromUserServerAction,
+} from "@/app/[locale]/(protected)/security/user-applications/actions";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HiViewGrid,
@@ -98,16 +113,48 @@ export function UserApplicationsManager() {
     loadData,
   } = useApplicationData();
 
-  const [users] = useState<IUser[]>([]); // TODO: Load from users API
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
+
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        setIsLoadingUsers(true);
+        const result = await getUsersServerAction();
+        setUsers(Array.isArray(result) ? (result as IUser[]) : []);
+      } catch (error) {
+        console.error("Error loading users:", error);
+        setUsers([]);
+      } finally {
+        setIsLoadingUsers(false);
+      }
+    };
+    loadUsers();
+  }, []);
   
   // UI states
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [userAssignments, setUserAssignments] = useState<Record<number, number[]>>({});
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [hasChanges, setHasChanges] = useState(false);
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [filterMode, setFilterMode] = useState<"all" | "assigned" | "unassigned">("all");
+
+  useEffect(() => {
+    const loadUserApplications = async () => {
+      if (!selectedUser?.id_user) return;
+      const userId = selectedUser.id_user;
+      try {
+        const data = await getUserApplicationsByUserServerAction(userId);
+        const appIds = (data || [])
+          .map((ua: any) => ua.application_id)
+          .filter((id: any): id is number => id != null);
+        setUserAssignments((prev) => ({ ...prev, [userId]: appIds }));
+      } catch (error) {
+        console.error("Error cargando aplicaciones del usuario:", error);
+      }
+    };
+    loadUserApplications();
+  }, [selectedUser]);
 
   const currentAssignments = selectedUser?.id_user ? (userAssignments[selectedUser.id_user] || []) : [];
 
@@ -127,74 +174,117 @@ export function UserApplicationsManager() {
     });
   }, [searchQuery, selectedCategory, currentAssignments, filterMode, applications]);
 
-  const toggleApp = (appId: string) => {
+  const toggleApp = async (appId: string | number) => {
     const userId = selectedUser?.id_user;
-    if (!userId) return;
-    
-    setUserAssignments((prev) => {
-      const userApps = prev[userId] || [];
-      const appIdNum = Number(appId);
-      const newApps = userApps.includes(appIdNum)
-        ? userApps.filter((id: number) => id !== appIdNum)
-        : [...userApps, appIdNum];
-      return { ...prev, [userId]: newApps };
-    });
-    setHasChanges(true);
+    console.log("[toggleApp] userId:", userId, "appId:", appId);
+    if (!userId) {
+      Swal.fire({
+        title: "Error!",
+        text: "Selecciona un usuario primero",
+        icon: "error",
+      });
+      return;
+    }
+    const appIdNum = Number(appId);
+    if (!Number.isFinite(appIdNum)) {
+      Swal.fire({
+        title: "Error!",
+        text: "Aplicación inválida",
+        icon: "error",
+      });
+      return;
+    }
+    const isAssigned = currentAssignments.includes(appIdNum);
+
+    try {
+      if (isAssigned) {
+        await revokeApplicationFromUserServerAction(userId, appIdNum);
+        setUserAssignments((prev) => ({
+          ...prev,
+          [userId]: (prev[userId] || []).filter((id) => id !== appIdNum),
+        }));
+      } else {
+        await assignApplicationToUserServerAction(userId, appIdNum);
+        setUserAssignments((prev) => ({
+          ...prev,
+          [userId]: [...(prev[userId] || []), appIdNum],
+        }));
+      }
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.message || "No se pudo actualizar la asignación",
+        icon: "error",
+      });
+    }
   };
 
-  const assignAll = () => {
+  const assignAll = async () => {
     const userId = selectedUser?.id_user;
-    if (!userId) return;
-    
-    setUserAssignments((prev) => ({
-      ...prev,
-      [userId]: applications.map((app) => app.id_application),
-    }));
-    setHasChanges(true);
+    if (!userId) {
+      Swal.fire({
+        title: "Error!",
+        text: "Selecciona un usuario primero",
+        icon: "error",
+      });
+      return;
+    }
+    const toAssign = applications
+      .map((app) => app.id_application)
+      .filter((appId) => Number.isFinite(appId) && !currentAssignments.includes(appId));
+    try {
+      await Promise.all(toAssign.map((appId) => assignApplicationToUserServerAction(userId, appId)));
+      setUserAssignments((prev) => ({
+        ...prev,
+        [userId]: [...(prev[userId] || []), ...toAssign],
+      }));
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.message || "No se pudieron asignar todas las aplicaciones",
+        icon: "error",
+      });
+    }
   };
 
-  const removeAll = () => {
+  const removeAll = async () => {
     const userId = selectedUser?.id_user;
-    if (!userId) return;
-    
-    setUserAssignments((prev) => ({
-      ...prev,
-      [userId]: [],
-    }));
-    setHasChanges(true);
-  };
-
-  const handleSave = () => {
-    setHasChanges(false);
-  };
-
-  const handleReset = () => {
-    setUserAssignments(
-      users.reduce(
-        (acc, user) => {
-          if (user.id_user) {
-            return { ...acc, [user.id_user]: user.assignedApps || [] };
-          }
-          return acc;
-        },
-        {} as Record<number, number[]>,
-      ),
-    );
-    setHasChanges(false);
+    if (!userId) {
+      Swal.fire({
+        title: "Error!",
+        text: "Selecciona un usuario primero",
+        icon: "error",
+      });
+      return;
+    }
+    const toRemove = [...currentAssignments];
+    try {
+      await Promise.all(toRemove.map((appId) => revokeApplicationFromUserServerAction(userId, appId)));
+      setUserAssignments((prev) => ({ ...prev, [userId]: [] }));
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.message || "No se pudieron remover las aplicaciones",
+        icon: "error",
+      });
+    }
   };
 
   const stats = useMemo(() => {
     const assigned = currentAssignments.length;
     const total = applications.length;
     const byCategory = categories
-      .filter((c) => c.id !== "all")
+      .filter((c) => c.id_application_category != null)
       .map((cat) => ({
         ...cat,
         count: applications.filter(
           (app) =>
-            app.category === cat.id && currentAssignments.includes(app.id_application),
+            app.application_category_id === cat.id_application_category &&
+            currentAssignments.includes(app.id_application),
         ).length,
-        total: applications.filter((app) => app.category === cat.id).length,
+        total: applications.filter(
+          (app) => app.application_category_id === cat.id_application_category,
+        ).length,
       }));
     return { assigned, total, byCategory };
   }, [currentAssignments]);
@@ -219,25 +309,9 @@ export function UserApplicationsManager() {
               </p>
             </div>
             <div className='flex items-center gap-3'>
-              {hasChanges && (
-                <span className='flex items-center gap-2 rounded-full bg-warning/10 px-3 py-1 text-sm text-warning'>
-                  <span className='h-2 w-2 animate-pulse rounded-full bg-warning' />
-                  Cambios sin guardar
-                </span>
-              )}
-              <button
-                onClick={handleReset}
-                className='flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary'>
-                <HiRefresh className='h-4 w-4' />
-                Restablecer
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={!hasChanges}
-                className='flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50'>
-                <HiSave className='h-4 w-4' />
-                Guardar Cambios
-              </button>
+              <span className='text-sm text-muted-foreground'>
+                Los cambios se guardan al dar clic en Asignar
+              </span>
             </div>
           </div>
         </div>
@@ -250,65 +324,31 @@ export function UserApplicationsManager() {
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Usuario Seleccionado
               </h3>
-              <div className='relative'>
-                <button
-                  onClick={() => setShowUserDropdown(!showUserDropdown)}
-                  className='flex w-full items-center gap-3 rounded-lg border border-border bg-secondary/50 p-3 transition-colors hover:bg-secondary'>
-                  <div
-                    className='flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-primary-foreground'
-                    style={{ backgroundColor: "#3B82F6" }}>
-                    {selectedUser ? (selectedUser.username?.[0] || 'U').toUpperCase() : 'U'}
-                  </div>
-                  <div className='flex-1 text-left'>
-                    <p className='font-medium text-foreground'>
-                      {selectedUser ? selectedUser.username || 'Select User' : 'Select User'}
-                    </p>
-                    <p className='text-xs text-muted-foreground'>
-                      {selectedUser?.status || 'No status'}
-                    </p>
-                  </div>
-                  <HiChevronDown
-                    className={`h-5 w-5 text-muted-foreground transition-transform ${showUserDropdown ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {showUserDropdown && (
-                  <div className='absolute left-0 right-0 top-full z-10 mt-2 rounded-lg border border-border bg-card shadow-xl'>
-                    <div className='max-h-64 overflow-y-auto p-2'>
-                      {users.map((user) => (
-                        <button
-                          key={user.id}
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setShowUserDropdown(false);
-                          }}
-                          className={`flex w-full items-center gap-3 rounded-lg p-3 transition-colors ${
-                            selectedUser?.id_user === user.id_user
-                              ? "bg-primary/10 text-primary"
-                              : "hover:bg-secondary"
-                          }`}>
-                          <div
-                            className='flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-primary-foreground'
-                            style={{ backgroundColor: "#3B82F6" }}>
-                            {user.avatar}
-                          </div>
-                          <div className='flex-1 text-left'>
-                            <p className='font-medium text-foreground'>
-                              {user.name}
-                            </p>
-                            <p className='text-xs text-muted-foreground'>
-                              {user.department} - {user.role}
-                            </p>
-                          </div>
-                          {selectedUser?.id_user === user.id_user && (
-                            <HiCheck className='h-5 w-5 text-primary' />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              <Select
+                value={selectedUser ? String(selectedUser.id_user) : ""}
+                onValueChange={(value) => {
+                  const id = Number(value);
+                  const user = users.find((u) => u.id_user === id) || null;
+                  setSelectedUser(user);
+                }}
+                disabled={isLoadingUsers || users.length === 0}>
+                <SelectTrigger className='mt-1 w-full bg-secondary border-border h-12 text-base py-3'>
+                  <SelectValue placeholder='Seleccionar usuario...' />
+                </SelectTrigger>
+                <SelectContent>
+                  {users
+                    .filter((user) => user.id_user != null)
+                    .map((user) => (
+                      <SelectItem
+                        key={user.id_user}
+                        value={String(user.id_user)}>
+                        <span className='flex items-center gap-2'>
+                          {user.username} {user.client?.name ? `- ${user.client.name}` : ""}
+                        </span>
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
 
               {/* User Info */}
               <div className='mt-4 space-y-2 border-t border-border pt-4'>
@@ -356,7 +396,7 @@ export function UserApplicationsManager() {
                   const Icon = getIcon(cat.icon);
                   return (
                     <div
-                      key={cat.id}
+                      key={cat.id_application_category}
                       className='flex items-center justify-between text-sm'>
                       <div className='flex items-center gap-2'>
                         <Icon className='h-4 w-4 text-muted-foreground' />
@@ -441,10 +481,10 @@ export function UserApplicationsManager() {
                 const Icon = getIcon(category.icon);
                 return (
                   <button
-                    key={category.id}
-                    onClick={() => setSelectedCategory(category.id)}
+                    key={category.id_application_category}
+                    onClick={() => setSelectedCategory(category.id_application_category)}
                     className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      selectedCategory === category.id
+                      selectedCategory === category.id_application_category
                         ? "bg-primary text-primary-foreground"
                         : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
                     }`}>

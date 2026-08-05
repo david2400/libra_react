@@ -16,7 +16,12 @@ import type {
 
 export const createUserApplicationAction = async (payload: ICreateUserApplication): Promise<ActionResultType<any>> => {
   try {
-    const userApplication = await userApplicationsRepository.create(payload);
+    const body: any = { ...payload };
+    if (body.user_id != null) body.user_id = Number(body.user_id);
+    if (body.application_id != null) body.application_id = Number(body.application_id);
+    body.is_active = body.is_active ?? true;
+    body.access_level = body.access_level || 'USER';
+    const userApplication = await userApplicationsRepository.create(body);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userApplications());
@@ -49,7 +54,11 @@ export const createUserApplicationAction = async (payload: ICreateUserApplicatio
 
 export const updateUserApplicationAction = async (id: string | number, payload: IUpdateUserApplication): Promise<ActionResultType<any>> => {
   try {
-    const userApplication = await userApplicationsRepository.update(id, payload);
+    const body: any = { ...payload };
+    if (body.user_id != null) body.user_id = Number(body.user_id);
+    if (body.application_id != null) body.application_id = Number(body.application_id);
+    delete body.id_user_application;
+    const userApplication = await userApplicationsRepository.update(id, body);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userApplications());
@@ -113,7 +122,19 @@ export const deleteUserApplicationAction = async (id: string | number): Promise<
 
 export const assignApplicationToUserAction = async (userId: string | number, applicationId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const userApplication = await userApplicationsRepository.assignApplication(userId, applicationId);
+    const today = new Date();
+    const end = new Date();
+    end.setFullYear(today.getFullYear() + 1);
+    const toISODate = (date: Date) => date.toISOString().slice(0, 10);
+    const payload: ICreateUserApplication = {
+      user_id: Number(userId),
+      application_id: Number(applicationId),
+      license_start_date: toISODate(today),
+      license_end_date: toISODate(end),
+      is_active: true,
+      access_level: 'USER',
+    };
+    const userApplication = await userApplicationsRepository.assignApplication(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userApplications());
@@ -237,8 +258,22 @@ export const deactivateUserLicenseAction = async (userId: string | number, appli
 
 export const bulkAssignApplicationsAction = async (userId: string | number, applicationIds: (string | number)[]): Promise<ActionResultType<any>> => {
   try {
+    const today = new Date();
+    const end = new Date();
+    end.setFullYear(today.getFullYear() + 1);
+    const toISODate = (date: Date) => date.toISOString().slice(0, 10);
     const results = await Promise.allSettled(
-      applicationIds.map(appId => userApplicationsRepository.assignApplication(userId, appId))
+      applicationIds.map(appId => {
+        const payload: ICreateUserApplication = {
+          user_id: Number(userId),
+          application_id: Number(appId),
+          license_start_date: toISODate(today),
+          license_end_date: toISODate(end),
+          is_active: true,
+          access_level: 'USER',
+        };
+        return userApplicationsRepository.assignApplication(payload);
+      })
     );
     
     const successful = results.filter(r => r.status === 'fulfilled').length;

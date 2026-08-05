@@ -10,6 +10,8 @@ import {
   IApplication,
   getApplications,
 } from "@/server/domains/access-control/security/applications";
+import { ApplicationCategoryManager } from "@/modules/security/applications-category/components/application-category-manager";
+import { getApplicationCategories, IApplicationCategory } from "@/server/domains/access-control/security/application_categories";
 
 export async function generateMetadata({
   params,
@@ -25,32 +27,25 @@ export async function generateMetadata({
   };
 }
 
-const MenusPage: NextPage = async () => {
+const ApplicationCategoryManagerPage: NextPage = async () => {
   try {
-    const menusResponse = await getMenus();
-    const applicationResponse = await getApplications();
+    const applicationCategoriesResponse = await getApplicationCategories();
 
     // Extract the data array from the paginated response
-    const menuData: IMenu[] = Array.isArray(menusResponse)
-      ? menusResponse
-      : menusResponse || [];
-
-    // Extract the data array from the paginated response
-    const applicationData: IApplication[] = Array.isArray(applicationResponse)
-      ? applicationResponse
-      : applicationResponse || [];
+    const applicationCategoriesData: IApplicationCategory[] = Array.isArray(applicationCategoriesResponse)
+      ? applicationCategoriesResponse
+      : applicationCategoriesResponse || [];
 
     return (
-      <MenuManager
-        initialData={menuData}
-        initialApplications={applicationData}
+      <ApplicationCategoryManager
+        initialData={applicationCategoriesData}
       />
     );
   } catch (error) {
     console.error("Error loading themes:", error);
     // Return empty data if API fails
-    return <MenuManager initialData={[]} initialApplications={[]} />;
+    return <ApplicationCategoryManager initialData={[]} />;
   }
 };
 
-export default MenusPage;
+export default ApplicationCategoryManagerPage;

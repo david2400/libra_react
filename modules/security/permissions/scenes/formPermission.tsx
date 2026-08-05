@@ -10,6 +10,9 @@ import { FormField } from "@repo/ui/form/scenes";
 import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
 import { FormSelectField } from "@repo/ui/form";
+import { useEffect, useMemo, useState } from "react";
+import { IApplication } from "@/server/domains/access-control/security/applications";
+import { getAllApplicationsServerAction } from "@/app/[locale]/(protected)/security/applications/actions";
 
 export const FormPermission = ({
   initialValues,
@@ -131,6 +134,51 @@ export const FormPermission = ({
   const selectedApiType = useWatch({ control, name: "api_type" });
   const methodOptions = getMethodsForApiType(selectedApiType);
 
+  const [applicationsData, setApplications] = useState<{
+    data: IApplication[];
+    loading: boolean;
+    error: string | null;
+  }>({
+    data: [],
+    loading: false,
+    error: null,
+  });
+
+  const cargarApplications = async () => {
+    try {
+      setApplications((prev) => ({ ...prev, loading: true, error: null }));
+
+      const applications = await getAllApplicationsServerAction();
+      setApplications({
+        data: applications,
+        loading: false,
+        error: null,
+      });
+    } catch (error) {
+      console.error("Error cargando applications:", error);
+      setApplications({
+        data: [],
+        loading: false,
+        error: "No se pudieron cargar las aplicaciones",
+      });
+    }
+  };
+
+  useEffect(() => {
+    cargarApplications();
+  }, []);
+
+  const opcionesApplications = useMemo(() => {
+    return applicationsData.data
+      .map((nivel) => ({
+        id: nivel.id_application.toString(),
+        value: nivel.id_application.toString(),
+        label: `${nivel.name}`,
+        disabled: false,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
+  }, [applicationsData.data]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
       {/* Información Básica */}
@@ -215,24 +263,21 @@ export const FormPermission = ({
         </div>
       </div>
 
-      {/* Asignación a Aplicación y Módulo */}
+      {/* Asignación a Aplicación */}
       <div className='space-y-4'>
         <h3 className='text-lg font-semibold text-gray-900'>
-          Asignación a Aplicación y Módulo
+          Asignación a Aplicación
         </h3>
         <div className='grid grid-cols-12 gap-4'>
-          <FormField
+          <FormSelectField
             controller={{ control, name: "application_id" }}
             label={t("fields.application_id")}
-            type='number'
-            className='col-span-12 md:col-span-6'
-          />
-
-          <FormField
-            controller={{ control, name: "module_id" }}
-            label={t("fields.module_id")}
-            type='number'
-            className='col-span-12 md:col-span-6'
+            data={opcionesApplications}
+            placeholder='Seleccionar aplicación...'
+            disabled={applicationsData.loading || !!applicationsData.error}
+            error={errors.application_id?.message}
+            className='w-full col-span-12 md:col-span-6'
+            triggerClassName='!w-full'
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-import 'server-only';
+// import 'server-only';
 import { cache } from 'react';
 
 import {
@@ -18,9 +18,17 @@ export const getApplicationCategoryById = cache((id: string | number) =>
   applicationCategoriesRepository.getById(id)
 );
 
-export const getActiveApplicationCategories = cache(() =>
-  applicationCategoriesRepository.getActive()
-);
+export const getActiveApplicationCategories = cache(async () => {
+  // TODO: revertir a applicationCategoriesRepository.getActive() una vez el backend
+  // corrija el mapping de rutas: GET /application-categories/active colisiona con
+  // /application-categories/{id} (Spring intenta parsear "active" como Long y falla con 400).
+  try {
+    return await applicationCategoriesRepository.getActive();
+  } catch (error) {
+    console.error('getActiveApplicationCategories fallback to list():', error);
+    return applicationCategoriesRepository.list();
+  }
+});
 
 export const getRootApplicationCategories = cache(() =>
   applicationCategoriesRepository.getRootCategories()
@@ -50,7 +58,6 @@ export const getApplicationCategoryProfile = cache(async (id: string | number) =
   return {
     category,
     applications,
-    isActive: category?.is_active ?? false,
     applicationCount: applications.length,
   };
 });
@@ -66,7 +73,7 @@ export const getApplicationCategoryOverview = cache(async (id: string | number) 
     applications,
     child_categories: childCategories,
     stats: {
-      category_id: category?.id_application_category || 0,
+      category_id: category?.parent_category_application_id || 0,
       total_applications: applications.length,
       active_applications: applications.filter(app => app.is_active).length,
       total_users: 0, // Would be calculated from actual data
@@ -81,10 +88,10 @@ export const getApplicationCategoryOverview = cache(async (id: string | number) 
 // Build category tree structure
 export const buildCategoryTree = cache(async (): Promise<ICategoryTree> => {
   const allCategories = await getActiveApplicationCategories();
-  const rootCategories = allCategories.filter(cat => !cat.parent_category_id);
+  const rootCategories = allCategories.filter(cat => !cat.parent_category_application_id);
   
   const buildTreeNode = (category: IApplicationCategory, depth: number = 0): ICategoryTreeNode => {
-    const children = allCategories.filter(cat => cat.parent_category_id === category.id_application_category);
+    const children = allCategories.filter(cat => cat.parent_category_application_id === category.parent_category_application_id);
     const childTreeNodes = children.map(child => buildTreeNode(child, depth + 1));
     
     return {
@@ -128,38 +135,31 @@ export const getCategoryUsageStats = cache(async (categoryId: string | number) =
   };
 });
 
-// Get all categories with application counts
-export const getCategoriesWithApplicationCounts = cache(async () => {
-  const categories = await getActiveApplicationCategories();
-  const categoriesWithCounts = await Promise.all(
-    categories.map(async (category) => {
-      const applications = await getApplicationsByCategory(category.id_application_category);
-      return {
-        ...category,
-        application_count: applications.length,
-        active_application_count: applications.filter(app => app.is_active).length,
-      };
-    })
-  );
+// // Get all categories with application counts
+// export const getCategoriesWithApplicationCounts = cache(async () => {
+//   const categories = await getActiveApplicationCategories();
+//   const categoriesWithCounts = await Promise.all(
+//     categories.map(async (category) => {
+//       const applications = await getApplicationsByCategory(category.id_application_category);
+//       return {
+//         ...category,
+//         application_count: applications.length,
+//         active_application_count: applications.filter(app => app.is_active).length,
+//       };
+//     })
+//   );
   
-  return categoriesWithCounts;
-});
+//   return categoriesWithCounts;
+// });
 
 // Get category health status
 export const getCategoryHealthStatus = cache(async (categoryId: string | number) => {
   const overview = await getApplicationCategoryOverview(categoryId);
   
   const healthStatus = {
-    healthy: overview.application_count > 0 && overview.category?.is_active,
     issues: [] as string[],
     recommendations: [] as string[]
   };
-  
-  // Check for inactive status
-  if (!overview.category?.is_active) {
-    healthStatus.issues.push('Category is inactive');
-    healthStatus.recommendations.push('Activate the category to make it available');
-  }
   
   // Check for empty category
   if (overview.application_count === 0) {
@@ -180,13 +180,13 @@ export const getCategoryHealthStatus = cache(async (categoryId: string | number)
 });
 
 // Get popular categories (by application count)
-export const getPopularCategories = cache(async (limit: number = 10) => {
-  const categoriesWithCounts = await getCategoriesWithApplicationCounts();
+// export const getPopularCategories = cache(async (limit: number = 10) => {
+//   const categoriesWithCounts = await getCategoriesWithApplicationCounts();
   
-  return categoriesWithCounts
-    .sort((a, b) => b.application_count - a.application_count)
-    .slice(0, limit);
-});
+//   return categoriesWithCounts
+//     .sort((a, b) => b.application_count - a.application_count)
+//     .slice(0, limit);
+// });
 
 // Search categories
 export const searchCategories = cache(async (query: string, limit: number = 20) => {
