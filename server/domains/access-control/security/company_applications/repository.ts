@@ -41,7 +41,7 @@ export const companyApplicationsRepository = {
 
   // Update company application
   update: async (id: string | number, payload: IUpdateCompanyApplication) => {
-   
+
     console.log('[company-applications:update] payload:', JSON.stringify(payload));
     const companyApplication = await serverFetch.put<ICompanyApplication>(`/api/access_control/company-applications/${id}`, payload, {
       revalidate: false,
@@ -54,6 +54,13 @@ export const companyApplicationsRepository = {
     serverFetch.delete<void>(`/api/access_control/company-applications/${id}`, {
       revalidate: false,
     }),
+
+  // Delete company application
+  revokeAllApplications: (companyId: string | number) =>
+    serverFetch.delete<void>(`/api/access_control/company-applications/company/${companyId}`, {
+      revalidate: false,
+    }),
+
 
   // Get applications by company
   getByCompany: (companyId: string | number) =>

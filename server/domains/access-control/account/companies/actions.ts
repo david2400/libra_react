@@ -32,13 +32,7 @@ export const createCompanyAction = async (payload: ICreateCompany): Promise<Acti
       await revalidateCacheTag(accessControlTags.company(company.id_company));
     }
     
-    // Log activity
-    await companyActivityRepository.create({
-      company_id: company.id_company,
-      activity_type: 'profile_update',
-      description: 'ICompany created',
-      metadata: { company_name: company.name }
-    });
+    // Activity logging disabled: company-activities endpoint is not available
     
     return { success: true, data: company };
   } catch (error) {
@@ -71,13 +65,7 @@ export const updateCompanyAction = async (id: string | number, payload: IUpdateC
     await revalidateCacheTag(accessControlTags.companies());
     await revalidateCacheTag(accessControlTags.company(id));
     
-    // Log activity
-    await companyActivityRepository.create({
-      company_id: id,
-      activity_type: 'profile_update',
-      description: 'ICompany profile updated',
-      metadata: { updatedFields: Object.keys(payload) }
-    });
+    // Activity logging disabled: company-activities endpoint is not available
     
     return { success: true, data: company };
   } catch (error) {

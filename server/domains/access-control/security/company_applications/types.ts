@@ -4,27 +4,12 @@ import { IApplication } from '../applications';
 
 // --- ICompanyApplication Types -------------------------------------------------------------
 
-export interface ICompanyApplication extends IAuditInfo {
-  id_company_application: number;
-  company_id: number;
-  application_id: number;
-  license_start_date: string;
-  license_end_date: string;
-  is_active: boolean;
-  user_limit?: number;
-  subscription_type?: string;
-  auto_renew?: boolean;
-  notes?: string;
-  // company?: ICompany;
-  // application?: IApplication;
-}
 
 export interface ICreateCompanyApplication {
   company_id: number;
   application_id: number;
   license_start_date: string;
   license_end_date: string;
-  is_active: boolean;
   user_limit?: number;
   subscription_type?: string;
   auto_renew?: boolean;
@@ -32,14 +17,18 @@ export interface ICreateCompanyApplication {
 }
 
 export interface IUpdateCompanyApplication extends ICreateCompanyApplication {
-  id_company_application?: number;
+  id_company_application: number;
 }
 
 export interface ICompanyApplicationParams extends ListParams {
   company_id?: number;
   application_id?: number;
-  is_active?: boolean;
   subscription_type?: string;
+}
+
+export interface ICompanyApplication extends IUpdateCompanyApplication {
+  // company?: ICompany;
+  // application?: IApplication;
 }
 
 // --- Repository and Query Types -----------------------------------------------------------

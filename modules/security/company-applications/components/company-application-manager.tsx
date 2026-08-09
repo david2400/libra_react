@@ -33,6 +33,7 @@ import {
   createCompanyApplicationServerAction,
   deleteCompanyApplicationServerAction,
   getCompanyApplicationsServerAction,
+  revokeAllApplicationsActionServerAction,
 } from "@/app/[locale]/(protected)/security/company-applications/actions";
 import { ICompanyApplication } from "../models/company-application.interface";
 import { useApplicationData } from "../hooks/use-application-data";
@@ -218,7 +219,6 @@ export const CompanyApplicationManager = ({
           application_id: appId,
           license_start_date: toISODate(today),
           license_end_date: toISODate(addOneYear(today)),
-          is_active: true,
         });
         if (created) {
           setCompanyApplications((prev) => [...prev, created as ICompanyApplication]);
@@ -253,7 +253,6 @@ export const CompanyApplicationManager = ({
             application_id: appId,
             license_start_date: toISODate(today),
             license_end_date: toISODate(addOneYear(today)),
-            is_active: true,
           }),
         ),
       );
@@ -274,9 +273,7 @@ export const CompanyApplicationManager = ({
 
     toRemove.forEach((ca) => setPending(ca.application_id, true));
     try {
-      await Promise.all(
-        toRemove.map((ca) => deleteCompanyApplicationServerAction(ca.id_company_application)),
-      );
+      await revokeAllApplicationsActionServerAction(selectedCompany.id_company);
       const removedIds = new Set(toRemove.map((ca) => ca.id_company_application));
       setCompanyApplications((prev) =>
         prev.filter((ca) => !removedIds.has(ca.id_company_application)),
@@ -501,11 +498,10 @@ export const CompanyApplicationManager = ({
                         <button
                           key={mode}
                           onClick={() => setFilterMode(mode)}
-                          className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
-                            filterMode === mode
+                          className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${filterMode === mode
                               ? "bg-primary text-primary-foreground"
                               : "text-muted-foreground hover:text-foreground"
-                          }`}>
+                            }`}>
                           {mode === "all"
                             ? "Todas"
                             : mode === "assigned"
@@ -521,11 +517,10 @@ export const CompanyApplicationManager = ({
                 <div className='mb-4 flex flex-wrap gap-2'>
                   <button
                     onClick={() => setSelectedCategory("all")}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      selectedCategory === "all"
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${selectedCategory === "all"
                         ? "bg-primary text-primary-foreground"
                         : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                    }`}>
+                      }`}>
                     <HiViewGrid className='h-4 w-4' />
                     Todas
                   </button>
@@ -537,11 +532,10 @@ export const CompanyApplicationManager = ({
                         onClick={() =>
                           setSelectedCategory(category.id_application_category ?? "all")
                         }
-                        className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                          selectedCategory === category.id_application_category
+                        className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${selectedCategory === category.id_application_category
                             ? "bg-primary text-primary-foreground"
                             : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                        }`}>
+                          }`}>
                         <Icon className='h-4 w-4' />
                         {category.name}
                       </button>
@@ -610,11 +604,10 @@ function ApplicationCard({
 }) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${
-        isAssigned
+      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${isAssigned
           ? "border-primary/50 bg-primary/5"
           : "border-border bg-card hover:border-primary/30"
-      }`}>
+        }`}>
       <div className='p-4'>
         <div className='flex items-start gap-4'>
           {/* Icon */}
@@ -641,11 +634,10 @@ function ApplicationCard({
           <button
             onClick={onToggle}
             disabled={isPending}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
-              isAssigned
+            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${isAssigned
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
-            }`}>
+              }`}>
             {isPending ? (
               "..."
             ) : isAssigned ? (

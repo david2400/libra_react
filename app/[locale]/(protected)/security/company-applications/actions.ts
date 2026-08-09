@@ -1,7 +1,7 @@
 'use server';
 
 import { IApplication, getApplications } from "@/server/domains/access-control/security/applications";
-import { ICompanyApplication, ICreateCompanyApplication, IUpdateCompanyApplication, createCompanyApplicationAction, deleteCompanyApplicationAction, getCompanyApplications, updateCompanyApplicationAction } from "@/server/domains/access-control/security/company_applications";
+import { ICompanyApplication, ICreateCompanyApplication, IUpdateCompanyApplication, createCompanyApplicationAction, deleteCompanyApplicationAction, getCompanyApplications, revokeAllApplicationsAction, updateCompanyApplicationAction } from "@/server/domains/access-control/security/company_applications";
 
 export async function createCompanyApplicationServerAction(payload: ICreateCompanyApplication) {
   const result = await createCompanyApplicationAction(payload);
@@ -25,6 +25,16 @@ export async function updateCompanyApplicationServerAction(companyApplicationId:
 
 export async function deleteCompanyApplicationServerAction(companyApplicationId: string | number) {
   const result = await deleteCompanyApplicationAction(companyApplicationId);
+
+  if (!result.success) {
+    throw new Error(result.error?.message ?? 'No se pudo eliminar el módulo de aplicación');
+  }
+
+  return result.data;
+}
+
+export async function revokeAllApplicationsActionServerAction(companyId: number) {
+  const result = await revokeAllApplicationsAction(companyId);
 
   if (!result.success) {
     throw new Error(result.error?.message ?? 'No se pudo eliminar el módulo de aplicación');

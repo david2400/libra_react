@@ -62,6 +62,7 @@ interface IApplication {
   id_application: number;
   name: string;
   description?: string;
+  application_category_id?: number | null;
   route?: string;
   maintenance_mode?: boolean;
   publication_date?: string;
@@ -72,15 +73,17 @@ interface IApplication {
 }
 
 interface IApplicationCategory {
-  id?: number;
+  id_application_category?: number;
   name?: string;
+  icon?: string;
 }
 import { useApplicationData } from "../hooks/use-application-data";
+import { IUserApplication } from "../models/user-application.interface";
 import { getUsersServerAction } from "@/app/[locale]/(protected)/account/user-companies/actions";
 import {
   getUserApplicationsByUserServerAction,
-  assignApplicationToUserServerAction,
-  revokeApplicationFromUserServerAction,
+  createUserApplicationServerAction,
+  deleteUserApplicationServerAction,
 } from "@/app/[locale]/(protected)/security/user-applications/actions";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -100,6 +103,14 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HiArchive,
   HiServer,
 };
+
+const addOneYear = (date: Date) => {
+  const next = new Date(date);
+  next.setFullYear(next.getFullYear() + 1);
+  return next;
+};
+
+const toISODate = (date: Date) => date.toISOString().slice(0, 10);
 
 export function UserApplicationsManager() {
   // Data from custom hook
@@ -134,10 +145,25 @@ export function UserApplicationsManager() {
   
   // UI states
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
-  const [userAssignments, setUserAssignments] = useState<Record<number, number[]>>({});
+  const [userApplications, setUserApplications] = useState<Record<number, IUserApplication[]>>({});
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState<number | "all">("all");
   const [filterMode, setFilterMode] = useState<"all" | "assigned" | "unassigned">("all");
+  const [pendingAppIds, setPendingAppIds] = useState<Set<number>>(new Set());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const setPending = (appId: number, pending: boolean) => {
+    setPendingAppIds((prev) => {
+      const next = new Set(prev);
+      if (pending) next.add(appId);
+      else next.delete(appId);
+      return next;
+    });
+  };
+
+  const showError = (message: string) => {
+    Swal.fire({ title: "Error!", text: message, icon: "error" });
+  };
 
   useEffect(() => {
     const loadUserApplications = async () => {
@@ -145,10 +171,10 @@ export function UserApplicationsManager() {
       const userId = selectedUser.id_user;
       try {
         const data = await getUserApplicationsByUserServerAction(userId);
-        const appIds = (data || [])
-          .map((ua: any) => ua.application_id)
-          .filter((id: any): id is number => id != null);
-        setUserAssignments((prev) => ({ ...prev, [userId]: appIds }));
+        setUserApplications((prev) => ({
+          ...prev,
+          [userId]: (data || []) as IUserApplication[],
+        }));
       } catch (error) {
         console.error("Error cargando aplicaciones del usuario:", error);
       }
@@ -156,143 +182,186 @@ export function UserApplicationsManager() {
     loadUserApplications();
   }, [selectedUser]);
 
-  const currentAssignments = selectedUser?.id_user ? (userAssignments[selectedUser.id_user] || []) : [];
+  const currentAssignments = selectedUser?.id_user
+    ? (userApplications[selectedUser.id_user] || [])
+    : [];
+  const currentAppIds = useMemo(
+    () => currentAssignments.map((ua) => ua.application_id),
+    [currentAssignments]
+  );
 
   const filteredApps = useMemo(() => {
-    return applications.filter((app) => {
+    return (applications as IApplication[]).filter((app) => {
       const matchesSearch =
-        app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        app.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (app.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
-      // TODO: Add category support when backend provides it
-      const matchesCategory = selectedCategory === "all";
-      const isAssigned = currentAssignments.includes(app.id_application);
+      const matchesCategory =
+        selectedCategory === "all" || app.application_category_id === selectedCategory;
+      const isAssigned = currentAppIds.includes(app.id_application);
       const matchesFilter =
         filterMode === "all" ||
         (filterMode === "assigned" && isAssigned) ||
         (filterMode === "unassigned" && !isAssigned);
       return matchesSearch && matchesCategory && matchesFilter;
     });
-  }, [searchQuery, selectedCategory, currentAssignments, filterMode, applications]);
+  }, [applications, searchQuery, selectedCategory, currentAppIds, filterMode]);
 
-  const toggleApp = async (appId: string | number) => {
+  const toggleApp = async (app: IApplication) => {
     const userId = selectedUser?.id_user;
-    console.log("[toggleApp] userId:", userId, "appId:", appId);
     if (!userId) {
-      Swal.fire({
-        title: "Error!",
-        text: "Selecciona un usuario primero",
-        icon: "error",
-      });
+      showError("Selecciona un usuario antes de asignar o remover una aplicación");
       return;
     }
-    const appIdNum = Number(appId);
-    if (!Number.isFinite(appIdNum)) {
-      Swal.fire({
-        title: "Error!",
-        text: "Aplicación inválida",
-        icon: "error",
-      });
-      return;
-    }
-    const isAssigned = currentAssignments.includes(appIdNum);
 
+    const appId = Number(app.id_application);
+    if (!Number.isFinite(appId) || !Number.isFinite(userId)) {
+      showError("No se pudo identificar el usuario o la aplicación");
+      return;
+    }
+
+    const existing = currentAssignments.find((ua) => ua.application_id === appId);
+
+    setPending(appId, true);
     try {
-      if (isAssigned) {
-        await revokeApplicationFromUserServerAction(userId, appIdNum);
-        setUserAssignments((prev) => ({
+      if (existing) {
+        if (!Number.isFinite(existing.id_user_application)) {
+          showError("No se pudo identificar la asignación a remover");
+          return;
+        }
+        await deleteUserApplicationServerAction(existing.id_user_application);
+        setUserApplications((prev) => ({
           ...prev,
-          [userId]: (prev[userId] || []).filter((id) => id !== appIdNum),
+          [userId]: (prev[userId] || []).filter(
+            (ua) => ua.id_user_application !== existing.id_user_application
+          ),
         }));
       } else {
-        await assignApplicationToUserServerAction(userId, appIdNum);
-        setUserAssignments((prev) => ({
-          ...prev,
-          [userId]: [...(prev[userId] || []), appIdNum],
-        }));
+        const today = new Date();
+        const created = await createUserApplicationServerAction({
+          user_id: userId,
+          application_id: appId,
+          license_start_date: toISODate(today),
+          license_end_date: toISODate(addOneYear(today)),
+          is_active: true,
+          access_level: 'USER',
+        });
+        if (created) {
+          setUserApplications((prev) => ({
+            ...prev,
+            [userId]: [...(prev[userId] || []), created as IUserApplication],
+          }));
+        }
       }
     } catch (error: any) {
-      Swal.fire({
-        title: "Error!",
-        text: error?.message || "No se pudo actualizar la asignación",
-        icon: "error",
-      });
+      showError(error?.message || "No se pudo actualizar la asignación");
+    } finally {
+      setPending(appId, false);
     }
   };
 
   const assignAll = async () => {
     const userId = selectedUser?.id_user;
     if (!userId) {
-      Swal.fire({
-        title: "Error!",
-        text: "Selecciona un usuario primero",
-        icon: "error",
-      });
+      showError("Selecciona un usuario primero");
       return;
     }
-    const toAssign = applications
-      .map((app) => app.id_application)
-      .filter((appId) => Number.isFinite(appId) && !currentAssignments.includes(appId));
+    if (!Number.isFinite(userId)) {
+      showError("No se pudo identificar el usuario");
+      return;
+    }
+
+    const missing = (applications as IApplication[])
+      .map((app) => ({ app, appId: Number(app.id_application) }))
+      .filter(({ appId }) => Number.isFinite(appId) && !currentAppIds.includes(appId));
+
+    missing.forEach(({ appId }) => setPending(appId, true));
     try {
-      await Promise.all(toAssign.map((appId) => assignApplicationToUserServerAction(userId, appId)));
-      setUserAssignments((prev) => ({
+      const today = new Date();
+      const created = await Promise.all(
+        missing.map(({ appId }) =>
+          createUserApplicationServerAction({
+            user_id: userId,
+            application_id: appId,
+            license_start_date: toISODate(today),
+            license_end_date: toISODate(addOneYear(today)),
+            is_active: true,
+            access_level: 'USER',
+          })
+        )
+      );
+      setUserApplications((prev) => ({
         ...prev,
-        [userId]: [...(prev[userId] || []), ...toAssign],
+        [userId]: [
+          ...(prev[userId] || []),
+          ...(created.filter(Boolean) as IUserApplication[]),
+        ],
       }));
     } catch (error: any) {
-      Swal.fire({
-        title: "Error!",
-        text: error?.message || "No se pudieron asignar todas las aplicaciones",
-        icon: "error",
-      });
+      showError(error?.message || "No se pudieron asignar todas las aplicaciones");
+    } finally {
+      missing.forEach(({ appId }) => setPending(appId, false));
     }
   };
 
   const removeAll = async () => {
     const userId = selectedUser?.id_user;
-    if (!userId) {
-      Swal.fire({
-        title: "Error!",
-        text: "Selecciona un usuario primero",
-        icon: "error",
-      });
-      return;
-    }
-    const toRemove = [...currentAssignments];
+    if (!userId) return;
+    const toRemove = currentAssignments.filter((ua) => Number.isFinite(ua.id_user_application));
+
+    toRemove.forEach((ua) => setPending(ua.application_id, true));
     try {
-      await Promise.all(toRemove.map((appId) => revokeApplicationFromUserServerAction(userId, appId)));
-      setUserAssignments((prev) => ({ ...prev, [userId]: [] }));
+      await Promise.all(
+        toRemove.map((ua) => deleteUserApplicationServerAction(ua.id_user_application))
+      );
+      setUserApplications((prev) => ({ ...prev, [userId]: [] }));
     } catch (error: any) {
-      Swal.fire({
-        title: "Error!",
-        text: error?.message || "No se pudieron remover las aplicaciones",
-        icon: "error",
-      });
+      showError(error?.message || "No se pudieron remover las aplicaciones");
+    } finally {
+      toRemove.forEach((ua) => setPending(ua.application_id, false));
+    }
+  };
+
+  const handleRefresh = async () => {
+    if (!selectedUser?.id_user) return;
+    const userId = selectedUser.id_user;
+    setIsRefreshing(true);
+    try {
+      const data = await getUserApplicationsByUserServerAction(userId);
+      setUserApplications((prev) => ({
+        ...prev,
+        [userId]: (data || []) as IUserApplication[],
+      }));
+    } catch (error) {
+      console.error("Error refrescando asignaciones:", error);
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
   const stats = useMemo(() => {
-    const assigned = currentAssignments.length;
+    const assigned = currentAppIds.length;
     const total = applications.length;
-    const byCategory = categories
-      .filter((c) => c.id_application_category != null)
-      .map((cat) => ({
-        ...cat,
-        count: applications.filter(
-          (app) =>
-            app.application_category_id === cat.id_application_category &&
-            currentAssignments.includes(app.id_application),
-        ).length,
-        total: applications.filter(
+    const byCategory = (categories as IApplicationCategory[])
+      .filter((c) => !!c.id_application_category)
+      .map((cat) => {
+        const catApps = (applications as IApplication[]).filter(
           (app) => app.application_category_id === cat.id_application_category,
-        ).length,
-      }));
+        );
+        return {
+          ...cat,
+          count: catApps.filter((app) => currentAppIds.includes(app.id_application)).length,
+          total: catApps.length,
+        };
+      });
     return { assigned, total, byCategory };
-  }, [currentAssignments]);
+  }, [currentAppIds, applications, categories]);
 
-  const getIcon = (iconName: string) => {
-    const IconComponent = iconMap[iconName];
+  const getIcon = (iconName?: string) => {
+    const IconComponent = iconMap[iconName || ''];
     return IconComponent || HiViewGrid;
   };
+
+  const loading = isLoadingApps || isLoadingCategories || isLoadingUsers;
 
   return (
     <div className='min-h-screen bg-background p-6'>
@@ -309,9 +378,13 @@ export function UserApplicationsManager() {
               </p>
             </div>
             <div className='flex items-center gap-3'>
-              <span className='text-sm text-muted-foreground'>
-                Los cambios se guardan al dar clic en Asignar
-              </span>
+              <button
+                onClick={handleRefresh}
+                disabled={isRefreshing || !selectedUser}
+                className='flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50'>
+                <HiRefresh className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                Actualizar
+              </button>
             </div>
           </div>
         </div>
@@ -387,7 +460,7 @@ export function UserApplicationsManager() {
               <div className='h-2 w-full overflow-hidden rounded-full bg-secondary'>
                 <div
                   className='h-full rounded-full bg-primary transition-all duration-300'
-                  style={{ width: `${(stats.assigned / stats.total) * 100}%` }}
+                  style={{ width: `${stats.total > 0 ? (stats.assigned / stats.total) * 100 : 0}%` }}
                 />
               </div>
 
@@ -421,13 +494,15 @@ export function UserApplicationsManager() {
               <div className='space-y-2'>
                 <button
                   onClick={assignAll}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20'>
+                  disabled={!selectedUser}
+                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiPlus className='h-4 w-4' />
                   Asignar Todas
                 </button>
                 <button
                   onClick={removeAll}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20'>
+                  disabled={!selectedUser}
+                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiMinus className='h-4 w-4' />
                   Remover Todas
                 </button>
@@ -477,12 +552,22 @@ export function UserApplicationsManager() {
 
             {/* Categories */}
             <div className='mb-4 flex flex-wrap gap-2'>
-              {categories.map((category) => {
+              <button
+                onClick={() => setSelectedCategory("all")}
+                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                  selectedCategory === "all"
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                }`}>
+                <HiViewGrid className='h-4 w-4' />
+                Todas
+              </button>
+              {(categories as IApplicationCategory[]).map((category) => {
                 const Icon = getIcon(category.icon);
                 return (
                   <button
                     key={category.id_application_category}
-                    onClick={() => setSelectedCategory(category.id_application_category)}
+                    onClick={() => setSelectedCategory(category.id_application_category ?? "all")}
                     className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       selectedCategory === category.id_application_category
                         ? "bg-primary text-primary-foreground"
@@ -496,24 +581,32 @@ export function UserApplicationsManager() {
             </div>
 
             {/* Applications Grid */}
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
-              {filteredApps.map((app) => {
-                const isAssigned = currentAssignments.includes(app.id_application);
-                const Icon = getIcon(app.icon);
-                return (
-                  <ApplicationCard
-                    key={app.id_application}
-                    app={app}
-                    isAssigned={isAssigned}
-                    onToggle={() => toggleApp(app.id_application)}
-                    Icon={Icon}
-                    categories={categories}
-                  />
-                );
-              })}
-            </div>
+            {loading ? (
+              <div className='flex items-center justify-center rounded-xl border border-border bg-card py-16'>
+                <p className='text-sm text-muted-foreground'>Cargando aplicaciones...</p>
+              </div>
+            ) : (
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
+                {filteredApps.map((app) => {
+                  const isAssigned = currentAppIds.includes(app.id_application);
+                  const category = (categories as IApplicationCategory[]).find(
+                    (c) => c.id_application_category === app.application_category_id,
+                  );
+                  return (
+                    <ApplicationCard
+                      key={app.id_application}
+                      app={app}
+                      isAssigned={isAssigned}
+                      isPending={pendingAppIds.has(app.id_application)}
+                      onToggle={() => toggleApp(app)}
+                      categoryName={category?.name}
+                    />
+                  );
+                })}
+              </div>
+            )}
 
-            {filteredApps.length === 0 && (
+            {!loading && filteredApps.length === 0 && (
               <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16'>
                 <HiSearch className='mb-4 h-12 w-12 text-muted-foreground' />
                 <p className='text-lg font-medium text-foreground'>
@@ -534,15 +627,15 @@ export function UserApplicationsManager() {
 function ApplicationCard({
   app,
   isAssigned,
+  isPending,
   onToggle,
-  Icon,
-  categories,
+  categoryName,
 }: {
   app: IApplication;
   isAssigned: boolean;
+  isPending: boolean;
   onToggle: () => void;
-  Icon: React.ComponentType<{ className?: string }>;
-  categories: IApplicationCategory[];
+  categoryName?: string;
 }) {
   return (
     <div
@@ -551,27 +644,13 @@ function ApplicationCard({
           ? "border-primary/50 bg-primary/5"
           : "border-border bg-card hover:border-primary/30"
       }`}>
-      {/* Status Badge */}
-      {app.status !== "active" && (
-        <div className='absolute right-3 top-3'>
-          <span
-            className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-              app.status === "beta"
-                ? "bg-warning/20 text-warning"
-                : "bg-muted text-muted-foreground"
-            }`}>
-            {app.status === "beta" ? "Beta" : "Deprecated"}
-          </span>
-        </div>
-      )}
-
       <div className='p-4'>
         <div className='flex items-start gap-4'>
           {/* Icon */}
           <div
             className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl'
-            style={{ backgroundColor: `${app.color}20` }}>
-            <Icon className='h-6 w-6' />
+            style={{ backgroundColor: "#3B82F620" }}>
+            <HiViewGrid className='h-6 w-6' />
           </div>
 
           {/* Content */}
@@ -586,16 +665,19 @@ function ApplicationCard({
         {/* Toggle Button */}
         <div className='mt-4 flex items-center justify-between'>
           <span className='text-xs text-muted-foreground capitalize'>
-            {categories.find((c) => c.id === app.category)?.name}
+            {categoryName || "Sin categoría"}
           </span>
           <button
             onClick={onToggle}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+            disabled={isPending}
+            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
               isAssigned
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
             }`}>
-            {isAssigned ? (
+            {isPending ? (
+              "..."
+            ) : isAssigned ? (
               <>
                 <HiCheck className='h-4 w-4' />
                 Asignada

@@ -2,13 +2,13 @@
 
 import { revalidateCacheTag } from '@/server/lib/cache-tags';
 
-import { 
-  companyApplicationsRepository, 
+import {
+  companyApplicationsRepository,
 } from './repository';
 import { accessControlTags } from '@/server/lib/cache-tags';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
-import type { 
-  ICreateCompanyApplication, 
+import type {
+  ICreateCompanyApplication,
   IUpdateCompanyApplication,
 } from './types';
 
@@ -17,13 +17,13 @@ import type {
 export const createCompanyApplicationAction = async (payload: ICreateCompanyApplication): Promise<ActionResultType<any>> => {
   try {
     const companyApplication = await companyApplicationsRepository.create(payload);
-    
+
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companyApplications());
     if (typeof companyApplication.id_company_application === 'string' || typeof companyApplication.id_company_application === 'number') {
       await revalidateCacheTag(accessControlTags.companyApplication(companyApplication.id_company_application));
     }
-    
+
     return { success: true, data: companyApplication };
   } catch (error) {
     if (error instanceof ServerApiError && error.status === 409) {
@@ -68,11 +68,11 @@ export const createCompanyApplicationAction = async (payload: ICreateCompanyAppl
 export const updateCompanyApplicationAction = async (id: string | number, payload: IUpdateCompanyApplication): Promise<ActionResultType<any>> => {
   try {
     const companyApplication = await companyApplicationsRepository.update(id, payload);
-    
+
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companyApplications());
     await revalidateCacheTag(accessControlTags.companyApplication(id));
-    
+
     return { success: true, data: companyApplication };
   } catch (error) {
     if (error instanceof ServerApiError) {
@@ -85,7 +85,7 @@ export const updateCompanyApplicationAction = async (id: string | number, payloa
         }
       };
     }
-    
+
     return {
       success: false,
       error: {
@@ -99,11 +99,11 @@ export const updateCompanyApplicationAction = async (id: string | number, payloa
 export const deleteCompanyApplicationAction = async (id: string | number): Promise<ActionResultType<void>> => {
   try {
     await companyApplicationsRepository.delete(id);
-    
+
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companyApplications());
     await revalidateCacheTag(accessControlTags.companyApplication(id));
-    
+
     return { success: true, data: undefined };
   } catch (error) {
     if (error instanceof ServerApiError) {
@@ -116,7 +116,7 @@ export const deleteCompanyApplicationAction = async (id: string | number): Promi
         }
       };
     }
-    
+
     return {
       success: false,
       error: {
@@ -127,17 +127,28 @@ export const deleteCompanyApplicationAction = async (id: string | number): Promi
   }
 };
 
+
+export const revokeAllApplicationsAction = async (companyId: number): Promise<ActionResultType<void>> => {
+  try {
+    await companyApplicationsRepository.revokeAllApplications(companyId);
+
+    return { success: true, data: undefined };
+  } catch (error) {
+    throw error;
+  }
+};
+
 // --- License Management Actions -----------------------------------------------
 
 export const activateLicenseAction = async (companyId: string | number, applicationId: string | number): Promise<ActionResultType<any>> => {
   try {
     const result = await companyApplicationsRepository.activateLicense(companyId, applicationId);
-    
+
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companyApplications());
     await revalidateCacheTag(accessControlTags.company(companyId));
     await revalidateCacheTag(accessControlTags.application(applicationId));
-    
+
     return { success: true, data: result };
   } catch (error) {
     if (error instanceof ServerApiError) {
@@ -150,7 +161,7 @@ export const activateLicenseAction = async (companyId: string | number, applicat
         }
       };
     }
-    
+
     return {
       success: false,
       error: {
@@ -164,12 +175,12 @@ export const activateLicenseAction = async (companyId: string | number, applicat
 export const deactivateLicenseAction = async (companyId: string | number, applicationId: string | number): Promise<ActionResultType<any>> => {
   try {
     const result = await companyApplicationsRepository.deactivateLicense(companyId, applicationId);
-    
+
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companyApplications());
     await revalidateCacheTag(accessControlTags.company(companyId));
     await revalidateCacheTag(accessControlTags.application(applicationId));
-    
+
     return { success: true, data: result };
   } catch (error) {
     if (error instanceof ServerApiError) {
@@ -182,7 +193,7 @@ export const deactivateLicenseAction = async (companyId: string | number, applic
         }
       };
     }
-    
+
     return {
       success: false,
       error: {
@@ -198,7 +209,7 @@ export const deactivateLicenseAction = async (companyId: string | number, applic
 export const assignApplicationToCompanyAction = async (companyId: string | number, applicationId: string | number, payload?: ICreateCompanyApplication): Promise<ActionResultType<any>> => {
   try {
     let result;
-    
+
     if (payload) {
       // Use full payload for detailed assignment
       result = await companyApplicationsRepository.create(payload);
@@ -206,12 +217,12 @@ export const assignApplicationToCompanyAction = async (companyId: string | numbe
       // Use quick assign endpoint
       result = await companyApplicationsRepository.assignApplication(companyId, applicationId);
     }
-    
+
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companyApplications());
     await revalidateCacheTag(accessControlTags.company(companyId));
     await revalidateCacheTag(accessControlTags.application(applicationId));
-    
+
     return { success: true, data: result };
   } catch (error) {
     if (error instanceof ServerApiError) {
@@ -224,7 +235,7 @@ export const assignApplicationToCompanyAction = async (companyId: string | numbe
         }
       };
     }
-    
+
     return {
       success: false,
       error: {
@@ -238,12 +249,12 @@ export const assignApplicationToCompanyAction = async (companyId: string | numbe
 export const revokeApplicationFromCompanyAction = async (companyId: string | number, applicationId: string | number): Promise<ActionResultType<any>> => {
   try {
     const result = await companyApplicationsRepository.revokeApplication(companyId, applicationId);
-    
+
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.companyApplications());
     await revalidateCacheTag(accessControlTags.company(companyId));
     await revalidateCacheTag(accessControlTags.application(applicationId));
-    
+
     return { success: true, data: result };
   } catch (error) {
     if (error instanceof ServerApiError) {
@@ -256,7 +267,7 @@ export const revokeApplicationFromCompanyAction = async (companyId: string | num
         }
       };
     }
-    
+
     return {
       success: false,
       error: {

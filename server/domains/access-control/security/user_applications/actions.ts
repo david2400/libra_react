@@ -16,12 +16,7 @@ import type {
 
 export const createUserApplicationAction = async (payload: ICreateUserApplication): Promise<ActionResultType<any>> => {
   try {
-    const body: any = { ...payload };
-    if (body.user_id != null) body.user_id = Number(body.user_id);
-    if (body.application_id != null) body.application_id = Number(body.application_id);
-    body.is_active = body.is_active ?? true;
-    body.access_level = body.access_level || 'USER';
-    const userApplication = await userApplicationsRepository.create(body);
+    const userApplication = await userApplicationsRepository.create(payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userApplications());
@@ -54,11 +49,7 @@ export const createUserApplicationAction = async (payload: ICreateUserApplicatio
 
 export const updateUserApplicationAction = async (id: string | number, payload: IUpdateUserApplication): Promise<ActionResultType<any>> => {
   try {
-    const body: any = { ...payload };
-    if (body.user_id != null) body.user_id = Number(body.user_id);
-    if (body.application_id != null) body.application_id = Number(body.application_id);
-    delete body.id_user_application;
-    const userApplication = await userApplicationsRepository.update(id, body);
+    const userApplication = await userApplicationsRepository.update(id, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userApplications());
