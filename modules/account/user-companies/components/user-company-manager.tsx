@@ -2,25 +2,36 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   HiSearch,
   HiCheck,
   HiX,
   HiPlus,
   HiMinus,
-  HiChevronDown,
-  HiSave,
-  HiRefresh,
   HiFilter,
+  HiRefresh,
   HiOfficeBuilding,
   HiUserGroup,
   HiCheckCircle,
 } from "react-icons/hi";
 import { IUser } from "@/server/domains/access-control/account/users";
 import { ICompany } from "@/server/domains/access-control/account/companies";
+import Swal from "sweetalert2";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@repo/ui/inputs/scenes/select";
 import { useCompanyData } from "../hooks/use-company-data";
-import { IUserCompanyWithDetails } from "../models/user-company.interface";
+import { IUserCompany, IUserCompanyWithDetails } from "../models/user-company.interface";
+import {
+  createUserCompanyServerAction,
+  deleteUserCompanyServerAction,
+  getUserCompaniesServerAction,
+} from "@/app/[locale]/(protected)/account/user-companies/[idCompanie]/actions";
 
 interface UserCompaniesManagerProps {
   initialData?: IUserCompanyWithDetails[];
@@ -63,9 +74,33 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
     return {};
   });
   const [searchQuery, setSearchQuery] = useState("");
-  const [hasChanges, setHasChanges] = useState(false);
-  const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [filterMode, setFilterMode] = useState<"all" | "assigned" | "unassigned">("all");
+  const [pendingCompanyIds, setPendingCompanyIds] = useState<Set<number>>(new Set());
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  useEffect(() => {
+    if (typeof props?.companyId === "number") return;
+
+    const userId = selectedUser?.id_user;
+    if (userId === undefined) return;
+
+    let cancelled = false;
+    getUserCompaniesServerAction(userId)
+      .then((data) => {
+        if (cancelled) return;
+        const companyIds = data
+          .map((uc) => Number(uc.company_id))
+          .filter(Number.isFinite);
+        setUserAssignments((prev) => ({ ...prev, [userId]: companyIds }));
+      })
+      .catch((error) => {
+        console.error("Error cargando empresas del usuario:", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedUser?.id_user, props?.companyId]);
 
   const currentAssignments = selectedUser && selectedUser.id_user !== undefined
     ? (userAssignments[selectedUser.id_user] || [])
@@ -96,64 +131,148 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
     });
   }, [searchQuery, currentAssignments, filterMode, companies]);
 
-  const toggleCompany = (companyId: number) => {
-    if (!selectedUser || selectedUser.id_user === undefined) return;
+  const showError = (message: string) => {
+    Swal.fire({ title: "Error!", text: message, icon: "error" });
+  };
 
-    const userId = selectedUser.id_user;
-    setUserAssignments((prev) => {
-      const userCompanies = prev[userId] || [];
-      const newCompanies = userCompanies.includes(companyId)
-        ? userCompanies.filter((id: number) => id !== companyId)
-        : [...userCompanies, companyId];
-      return { ...prev, [userId]: newCompanies };
+  const setPending = (companyId: number, pending: boolean) => {
+    setPendingCompanyIds((prev) => {
+      const next = new Set(prev);
+      if (pending) {
+        next.add(companyId);
+      } else {
+        next.delete(companyId);
+      }
+      return next;
     });
-    setHasChanges(true);
   };
 
-  const assignAll = () => {
+  const toggleCompany = async (companyId: number) => {
     if (!selectedUser || selectedUser.id_user === undefined) return;
-    
-    const userId = selectedUser.id_user;
-    setUserAssignments((prev) => ({
-      ...prev,
-      [userId]: companies.map((company) => company.id_company),
-    }));
-    setHasChanges(true);
-  };
 
-  const removeAll = () => {
-    if (!selectedUser || selectedUser.id_user === undefined) return;
-    
-    const userId = selectedUser.id_user;
-    setUserAssignments((prev) => ({
-      ...prev,
-      [userId]: [],
-    }));
-    setHasChanges(true);
-  };
+    const userId = Number(selectedUser.id_user);
+    const targetCompanyId = Number(companyId);
+    if (!Number.isFinite(userId) || !Number.isFinite(targetCompanyId)) {
+      showError("No se pudo identificar el usuario o la empresa");
+      return;
+    }
 
-  const handleSave = async () => {
-    if (!selectedUser || selectedUser.id_user === undefined) return;
-    
+    const isAssigned = (userAssignments[userId] || []).includes(targetCompanyId);
+
+    setPending(targetCompanyId, true);
     try {
-      const { createUserCompanyAction, deleteUserCompanyAction } = await import(
-        "@/server/domains/access-control/account/user-companies/actions"
-      );
-      
-      const userId = selectedUser.id_user;
-      const currentCompanies = userAssignments[userId] || [];
-      
-      console.log("Guardando asignaciones para usuario:", userId, currentCompanies);
-      
-      setHasChanges(false);
-    } catch (error) {
-      console.error("Error al guardar asignaciones:", error);
+      if (isAssigned) {
+        await deleteUserCompanyServerAction(userId, targetCompanyId);
+        setUserAssignments((prev) => ({
+          ...prev,
+          [userId]: (prev[userId] || []).filter((id) => id !== targetCompanyId),
+        }));
+      } else {
+        const created = await createUserCompanyServerAction({
+          user_id: userId,
+          company_id: targetCompanyId,
+          is_primary: false,
+        });
+        if (created) {
+          setUserAssignments((prev) => ({
+            ...prev,
+            [userId]: [...(prev[userId] || []), targetCompanyId],
+          }));
+        }
+      }
+    } catch (error: any) {
+      showError(error?.message || "No se pudo actualizar la asignación");
+    } finally {
+      setPending(targetCompanyId, false);
     }
   };
 
-  const handleReset = () => {
-    setUserAssignments({});
-    setHasChanges(false);
+  const assignAll = async () => {
+    if (!selectedUser || selectedUser.id_user === undefined) return;
+
+    const userId = Number(selectedUser.id_user);
+    if (!Number.isFinite(userId)) {
+      showError("No se pudo identificar el usuario");
+      return;
+    }
+
+    const current = userAssignments[userId] || [];
+    const missing = companies
+      .map((company) => Number(company.id_company))
+      .filter((companyId) => Number.isFinite(companyId) && !current.includes(companyId));
+
+    missing.forEach((companyId) => setPending(companyId, true));
+    try {
+      const created = await Promise.all(
+        missing.map((companyId) =>
+          createUserCompanyServerAction({
+            user_id: userId,
+            company_id: companyId,
+            is_primary: false,
+          }),
+        ),
+      );
+      const successful = missing.filter((_, i) => !!created[i]);
+      setUserAssignments((prev) => ({
+        ...prev,
+        [userId]: [...(prev[userId] || []), ...successful],
+      }));
+    } catch (error: any) {
+      showError(error?.message || "No se pudieron asignar todas las empresas");
+    } finally {
+      missing.forEach((companyId) => setPending(companyId, false));
+    }
+  };
+
+  const removeAll = async () => {
+    if (!selectedUser || selectedUser.id_user === undefined) return;
+
+    const userId = Number(selectedUser.id_user);
+    if (!Number.isFinite(userId)) {
+      showError("No se pudo identificar el usuario");
+      return;
+    }
+
+    const assigned = userAssignments[userId] || [];
+    const toRemove = assigned.filter(Number.isFinite);
+
+    toRemove.forEach((companyId) => setPending(companyId, true));
+    try {
+      await Promise.all(
+        toRemove.map((companyId) => deleteUserCompanyServerAction(userId, companyId)),
+      );
+      setUserAssignments((prev) => ({
+        ...prev,
+        [userId]: [],
+      }));
+    } catch (error: any) {
+      showError(error?.message || "No se pudieron remover todas las empresas");
+    } finally {
+      toRemove.forEach((companyId) => setPending(companyId, false));
+    }
+  };
+
+  const handleRefresh = async () => {
+    if (!selectedUser || selectedUser.id_user === undefined) return;
+
+    const userId = Number(selectedUser.id_user);
+    if (!Number.isFinite(userId)) {
+      showError("No se pudo identificar el usuario");
+      return;
+    }
+
+    setIsRefreshing(true);
+    try {
+      const data = await getUserCompaniesServerAction(userId);
+      const companyIds = data
+        .map((uc) => Number(uc.company_id))
+        .filter(Number.isFinite);
+      setUserAssignments((prev) => ({ ...prev, [userId]: companyIds }));
+    } catch (error: any) {
+      showError(error?.message || "No se pudo actualizar las asignaciones");
+    } finally {
+      setIsRefreshing(false);
+    }
   };
 
   const stats = useMemo(() => {
@@ -176,24 +295,12 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
               </p>
             </div>
             <div className='flex items-center gap-3'>
-              {hasChanges && (
-                <span className='flex items-center gap-2 rounded-full bg-warning/10 px-3 py-1 text-sm text-warning'>
-                  <span className='h-2 w-2 animate-pulse rounded-full bg-warning' />
-                  Cambios sin guardar
-                </span>
-              )}
               <button
-                onClick={handleReset}
-                className='flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary'>
-                <HiRefresh className='h-4 w-4' />
-                Restablecer
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={!hasChanges}
-                className='flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50'>
-                <HiSave className='h-4 w-4' />
-                Guardar Cambios
+                onClick={handleRefresh}
+                disabled={!selectedUser || isRefreshing}
+                className='flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50'>
+                <HiRefresh className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+                Actualizar
               </button>
             </div>
           </div>
@@ -241,65 +348,29 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Usuario Seleccionado
               </h3>
-              <div className='relative'>
-                <button
-                  onClick={() => setShowUserDropdown(!showUserDropdown)}
-                  className='flex w-full items-center gap-3 rounded-lg border border-border bg-secondary/50 p-3 transition-colors hover:bg-secondary'>
-                  <div
-                    className='flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold text-primary-foreground'
-                    style={{ backgroundColor: "#3B82F6" }}>
-                    {selectedUser ? (selectedUser.username?.[0] || 'U').toUpperCase() : 'U'}
-                  </div>
-                  <div className='flex-1 text-left'>
-                    <p className='font-medium text-foreground'>
-                      {selectedUser ? selectedUser.username || 'Seleccionar Usuario' : 'Seleccionar Usuario'}
-                    </p>
-                    <p className='text-xs text-muted-foreground'>
-                      {selectedUser?.status || 'Sin estado'}
-                    </p>
-                  </div>
-                  <HiChevronDown
-                    className={`h-5 w-5 text-muted-foreground transition-transform ${showUserDropdown ? "rotate-180" : ""}`}
-                  />
-                </button>
-
-                {showUserDropdown && (
-                  <div className='absolute left-0 right-0 top-full z-10 mt-2 rounded-lg border border-border bg-card shadow-xl'>
-                    <div className='max-h-64 overflow-y-auto p-2'>
-                      {filteredUsers.map((user) => (
-                        <button
-                          key={user.id_user}
-                          onClick={() => {
-                            setSelectedUser(user);
-                            setShowUserDropdown(false);
-                          }}
-                          className={`flex w-full items-center gap-3 rounded-lg p-3 transition-colors ${
-                            selectedUser?.id_user === user.id_user
-                              ? "bg-primary/10 text-primary"
-                              : "hover:bg-secondary"
-                          }`}>
-                          <div
-                            className='flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold text-primary-foreground'
-                            style={{ backgroundColor: "#3B82F6" }}>
-                            {user.username?.[0]?.toUpperCase() || 'U'}
-                          </div>
-                          <div className='flex-1 text-left'>
-                            <p className='font-medium text-foreground'>
-                              {user.username}
-                            </p>
-                            <p className='text-xs text-muted-foreground'>
-                              {user.status}
-                            </p>
-                          </div>
-                          {selectedUser?.id_user === user.id_user && (
-                            <HiCheck className='h-5 w-5 text-primary' />
-                          )}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+              <Select
+                value={selectedUser ? String(selectedUser.id_user) : ""}
+                onValueChange={(value) => {
+                  const id = Number(value);
+                  const user = users.find((u) => u.id_user === id) || null;
+                  setSelectedUser(user);
+                }}
+                disabled={filteredUsers.length === 0}>
+                <SelectTrigger className='mt-1 w-full bg-secondary border-border h-12 text-base py-3'>
+                  <SelectValue placeholder='Seleccionar usuario...' />
+                </SelectTrigger>
+                <SelectContent>
+                  {filteredUsers.map((user) => (
+                    <SelectItem
+                      key={user.id_user}
+                      value={String(user.id_user)}>
+                      <span className='flex items-center gap-2'>
+                        {user.username} {user.status ? `- ${user.status}` : ""}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
               <div className='mt-4 space-y-2 border-t border-border pt-4'>
                 {selectedUser && (
@@ -408,8 +479,9 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
                     key={company.id_company}
                     company={company}
                     isAssigned={isAssigned}
+                    isPending={pendingCompanyIds.has(company.id_company)}
                     onToggle={() => toggleCompany(company.id_company)}
-                    disabled={!selectedUser}
+                    disabled={!selectedUser || pendingCompanyIds.has(company.id_company)}
                   />
                 );
               })}
@@ -436,11 +508,13 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
 function CompanyCard({
   company,
   isAssigned,
+  isPending,
   onToggle,
   disabled,
 }: {
   company: ICompany;
   isAssigned: boolean;
+  isPending: boolean;
   onToggle: () => void;
   disabled?: boolean;
 }) {
@@ -477,13 +551,15 @@ function CompanyCard({
           </span>
           <button
             onClick={onToggle}
-            disabled={disabled}
+            disabled={disabled || isPending}
             className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
               isAssigned
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
             }`}>
-            {isAssigned ? (
+            {isPending ? (
+              "..."
+            ) : isAssigned ? (
               <>
                 <HiCheck className='h-4 w-4' />
                 Asignada
