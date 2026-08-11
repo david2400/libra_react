@@ -26,24 +26,7 @@ export const createUserApplicationAction = async (payload: ICreateUserApplicatio
     
     return { success: true, data: userApplication };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create user application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -57,24 +40,7 @@ export const updateUserApplicationAction = async (id: string | number, payload: 
     
     return { success: true, data: userApplication };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update user application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -88,24 +54,7 @@ export const deleteUserApplicationAction = async (id: string | number): Promise<
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete user application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -132,24 +81,7 @@ export const assignApplicationToUserAction = async (userId: string | number, app
     
     return { success: true, data: userApplication };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to assign application to user',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -162,24 +94,7 @@ export const revokeApplicationFromUserAction = async (userId: string | number, a
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to revoke application from user',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -194,24 +109,7 @@ export const activateUserLicenseAction = async (userId: string | number, applica
     
     return { success: true, data: userApplication };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to activate user license',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -224,24 +122,7 @@ export const deactivateUserLicenseAction = async (userId: string | number, appli
     
     return { success: true, data: userApplication };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to deactivate user license',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -283,12 +164,6 @@ export const bulkAssignApplicationsAction = async (userId: string | number, appl
       }
     };
   } catch (error) {
-    return {
-      success: false,
-      error: {
-        message: 'Failed to bulk assign applications',
-        details: error
-      }
-    };
+    throw error;
   }
 };

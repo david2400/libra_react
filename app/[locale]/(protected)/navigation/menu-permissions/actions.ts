@@ -22,33 +22,48 @@ import type { IUser } from '@/server/domains/access-control/account/users';
 import type { ListParams } from '@/server/lib/types';
 
 export async function createMenuPermissionServerAction(menuId: string | number, permissionId: string | number, payload: ICreateMenuPermission) {
-  const result = await createMenuPermissionAction(menuId, permissionId, payload);
+  try {
+    const result = await createMenuPermissionAction(menuId, permissionId, payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo crear el permiso de menú');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo crear el permiso de menú');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function updateMenuPermissionServerAction(menuId: string | number, permissionId: string | number, payload: IUpdateMenuPermission) {
-  const result = await updateMenuPermissionAction(menuId, permissionId, payload);
+  try {
+    const result = await updateMenuPermissionAction(menuId, permissionId, payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo actualizar el permiso de menú');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo actualizar el permiso de menú');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function deleteMenuPermissionServerAction(menuId: string | number, permissionId: string | number) {
-  const result = await deleteMenuPermissionAction(menuId, permissionId);
+  try {
+    const result = await deleteMenuPermissionAction(menuId, permissionId);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo eliminar el permiso de menú');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo eliminar el permiso de menú');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function getApplicationsServerAction() {

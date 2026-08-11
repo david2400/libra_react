@@ -29,12 +29,7 @@ export const FormCompany = ({
     defaultValues: initialValues,
   });
 
-  const sizeOptions = [
-    { value: "small", label: t("fields.sizeOptions.small") },
-    { value: "medium", label: t("fields.sizeOptions.medium") },
-    { value: "large", label: t("fields.sizeOptions.large") },
-    { value: "enterprise", label: t("fields.sizeOptions.enterprise") },
-  ];
+  console.log(errors)
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-8'>
@@ -184,12 +179,12 @@ export const FormCompany = ({
             className='col-span-12 md:col-span-6'
           />
 
-          <FormField
+          {/* <FormField
             controller={{ control, name: "verification_date" }}
             label={t("fields.verification_date")}
             type='date'
             className='col-span-12 md:col-span-6'
-          />
+          /> */}
 
           <FormField
             controller={{ control, name: "is_active" }}
@@ -231,7 +226,7 @@ export const FormCompany = ({
             className='col-span-12 md:col-span-6'
           />
 
-          <FormField
+          {/* <FormField
             controller={{ control, name: "subscription_start_date" }}
             label={t("fields.subscription_start_date")}
             type='date'
@@ -243,7 +238,7 @@ export const FormCompany = ({
             label={t("fields.subscription_end_date")}
             type='date'
             className='col-span-12 md:col-span-6'
-          />
+          /> */}
         </div>
       </div>
 

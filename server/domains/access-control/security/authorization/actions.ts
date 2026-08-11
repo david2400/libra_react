@@ -51,24 +51,7 @@ export const checkAuthorizationAction = async (request: IAuthorizationRequest): 
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Authorization check failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -92,24 +75,7 @@ export const checkAuthorizationWithContextAction = async (request: IAuthorizatio
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Authorization check with context failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -142,24 +108,7 @@ export const batchCheckAuthorizationAction = async (requests: IAuthorizationRequ
     
     return { success: true, data: responses };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Batch authorization check failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -179,24 +128,7 @@ export const manageAuthorizationCacheAction = async (request: ICacheManagementRe
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Cache management failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -209,24 +141,7 @@ export const clearExpiredCacheAction = async (): Promise<ActionResultType<any>> 
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to clear expired cache entries',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -241,24 +156,7 @@ export const createAuthorizationPolicyAction = async (policy: Omit<IAuthorizatio
     
     return { success: true, data: createdPolicy };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create authorization policy',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -271,24 +169,7 @@ export const updateAuthorizationPolicyAction = async (id: string, policy: Partia
     
     return { success: true, data: updatedPolicy };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update authorization policy',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -301,24 +182,7 @@ export const deleteAuthorizationPolicyAction = async (id: string): Promise<Actio
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete authorization policy',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -333,24 +197,7 @@ export const createSecurityAlertAction = async (alert: Omit<ISecurityAlert, 'id'
     
     return { success: true, data: createdAlert };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create security alert',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -363,24 +210,7 @@ export const resolveSecurityAlertAction = async (id: string, resolvedBy: string 
     
     return { success: true, data: resolvedAlert };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to resolve security alert',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -393,24 +223,7 @@ export const create_security_rule_action = async (rule: Omit<ISecurityRule, 'id'
     
     return { success: true, data: createdRule };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create security rule',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -423,24 +236,7 @@ export const update_security_rule_action = async (id: string, rule: Partial<ISec
     
     return { success: true, data: updatedRule };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update security rule',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -453,24 +249,7 @@ export const delete_security_rule_action = async (id: string): Promise<ActionRes
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete security rule',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -485,24 +264,7 @@ export const updateAuthorizationConfigAction = async (config: IConfigUpdateReque
     
     return { success: true, data: updatedConfig };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update authorization configuration',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -515,24 +277,7 @@ export const resetAuthorizationConfigAction = async (): Promise<ActionResultType
     
     return { success: true, data: resetConfig };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to reset authorization configuration',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -544,23 +289,6 @@ export const exportAuthorizationAuditAction = async (request: IAuditExportReques
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to export authorization audit data',
-        details: error
-      }
-    };
+    throw error;
   }
 };

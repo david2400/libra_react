@@ -34,24 +34,7 @@ export const createPolicyAction = async (payload: ICreatePolicy): Promise<Action
     
     return { success: true, data: policy };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create policy',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -65,24 +48,7 @@ export const updatePolicyAction = async (id: string | number, payload: IUpdatePo
     
     return { success: true, data: policy };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update policy',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -96,24 +62,7 @@ export const deletePolicyAction = async (id: string | number): Promise<ActionRes
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete policy',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -131,24 +80,7 @@ export const createUserPolicyAction = async (userId: string | number, policyId: 
     
     return { success: true, data: userPolicy };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create user-policy relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -162,24 +94,7 @@ export const updateUserPolicyAction = async (userId: string | number, policyId: 
     
     return { success: true, data: userPolicy };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update user-policy relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -193,24 +108,7 @@ export const deleteUserPolicyAction = async (userId: string | number, policyId: 
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete user-policy relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -222,24 +120,7 @@ export const evaluatePolicyAction = async (payload: IPolicyEvaluationRequest): P
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Policy evaluation failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -249,23 +130,6 @@ export const bulkEvaluatePoliciesAction = async (payload: IBulkPolicyEvaluationR
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Bulk policy evaluation failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };

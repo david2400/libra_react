@@ -32,24 +32,7 @@ export const createMenuAction = async (payload: ICreateMenu): Promise<ActionResu
     
     return { success: true, data: menu };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create menu',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -63,24 +46,7 @@ export const updateMenuAction = async (id: string | number, payload: IUpdateMenu
     
     return { success: true, data: menu };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update menu',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -94,24 +60,7 @@ export const deleteMenuAction = async (id: string | number): Promise<ActionResul
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete menu',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 

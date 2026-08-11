@@ -30,13 +30,7 @@ import {
   HiSave,
   HiSearch,
   HiChevronRight,
-  HiFolder,
-  HiEye,
-  HiEyeOff,
-  HiPencil,
-  HiTrash,
   HiChevronDown,
-  HiChevronRight as HiChevronRightIcon,
 } from "react-icons/hi";
 import { LuMaximize2, LuMinimize2, LuGripVertical } from "react-icons/lu";
 import { IApplicationCategory, IApplicationCategoryWithDepth } from "../models/applicationCategory.interface";
@@ -53,34 +47,42 @@ import { BsTrash2 } from "react-icons/bs";
 import { Badge } from "@repo/ui/badges/scenes/badge";
 import { CgCornerDownRight } from "react-icons/cg";
 import { Input } from "@repo/ui/inputs/scenes/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SearchableSelect,
-} from "@repo/ui/inputs/scenes/select";
-// import { mockMenus, mockApplications, mockModules } from "../lib/mock-data";
-import { IApplication } from "@/server/domains/access-control/security/applications";
-import { ICreateApplicationCategory, IUpdateApplicationCategory } from "@/server/domains/access-control/security/application_categories";
+import Swal from "sweetalert2";
+import { deleteApplicationCategoryAction } from "@/server/domains/access-control/security/application_categories";
 
-// type IconName = keyof typeof LucideIcons;
 
-// function getIcon(iconName?: string) {
-//   if (!iconName) return null;
-//   const Icon = LucideIcons[iconName as IconName];
-//   if (!Icon || typeof Icon !== "function") return null;
-//   return Icon;
-// }
+// Build a nested category tree from a flat list (backend returns flat categories)
+function buildCategoryTree(flatCategories: IApplicationCategory[]): IApplicationCategory[] {
+  if (!flatCategories?.length) return [];
 
-const emptyFormData: ICreateApplicationCategory = {
-  name: "",
-  description: "",
-  application_category_id: null,
-};
+  const map = new Map<number, IApplicationCategory & { children: IApplicationCategory[] }>();
 
-// Generate depth colors for visual hierarchy
+  flatCategories.forEach((category) => {
+    map.set(category.id_application_category, { ...category, children: category.children ? [...category.children] : [] } as IApplicationCategory & { children: IApplicationCategory[] });
+  });
+
+  const roots: IApplicationCategory[] = [];
+  map.forEach((category) => {
+    const parentId =
+      category.parent_category_application_id ??
+      category.application_category_id ??
+      category.parent_category_application?.id_application_category;
+    if (parentId == null || parentId === 0) {
+      roots.push(category);
+    } else {
+      const parent = map.get(parentId);
+      if (parent) {
+        parent.children.push(category);
+      } else {
+        roots.push(category); // orphan, treat as root
+      }
+    }
+  });
+
+  return roots;
+}
+
+// Generate depth colors for visual hierarchyW
 const DEPTH_COLORS = [
   "border-l-emerald-500",
   "border-l-blue-500",
@@ -111,45 +113,6 @@ function countChildren(menu: IApplicationCategory): number {
     (acc, child) => acc + 1 + countChildren(child),
     0,
   );
-}
-
-// Get the full path breadcrumb
-function getMenuBreadcrumb(
-  menu: IApplicationCategory,
-  allMenus: IApplicationCategory[],
-  maxParts = 3,
-): string {
-  const parts: string[] = [menu.name];
-  let current = menu;
-
-  const findParent = (
-    parentId: number | undefined,
-    menus: IApplicationCategory[],
-  ): IApplicationCategory | undefined => {
-    for (const m of menus) {
-      if (m.id_application_category === parentId) return m;
-      if (m.children) {
-        const found = findParent(parentId, m.children);
-        if (found) return found;
-      }
-    }
-    return undefined;
-  };
-
-  while (current.application_category_id) {
-    const parent = findParent(current.application_category_id, allMenus);
-    if (parent) {
-      parts.unshift(parent.name);
-      current = parent;
-    } else {
-      break;
-    }
-  }
-
-  if (parts.length > maxParts) {
-    return `.../${parts.slice(-maxParts).join("/")}`;
-  }
-  return parts.join("/");
 }
 
 interface SortableMenuItemProps {
@@ -319,22 +282,18 @@ function SortableMenuItem({
         {/* Actions */}
         <div className='flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0'>
           <TooltipProvider>
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant='ghost'
                   size='icon'
                   className={cn("h-7 w-7", isCompactMode && "h-6 w-6")}
                   onClick={() => onToggleVisibility(menu)}>
-                  {/* {menu.visible ? ( */}
                   <HiEye className='h-3.5 w-3.5 text-muted-foreground' />
-                  {/* // ) : ( */}
-                  {/* <HiEyeOff className='h-3.5 w-3.5 text-muted-foreground' /> */}
-                  {/* // )} */}
+                 
                 </Button>
               </TooltipTrigger>
-              {/* <TooltipContent>{menu.visible ? "Hide" : "Show"}</TooltipContent> */}
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -411,8 +370,7 @@ export const ApplicationCategoryManager = ({
   const t = useTranslations("navigation.menus");
   const tOptions = useTranslations("common");
   const tActions = useTranslations("common");
-  console.log(initialData)
-  const [menus, setMenus] = useState<IApplicationCategory[]>(initialData);
+  const [menus, setMenus] = useState<IApplicationCategory[]>(() => buildCategoryTree(initialData));
   // const [menus, setMenus] = useState<IApplicationCategory[]>(mockMenus);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -433,10 +391,7 @@ export const ApplicationCategoryManager = ({
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [activeId, setActiveId] = useState<number | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMenu, setEditingMenu] = useState<IApplicationCategory | null>(null);
-  const [formData, setFormData] = useState<ICreateApplicationCategory>(emptyFormData);
-  const [deleteMenu, setDeleteMenu] = useState<IApplicationCategory | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
 
@@ -481,7 +436,6 @@ export const ApplicationCategoryManager = ({
   }, [menus]);
 
   const handleModalClose = () => {
-    console.log("hola")
     setOpenModal((prev) => !prev);
   };
 
@@ -511,30 +465,6 @@ export const ApplicationCategoryManager = ({
     return filterMenus(menus);
   }, [menus, searchQuery]);
 
-  // Get all possible parent options with their depth for indentation
-  const getParentOptions = useCallback(() => {
-    const options: {
-      id: number;
-      name: string;
-      depth: number;
-      path: string;
-    }[] = [];
-    const traverse = (items: IApplicationCategory[], depth = 0, pathParts: string[] = []) => {
-      items.forEach((item) => {
-        if (editingMenu && item.id_application_category === editingMenu.id_application_category) return;
-        const currentPath = [...pathParts, item.name];
-        options.push({
-          id: item.id_application_category,
-          name: item.name,
-          depth,
-          path: currentPath.join(" / "),
-        });
-        if (item.children) traverse(item.children, depth + 1, currentPath);
-      });
-    };
-    traverse(menus);
-    return options;
-  }, [menus, editingMenu]);
 
   const expandAll = () => {
     const allIds = new Set<number>();
@@ -565,119 +495,60 @@ export const ApplicationCategoryManager = ({
     }
   };
 
-  const handleCreate = () => {
-    setEditingMenu(null);
-    setFormData(emptyFormData);
-    setIsDialogOpen(true);
-  };
-
   const handleEdit = (menu: IApplicationCategory) => {
     setEditingMenu(menu);
-    setFormData({
-      name: menu.name,
-      description: menu.description,
-      // protocol: menu.protocol || "https",
-      // subdomain: menu.subdomain || "",
-      // url: menu.url || "",
-      // port: menu.port,
-      // sort_order: menu.sort_order || 0,
-      application_category_id: menu.application_category_id,
+    setOpenModalUpdate(true);
+  };
+
+  const handleDelete = async (menu: IApplicationCategory) => {
+    const { isConfirmed } = await Swal.fire({
+      title: "¿Eliminar categoría?",
+      text: `Se va a borrar "${menu.name}". Esta acción no se puede deshacer.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
     });
-    setIsDialogOpen(true);
-  };
 
-  const handleDelete = (menu: IApplicationCategory) => {
-    setDeleteMenu(menu);
-  };
+    if (!isConfirmed) return;
 
-  const confirmDelete = () => {
-    if (!deleteMenu) return;
-
-    const removeMenu = (items: IApplicationCategory[]): IApplicationCategory[] => {
-      return items
-        .filter((item) => item.id_application_category !== deleteMenu.id_application_category)
-        .map((item) => ({
-          ...item,
-          children: item.children ? removeMenu(item.children) : undefined,
-        }));
-    };
-
-    setMenus(removeMenu(menus));
-    setDeleteMenu(null);
-    setHasChanges(true);
-  };
-
-  const handleToggleVisibility = (menu: IApplicationCategory) => {
-    const toggleVisibility = (items: IApplicationCategory[]): IApplicationCategory[] => {
-      return items.map((item) => {
-        if (item.id_application_category === menu.id_application_category) {
-          return { ...item, visible: true };
-        }
-        if (item.children) {
-          return { ...item, children: toggleVisibility(item.children) };
-        }
-        return item;
-      });
-    };
-
-    setMenus(toggleVisibility(menus));
-    setHasChanges(true);
-  };
-
-  const handleSaveMenu = () => {
-    if (!formData.name.trim()) return;
-
-    if (editingMenu) {
-      const updateMenu = (items: IApplicationCategory[]): IApplicationCategory[] => {
-        return items.map((item) => {
-          if (item.id_application_category === editingMenu.id_application_category) {
-            return { ...item, ...formData, id_application_category: item.id_application_category };
-          }
-          if (item.children) {
-            return { ...item, children: updateMenu(item.children) };
-          }
-          return item;
-        });
-      };
-      setMenus(updateMenu(menus));
-    } else {
-      const newMenu: IApplicationCategory = {
-        ...formData,
-        id_application_category: Date.now(),
-        applications: [],
-        children: [],
-        deleted: false,
-      };
-
-      if (formData.application_category_id) {
-        const addToParent = (items: IApplicationCategory[]): IApplicationCategory[] => {
-          return items.map((item) => {
-            if (item.id_application_category === formData.application_category_id) {
-              return {
-                ...item,
-                children: [...(item.children || []), newMenu],
-              };
-            }
-            if (item.children) {
-              return { ...item, children: addToParent(item.children) };
-            }
-            return item;
-          });
-        };
-        setMenus(addToParent(menus));
-      } else {
-        setMenus([...menus, newMenu]);
+    try {
+      const result = await deleteApplicationCategoryAction(menu.id_application_category);
+      if (!result.success) {
+        throw new Error(result.error?.message || "No se pudo eliminar la categoría");
       }
-    }
 
-    setIsDialogOpen(false);
-    setEditingMenu(null);
-    setFormData(emptyFormData);
-    setHasChanges(true);
+      const removeMenu = (items: IApplicationCategory[]): IApplicationCategory[] => {
+        return items
+          .filter((item) => item.id_application_category !== menu.id_application_category)
+          .map((item) => ({
+            ...item,
+            children: item.children ? removeMenu(item.children) : undefined,
+          }));
+      };
+
+      setMenus(removeMenu(menus));
+      setHasChanges(true);
+
+      Swal.fire({
+        title: "Eliminado",
+        text: "La categoría se eliminó correctamente.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error",
+        text: error?.message || "No se pudo eliminar la categoría",
+        icon: "error",
+      });
+    }
   };
 
   const handleSave = () => {
-    console.log("Saving menus:", menus);
     setHasChanges(false);
   };
 
@@ -836,7 +707,7 @@ export const ApplicationCategoryManager = ({
                     }}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
-                    onToggleVisibility={handleToggleVisibility}
+                    onToggleVisibility={() => { }}
                     expandedIds={expandedIds}
                     setExpandedIds={setExpandedIds}
                     allMenus={menus}

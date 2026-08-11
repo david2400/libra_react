@@ -13,33 +13,48 @@ import type {
 } from '@/server/domains/access-control/security/applications';
 
 export async function createApplicationServerAction(payload: ICreateApplication) {
-  const result = await createApplicationAction(payload);
+  try {
+    const result = await createApplicationAction(payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo crear la aplicación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo crear la aplicación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function updateApplicationServerAction(id: string | number, payload: IUpdateApplication) {
-  const result = await updateApplicationAction(id, payload);
+  try {
+    const result = await updateApplicationAction(id, payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo actualizar la aplicación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo actualizar la aplicación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function deleteApplicationServerAction(id: string | number) {
-  const result = await deleteApplicationAction(id);
+  try {
+    const result = await deleteApplicationAction(id);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo eliminar la aplicación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo eliminar la aplicación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 
@@ -49,7 +64,7 @@ export async function getAllApplicationsServerAction(): Promise<IApplication[]> 
 
     return Array.isArray(result)
       ? result
-      : result?.content || [];
+      : result || [];
   } catch (error) {
     console.error("Failed to fetch applications:", error);
     return [];

@@ -28,24 +28,7 @@ export const listApplicationsAction = async (): Promise<ActionResultType<any>> =
     const applications = await getApplications();
     return { success: true, data: applications };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to list applications',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -61,24 +44,7 @@ export const createApplicationAction = async (payload: ICreateApplication): Prom
     
     return { success: true, data: application };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -92,24 +58,7 @@ export const updateApplicationAction = async (id: string | number, payload: IUpd
     
     return { success: true, data: application };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -123,24 +72,7 @@ export const deleteApplicationAction = async (id: string | number): Promise<Acti
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -156,24 +88,7 @@ export const createApplicationModuleAction = async (applicationId: string | numb
     
     return { success: true, data: applicationModule };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create application-module relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -187,24 +102,7 @@ export const updateApplicationModuleAction = async (applicationId: string | numb
     
     return { success: true, data: applicationModule };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update application-module relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -218,24 +116,7 @@ export const deleteApplicationModuleAction = async (applicationId: string | numb
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete application-module relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -251,24 +132,7 @@ export const createApplicationConfigAction = async (applicationId: string | numb
     
     return { success: true, data: config };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create application config',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -282,24 +146,7 @@ export const updateApplicationConfigAction = async (applicationId: string | numb
     
     return { success: true, data: config };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update application config',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -313,23 +160,6 @@ export const deleteApplicationConfigAction = async (applicationId: string | numb
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete application config',
-        details: error
-      }
-    };
+    throw error;
   }
 };

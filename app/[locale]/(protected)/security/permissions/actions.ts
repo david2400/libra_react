@@ -11,31 +11,46 @@ import type {
 } from '@/server/domains/access-control/security/permissions';
 
 export async function createPermissionServerAction(payload: ICreatePermission) {
-  const result = await createPermissionAction(payload);
+  try {
+    const result = await createPermissionAction(payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo crear el permiso');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo crear el permiso');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function updatePermissionServerAction(id: string | number, payload: IUpdatePermission) {
-  const result = await updatePermissionAction(id, payload);
+  try {
+    const result = await updatePermissionAction(id, payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo actualizar el permiso');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo actualizar el permiso');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function deletePermissionServerAction(id: string | number) {
-  const result = await deletePermissionAction(id);
+  try {
+    const result = await deletePermissionAction(id);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo eliminar el permiso');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo eliminar el permiso');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }

@@ -27,41 +27,61 @@ export async function getUserApplicationsByUserServerAction(
 export async function createUserApplicationServerAction(
   payload: ICreateUserApplication,
 ) {
-  const result = await createUserApplicationAction(payload);
-  if (!result.success) {
-    throw new Error(result.error?.message ?? "No se pudo crear la asignación");
+  try {
+    const result = await createUserApplicationAction(payload);
+    if (!result.success) {
+      throw new Error(result.error?.message ?? "No se pudo crear la asignación");
+    }
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-  return result.data;
 }
 
 export async function deleteUserApplicationServerAction(
   id: string | number,
 ) {
-  const result = await deleteUserApplicationAction(id);
-  if (!result.success) {
-    throw new Error(result.error?.message ?? "No se pudo eliminar la asignación");
+  try {
+    const result = await deleteUserApplicationAction(id);
+    if (!result.success) {
+      throw new Error(result.error?.message ?? "No se pudo eliminar la asignación");
+    }
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-  return result.data;
 }
 
 export async function assignApplicationToUserServerAction(
   userId: string | number,
   applicationId: string | number,
 ) {
-  const result = await assignApplicationToUserAction(userId, applicationId);
-  if (!result.success) {
-    throw new Error(result.error?.message ?? "No se pudo asignar la aplicación");
+  try {
+    const result = await assignApplicationToUserAction(userId, applicationId);
+    if (!result.success) {
+      throw new Error(result.error?.message ?? "No se pudo asignar la aplicación");
+    }
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-  return result.data;
 }
 
 export async function revokeApplicationFromUserServerAction(
   userId: string | number,
   applicationId: string | number,
 ) {
-  const result = await revokeApplicationFromUserAction(userId, applicationId);
-  if (!result.success) {
-    throw new Error(result.error?.message ?? "No se pudo revocar la aplicación");
+  try {
+    const result = await revokeApplicationFromUserAction(userId, applicationId);
+    if (!result.success) {
+      throw new Error(result.error?.message ?? "No se pudo revocar la aplicación");
+    }
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-  return result.data;
 }

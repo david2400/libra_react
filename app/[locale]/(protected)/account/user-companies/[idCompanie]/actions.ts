@@ -18,13 +18,18 @@ import type {
 } from '@/server/domains/access-control/account/user-companies';
 
 export async function createUserCompanyServerAction(payload: ICreateUserCompany) {
-  const result = await createUserCompanyAction(payload);
+  try {
+    const result = await createUserCompanyAction(payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo crear la asignación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo crear la asignación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function updateUserCompanyServerAction(
@@ -32,23 +37,33 @@ export async function updateUserCompanyServerAction(
   companyId: number,
   payload: IUpdateUserCompany
 ) {
-  const result = await updateUserCompanyAction(userId, companyId, payload);
+  try {
+    const result = await updateUserCompanyAction(userId, companyId, payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo actualizar la asignación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo actualizar la asignación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function deleteUserCompanyServerAction(userId: number, companyId: number) {
-  const result = await deleteUserCompanyAction(userId, companyId);
+  try {
+    const result = await deleteUserCompanyAction(userId, companyId);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo eliminar la asignación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo eliminar la asignación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function getUserCompaniesServerAction(userId: number): Promise<IUserCompanyResponse[]> {

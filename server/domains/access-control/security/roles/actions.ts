@@ -26,24 +26,7 @@ export const createRoleAction = async (payload: ICreateRole): Promise<ActionResu
 
     return { success: true, data: role };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create role',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -57,24 +40,7 @@ export const updateRoleAction = async (id_role: string | number, payload: IUpdat
 
     return { success: true, data: role };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update role',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -88,24 +54,7 @@ export const deleteRoleAction = async (id_role: string | number): Promise<Action
 
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete role',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 

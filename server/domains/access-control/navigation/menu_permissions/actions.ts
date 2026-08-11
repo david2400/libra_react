@@ -42,7 +42,7 @@ const createActivityLog = async (activity: {
   try {
     await menuPermissionActivityRepository.create(activity as any);
   } catch (error) {
-    console.warn('Failed to create activity log:', error);
+    throw error;
   }
 };
 
@@ -97,24 +97,7 @@ export const createMenuPermissionAction = async (payload: ICreateMenuPermission)
 
     return { success: true, data: enhancedPermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create menu permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -162,24 +145,7 @@ export const updateMenuPermissionAction = async (id: number, payload: IUpdateMen
 
     return { success: true, data: enhancedPermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update menu permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -218,24 +184,7 @@ export const deleteMenuPermissionAction = async (id: number): Promise<ActionResu
 
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete menu permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -302,24 +251,7 @@ export const getEffectiveMenuPermissionsAction = async (
 
     return { success: true, data: enhancedPermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to get effective menu permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -342,24 +274,7 @@ export const getMenuPermissionsByRoleAction = async (roleId: number): Promise<Ac
       data: enhancedPermissions
     };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to get menu permissions by role',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -380,24 +295,7 @@ export const getMenuPermissionsByUserAction = async (userId: number): Promise<Ac
       data: enhancedPermissions
     };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to get menu permissions by user',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -424,13 +322,7 @@ export const bulkAssignMenuPermissionsAction = async (payload: IBulkMenuPermissi
 
     return { success: true, data: bulkResponse };
   } catch (error) {
-    return {
-      success: false,
-      error: {
-        message: 'Failed to bulk assign menu permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -468,16 +360,7 @@ export const bulkSaveMenuPermissionsAction = async (
 
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: { message: error.message, code: error.code, details: error.details },
-      };
-    }
-    return {
-      success: false,
-      error: { message: 'Failed to bulk save menu permissions', details: error },
-    };
+    throw error;
   }
 };
 
@@ -498,16 +381,7 @@ export const bulkDeleteMenuPermissionsAction = async (
 
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: { message: error.message, code: error.code, details: error.details },
-      };
-    }
-    return {
-      success: false,
-      error: { message: 'Failed to bulk delete menu permissions', details: error },
-    };
+    throw error;
   }
 };
 
@@ -540,24 +414,7 @@ export const validateMenuPermissionAction = async (request: IMenuPermissionValid
       }
     };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to validate menu permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -578,24 +435,7 @@ export const listMenuPermissionsAction = async (filters?: any): Promise<ActionRe
 
     return { success: true, data: enhancedPermissions };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to list menu permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -622,23 +462,6 @@ export const getMenuPermissionByIdAction = async (id: number): Promise<ActionRes
 
     return { success: true, data: enhancedPermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to get menu permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };

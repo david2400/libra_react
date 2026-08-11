@@ -27,29 +27,14 @@ const ClientsPage: NextPage = async () => {
   let userData: IUser[] = [];
   let companyData: ICompany[] = [];
 
-  try {
-    // Importación dinámica para evitar errores de compilación
-    const { getClients } = await import("@/server/domains/access-control/account/clients");
-    const clientResponse = await getClients();
 
-    // Extract the data array from the paginated response
-    if (clientResponse) {
-      if (Array.isArray(clientResponse)) {
-        clientData = clientResponse;
-      } else if ('content' in clientResponse && Array.isArray(clientResponse.content)) {
-        clientData = clientResponse.content;
-      } else if ('data' in clientResponse && Array.isArray(clientResponse.data)) {
-        clientData = clientResponse.data;
-      }
-    }
-  } catch (error) {
-    console.error("Error loading clients:", error);
-    // Continuar con array vacío
-  }
 
   try {
     const { getUsers } = await import("@/server/domains/access-control/account/users");
     const usersResponse = await getUsers();
+    // Importación dinámica para evitar errores de compilación
+    const { getClients } = await import("@/server/domains/access-control/account/clients");
+    const clientResponse = await getClients();
 
     if (usersResponse) {
       if (Array.isArray(usersResponse)) {
@@ -82,8 +67,8 @@ const ClientsPage: NextPage = async () => {
   }
 
   return (
-    <EnhancedClientManager 
-      initialData={clientData} 
+    <EnhancedClientManager
+      initialData={clientData}
       initialUsers={userData}
       userCompanies={companyData}
     />

@@ -43,24 +43,7 @@ export const createProfileAction = async (payload: ICreateProfile): Promise<Acti
     
     return { success: true, data: profile };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create profile',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -82,24 +65,7 @@ export const updateProfileAction = async (id: string | number, payload: IUpdateP
     
     return { success: true, data: profile };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update profile',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -113,24 +79,7 @@ export const deleteProfileAction = async (id: string | number): Promise<ActionRe
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete profile',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -154,24 +103,7 @@ export const updateProfilePreferencesAction = async (profileId: string | number,
     
     return { success: true, data: preferences };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update profile preferences',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -192,24 +124,7 @@ export const resetProfilePreferencesAction = async (profileId: string | number):
     
     return { success: true, data: preferences };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to reset profile preferences',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -225,24 +140,7 @@ export const createProfileActivityAction = async (activity: Omit<IProfileActivit
     
     return { success: true, data: createdActivity };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create profile activity',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -265,24 +163,7 @@ export const enableTwoFactorAction = async (profileId: string | number, payload:
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to enable two-factor authentication',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -300,24 +181,7 @@ export const verifyTwoFactorAction = async (profileId: string | number, payload:
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to verify two-factor authentication',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -338,24 +202,7 @@ export const disableTwoFactorAction = async (profileId: string | number): Promis
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to disable two-factor authentication',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -376,24 +223,7 @@ export const generateBackupCodesAction = async (profileId: string | number): Pro
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to generate backup codes',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -415,24 +245,7 @@ export const addTrustedDeviceAction = async (profileId: string | number, payload
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to add trusted device',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -454,24 +267,7 @@ export const removeTrustedDeviceAction = async (profileId: string | number, devi
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to remove trusted device',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -492,24 +288,7 @@ export const updatePasswordChangeAction = async (profileId: string | number): Pr
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update password change timestamp',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -530,24 +309,7 @@ export const resetFailedAttemptsAction = async (profileId: string | number): Pro
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to reset failed login attempts',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -568,24 +330,7 @@ export const lockProfileAccountAction = async (profileId: string | number, durat
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to lock profile account',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -606,23 +351,6 @@ export const unlockProfileAccountAction = async (profileId: string | number): Pr
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to unlock profile account',
-        details: error
-      }
-    };
+    throw error;
   }
 };

@@ -19,15 +19,9 @@ export const getApplicationCategoryById = cache((id: string | number) =>
 );
 
 export const getActiveApplicationCategories = cache(async () => {
-  // TODO: revertir a applicationCategoriesRepository.getActive() una vez el backend
-  // corrija el mapping de rutas: GET /application-categories/active colisiona con
-  // /application-categories/{id} (Spring intenta parsear "active" como Long y falla con 400).
-  try {
-    return await applicationCategoriesRepository.getActive();
-  } catch (error) {
-    console.error('getActiveApplicationCategories fallback to list():', error);
-    return applicationCategoriesRepository.list();
-  }
+  // Fallback: el backend no expone /application-categories/active sin colisionar
+  // con /application-categories/{id}. Usamos list() mientras tanto.
+  return applicationCategoriesRepository.list();
 });
 
 export const getRootApplicationCategories = cache(() =>
@@ -73,7 +67,7 @@ export const getApplicationCategoryOverview = cache(async (id: string | number) 
     applications,
     child_categories: childCategories,
     stats: {
-      category_id: category?.parent_category_application_id || 0,
+      category_id: category?.id_application_category || 0,
       total_applications: applications.length,
       active_applications: applications.filter(app => app.is_active).length,
       total_users: 0, // Would be calculated from actual data
@@ -86,14 +80,22 @@ export const getApplicationCategoryOverview = cache(async (id: string | number) 
 });
 
 // Build category tree structure
+const getParentCategoryId = (category: IApplicationCategory): number | null | undefined =>
+  category.parent_category_application_id ??
+  category.application_category_id ??
+  category.parent_category_application?.id_application_category;
+
 export const buildCategoryTree = cache(async (): Promise<ICategoryTree> => {
   const allCategories = await getActiveApplicationCategories();
-  const rootCategories = allCategories.filter(cat => !cat.parent_category_application_id);
-  
+  const rootCategories = allCategories.filter(cat => {
+    const parentId = getParentCategoryId(cat);
+    return parentId == null || parentId === 0;
+  });
+
   const buildTreeNode = (category: IApplicationCategory, depth: number = 0): ICategoryTreeNode => {
-    const children = allCategories.filter(cat => cat.parent_category_application_id === category.parent_category_application_id);
+    const children = allCategories.filter(cat => getParentCategoryId(cat) === category.id_application_category);
     const childTreeNodes = children.map(child => buildTreeNode(child, depth + 1));
-    
+
     return {
       ...category,
       children: childTreeNodes,
@@ -101,10 +103,10 @@ export const buildCategoryTree = cache(async (): Promise<ICategoryTree> => {
       depth,
     };
   };
-  
+
   const rootTreeNodes = rootCategories.map(root => buildTreeNode(root, 0));
   const maxDepth = Math.max(...rootTreeNodes.map(node => calculateMaxDepth(node)));
-  
+
   return {
     root_categories: rootTreeNodes,
     total_categories: allCategories.length,
@@ -140,7 +142,7 @@ export const getCategoryUsageStats = cache(async (categoryId: string | number) =
 //   const categories = await getActiveApplicationCategories();
 //   const categoriesWithCounts = await Promise.all(
 //     categories.map(async (category) => {
-//       const applications = await getApplicationsByCategory(category.id_application_category);
+//       const applications = await getApplicationsByCategory(category.parent_category_application_id);
 //       return {
 //         ...category,
 //         application_count: applications.length,

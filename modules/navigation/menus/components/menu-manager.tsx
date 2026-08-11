@@ -33,10 +33,7 @@ import {
   HiFolder,
   HiEye,
   HiEyeOff,
-  HiPencil,
-  HiTrash,
   HiChevronDown,
-  HiChevronRight as HiChevronRightIcon,
 } from "react-icons/hi";
 import { LuMaximize2, LuMinimize2, LuGripVertical } from "react-icons/lu";
 import { IMenu, IMenuWithDepth } from "../models/menu.interface";
@@ -52,18 +49,11 @@ import { cn } from "@repo/ui/utils";
 import { BsTrash2 } from "react-icons/bs";
 import { Badge } from "@repo/ui/badges/scenes/badge";
 import { CgCornerDownRight } from "react-icons/cg";
-import { ICreateMenu } from "@/server/domains/access-control/navigation/menus";
 import { Input } from "@repo/ui/inputs/scenes/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SearchableSelect,
-} from "@repo/ui/inputs/scenes/select";
-// import { mockMenus, mockApplications, mockModules } from "../lib/mock-data";
-import { IApplication } from "@/server/domains/access-control/security/applications";
+import { SearchableSelect } from "@repo/ui/inputs/scenes/select";
+import type { IApplication } from "@/server/domains/access-control/security/applications";
+import Swal from "sweetalert2";
+import { deleteMenuServerAction } from "@/app/[locale]/(protected)/navigation/menus/actions";
 
 // type IconName = keyof typeof LucideIcons;
 
@@ -73,17 +63,6 @@ import { IApplication } from "@/server/domains/access-control/security/applicati
 //   if (!Icon || typeof Icon !== "function") return null;
 //   return Icon;
 // }
-
-const emptyFormData: ICreateMenu = {
-  application_id: 1,
-  name: "",
-  description: "",
-  path: "",
-  order: 0,
-  parent_menu_id: 0,
-  icon: "LayoutDashboard",
-  visible: true,
-};
 
 // Build a nested menu tree from a flat list (backend returns flat menus)
 function buildMenuTree(flatMenus: IMenu[]): IMenu[] {
@@ -452,10 +431,7 @@ export const MenuManager = ({
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [activeId, setActiveId] = useState<number | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMenu, setEditingMenu] = useState<IMenu | null>(null);
-  const [formData, setFormData] = useState<ICreateMenu>(emptyFormData);
-  const [deleteMenu, setDeleteMenu] = useState<IMenu | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
 
@@ -500,7 +476,6 @@ export const MenuManager = ({
   }, [menus]);
 
   const handleModalClose = () => {
-    console.log("hola")
     setOpenModal((prev) => !prev);
   };
 
@@ -562,43 +537,52 @@ export const MenuManager = ({
 
   const handleEdit = (menu: IMenu) => {
     setEditingMenu(menu);
-    setFormData({
-      application_id: menu.application_id,
-      name: menu.name,
-      description: menu.description,
-      // protocol: menu.protocol || "https",
-      // subdomain: menu.subdomain || "",
-      // url: menu.url || "",
-      // port: menu.port,
-      path: menu.path || "",
-      order: menu.order,
-      // sort_order: menu.sort_order || 0,
-      parent_menu_id: menu.parent_menu_id,
-      icon: menu.icon || "LayoutDashboard",
-      visible: menu.visible,
+    setOpenModalUpdate(true);
+  };
+
+  const handleDelete = async (menu: IMenu) => {
+    const { isConfirmed } = await Swal.fire({
+      title: "¿Eliminar menú?",
+      text: `Se va a borrar "${menu.name}". Esta acción no se puede deshacer.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
     });
-    setIsDialogOpen(true);
-  };
 
-  const handleDelete = (menu: IMenu) => {
-    setDeleteMenu(menu);
-  };
+    if (!isConfirmed) return;
 
-  const confirmDelete = () => {
-    if (!deleteMenu) return;
+    try {
+      await deleteMenuServerAction(menu.id_menu);
 
-    const removeMenu = (items: IMenu[]): IMenu[] => {
-      return items
-        .filter((item) => item.id_menu !== deleteMenu.id_menu)
-        .map((item) => ({
-          ...item,
-          children: item.children ? removeMenu(item.children) : undefined,
-        }));
-    };
+      const removeMenu = (items: IMenu[]): IMenu[] => {
+        return items
+          .filter((item) => item.id_menu !== menu.id_menu)
+          .map((item) => ({
+            ...item,
+            children: item.children ? removeMenu(item.children) : undefined,
+          }));
+      };
 
-    setMenus(removeMenu(menus));
-    setDeleteMenu(null);
-    setHasChanges(true);
+      setMenus(removeMenu(menus));
+      setHasChanges(true);
+
+      Swal.fire({
+        title: "Eliminado",
+        text: "El menú se eliminó correctamente.",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error",
+        text: error?.message || "No se pudo eliminar el menú",
+        icon: "error",
+      });
+    }
   };
 
   const handleToggleVisibility = (menu: IMenu) => {
@@ -618,59 +602,7 @@ export const MenuManager = ({
     setHasChanges(true);
   };
 
-  const handleSaveMenu = () => {
-    if (!formData.name.trim()) return;
-
-    if (editingMenu) {
-      const updateMenu = (items: IMenu[]): IMenu[] => {
-        return items.map((item) => {
-          if (item.id_menu === editingMenu.id_menu) {
-            return { ...item, ...formData, id_menu: item.id_menu };
-          }
-          if (item.children) {
-            return { ...item, children: updateMenu(item.children) };
-          }
-          return item;
-        });
-      };
-      setMenus(updateMenu(menus));
-    } else {
-      const newMenu: IMenu = {
-        ...formData,
-        id_menu: Date.now(),
-        children: [],
-        deleted: false,
-      };
-
-      if (formData.parent_menu_id) {
-        const addToParent = (items: IMenu[]): IMenu[] => {
-          return items.map((item) => {
-            if (item.id_menu === formData.parent_menu_id) {
-              return {
-                ...item,
-                children: [...(item.children || []), newMenu],
-              };
-            }
-            if (item.children) {
-              return { ...item, children: addToParent(item.children) };
-            }
-            return item;
-          });
-        };
-        setMenus(addToParent(menus));
-      } else {
-        setMenus([...menus, newMenu]);
-      }
-    }
-
-    setIsDialogOpen(false);
-    setEditingMenu(null);
-    setFormData(emptyFormData);
-    setHasChanges(true);
-  };
-
   const handleSave = () => {
-    console.log("Saving menus:", menus);
     setHasChanges(false);
   };
 

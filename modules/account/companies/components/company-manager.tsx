@@ -26,19 +26,6 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
   const [companies, setCompanies] = useState<ICompany[]>(initialData);
   const [loading, setLoading] = useState(false);
 
-  // Fetch companies data client-side
-  useEffect(() => {
-    setLoading(true);
-
-    // getCompaniesServices()
-    //   .then((companies) => {
-    //     setCompanies(companies);
-    //   })
-    //   .finally(() => {
-    //     setLoading(false);
-    //   });
-  }, []);
-
   const metrics = useMemo(() => {
     const activeCompanies = companies.filter(
       (company) => company.is_active !== false,
@@ -55,6 +42,7 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
   }, [companies]);
 
   const handleEdit = (row: ICompany) => {
+    console.log(row)
     setEditingCompany(row);
     setOpenModalUpdate(true);
   };

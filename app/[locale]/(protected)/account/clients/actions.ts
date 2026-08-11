@@ -11,31 +11,46 @@ import type {
 } from '@/server/domains/access-control/account/clients';
 
 export async function createClientServerAction(payload: ICreateClient) {
-  const result = await createClientAction(payload);
+  try {
+    const result = await createClientAction(payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo crear el cliente');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo crear el cliente');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function updateClientServerAction(id: string | number, payload: IUpdateClient) {
-  const result = await updateClientAction(id, payload);
+  try {
+    const result = await updateClientAction(id, payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo actualizar el cliente');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo actualizar el cliente');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function deleteClientServerAction(id: string | number) {
-  const result = await deleteClientAction(id);
+  try {
+    const result = await deleteClientAction(id);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo eliminar el cliente');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo eliminar el cliente');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }

@@ -23,24 +23,7 @@ export const createUserAction = async (payload: ICreateUser): Promise<ActionResu
     
     return { success: true, data: user };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create user',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -54,24 +37,7 @@ export const updateUserAction = async (id: number, payload: IUpdateUser): Promis
     
     return { success: true, data: user };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update user',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -85,24 +51,7 @@ export const deleteUserAction = async (id: number): Promise<ActionResultType<voi
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete user',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 

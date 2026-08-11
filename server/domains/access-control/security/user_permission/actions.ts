@@ -15,25 +15,8 @@ export const createUserPermissionAction = async (userId: string | number, permis
 
         return { success: true, data: userPermission };
     } catch (error) {
-        if (error instanceof ServerApiError) {
-            return {
-                success: false,
-                error: {
-                    message: error.message,
-                    code: error.code,
-                    details: error.details
-                }
-            };
-        }
-
-        return {
-            success: false,
-            error: {
-                message: 'Failed to create user-permission relationship',
-                details: error
-            }
-        };
-    }
+    throw error;
+  }
 };
 
 export const updateUserPermissionAction = async (userId: string | number, permissionId: string | number, payload: IUpdateUserPermission): Promise<ActionResultType<any>> => {
@@ -46,25 +29,8 @@ export const updateUserPermissionAction = async (userId: string | number, permis
 
         return { success: true, data: userPermission };
     } catch (error) {
-        if (error instanceof ServerApiError) {
-            return {
-                success: false,
-                error: {
-                    message: error.message,
-                    code: error.code,
-                    details: error.details
-                }
-            };
-        }
-
-        return {
-            success: false,
-            error: {
-                message: 'Failed to update user-permission relationship',
-                details: error
-            }
-        };
-    }
+    throw error;
+  }
 };
 
 export const deleteUserPermissionAction = async (userId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
@@ -77,23 +43,6 @@ export const deleteUserPermissionAction = async (userId: string | number, permis
 
         return { success: true, data: undefined };
     } catch (error) {
-        if (error instanceof ServerApiError) {
-            return {
-                success: false,
-                error: {
-                    message: error.message,
-                    code: error.code,
-                    details: error.details
-                }
-            };
-        }
-
-        return {
-            success: false,
-            error: {
-                message: 'Failed to delete user-permission relationship',
-                details: error
-            }
-        };
-    }
+    throw error;
+  }
 };

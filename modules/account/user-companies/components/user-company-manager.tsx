@@ -31,7 +31,7 @@ import {
   createUserCompanyServerAction,
   deleteUserCompanyServerAction,
   getUserCompaniesServerAction,
-} from "@/app/[locale]/(protected)/account/user-companies/[idCompanie]/actions";
+} from "@/app/[locale]/(protected)/account/user-companies/actions";
 
 interface UserCompaniesManagerProps {
   initialData?: IUserCompanyWithDetails[];
@@ -455,11 +455,10 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
                     <button
                       key={mode}
                       onClick={() => setFilterMode(mode)}
-                      className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
-                        filterMode === mode
+                      className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${filterMode === mode
                           ? "bg-primary text-primary-foreground"
                           : "text-muted-foreground hover:text-foreground"
-                      }`}>
+                        }`}>
                       {mode === "all"
                         ? "Todas"
                         : mode === "assigned"
@@ -520,11 +519,10 @@ function CompanyCard({
 }) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${
-        isAssigned
+      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${isAssigned
           ? "border-primary/50 bg-primary/5"
           : "border-border bg-card hover:border-primary/30"
-      }`}>
+        }`}>
       <div className='p-4'>
         <div className='flex items-start gap-4'>
           <div
@@ -552,11 +550,10 @@ function CompanyCard({
           <button
             onClick={onToggle}
             disabled={disabled || isPending}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
-              isAssigned
+            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${isAssigned
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
-            }`}>
+              }`}>
             {isPending ? (
               "..."
             ) : isAssigned ? (

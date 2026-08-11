@@ -27,24 +27,7 @@ export const createPermissionAction = async (payload: ICreatePermission): Promis
     
     return { success: true, data: permission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -58,24 +41,7 @@ export const updatePermissionAction = async (id: string | number, payload: IUpda
     
     return { success: true, data: permission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -89,23 +55,6 @@ export const deletePermissionAction = async (id: string | number): Promise<Actio
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };

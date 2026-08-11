@@ -26,42 +26,7 @@ export const createCompanyApplicationAction = async (payload: ICreateCompanyAppl
 
     return { success: true, data: companyApplication };
   } catch (error) {
-    if (error instanceof ServerApiError && error.status === 409) {
-      try {
-        const byCompany = await companyApplicationsRepository.getByCompany(payload.company_id);
-        const existing = byCompany.find((ca) => ca.application_id === payload.application_id);
-
-        if (existing) {
-          await revalidateCacheTag(accessControlTags.companyApplications());
-          if (typeof existing.id_company_application === 'string' || typeof existing.id_company_application === 'number') {
-            await revalidateCacheTag(accessControlTags.companyApplication(existing.id_company_application));
-          }
-
-          return { success: true, data: existing };
-        }
-      } catch {
-        // fall through to the original error response
-      }
-    }
-
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create company application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -75,24 +40,7 @@ export const updateCompanyApplicationAction = async (id: string | number, payloa
 
     return { success: true, data: companyApplication };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update company application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -106,24 +54,7 @@ export const deleteCompanyApplicationAction = async (id: string | number): Promi
 
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete company application',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -151,24 +82,7 @@ export const activateLicenseAction = async (companyId: string | number, applicat
 
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to activate license',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -183,24 +97,7 @@ export const deactivateLicenseAction = async (companyId: string | number, applic
 
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to deactivate license',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -225,24 +122,7 @@ export const assignApplicationToCompanyAction = async (companyId: string | numbe
 
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to assign application to company',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -257,23 +137,6 @@ export const revokeApplicationFromCompanyAction = async (companyId: string | num
 
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-
-    return {
-      success: false,
-      error: {
-        message: 'Failed to revoke application from company',
-        details: error
-      }
-    };
+    throw error;
   }
 };

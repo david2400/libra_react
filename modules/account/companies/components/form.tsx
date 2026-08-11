@@ -81,46 +81,12 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<any>) => {
   const t = useTranslations('account.companies.messages');
   const tMessages = useTranslations('messages');
 
-  // Transform ICompany to IUpdateCompany format
-  const transformCompanyToUpdateRequest = (company: any): ICompanyUpdateRequest => {
-    return {
-      id: company.id_company, // Add the required id field
-      id_company: company.id_company,
-      name: company.name,
-      nit: company.nit,
-      active_date: company.active_date,
-      status: company.status,
-      email: company.email || "",
-      phone: company.phone || "",
-      website: company.website || "",
-      contact_person: company.contact_person || "",
-      address: company.address || "",
-      city: company.city || "",
-      country: company.country || "",
-      postal_code: company.postal_code || "",
-      legal_representative: company.legal_representative || "",
-      tax_regime: company.tax_regime || "",
-      economic_activity: company.economic_activity || "",
-      employee_count: company.employee_count || 0,
-      timezone: company.timezone || "",
-      currency: company.currency || "",
-      language: company.language || "",
-      is_active: company.is_active,
-      is_verified: company.is_verified,
-      verification_date: company.verification_date || "",
-      max_users: company.max_users || 0,
-      max_applications: company.max_applications || 0,
-      subscription_type: company.subscription_type || "",
-      subscription_start_date: company.subscription_start_date || "",
-      subscription_end_date: company.subscription_end_date || "",
-    };
-  };
 
   const handleSubmit: SubmitHandler<ICompanyUpdateRequest> = async (values) => {
-    if (!values.id_company) return;
+    if (!initialValues.id_company) return;
     
     try {
-      const result = await updateCompanyServerAction(values.id_company, values);
+      const result = await updateCompanyServerAction(initialValues.id_company, values);
       
       Swal.fire({
         title: t('updateSuccess'),
@@ -140,7 +106,5 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<any>) => {
 
   if (!initialValues) return null;
 
-  const transformedValues = transformCompanyToUpdateRequest(initialValues);
-
-  return <FormBase initialValues={transformedValues} onSubmit={handleSubmit} validationSchema={validationCompany()} />;
+  return <FormBase initialValues={initialValues} onSubmit={handleSubmit} validationSchema={validationCompany()} />;
 };

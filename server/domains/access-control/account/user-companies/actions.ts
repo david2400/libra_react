@@ -22,23 +22,7 @@ export const createUserCompanyAction = async (
     await revalidateCacheTag(accessControlTags.companies());
     return { success: true, data: userCompany };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        },
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create user-company assignment',
-        details: error,
-      },
-    };
+    throw error;
   }
 };
 
@@ -58,23 +42,7 @@ export const updateUserCompanyAction = async (
     await revalidateCacheTag(accessControlTags.companies());
     return { success: true, data: userCompany };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        },
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update user-company assignment',
-        details: error,
-      },
-    };
+    throw error;
   }
 };
 
@@ -93,22 +61,6 @@ export const deleteUserCompanyAction = async (
     await revalidateCacheTag(accessControlTags.companies());
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        },
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete user-company assignment',
-        details: error,
-      },
-    };
+    throw error;
   }
 };

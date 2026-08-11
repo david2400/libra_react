@@ -46,24 +46,7 @@ export const createRolePermissionAction = async (roleId: string | number, permis
     
     return { success: true, data: rolePermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create role-permission relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -87,24 +70,7 @@ export const updateRolePermissionAction = async (roleId: string | number, permis
     
     return { success: true, data: rolePermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update role-permission relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -128,24 +94,7 @@ export const deleteRolePermissionAction = async (roleId: string | number, permis
     
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete role-permission relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -172,24 +121,7 @@ export const bulkAssignRolePermissionsAction = async (payload: IBulkRolePermissi
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to bulk assign role permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -214,24 +146,7 @@ export const bulkRemoveRolePermissionsAction = async (roleId: string | number, p
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to bulk remove role permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -256,24 +171,7 @@ export const bulkUpdateRolePermissionsAction = async (roleId: string | number, p
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to bulk update role permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -290,24 +188,7 @@ export const createRolePermissionActivityAction = async (activity: Omit<IRolePer
     
     return { success: true, data: createdActivity };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create role-permission activity',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -319,24 +200,7 @@ export const validateRolePermissionAction = async (request: IRolePermissionValid
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to validate role-permission relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -359,24 +223,7 @@ export const validateRolePermissionTreeAction = async (roleId: string | number):
     
     return { success: true, data: results };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to validate role permission tree',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -399,24 +246,7 @@ export const validateAllRolePermissionsAction = async (): Promise<ActionResultTy
     
     return { success: true, data: results };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to validate all role-permission relationships',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -443,24 +273,7 @@ export const calculateRolePermissionInheritanceAction = async (roleId: string | 
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to calculate role permission inheritance',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -488,24 +301,7 @@ export const resolveRolePermissionConflictsAction = async (roleId: string | numb
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to resolve role permission conflicts',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -532,23 +328,6 @@ export const exportRolePermissionsAction = async (request: IRolePermissionExport
     
     return { success: true, data: result };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to export role-permission data',
-        details: error
-      }
-    };
+    throw error;
   }
 };

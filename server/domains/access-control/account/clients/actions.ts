@@ -13,23 +13,7 @@ export const getClientByIdServerAction = async (id: string | number): Promise<Ac
     const client = await clientsRepository.getById(id);
     return { success: true, data: client };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to get client',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -51,23 +35,7 @@ export const createClientAction = async (payload: ICreateClient): Promise<Action
     await revalidateCacheTag(accessControlTags.clients());
     return { success: true, data: client };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create client',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -78,23 +46,7 @@ export const updateClientAction = async (id: string | number, payload: IUpdateCl
     await revalidateCacheTag(accessControlTags.clients());
     return { success: true, data: client };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update client',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -105,23 +57,7 @@ export const deleteClientAction = async (id: string | number): Promise<ActionRes
     await revalidateCacheTag(accessControlTags.clients());
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete client',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -138,23 +74,7 @@ export const createClientCompanyAction = async (
     await revalidateCacheTag(accessControlTags.company(companyId));
     return { success: true, data: clientCompany };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create client-company relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -169,23 +89,7 @@ export const updateClientCompanyAction = async (
     await revalidateCacheTag(accessControlTags.company(companyId));
     return { success: true, data: clientCompany };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update client-company relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -199,22 +103,6 @@ export const deleteClientCompanyAction = async (
     await revalidateCacheTag(accessControlTags.company(companyId));
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete client-company relationship',
-        details: error
-      }
-    };
+    throw error;
   }
 };

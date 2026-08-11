@@ -33,24 +33,7 @@ export const loginAction = async (request: ILoginRequest): Promise<ActionResultT
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Login failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -60,24 +43,7 @@ export const validateTokenAction = async (request: ITokenValidationRequest): Pro
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Token validation failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -87,24 +53,7 @@ export const refreshTokenAction = async (request: ITokenRefreshRequest): Promise
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Token refresh failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -121,24 +70,7 @@ export const employeeLoginAction = async (request: IEmployeeLoginRequest): Promi
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Employee login failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -155,24 +87,7 @@ export const clientLoginAction = async (request: IClientLoginRequest): Promise<A
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Client login failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -189,24 +104,7 @@ export const internalLoginAction = async (request: IInternalLoginRequest): Promi
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Internal login failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -216,23 +114,6 @@ export const validateCredentialsAction = async (request: ICredentialsValidationR
     
     return { success: true, data: response };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Credentials validation failed',
-        details: error
-      }
-    };
+    throw error;
   }
 };

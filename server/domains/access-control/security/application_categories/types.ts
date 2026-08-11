@@ -6,6 +6,8 @@ export interface ICreateApplicationCategory {
   name: string;
   description?: string;
   application_category_id?: number | null
+  parent_category_application_id?: number | null;
+
 }
 
 export interface IUpdateApplicationCategory extends ICreateApplicationCategory {

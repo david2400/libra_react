@@ -33,15 +33,15 @@ export const validationCompany = () => {
     timezone: z.string().optional(),
     currency: z.string().optional(),
     language: z.string().optional(),
-    verification_date: z.string().optional(),
+    // verification_date: z.string().optional(),
     is_active: z.boolean().optional(),
     is_verified: z.boolean().optional(),
     
     // Límites y Configuración del Plan
     max_users: z.number().int().min(0).optional(),
     max_applications: z.number().int().min(0).optional(),
-    subscription_type: z.string().optional(),
-    subscription_start_date: z.string().optional(),
-    subscription_end_date: z.string().optional(),
+    // subscription_type: z.string().optional(),
+    // subscription_start_date: z.string().optional(),
+    // subscription_end_date: z.string().optional(),
   });
 };

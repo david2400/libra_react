@@ -105,10 +105,11 @@ export const UpdateMenu = ({
   const tMessages = useTranslations("messages");
 
   const handleSubmit: SubmitHandler<IMenuUpdateRequest> = async (values) => {
-    if (!values.id_menu) return;
+    const id = initialValues?.id_menu;
+    if (!id) return;
 
     try {
-      const result = await updateMenuServerAction(values.id_menu, values);
+      const result = await updateMenuServerAction(id, values);
 
       Swal.fire({
         title: t("updateSuccess"),

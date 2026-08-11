@@ -90,9 +90,10 @@ export const UpdateRole = ({
   const tMessages = useTranslations("messages");
 
   const handleSubmit: SubmitHandler<IRoleUpdateRequest> = async (values) => {
-    if (!values.id_role) return;
+    const id = initialValues?.id_role
+    if (!id) return;
 
-    const result = await updateRoleServerAction(values.id_role, values)
+    const result = await updateRoleServerAction(id, values)
       .then(() => {
         Swal.fire({
           title: t("updateSuccess"),

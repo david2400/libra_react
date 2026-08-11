@@ -24,24 +24,7 @@ export const checkPermissionAction = async (
     
     return { success: true, data: hasPermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to check permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -57,24 +40,7 @@ export const checkAnyPermissionAction = async (
     
     return { success: true, data: hasAny };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to check any permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -90,24 +56,7 @@ export const checkAllPermissionsAction = async (
     
     return { success: true, data: hasAll };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    
-    return {
-      success: false,
-      error: {
-        message: 'Failed to check all permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -121,12 +70,6 @@ export const refreshUserPermissionsAction = async (userId: number): Promise<Acti
     
     return { success: true, data: undefined };
   } catch (error) {
-    return {
-      success: false,
-      error: {
-        message: 'Failed to refresh user permissions cache',
-        details: error
-      }
-    };
+    throw error;
   }
 };

@@ -16,7 +16,6 @@ import {
   IApplicationCategory,
 } from "../models/applicationCategory.interface";
 import Swal from "sweetalert2";
-import { useRouter } from "next/navigation";
 import { createApplicationCategoryAction, updateApplicationCategoryAction } from "@/server/domains/access-control/security/application_categories";
 
 const FormBase = ({
@@ -40,7 +39,6 @@ interface IRegisterMenuProps extends IFormAddProps {
 }
 
 export const RegisterApplicationCategory = ({ availableMenus }: IRegisterMenuProps = {}) => {
-  const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("navigation.menus.messages");
   const tMessages = useTranslations("messages");
@@ -59,10 +57,9 @@ export const RegisterApplicationCategory = ({ availableMenus }: IRegisterMenuPro
         title: t("createSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+        showConfirmButton: true,
+      }).then(() => {
+        window.location.reload();
       });
     } catch (error) {
       Swal.fire({
@@ -91,25 +88,23 @@ export const UpdateApplicationCategory = ({
   initialValues,
   availableMenus,
 }: IUpdateMenuProps) => {
-  const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("navigation.menus.messages");
   const tMessages = useTranslations("messages");
 
   const handleSubmit: SubmitHandler<IApplicationCategoryUpdateRequest> = async (values) => {
-    if (!values.id_application_category) return;
-
+    const id = initialValues?.id_application_category;
+    if (!id) return;
     try {
-      const result = await updateApplicationCategoryAction(values.id_application_category, values);
+      const result = await updateApplicationCategoryAction(id, values);
 
       Swal.fire({
         title: t("updateSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+        showConfirmButton: true,
+      }).then(() => {
+        window.location.reload();
       });
     } catch (error) {
       Swal.fire({

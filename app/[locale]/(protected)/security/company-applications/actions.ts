@@ -4,56 +4,86 @@ import { IApplication, getApplications } from "@/server/domains/access-control/s
 import { ICompanyApplication, ICreateCompanyApplication, IUpdateCompanyApplication, createCompanyApplicationAction, deleteCompanyApplicationAction, getCompanyApplications, revokeAllApplicationsAction, updateCompanyApplicationAction } from "@/server/domains/access-control/security/company_applications";
 
 export async function createCompanyApplicationServerAction(payload: ICreateCompanyApplication) {
-  const result = await createCompanyApplicationAction(payload);
+  try {
+    const result = await createCompanyApplicationAction(payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo crear el módulo de aplicación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo crear el módulo de aplicación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function updateCompanyApplicationServerAction(companyApplicationId: string | number, payload: IUpdateCompanyApplication) {
-  const result = await updateCompanyApplicationAction(companyApplicationId, payload);
+  try {
+    const result = await updateCompanyApplicationAction(companyApplicationId, payload);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo actualizar el módulo de aplicación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo actualizar el módulo de aplicación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function deleteCompanyApplicationServerAction(companyApplicationId: string | number) {
-  const result = await deleteCompanyApplicationAction(companyApplicationId);
+  try {
+    const result = await deleteCompanyApplicationAction(companyApplicationId);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo eliminar el módulo de aplicación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo eliminar el módulo de aplicación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 export async function revokeAllApplicationsActionServerAction(companyId: number) {
-  const result = await revokeAllApplicationsAction(companyId);
+  try {
+    const result = await revokeAllApplicationsAction(companyId);
 
-  if (!result.success) {
-    throw new Error(result.error?.message ?? 'No se pudo eliminar el módulo de aplicación');
+    if (!result.success) {
+      throw new Error(result.error?.message ?? 'No se pudo eliminar el módulo de aplicación');
+    }
+
+    return result.data;
+
+  } catch (error) {
+    throw error;
   }
-
-  return result.data;
 }
 
 
 export async function getAllCompaniesServerAction(): Promise<IApplication[]> {
-  const result = await getApplications();
+  try {
+    const result = await getApplications();
 
-  return result ?? [];
+    return result ?? [];
+
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function getCompanyApplicationsServerAction(): Promise<ICompanyApplication[]> {
-  const result = await getCompanyApplications();
+  try {
+    const result = await getCompanyApplications();
 
-  return Array.isArray(result)
-    ? result
-    : (result as any)?.content || [];
+    return Array.isArray(result)
+      ? result
+      : (result as any)?.content || [];
+
+  } catch (error) {
+    throw error;
+  }
 }
