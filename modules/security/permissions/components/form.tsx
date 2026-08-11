@@ -36,7 +36,7 @@ const FormBase = ({
   );
 };
 
-export const RegisterPermission = ({}: IFormAddProps = {}) => {
+export const RegisterPermission = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("security.permissions.messages");
@@ -63,25 +63,22 @@ export const RegisterPermission = ({}: IFormAddProps = {}) => {
   const handleSubmit: SubmitHandler<IPermissionCreateRequest> = async (
     values,
   ) => {
-    const result = await createPermissionServerAction(values)
-      .then(() => {
-        Swal.fire({
-          title: t("createSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: tMessages("createError", { entity: "permiso" }),
-          text: error?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
+    try {
+      const result = await createPermissionServerAction(values);
+      await Swal.fire({
+        title: t("createSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: tMessages("createError", { entity: "permiso" }),
+        text: error?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -102,30 +99,29 @@ export const UpdatePermission = ({ initialValues }: IFormUpdateProps<any>) => {
   const handleSubmit: SubmitHandler<IPermissionUpdateRequest> = async (
     values,
   ) => {
-    if (!values.id_permission) return;
 
-    const result = await updatePermissionServerAction(
-      values.id_permission,
-      values,
-    )
-      .then(() => {
-        Swal.fire({
-          title: t("updateSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: tMessages("updateError", { entity: "permiso" }),
-          text: (error as any)?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
+    try {
+      const id = initialValues?.id_permission
+      if (!id) return;
+
+      await updatePermissionServerAction(
+        id,
+        values,
+      );
+      await Swal.fire({
+        title: t("updateSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: tMessages("updateError", { entity: "permiso" }),
+        text: error?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   if (!initialValues) {

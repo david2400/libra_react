@@ -9,7 +9,10 @@ import {
   IFormUpdateProps,
 } from "@repo/ui/form/models";
 import { FormMenuPermission } from "../scenes/formMenuPermission";
-import { validationMenuPermission } from "../schemas/menu-permission.schema";
+import {
+  validationMenuPermission,
+  validationUpdateMenuPermission,
+} from "../schemas/menu-permission.schema";
 import {
   IMenuPermissionCreateRequest,
   IMenuPermissionUpdateRequest,
@@ -35,18 +38,18 @@ const FormBase = ({
   );
 };
 
-export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
+export const RegisterMenuPermission = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("navigation.menuPermissions.messages");
   const tMessages = useTranslations("messages");
 
-  const defaultValues: IMenuPermissionCreateRequest = {
+  const defaultValues: any = {
     menu_id: 0,
     permission_id: 0,
   };
 
-  const handleSubmit: SubmitHandler<IMenuPermissionCreateRequest> = async (
+  const handleSubmit: SubmitHandler<any> = async (
     values,
   ) => {
     try {
@@ -56,13 +59,14 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
         values,
       );
 
-      Swal.fire({
+      await Swal.fire({
         title: t("createSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => router.refresh(),
+        showConfirmButton: true,
       });
+
+      router.refresh();
     } catch (error) {
       Swal.fire({
         title: tMessages("createError", { entity: "permiso de menú" }),
@@ -83,13 +87,14 @@ export const RegisterMenuPermission = ({}: IFormAddProps = {}) => {
 
 export const UpdateMenuPermission = ({
   initialValues,
+  handleClose,
 }: IFormUpdateProps<IMenuPermissionUpdateRequest>) => {
   const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("navigation.menuPermissions.messages");
   const tMessages = useTranslations("messages");
 
-  const handleSubmit: SubmitHandler<IMenuPermissionUpdateRequest> = async (
+  const handleSubmit: SubmitHandler<any> = async (
     values,
   ) => {
     if (!values.menu_id || !values.permission_id) return;
@@ -101,13 +106,14 @@ export const UpdateMenuPermission = ({
         values,
       );
 
-      Swal.fire({
+      await Swal.fire({
         title: t("updateSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => router.refresh(),
+        showConfirmButton: true,
       });
+
+      router.refresh();
     } catch (error) {
       Swal.fire({
         title: tMessages("updateError", { entity: "permiso de menú" }),
@@ -123,7 +129,7 @@ export const UpdateMenuPermission = ({
     <FormBase
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      validationSchema={validationMenuPermission()}
+      validationSchema={validationUpdateMenuPermission()}
     />
   );
 };

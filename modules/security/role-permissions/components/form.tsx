@@ -35,7 +35,7 @@ const FormBase = ({
   );
 };
 
-export const RegisterRolePermission = ({}: IFormAddProps = {}) => {
+export const RegisterRolePermission = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
 
   const defaultValues: IRolePermissionCreateRequest = {
@@ -54,21 +54,14 @@ export const RegisterRolePermission = ({}: IFormAddProps = {}) => {
         values,
       );
 
-      if (result.success) {
-        Swal.fire({
-          title: "Asignación creada exitosamente",
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => router.refresh(),
-        });
-      } else {
-        Swal.fire({
-          title: "Error!",
-          text: result.error?.message || "Ocurrió un error inesperado",
-          icon: "error",
-        });
-      }
+      await Swal.fire({
+        title: "Asignación creada exitosamente",
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
+      });
+      router.refresh();
+
     } catch (error) {
       Swal.fire({
         title: "Error!",
@@ -105,13 +98,13 @@ export const UpdateRolePermission = ({
       );
 
       if (result.success) {
-        Swal.fire({
+        await Swal.fire({
           title: "Asignación actualizada exitosamente",
           icon: "success",
           timer: 3000,
-          showConfirmButton: false,
-          willClose: () => router.refresh(),
+          showConfirmButton: true,
         });
+        router.refresh();
       } else {
         Swal.fire({
           title: "Error!",

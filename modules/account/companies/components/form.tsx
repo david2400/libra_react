@@ -15,7 +15,7 @@ const FormBase = ({ initialValues, onSubmit, validationSchema }: IFormProps<any>
   return <FormCompany initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} />;
 };
 
-export const RegisterCompany = ({}: IFormAddProps = {}) => {
+export const RegisterCompany = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
   const { useTranslations } = require('next-intl');
   const t = useTranslations('account.companies.messages');
@@ -55,14 +55,14 @@ export const RegisterCompany = ({}: IFormAddProps = {}) => {
   const handleSubmit: SubmitHandler<ICompanyCreateRequest> = async (values) => {
     try {
       const result = await createCompanyServerAction(values);
-      
-      Swal.fire({
+
+      await Swal.fire({
         title: t('createSuccess'),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => router.refresh(),
+        showConfirmButton: true,
       });
+      router.refresh();
     } catch (error) {
       Swal.fire({
         title: tMessages('createError', { entity: 'empresa' }),
@@ -83,18 +83,20 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<any>) => {
 
 
   const handleSubmit: SubmitHandler<ICompanyUpdateRequest> = async (values) => {
-    if (!initialValues.id_company) return;
-    
+
     try {
-      const result = await updateCompanyServerAction(initialValues.id_company, values);
-      
-      Swal.fire({
+      const id = initialValues?.id_company
+      if (!id) return;
+
+      const result = await updateCompanyServerAction(id, values);
+
+      await Swal.fire({
         title: t('updateSuccess'),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => router.refresh(),
+        showConfirmButton: true,
       });
+      router.refresh();
     } catch (error) {
       Swal.fire({
         title: tMessages('updateError', { entity: 'empresa' }),

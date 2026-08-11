@@ -51,25 +51,22 @@ export const RegisterRole = ({ }: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IRoleCreateRequest> = async (values) => {
-    const result = await createRoleServerAction(values)
-      .then(() => {
-        Swal.fire({
-          title: t("createSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: tMessages("createError", { entity: "rol" }),
-          text: error?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
+    try {
+      await createRoleServerAction(values);
+      await Swal.fire({
+        title: t("createSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: tMessages("createError", { entity: "rol" }),
+        text: error?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -90,28 +87,25 @@ export const UpdateRole = ({
   const tMessages = useTranslations("messages");
 
   const handleSubmit: SubmitHandler<IRoleUpdateRequest> = async (values) => {
-    const id = initialValues?.id_role
-    if (!id) return;
-
-    const result = await updateRoleServerAction(id, values)
-      .then(() => {
-        Swal.fire({
-          title: t("updateSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: tMessages("updateError", { entity: "rol" }),
-          text: error?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
+    try {
+      const id = initialValues?.id_role
+      if (!id) return;
+      
+      await updateRoleServerAction(id, values);
+      await Swal.fire({
+        title: t("updateSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: tMessages("updateError", { entity: "rol" }),
+        text: error?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   if (!initialValues) {

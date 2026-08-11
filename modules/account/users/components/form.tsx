@@ -9,18 +9,18 @@ import {
   IFormUpdateProps,
 } from "@repo/ui/form/models";
 import { FormUser } from "../scenes/formUser";
-import { validationUser } from "../schemas/user.schema";
+import { validationUser, validationUpdateUser } from "../schemas/user.schema";
 import {
   IUserCreateRequest,
   IUserUpdateRequest,
 } from "../models/user.interface";
 import Swal from "sweetalert2";
-
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import {
-  createUserAction,
-  updateUserAction,
-} from "@/server/domains/access-control/account/users/actions";
+  createUserServerAction,
+  updateUserServerAction,
+} from "@/app/[locale]/(protected)/account/users/actions";
 
 const FormBase = ({
   initialValues,
@@ -38,6 +38,9 @@ const FormBase = ({
 
 export const RegisterUser = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
+  const { useTranslations } = require("next-intl");
+  const t = useTranslations("account.users.messages");
+  const tMessages = useTranslations("messages");
 
   const defaultValues: IUserCreateRequest = {
     username: "",
@@ -45,29 +48,27 @@ export const RegisterUser = ({ }: IFormAddProps = {}) => {
     status: "active",
   };
 
-  const handleSubmit: SubmitHandler<IUserCreateRequest> = async (values) => {
-    const result = await createUserAction(values)
-      .then((result) => {
-        if (!result.success) {
-          throw new Error(
-            result.error?.message || "Ocurrió un error inesperado",
-          );
-        }
-        Swal.fire({
-          title: "Usuario creado exitosamente",
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => router.refresh(),
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "Error!",
-          text: (error as any)?.message || "Ocurrió un error inesperado",
-          icon: "error",
-        });
+  const handleSubmit: SubmitHandler<IUserCreateRequest> = async (
+    values,
+  ) => {
+    try {
+      const result = await createUserServerAction(values);
+
+      await Swal.fire({
+        title: t("createSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+
+      router.refresh();
+    } catch (error) {
+      Swal.fire({
+        title: tMessages("createError", { entity: "usuario" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -81,44 +82,50 @@ export const RegisterUser = ({ }: IFormAddProps = {}) => {
 
 export const UpdateUser = ({
   initialValues,
+  handleClose,
 }: IFormUpdateProps<IUserUpdateRequest>) => {
   const router = useRouter();
+  const t = useTranslations("account.users.messages");
+  const tMessages = useTranslations("messages");
 
-  const handleSubmit: SubmitHandler<IUserUpdateRequest> = async (values) => {
-    console.log("values", values);
-    if (!initialValues?.id_user) return;
+  const handleSubmit: SubmitHandler<IUserUpdateRequest> = async (
+    values,
+  ) => {
+    try {
+      const id = initialValues?.id_user;
+      if (!id) return;
 
-    const result = await updateUserAction(initialValues.id_user, values)
-      .then((result) => {
-        if (!result.success) {
-          throw new Error(
-            result.error?.message || "Ocurrió un error inesperado",
-          );
-        }
-        Swal.fire({
-          title: "Usuario actualizado exitosamente",
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => router.refresh(),
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "Error!",
-          text: (error as any)?.message || "Ocurrió un error inesperado",
-          icon: "error",
-        });
+      const result = await updateUserServerAction(
+        id,
+        values,
+      )
+      await Swal.fire({
+        title: t("updateSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+
+      router.refresh();
+    } catch (error) {
+      Swal.fire({
+        title: tMessages("updateError", { entity: "usuario" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
+
   };
 
-  if (!initialValues) return null;
+  if (!initialValues) {
+    return null;
+  }
 
   return (
     <FormBase
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      validationSchema={validationUser()}
+      validationSchema={validationUpdateUser()}
     />
   );
 };

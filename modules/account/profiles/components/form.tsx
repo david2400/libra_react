@@ -36,7 +36,7 @@ const FormBase = ({
   );
 };
 
-export const RegisterProfile = ({}: IFormAddProps = {}) => {
+export const RegisterProfile = ({ }: IFormAddProps = {}) => {
   const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("account.profiles.messages");
@@ -58,23 +58,22 @@ export const RegisterProfile = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IProfileCreateRequest> = async (values) => {
-    const result = await createProfileServerAction(values)
-      .then(() => {
-        Swal.fire({
-          title: t("createSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => router.refresh(),
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: tMessages("createError", { entity: "perfil" }),
-          text: (error as any)?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
+    try {
+      const result = await createProfileServerAction(values);
+      await Swal.fire({
+        title: t("createSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: tMessages("createError", { entity: "perfil" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -95,25 +94,25 @@ export const UpdateProfile = ({
   const tMessages = useTranslations("messages");
 
   const handleSubmit: SubmitHandler<IProfileUpdateRequest> = async (values) => {
-    if (!values.id_profile) return;
-
-    const result = await updateProfileServerAction(values.id_profile, values)
-      .then(() => {
-        Swal.fire({
-          title: t("updateSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => router.refresh(),
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: tMessages("updateError", { entity: "perfil" }),
-          text: (error as any)?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
+    try {
+      const id = initialValues?.id_profile
+      if (!id) return;
+      
+      await updateProfileServerAction(id, values);
+      await Swal.fire({
+        title: t("updateSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: tMessages("updateError", { entity: "perfil" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   if (!initialValues) return null;

@@ -9,7 +9,7 @@ import {
   IFormUpdateProps,
 } from "@repo/ui/form/models";
 import { FormMenu } from "../scenes/formMenu";
-import { validationMenu } from "../schemas/menu.schema";
+import { validationMenu, validationUpdateMenu } from "../schemas/menu.schema";
 import {
   IMenuCreateRequest,
   IMenuUpdateRequest,
@@ -97,6 +97,7 @@ interface IUpdateMenuProps extends IFormUpdateProps<IMenuUpdateRequest> {
 
 export const UpdateMenu = ({
   initialValues,
+  handleClose,
   availableMenus,
 }: IUpdateMenuProps) => {
   const router = useRouter();
@@ -111,15 +112,14 @@ export const UpdateMenu = ({
     try {
       const result = await updateMenuServerAction(id, values);
 
-      Swal.fire({
+      await Swal.fire({
         title: t("updateSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+        showConfirmButton: true,
       });
+
+      router.refresh();
     } catch (error) {
       Swal.fire({
         title: tMessages("updateError", { entity: "menú" }),
@@ -137,7 +137,7 @@ export const UpdateMenu = ({
     <FormBase
       initialValues={initialValues}
       onSubmit={handleSubmit}
-      validationSchema={validationMenu()}
+      validationSchema={validationUpdateMenu()}
       availableMenus={availableMenus}
     />
   );

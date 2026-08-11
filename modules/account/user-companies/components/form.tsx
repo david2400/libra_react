@@ -80,30 +80,27 @@ export const RegisterUserCompany = ({
   const handleSubmit: SubmitHandler<IUserCompanyCreateRequest> = async (
     values
   ) => {
-    const result = await createUserCompanyServerAction({
-      user_id: values.user_id,
-      company_id: values.company_id,
-      is_primary: values.is_primary,
-    })
-      .then(() => {
-        Swal.fire({
-          title: t("createSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            onSuccess?.();
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: tMessages("createError", { entity: "asignación" }),
-          text: (error as any)?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
+    try {
+      await createUserCompanyServerAction({
+        user_id: values.user_id,
+        company_id: values.company_id,
+        is_primary: values.is_primary,
       });
+      await Swal.fire({
+        title: t("createSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
+      });
+      onSuccess?.();
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: tMessages("createError", { entity: "asignación" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -140,32 +137,29 @@ export const UpdateUserCompany = ({
   ) => {
     if (!values.user_id || !values.company_id) return;
 
-    const result = await updateUserCompanyServerAction(
-      values.user_id,
-      values.company_id,
-      {
-        is_primary: values.is_primary,
-      }
-    )
-      .then(() => {
-        Swal.fire({
-          title: t("updateSuccess"),
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            handleClose?.(false);
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: tMessages("updateError", { entity: "asignación" }),
-          text: (error as any)?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
+    try {
+      await updateUserCompanyServerAction(
+        values.user_id,
+        values.company_id,
+        {
+          is_primary: values.is_primary,
+        }
+      );
+      await Swal.fire({
+        title: t("updateSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      handleClose?.(false);
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: tMessages("updateError", { entity: "asignación" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
   };
 
   if (!initialValues) {

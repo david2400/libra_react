@@ -44,7 +44,6 @@ export const ApplicationManager = ({
   }, [initialData]);
 
   const handleEdit = (row: IApplication) => {
-    console.log("row", row);
     setEditingApplication(row);
     handleModalCloseEdit();
   };
@@ -117,17 +116,14 @@ export const ApplicationManager = ({
         header: "Actions",
         enableSorting: false,
         cell: ({ row }) => (
-          console.log(row.original),
-          (
-            <div className='flex gap-2'>
-              <Buttons
-                size='sm'
-                variant='outline'
-                onClick={() => handleEdit(row.original)}>
-                Editar
-              </Buttons>
-            </div>
-          )
+          <div className='flex gap-2'>
+            <Buttons
+              size='sm'
+              variant='outline'
+              onClick={() => handleEdit(row.original)}>
+              Editar
+            </Buttons>
+          </div>
         ),
       },
     ],

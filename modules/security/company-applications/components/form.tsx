@@ -44,7 +44,6 @@ export const RegisterCompanyApplication = ({ onSuccess }: { onSuccess?: () => vo
     application_id: 0,
     license_start_date: "",
     license_end_date: "",
-    is_active: true,
     user_limit: undefined,
     subscription_type: "",
     auto_renew: false,
@@ -56,16 +55,15 @@ export const RegisterCompanyApplication = ({ onSuccess }: { onSuccess?: () => vo
   ) => {
     try {
       await createCompanyApplicationServerAction(values);
-      Swal.fire({
+      await Swal.fire({
         title: t("createSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          onSuccess?.();
-          router.refresh();
-        },
+        showConfirmButton: true,
       });
+
+      onSuccess?.();
+      router.refresh();
     } catch (error: any) {
       Swal.fire({
         title: "Error!",
@@ -95,22 +93,22 @@ export const UpdateCompanyApplication = ({
   const handleSubmit: SubmitHandler<ICompanyApplicationUpdateRequest> = async (
     values,
   ) => {
-    if (!values.id_company_application) return;
+    const id = initialValues?.id_company_application
+    if (!id) return;
 
     try {
       await updateCompanyApplicationServerAction(
-        values.id_company_application,
+        id,
         values,
       );
-      Swal.fire({
+      await Swal.fire({
         title: t("updateSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+        showConfirmButton: true,
       });
+
+      router.refresh();
     } catch (error: any) {
       Swal.fire({
         title: "Error!",

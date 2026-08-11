@@ -50,25 +50,22 @@ export const RegisterPolicy = ({}: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IPolicyCreateRequest> = async (values) => {
-    const result = await createPolicyServerAction(values)
-      .then(() => {
-        Swal.fire({
-          title: "Política creada exitosamente",
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "Error!",
-          text: (error as any)?.message || "Ocurrió un error inesperado",
-          icon: "error",
-        });
+    try {
+      await createPolicyServerAction(values);
+      await Swal.fire({
+        title: "Política creada exitosamente",
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.message || "Ocurrió un error inesperado",
+        icon: "error",
+      });
+    }
   };
 
   return (
@@ -88,25 +85,22 @@ export const UpdatePolicy = ({
   const handleSubmit: SubmitHandler<IPolicyUpdateRequest> = async (values) => {
     if (!values.id_policy) return;
 
-    const result = await updatePolicyServerAction(values.id_policy, values)
-      .then(() => {
-        Swal.fire({
-          title: "Política actualizada exitosamente",
-          icon: "success",
-          timer: 3000,
-          showConfirmButton: false,
-          willClose: () => {
-            router.refresh();
-          },
-        });
-      })
-      .catch((error) => {
-        Swal.fire({
-          title: "Error!",
-          text: (error as any)?.message || "Ocurrió un error inesperado",
-          icon: "error",
-        });
+    try {
+      await updatePolicyServerAction(values.id_policy, values);
+      await Swal.fire({
+        title: "Política actualizada exitosamente",
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
       });
+      router.refresh();
+    } catch (error: any) {
+      Swal.fire({
+        title: "Error!",
+        text: error?.message || "Ocurrió un error inesperado",
+        icon: "error",
+      });
+    }
   };
 
   if (!initialValues) {

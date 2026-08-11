@@ -60,15 +60,14 @@ export const RegisterApplication = ({ }: IFormAddProps = {}) => {
     try {
       const result = await createApplicationServerAction(values);
 
-      Swal.fire({
+      await Swal.fire({
         title: t("createSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+        showConfirmButton: true,
       });
+
+      router.refresh();
     } catch (error) {
       Swal.fire({
         title: tMessages("createError", { entity: "aplicación" }),
@@ -95,35 +94,33 @@ export const UpdateApplication = ({
   const t = useTranslations("security.applications.messages");
   const tMessages = useTranslations("messages");
 
-  console.log("row", initialValues);
   const handleSubmit: SubmitHandler<IApplicationUpdateRequest> = async (
     values,
   ) => {
-    // if (!values.id_application) return;
+    try {
+      const id = initialValues?.id_application;
+      if (!id) return;
 
-    // const result = await updateApplicationServerAction(
-    //   values.id_application,
-    //   values,
-    // )
-    //   .then((values) => {
-        // Swal.fire({
-        //   title: t("updateSuccess"),
-        //   icon: "success",
-        //   timer: 3000,
-        //   showConfirmButton: false,
-        //   willClose: () => {
-        //     handleClose && handleClose(false);
-        //     router.refresh();
-        //   },
-        // });
-      // })
-      // .catch((error) => {
-        Swal.fire({
-          title: tMessages("updateError", { entity: "aplicación" }),
-          text: "gola",//(error as any)?.message || tMessages("unexpectedError"),
-          icon: "error",
-        });
-      // });
+      const result = await updateApplicationServerAction(
+        id,
+        values,
+      )
+      await Swal.fire({
+        title: t("updateSuccess"),
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: true,
+      });
+
+      router.refresh();
+    } catch (error) {
+      Swal.fire({
+        title: tMessages("updateError", { entity: "aplicación" }),
+        text: (error as any)?.message || tMessages("unexpectedError"),
+        icon: "error",
+      });
+    }
+
   };
 
   if (!initialValues) {

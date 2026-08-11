@@ -16,6 +16,7 @@ import {
   IApplicationCategory,
 } from "../models/applicationCategory.interface";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 import { createApplicationCategoryAction, updateApplicationCategoryAction } from "@/server/domains/access-control/security/application_categories";
 
 const FormBase = ({
@@ -39,6 +40,7 @@ interface IRegisterMenuProps extends IFormAddProps {
 }
 
 export const RegisterApplicationCategory = ({ availableMenus }: IRegisterMenuProps = {}) => {
+  const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("navigation.menus.messages");
   const tMessages = useTranslations("messages");
@@ -53,14 +55,14 @@ export const RegisterApplicationCategory = ({ availableMenus }: IRegisterMenuPro
     try {
       const result = await createApplicationCategoryAction(values);
 
-      Swal.fire({
+      await Swal.fire({
         title: t("createSuccess"),
         icon: "success",
         timer: 3000,
         showConfirmButton: true,
-      }).then(() => {
-        window.location.reload();
       });
+
+      router.refresh();
     } catch (error) {
       Swal.fire({
         title: tMessages("createError", { entity: "menú" }),
@@ -88,6 +90,7 @@ export const UpdateApplicationCategory = ({
   initialValues,
   availableMenus,
 }: IUpdateMenuProps) => {
+  const router = useRouter();
   const { useTranslations } = require("next-intl");
   const t = useTranslations("navigation.menus.messages");
   const tMessages = useTranslations("messages");
@@ -98,14 +101,15 @@ export const UpdateApplicationCategory = ({
     try {
       const result = await updateApplicationCategoryAction(id, values);
 
-      Swal.fire({
+      await Swal.fire({
         title: t("updateSuccess"),
         icon: "success",
         timer: 3000,
         showConfirmButton: true,
-      }).then(() => {
-        window.location.reload();
       });
+
+      router.refresh();
+
     } catch (error) {
       Swal.fire({
         title: tMessages("updateError", { entity: "menú" }),

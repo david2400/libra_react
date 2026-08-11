@@ -21,7 +21,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@repo/ui/modals/scenes";
 import { RegisterApplicationCategory, UpdateApplicationCategory } from "./form";
@@ -372,6 +372,11 @@ export const ApplicationCategoryManager = ({
   const tActions = useTranslations("common");
   const [menus, setMenus] = useState<IApplicationCategory[]>(() => buildCategoryTree(initialData));
   // const [menus, setMenus] = useState<IApplicationCategory[]>(mockMenus);
+
+  useEffect(() => {
+    setMenus(buildCategoryTree(initialData));
+  }, [initialData]);
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const [expandedIds, setExpandedIds] = useState<Set<number>>(() => {

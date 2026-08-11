@@ -136,6 +136,11 @@ export const CompanyApplicationManager = ({
   // Company <-> Application assignments (real backend records)
   const [companyApplications, setCompanyApplications] =
     useState<ICompanyApplication[]>(initialData);
+
+  useEffect(() => {
+    setCompanyApplications(initialData);
+  }, [initialData]);
+
   const [selectedCompany, setSelectedCompany] = useState<ICompany | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<number | "all">("all");

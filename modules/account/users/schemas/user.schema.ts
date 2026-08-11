@@ -12,3 +12,16 @@ export const validationUser = () => {
     client_id: z.coerce.number().optional(),
   });
 };
+
+export const validationUpdateUser = () => {
+  const v = useValidationMessages();
+
+  return z.object({
+    id_user: z.number().min(1, { message: v.required }),
+    username: z.string().min(1, { message: v.required }),
+    password: z.string().min(6, { message: v.minLength(6) }).optional(),
+    status: z.string().optional(),
+    // companyId: z.coerce.number().optional(),
+    client_id: z.coerce.number().optional(),
+  });
+};
