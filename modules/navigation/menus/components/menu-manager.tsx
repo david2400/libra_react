@@ -27,7 +27,6 @@ import { Modal } from "@repo/ui/modals/scenes";
 import { RegisterMenu, UpdateMenu } from "./form";
 import {
   HiPlus,
-  HiSave,
   HiSearch,
   HiChevronRight,
   HiFolder,
@@ -605,9 +604,7 @@ export const MenuManager = ({
     setHasChanges(true);
   };
 
-  const handleSave = () => {
-    setHasChanges(false);
-  };
+
 
   const activeMenu = activeId
     ? flatMenus.find((m) => m.id_menu === activeId)
@@ -635,14 +632,7 @@ export const MenuManager = ({
               <HiPlus className='mr-2 h-4 w-4' />
               Add Menu
             </Button>
-            <Button
-              size='sm'
-              onClick={handleSave}
-              disabled={!hasChanges}
-              className='bg-primary text-primary-foreground hover:bg-primary/90'>
-              <HiSave className='mr-2 h-4 w-4' />
-              Save Changes
-            </Button>
+          
           </div>
         </div>
 

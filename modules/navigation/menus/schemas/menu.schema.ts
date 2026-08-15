@@ -13,11 +13,14 @@ export const validationMenu = () => {
     description: z.string().optional(),
     path: z.string().min(1, { message: v.required }),
     icon: z.string().optional(),
-    parent_menu_id: z.coerce
-      .number({ invalid_type_error: v.invalidFormat })
-      .int()
-      .optional()
-      .nullable(),
+    parent_menu_id: z.preprocess(
+      (val) => (val === "" ? null : val),
+      z.coerce
+        .number({ invalid_type_error: v.invalidFormat })
+        .int()
+        .optional()
+        .nullable(),
+    ),
     order: z.coerce
       .number({ invalid_type_error: v.invalidFormat })
       .int()
@@ -43,11 +46,14 @@ export const validationUpdateMenu = () => {
     description: z.string().optional(),
     path: z.string().min(1, { message: v.required }),
     icon: z.string().optional(),
-    parent_menu_id: z.coerce
-      .number({ invalid_type_error: v.invalidFormat })
-      .int()
-      .optional()
-      .nullable(),
+    parent_menu_id: z.preprocess(
+      (val) => (val === "" ? null : val),
+      z.coerce
+        .number({ invalid_type_error: v.invalidFormat })
+        .int()
+        .optional()
+        .nullable(),
+    ),
     order: z.coerce
       .number({ invalid_type_error: v.invalidFormat })
       .int()

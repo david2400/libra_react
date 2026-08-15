@@ -30,15 +30,10 @@ const MenusPage: NextPage = async () => {
     const menusResponse = await getMenus();
     const applicationResponse = await getApplications();
 
-    // Extract the data array from the paginated response
-    const menuData: IMenu[] = Array.isArray(menusResponse)
-      ? menusResponse
-      : menusResponse || [];
-
-    // Extract the data array from the paginated response
+    const menuData: IMenu[] = Array.isArray(menusResponse) ? menusResponse : [];
     const applicationData: IApplication[] = Array.isArray(applicationResponse)
       ? applicationResponse
-      : applicationResponse || [];
+      : [];
 
     return (
       <MenuManager

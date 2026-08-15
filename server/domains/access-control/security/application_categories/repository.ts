@@ -13,12 +13,20 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 export const applicationCategoriesRepository = {
   // List all categories
-  list: (params?: ListParams) =>
-    serverFetch.get<IApplicationCategory[]>('/api/access_control/application-categories', {
-      params,
-      revalidate: 300,
-      tags: [accessControlTags.applicationCategories()],
-    }),
+  // NOTE: the backend wraps the list response as `{ value: IApplicationCategory[], Count: number }`
+  // instead of returning a bare array, so we unwrap it here.
+  list: async (params?: ListParams): Promise<IApplicationCategory[]> => {
+    const result = await serverFetch.get<IApplicationCategory[] | { value: IApplicationCategory[]; Count: number }>(
+      '/api/access_control/application-categories',
+      {
+        params,
+        revalidate: 300,
+        tags: [accessControlTags.applicationCategories()],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 
   // Get category by ID
   getById: (id: string | number) =>
@@ -46,11 +54,17 @@ export const applicationCategoriesRepository = {
     }),
 
   // Get categories by parent
-  getByParentId: (parentId: string | number) =>
-    serverFetch.get<IApplicationCategory[]>(`/api/access_control/application-categories/parent/${parentId}`, {
-      revalidate: 300,
-      tags: [accessControlTags.applicationCategories()],
-    }),
+  getByParentId: async (parentId: string | number): Promise<IApplicationCategory[]> => {
+    const result = await serverFetch.get<IApplicationCategory[] | { value: IApplicationCategory[]; Count: number }>(
+      `/api/access_control/application-categories/parent/${parentId}`,
+      {
+        revalidate: 300,
+        tags: [accessControlTags.applicationCategories()],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 
   // Get active categories
   getActive: () =>
@@ -60,11 +74,17 @@ export const applicationCategoriesRepository = {
     }),
 
   // Get root categories (categories without parent)
-  getRootCategories: () =>
-    serverFetch.get<IApplicationCategory[]>('/api/access_control/application-categories/root', {
-      revalidate: 300,
-      tags: [accessControlTags.applicationCategories()],
-    }),
+  getRootCategories: async (): Promise<IApplicationCategory[]> => {
+    const result = await serverFetch.get<IApplicationCategory[] | { value: IApplicationCategory[]; Count: number }>(
+      '/api/access_control/application-categories/root',
+      {
+        revalidate: 300,
+        tags: [accessControlTags.applicationCategories()],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 
   // Get category tree
   getCategoryTree: () =>

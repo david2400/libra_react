@@ -6,13 +6,65 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { FormField, FormSelectField } from "@repo/ui/form/scenes";
+import { FormField, FormTreeSelectField } from "@repo/ui/form/scenes";
 import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
 import { useEffect, useMemo, useState } from "react";
 import { IApplicationCategory } from "../../applications-category/models/applicationCategory.interface";
 import { listApplicationsAction } from "../../role-permissions/actions/role.actions";
 import { listApplicationsCategoriesAction } from "../actions/applicationsCategories.actions";
+import type { TreeSelectNode } from "@repo/ui/inputs/scenes/tree-select";
+
+const getParentCategoryId = (
+  category: IApplicationCategory,
+): number | null | undefined =>
+  category.parent_category_application_id ??
+  category.application_category_id ??
+  category.parent_category_application?.id_application_category;
+
+const buildApplicationCategoryTreeNodes = (
+  flatCategories: IApplicationCategory[],
+): TreeSelectNode[] => {
+  if (!flatCategories?.length) return [];
+
+  const map = new Map<number, IApplicationCategory & { children: IApplicationCategory[] }>();
+  flatCategories.forEach((category) => {
+    map.set(category.id_application_category, { ...category, children: [] });
+  });
+
+  const roots: IApplicationCategory[] = [];
+  map.forEach((category) => {
+    const parentId = getParentCategoryId(category);
+    if (parentId == null || parentId === 0 || parentId === category.id_application_category) {
+      roots.push(category);
+    } else {
+      const parent = map.get(parentId);
+      if (parent) {
+        parent.children.push(category);
+      } else {
+        roots.push(category);
+      }
+    }
+  });
+
+  const sortByName = (a: IApplicationCategory, b: IApplicationCategory) =>
+    a.name.localeCompare(b.name);
+  const sortRecursively = (items: IApplicationCategory[]) => {
+    items.sort(sortByName);
+    items.forEach((item) => {
+      if (item.children?.length) sortRecursively(item.children);
+    });
+  };
+  sortRecursively(roots);
+
+  const toNode = (category: IApplicationCategory): TreeSelectNode => ({
+    value: category.id_application_category.toString(),
+    label: category.name,
+    children: category.children?.length ? category.children.map(toNode) : undefined,
+  });
+
+  return roots.map(toNode);
+};
 
 export const FormApplication = ({
   initialValues,
@@ -61,17 +113,9 @@ export const FormApplication = ({
     loadApplications();
   }, []);
 
-  const opcionesMenus = useMemo(() => {
-    return applicationCategoryData.menus
-      .filter((menu) => menu.id_application_category !== initialValues?.id_application_category)
-      .map((menu) => ({
-        id: menu.id_application_category.toString(),
-        value: menu.id_application_category.toString(),
-        label: menu.name,
-        disabled: false,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
-  }, [applicationCategoryData.menus, initialValues?.id_application_category]);
+  const categoryTreeNodes = useMemo(() => {
+    return buildApplicationCategoryTreeNodes(applicationCategoryData.menus);
+  }, [applicationCategoryData.menus]);
 
 
   return (
@@ -90,15 +134,22 @@ export const FormApplication = ({
           className='col-span-12'
         />
 
-        <FormSelectField
+        <FormTreeSelectField
           controller={{ control, name: "application_category_id" }}
-          label="Application Category"
-          data={opcionesMenus}
-          placeholder='Seleccionar menú padre...'
+          label={t("fields.application_category_id")}
+          nodes={categoryTreeNodes}
+          placeholder='Seleccionar categoría...'
+          searchPlaceholder='Buscar categoría...'
+          emptyMessage={
+            applicationCategoryData.loading
+              ? "Cargando categorías..."
+              : applicationCategoryData.error
+                ? applicationCategoryData.error
+                : "No hay categorías disponibles"
+          }
           disabled={applicationCategoryData.loading || !!applicationCategoryData.error}
-          error={errors.application_category_id?.message}
+          error={errors.application_category_id?.message?.toString()}
           className='w-full col-span-12'
-          triggerClassName='!w-full'
         />
 
         <FormField

@@ -399,6 +399,7 @@
         "status": "Status",
         "maintenance_mode": "Maintenance Mode",
         "publication_date": "Publication Date",
+        "application_category_id": "Application Category",
         "statusOptions": {
           "active": "Active",
           "inactive": "Inactive",

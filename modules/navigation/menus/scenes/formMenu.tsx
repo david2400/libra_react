@@ -6,18 +6,85 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { FormField, FormTextAreaField } from "@repo/ui/form/scenes";
-import { FormSelectField } from "@repo/ui/form/scenes";
+import {
+  FormField,
+  FormSelectField,
+  FormTextAreaField,
+  FormTreeSelectField,
+} from "@repo/ui/form/scenes";
 import { Buttons } from "@repo/ui/buttons";
 import { IFormProps } from "@repo/ui/form/models";
 import { useEffect, useMemo, useState } from "react";
 import { IMenu } from "../models/menu.interface";
 import { IApplication } from "@/server/domains/access-control/security/applications";
 import { getAllApplicationsServerAction } from "@/app/[locale]/(protected)/security/applications/actions";
+import type { TreeSelectNode } from "@repo/ui/inputs/scenes/tree-select";
 
 interface FormMenuProps extends IFormProps<any> {
   availableMenus?: IMenu[];
 }
+
+const getDescendantIds = (menu: IMenu): number[] => {
+  const ids: number[] = [];
+  const collect = (item: IMenu) => {
+    ids.push(item.id_menu);
+    item.children?.forEach(collect);
+  };
+  menu.children?.forEach(collect);
+  return ids;
+};
+
+const buildMenuTreeNodes = (
+  flatMenus: IMenu[],
+  currentMenuId?: number,
+): TreeSelectNode[] => {
+  if (!flatMenus?.length) return [];
+
+  const current = currentMenuId
+    ? flatMenus.find((m) => m.id_menu === currentMenuId)
+    : undefined;
+  const disabledIds = current
+    ? new Set([currentMenuId, ...getDescendantIds(current)])
+    : new Set<number | undefined>();
+
+  const map = new Map<number, IMenu & { children: IMenu[] }>();
+  flatMenus.forEach((menu) => {
+    map.set(menu.id_menu, { ...menu, children: [] });
+  });
+
+  const roots: IMenu[] = [];
+  map.forEach((menu) => {
+    const parentId = menu.parent_menu_id;
+    if (parentId == null || parentId === 0 || parentId === menu.id_menu) {
+      roots.push(menu);
+    } else {
+      const parent = map.get(parentId);
+      if (parent) {
+        parent.children.push(menu);
+      } else {
+        roots.push(menu);
+      }
+    }
+  });
+
+  const sortByName = (a: IMenu, b: IMenu) => a.name.localeCompare(b.name);
+  const sortRecursively = (items: IMenu[]) => {
+    items.sort(sortByName);
+    items.forEach((item) => {
+      if (item.children?.length) sortRecursively(item.children);
+    });
+  };
+  sortRecursively(roots);
+
+  const toNode = (menu: IMenu): TreeSelectNode => ({
+    value: menu.id_menu.toString(),
+    label: menu.name,
+    disabled: disabledIds.has(menu.id_menu),
+    children: menu.children?.length ? menu.children.map(toNode) : undefined,
+  });
+
+  return roots.map(toNode);
+};
 
 export const FormMenu = ({
   initialValues,
@@ -100,16 +167,11 @@ export const FormMenu = ({
     };
   }, []);
 
-  const opcionesMenus = useMemo(() => {
-    return menusData.menus
-      .filter((menu) => menu.id_menu !== initialValues?.id_menu)
-      .map((menu) => ({
-        id: menu.id_menu.toString(),
-        value: menu.id_menu.toString(),
-        label: menu.name,
-        disabled: false,
-      }))
-      .sort((a, b) => a.label.localeCompare(b.label));
+  const menuTreeNodes = useMemo(() => {
+    return buildMenuTreeNodes(
+      menusData.menus,
+      initialValues?.id_menu,
+    );
   }, [menusData.menus, initialValues?.id_menu]);
 
   const opcionesApplications = useMemo(() => {
@@ -194,16 +256,22 @@ export const FormMenu = ({
           className='col-span-12 md:col-span-6'
         /> */}
 
-        <FormSelectField
+        <FormTreeSelectField
           controller={{ control, name: "parent_menu_id" }}
           label={t("fields.parent_id")}
-          data={opcionesMenus}
+          nodes={menuTreeNodes}
           placeholder='Seleccionar menú padre...'
+          searchPlaceholder='Buscar menú...'
+          emptyMessage={
+            menusData.loading
+              ? "Cargando menús..."
+              : menusData.error
+                ? menusData.error
+                : "No hay menús disponibles"
+          }
           disabled={menusData.loading || !!menusData.error}
-          error={errors.parent_menu_id?.message}
+          error={errors.parent_menu_id?.message?.toString()}
           className='w-full col-span-12 md:col-span-6'
-          triggerClassName='!w-full'
-          // description='Menú padre (opcional)'
         />
 
         <FormField

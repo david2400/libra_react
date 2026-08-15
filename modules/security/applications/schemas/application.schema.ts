@@ -9,14 +9,14 @@ export const validationApplication = () => {
     description: z.string().optional(),
     publication_date: z.string().min(1, { message: v.required }),
     maintenance_mode: z.boolean().optional(),
-    application_category_id: z
-      .union([z.string(), z.number(), z.null()])
-      .optional()
-      .transform((val) => {
-        if (val === undefined || val === null) return null;
-        if (typeof val === 'number') return val;
-        return val ? Number(val) : null;
-      }),
+    application_category_id: z.preprocess(
+      (val) => (val === "" ? null : val),
+      z.coerce
+        .number({ invalid_type_error: v.invalidFormat })
+        .int()
+        .optional()
+        .nullable(),
+    ),
   });
 };
 
@@ -30,13 +30,13 @@ export const validationUpdateApplication = () => {
     description: z.string().optional(),
     publication_date: z.string().min(1, { message: v.required }),
     maintenance_mode: z.boolean().optional(),
-    application_category_id: z
-      .union([z.string(), z.number(), z.null()])
-      .optional()
-      .transform((val) => {
-        if (val === undefined || val === null) return null;
-        if (typeof val === 'number') return val;
-        return val ? Number(val) : null;
-      }),
+    application_category_id: z.preprocess(
+      (val) => (val === "" ? null : val),
+      z.coerce
+        .number({ invalid_type_error: v.invalidFormat })
+        .int()
+        .optional()
+        .nullable(),
+    ),
   });
 };

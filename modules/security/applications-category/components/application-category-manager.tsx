@@ -20,14 +20,12 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@repo/ui/modals/scenes";
 import { RegisterApplicationCategory, UpdateApplicationCategory } from "./form";
 import {
   HiPlus,
-  HiSave,
   HiSearch,
   HiChevronRight,
   HiChevronDown,
@@ -553,10 +551,6 @@ export const ApplicationCategoryManager = ({
     }
   };
 
-  const handleSave = () => {
-    setHasChanges(false);
-  };
-
   const activeMenu = activeId
     ? flatMenus.find((m) => m.id_application_category === activeId)
     : null;
@@ -580,14 +574,7 @@ export const ApplicationCategoryManager = ({
               <HiPlus className='mr-2 h-4 w-4' />
               Add Categoria Application
             </Button>
-            <Button
-              size='sm'
-              onClick={handleSave}
-              disabled={!hasChanges}
-              className='bg-primary text-primary-foreground hover:bg-primary/90'>
-              <HiSave className='mr-2 h-4 w-4' />
-              Save Changes
-            </Button>
+
           </div>
         </div>
 

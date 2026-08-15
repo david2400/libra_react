@@ -363,6 +363,7 @@
         "publication_date": "Fecha de Publicación",
         "company_id": "ID de Empresa",
         "maintenance_mode": "Modo Mantenimiento",
+        "application_category_id": "Categoría de Aplicación",
         "statusOptions": {
           "active": "Activo",
           "inactive": "Inactivo",

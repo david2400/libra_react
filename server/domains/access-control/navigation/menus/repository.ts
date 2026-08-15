@@ -12,12 +12,20 @@ import type { IPermission } from '../../security/permissions';
 
 export const menusRepository = {
   // List menus
-  list: (params?: ListParams) => 
-    serverFetch.get<IMenu[]>('/api/access_control/menus', {
-      params,
-      revalidate: 120,
-      tags: [accessControlTags.menus()],
-    }),
+  // NOTE: the backend wraps the list response as `{ value: IMenu[], Count: number }`
+  // instead of returning a bare array, so we unwrap it here.
+  list: async (params?: ListParams): Promise<IMenu[]> => {
+    const result = await serverFetch.get<IMenu[] | { value: IMenu[]; Count: number }>(
+      '/api/access_control/menus',
+      {
+        params,
+        revalidate: 120,
+        tags: [accessControlTags.menus()],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 
   // Get menu by ID
   getById: (id: string | number) => 
@@ -61,33 +69,57 @@ export const menusRepository = {
     }),
 
   // Get root menus
-  getRootMenus: () => 
-    serverFetch.get<IMenu[]>('/api/access_control/menus/root', {
-      revalidate: 120,
-      tags: [accessControlTags.menus()],
-    }),
+  getRootMenus: async (): Promise<IMenu[]> => {
+    const result = await serverFetch.get<IMenu[] | { value: IMenu[]; Count: number }>(
+      '/api/access_control/menus/root',
+      {
+        revalidate: 120,
+        tags: [accessControlTags.menus()],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 
   // Get menu children
-  getChildren: (parentId: string | number) => 
-    serverFetch.get<IMenu[]>(`/api/access_control/menus/${parentId}/children`, {
-      revalidate: 120,
-      tags: [accessControlTags.menu(parentId)],
-    }),
+  getChildren: async (parentId: string | number): Promise<IMenu[]> => {
+    const result = await serverFetch.get<IMenu[] | { value: IMenu[]; Count: number }>(
+      `/api/access_control/menus/${parentId}/children`,
+      {
+        revalidate: 120,
+        tags: [accessControlTags.menu(parentId)],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 
   // Get menu path
-  getPath: (menuId: string | number) => 
-    serverFetch.get<IMenu[]>(`/api/access_control/menus/${menuId}/path`, {
-      revalidate: 300,
-      tags: [accessControlTags.menu(menuId)],
-    }),
+  getPath: async (menuId: string | number): Promise<IMenu[]> => {
+    const result = await serverFetch.get<IMenu[] | { value: IMenu[]; Count: number }>(
+      `/api/access_control/menus/${menuId}/path`,
+      {
+        revalidate: 300,
+        tags: [accessControlTags.menu(menuId)],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 
   // Search menus by parameters
-  getMenus: (params: IMenuSearch) =>
-    serverFetch.post<IMenu[]>('/api/access_control/menus/search', {
-      params,
-      revalidate: 120,
-      tags: [accessControlTags.menus()],
-    }),
+  getMenus: async (params: IMenuSearch): Promise<IMenu[]> => {
+    const result = await serverFetch.post<IMenu[] | { value: IMenu[]; Count: number }>(
+      '/api/access_control/menus/search',
+      {
+        params,
+        revalidate: 120,
+        tags: [accessControlTags.menus()],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 } as const;
 
 
