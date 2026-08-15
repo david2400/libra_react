@@ -87,7 +87,7 @@ export const UpdateCompany = ({ initialValues }: IFormUpdateProps<any>) => {
     try {
       const id = initialValues?.id_company
       if (!id) return;
-
+      console.log('id', id);
       const result = await updateCompanyServerAction(id, values);
 
       await Swal.fire({

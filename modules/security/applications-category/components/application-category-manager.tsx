@@ -506,20 +506,20 @@ export const ApplicationCategoryManager = ({
   };
 
   const handleDelete = async (menu: IApplicationCategory) => {
-    const { isConfirmed } = await Swal.fire({
-      title: "¿Eliminar categoría?",
-      text: `Se va a borrar "${menu.name}". Esta acción no se puede deshacer.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Sí, borrar",
-      cancelButtonText: "Cancelar",
-    });
-
-    if (!isConfirmed) return;
-
     try {
+      const { isConfirmed } = await Swal.fire({
+        title: "¿Eliminar categoría?",
+        text: `Se va a borrar "${menu.name}". Esta acción no se puede deshacer.`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, borrar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (!isConfirmed) return;
+
       const result = await deleteApplicationCategoryAction(menu.id_application_category);
       if (!result.success) {
         throw new Error(result.error?.message || "No se pudo eliminar la categoría");

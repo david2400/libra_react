@@ -21,7 +21,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Modal } from "@repo/ui/modals/scenes";
 import { RegisterMenu, UpdateMenu } from "./form";
@@ -409,7 +409,6 @@ export const MenuManager = ({
 
   console.log(initialData)
   const [menus, setMenus] = useState<IMenu[]>(() => buildMenuTree(initialData));
-  // const [menus, setMenus] = useState<IMenu[]>(mockMenus);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedApplication, setSelectedApplication] = useState<number | null>(
     initialApplications.length > 0 ? initialApplications[0].id_application : null
@@ -434,6 +433,10 @@ export const MenuManager = ({
   const [editingMenu, setEditingMenu] = useState<IMenu | null>(null);
   const [hasChanges, setHasChanges] = useState(false);
   const [isCompactMode, setIsCompactMode] = useState(false);
+
+  useEffect(() => {
+    setMenus(buildMenuTree(initialData));
+  }, [initialData]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -610,6 +613,9 @@ export const MenuManager = ({
     ? flatMenus.find((m) => m.id_menu === activeId)
     : null;
   const totalMenus = flatMenus.length;
+
+
+
 
   return (
     <section className='mx-auto flex w-full flex-col gap-6 px-6'>

@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
@@ -27,6 +27,7 @@ export const ApplicationManager = ({
   const [openModal, setOpenModal] = useState(false);
   const [editingApplication, setEditingApplication] =
     useState<IApplicationUpdateRequest | null>(null);
+  const [application, setApplications] = useState<IApplication[]>(initialData);
 
   const metrics = useMemo(() => {
     const activeApps = initialData.filter(
@@ -151,6 +152,10 @@ export const ApplicationManager = ({
     },
   ];
 
+  useEffect(() => {
+    setApplications(initialData);
+  }, [initialData]);
+
   return (
     <section className='mx-auto flex w-full flex-col gap-6 px-6'>
       <article className='rounded-3xl border border-border/40 bg-gradient-to-br from-cyan-600 via-blue-500 to-indigo-500 px-8 py-10 text-white shadow-2xl'>
@@ -192,7 +197,7 @@ export const ApplicationManager = ({
         ))}
       </div>
 
-      <DataTable data={initialData} columns={columns} className='py-2' />
+      <DataTable data={application} columns={columns} className='py-2' />
 
       <Modal
         size='lg'

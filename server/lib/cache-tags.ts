@@ -99,20 +99,24 @@ export const accessControlTags = {
 } as const;
 
 // Helper function for cache revalidation (Next.js 16 compatible)
+// NOTE: this is only ever called from Server Actions ('use server' files),
+// so we use `updateTag` (read-your-own-writes: expires the tag immediately
+// and the next request waits for fresh data). `revalidateTag(tag, {})`
+// used stale-while-revalidate semantics and kept serving stale data right
+// after a create/update, which is why `router.refresh()` appeared to do
+// nothing on the client.
 export async function revalidateCacheTag(tag: string): Promise<void> {
   try {
-    // Import revalidateTag dynamically to avoid build issues
-    const { revalidateTag } = await import('next/cache');
+    const { updateTag } = await import('next/cache');
 
-    // In Next.js 16, revalidateTag expects (tag, options)
     try {
-      await revalidateTag(tag, {});
+      await updateTag(tag);
     } catch (error) {
       // Log error but don't throw to avoid breaking the action
-      console.warn(`Failed to revalidate cache tag: ${tag}`, error);
+      console.warn(`Failed to update cache tag: ${tag}`, error);
     }
   } catch (error) {
     // Log error but don't throw to avoid breaking the action
-    console.warn(`Failed to revalidate cache tag: ${tag}`, error);
+    console.warn(`Failed to update cache tag: ${tag}`, error);
   }
 }

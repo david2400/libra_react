@@ -25,13 +25,20 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 export const applicationsRepository = {
   // List applications
-  list: (params?: ListParams) => 
-    serverFetch.get<IApplication[]>('/api/access_control/applications', {
-      params,
-      revalidate: 120,
-      tags: [accessControlTags.applications()],
-    }
-  ),
+  // NOTE: the backend wraps the list response as `{ value: IApplication[], Count: number }`
+  // instead of returning a bare array, so we unwrap it here.
+  list: async (params?: ListParams): Promise<IApplication[]> => {
+    const result = await serverFetch.get<IApplication[] | { value: IApplication[]; Count: number }>(
+      '/api/access_control/applications',
+      {
+        params,
+        revalidate: 120,
+        tags: [accessControlTags.applications()],
+      }
+    );
+
+    return Array.isArray(result) ? result : result?.value ?? [];
+  },
 
   // Get application by ID
   getById: (id: string | number) => 

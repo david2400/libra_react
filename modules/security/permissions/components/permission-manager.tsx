@@ -15,7 +15,6 @@ import {
   PermissionAction,
   PermissionType,
 } from "../models/permission.interface";
-import { clientApi } from "@/lib/client-api";
 import { Button } from "@repo/ui/buttons/scenes/button";
 import {
   Select,
@@ -157,7 +156,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
   const tActions = useTranslations("actions");
 
   const [permissions, setPermissions] =
-    useState<IPermission[]>(mockPermissions);
+    useState<IPermission[]>(initialData);
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [filterStatus, setFilterStatus] = useState<
     "ALL" | "ACTIVE" | "INACTIVE"
@@ -165,36 +164,14 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
   const [openModal, setOpenModal] = useState(false);
   const [editingPermission, setEditingPermission] =
     useState<IPermission | null>(null);
-  const [loading, setLoading] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<number>(
     mockApplications[0].id_application,
   );
 
-  // Fetch permissions data client-side
+  // Sync local state whenever the server-provided data changes (e.g. after router.refresh())
   useEffect(() => {
-    const fetchPermissions = async () => {
-      try {
-        setLoading(true);
-        const response = await clientApi.get<{
-          data: IPermission[];
-          meta: any;
-        }>("/api/access_control/permissions");
-        const permissionsData = response.data;
-        // Only update if we got actual data from the API
-        if (permissionsData && permissionsData.length > 0) {
-          setPermissions(permissionsData);
-        }
-        // If API returns empty or null, keep the mock data
-      } catch (error) {
-        console.error("Error fetching permissions:", error);
-        // Keep initial data if fetch fails
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPermissions();
-  }, []);
+    setPermissions(initialData);
+  }, [initialData]);
 
   const metrics = useMemo(() => {
     const totalPermissions = permissions.length;

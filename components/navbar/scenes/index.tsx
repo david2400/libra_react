@@ -32,62 +32,46 @@ import {
 } from "@repo/ui/avatar/scenes/avatar";
 import { cn } from "@/lib/utils";
 
+// Rutas quemadas mientras se conecta el menú dinámico del módulo de navegación.
+// El locale "es" está hardcodeado a propósito para este menú temporal.
 const NAV_ITEMS = [
   {
     label: "Inicio",
-    href: "#",
+    href: "/es",
     icon: <BiCloset className='h-4 w-4' />,
   },
   {
-    label: "Categorías",
+    label: "Cuenta",
+    icon: <BiUser className='h-4 w-4' />,
     options: [
-      { label: "Dashboard", href: "#", icon: <BiCloset className='h-4 w-4' /> },
-      {
-        label: "Settings",
-        options: [
-          {
-            label: "Profile",
-            href: "#",
-            icon: <BiCloset className='h-4 w-4' />,
-          },
-          {
-            label: "Account",
-            options: [
-              {
-                label: "Privacy",
-                href: "#",
-                icon: <BiCloset className='h-4 w-4' />,
-              },
-              {
-                label: "Security",
-                href: "#",
-                icon: <BiCloset className='h-4 w-4' />,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        label: "Support",
-        options: [
-          {
-            label: "Documentation",
-            href: "#",
-            icon: <BiCloset className='h-4 w-4' />,
-          },
-          {
-            label: "Contact Us",
-            href: "#",
-            icon: <BiCloset className='h-4 w-4' />,
-          },
-        ],
-      },
+      { label: "Clientes", href: "/es/account/clients", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Empresas", href: "/es/account/companies", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Perfiles", href: "/es/account/profiles", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Empresas de usuario", href: "/es/account/user-companies", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Usuarios", href: "/es/account/users", icon: <BiCloset className='h-4 w-4' /> },
     ],
   },
   {
-    label: "Docs",
-    href: "#",
-    icon: <BiCloset className='h-4 w-4' />,
+    label: "Seguridad",
+    icon: <BiCog className='h-4 w-4' />,
+    options: [
+      { label: "Categorías de aplicación", href: "/es/security/application-categories", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Aplicaciones", href: "/es/security/applications", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Aplicaciones de empresa", href: "/es/security/company-applications", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Permisos", href: "/es/security/permissions", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Políticas", href: "/es/security/policies", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Permisos de rol", href: "/es/security/role-permissions", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Roles", href: "/es/security/roles", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Aplicaciones de usuario", href: "/es/security/user-applications", icon: <BiCloset className='h-4 w-4' /> },
+    ],
+  },
+  {
+    label: "Navegación",
+    icon: <BiMenu className='h-4 w-4' />,
+    options: [
+      { label: "Permisos de menú", href: "/es/navigation/menu-permissions", icon: <BiCloset className='h-4 w-4' /> },
+      { label: "Menús", href: "/es/navigation/menus", icon: <BiCloset className='h-4 w-4' /> },
+    ],
   },
 ];
 

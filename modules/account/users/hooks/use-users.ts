@@ -1,6 +1,6 @@
 /** @format */
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { IUser } from "../models/user.interface";
 
 interface ICompany {
@@ -42,6 +42,11 @@ export function useUsers(options: UseUsersOptions = {}) {
   const [selectedCompanyId, setSelectedCompanyId] = useState<number | null>(null);
   const [selectedClientId, setSelectedClientId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Keep local state in sync with the server-provided data (e.g. after router.refresh())
+  useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
 
   // Filtrar usuarios por empresa
   const filteredUsers = useMemo(() => {

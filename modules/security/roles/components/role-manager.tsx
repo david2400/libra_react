@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ColumnDef } from "@tanstack/react-table";
 import { Modal } from "@repo/ui/modals/scenes";
@@ -24,6 +24,7 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
   const [openModalUpdate, setOpenModalUpdate] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [editingRole, setEditingRole] = useState<IRole | null>(null);
+  const [roles, setRoles] = useState<IRole[]>(initialData);
 
   const metrics = useMemo(() => {
     const activeRoles = initialData.filter((role) => role.deleted !== false).length;
@@ -84,11 +85,10 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
         cell: ({ row }) => (
           <div className='flex items-center'>
             <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                row.original.deleted == false
-                  ? "bg-green-100 text-green-800"
-                  : "bg-red-100 text-red-800"
-              }`}>
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${row.original.deleted == false
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+                }`}>
               {row.original.deleted == false ? "Active" : "Inactive"}
             </span>
           </div>
@@ -137,6 +137,11 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
     // },
   ];
 
+  useEffect(() => {
+    setRoles(initialData);
+  }, [initialData]);
+
+
   return (
     <section className='mx-auto flex w-full flex-col gap-6 px-6'>
       <article className='rounded-3xl border border-border/40 bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-500 px-8 py-10 text-white shadow-2xl'>
@@ -179,7 +184,7 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
       </div>
 
       <DataTable
-        data={initialData}
+        data={roles}
         columns={columns}
         className='py-2'
       />

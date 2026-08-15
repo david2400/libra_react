@@ -24,7 +24,10 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
   const [openModal, setOpenModal] = useState(false);
   const [editingCompany, setEditingCompany] = useState<ICompany | null>(null);
   const [companies, setCompanies] = useState<ICompany[]>(initialData);
-  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setCompanies(initialData);
+  }, [initialData]);
 
   const metrics = useMemo(() => {
     const activeCompanies = companies.filter(

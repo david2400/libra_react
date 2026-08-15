@@ -21,7 +21,6 @@ export const RegisterClient = ({ }: IFormAddProps = {}) => {
   const { useTranslations } = require('next-intl');
   const t = useTranslations('account.clients.messages');
   const tMessages = useTranslations('messages');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const defaultValues: IClientCreateRequest = {
     first_name: "",
@@ -36,9 +35,6 @@ export const RegisterClient = ({ }: IFormAddProps = {}) => {
   };
 
   const handleSubmit: SubmitHandler<IClientCreateRequest> = async (values) => {
-    if (isSubmitting) return;
-
-    setIsSubmitting(true);
     try {
       // Importación dinámica de server action
 
@@ -57,9 +53,7 @@ export const RegisterClient = ({ }: IFormAddProps = {}) => {
         text: (error as any)?.message || tMessages('unexpectedError'),
         icon: "error",
       });
-    } finally {
-      setIsSubmitting(false);
-    }
+    } 
   };
 
   return <FormBase initialValues={defaultValues} onSubmit={handleSubmit} validationSchema={validationClient()} />;

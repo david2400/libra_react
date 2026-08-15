@@ -287,6 +287,10 @@ export const EnhancedClientManager = ({
     }
   }, [userCompanies, selectedCompanyId]);
 
+  useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
+
   const filteredClients = useMemo(() => {
     return initialData;
   }, [initialData]);

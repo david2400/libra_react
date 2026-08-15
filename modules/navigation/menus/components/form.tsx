@@ -63,15 +63,14 @@ export const RegisterMenu = ({ availableMenus }: IRegisterMenuProps = {}) => {
     try {
       const result = await createMenuServerAction(values);
 
-      Swal.fire({
+      await Swal.fire({
         title: t("createSuccess"),
         icon: "success",
         timer: 3000,
-        showConfirmButton: false,
-        willClose: () => {
-          router.refresh();
-        },
+        showConfirmButton: true,
       });
+
+      router.refresh();
     } catch (error) {
       Swal.fire({
         title: tMessages("createError", { entity: "menú" }),

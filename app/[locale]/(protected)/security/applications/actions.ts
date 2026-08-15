@@ -62,9 +62,7 @@ export async function getAllApplicationsServerAction(): Promise<IApplication[]> 
   try {
     const result = await getApplications();
 
-    return Array.isArray(result)
-      ? result
-      : result || [];
+    return Array.isArray(result) ? result : [];
   } catch (error) {
     console.error("Failed to fetch applications:", error);
     return [];

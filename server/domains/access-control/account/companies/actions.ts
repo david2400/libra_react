@@ -39,9 +39,9 @@ export const updateCompanyAction = async (id: string | number, payload: IUpdateC
   try {
     const company = await companiesRepository.update(id, payload);
 
-    // Revalidate cache tags
-    await revalidateCacheTag(accessControlTags.companies());
-    await revalidateCacheTag(accessControlTags.company(id));
+    // // Revalidate cache tags
+    // await revalidateCacheTag(accessControlTags.companies());
+    // await revalidateCacheTag(accessControlTags.company(id));
 
     // Activity logging disabled: company-activities endpoint is not available
 
