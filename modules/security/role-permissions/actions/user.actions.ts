@@ -133,6 +133,9 @@ export const createUserPermissionAction = async (
     await revalidateCacheTag(accessControlTags.userPermissions());
     return { success: true, data: newPermission };
   } catch (error) {
+    if (error instanceof ServerApiError && error.status === 409) {
+      return updateUserPermissionAction(userId, permissionId, { level: payload.level, is_active: true });
+    }
     if (error instanceof ServerApiError) {
       return {
         success: false,

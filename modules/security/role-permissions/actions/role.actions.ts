@@ -219,6 +219,9 @@ export const createRolePermissionAction = async (
     await revalidateCacheTag(accessControlTags.rolePermissions());
     return { success: true, data: newPermission };
   } catch (error) {
+    if (error instanceof ServerApiError && error.status === 409) {
+      return updateRolePermissionAction(roleId, permissionId, { level: payload.level, is_active: true });
+    }
     if (error instanceof ServerApiError) {
       return {
         success: false,

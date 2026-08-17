@@ -245,18 +245,18 @@ export function RolePermissionManager() {
     setSaveError(null);
 
     try {
+      let result;
       if (next.assigned) {
-        if (selectedTarget.type === "role") {
-          await createRolePermissionAction(selectedTarget.id, permissionId, { level: next.level });
-        } else {
-          await createUserPermissionAction(selectedTarget.id, permissionId, { level: next.level });
-        }
+        result = selectedTarget.type === "role"
+          ? await createRolePermissionAction(selectedTarget.id, permissionId, { level: next.level })
+          : await createUserPermissionAction(selectedTarget.id, permissionId, { level: next.level });
       } else {
-        if (selectedTarget.type === "role") {
-          await deleteRolePermissionAction(selectedTarget.id, permissionId);
-        } else {
-          await deleteUserPermissionAction(selectedTarget.id, permissionId);
-        }
+        result = selectedTarget.type === "role"
+          ? await deleteRolePermissionAction(selectedTarget.id, permissionId)
+          : await deleteUserPermissionAction(selectedTarget.id, permissionId);
+      }
+      if (!result.success) {
+        throw new Error(result.error?.message || "No se pudo actualizar el permiso");
       }
       setRowStates((prev) => ({ ...prev, [permissionId]: next }));
     } catch (error: any) {
@@ -280,13 +280,17 @@ export function RolePermissionManager() {
     setIsBulkUpdating(true);
     setSaveError(null);
     try {
-      await Promise.all(
+      const results = await Promise.all(
         toAssign.map((permissionId) =>
           selectedTarget.type === "role"
             ? createRolePermissionAction(selectedTarget.id, permissionId, { level: DEFAULT_LEVEL })
             : createUserPermissionAction(selectedTarget.id, permissionId, { level: DEFAULT_LEVEL })
         )
       );
+      const failed = results.find((r) => !r.success);
+      if (failed) {
+        throw new Error(failed.error?.message || "No se pudieron asignar todos los permisos");
+      }
       setRowStates((prev) => {
         const next = { ...prev };
         toAssign.forEach((id) => (next[id] = { assigned: true, level: DEFAULT_LEVEL }));
@@ -309,13 +313,17 @@ export function RolePermissionManager() {
     setIsBulkUpdating(true);
     setSaveError(null);
     try {
-      await Promise.all(
+      const results = await Promise.all(
         toRevoke.map((permissionId) =>
           selectedTarget.type === "role"
             ? deleteRolePermissionAction(selectedTarget.id, permissionId)
             : deleteUserPermissionAction(selectedTarget.id, permissionId)
         )
       );
+      const failed = results.find((r) => !r.success);
+      if (failed) {
+        throw new Error(failed.error?.message || "No se pudieron revocar todos los permisos");
+      }
       setRowStates((prev) => {
         const next = { ...prev };
         toRevoke.forEach((id) => (next[id] = { ...next[id], assigned: false }));

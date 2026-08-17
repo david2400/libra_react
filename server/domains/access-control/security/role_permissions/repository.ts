@@ -94,6 +94,7 @@ export const rolePermissionsRepository = {
       roleId: Number(roleId),
       permissionId: Number(permissionId),
       level: payload.level,
+      isActive: payload.is_active,
     }, {
       revalidate: false,
     }),
