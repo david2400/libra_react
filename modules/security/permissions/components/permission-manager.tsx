@@ -44,49 +44,22 @@ import {
 import { BsCpu, BsTrash2 } from "react-icons/bs";
 import { LuBuilding2 } from "react-icons/lu";
 import { Label } from "@repo/ui/label/scenes/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@repo/ui/tabs/scenes/tabs";
+
 import { Badge } from "@repo/ui/badges/scenes/badge";
 import { ICreatePermission } from "@/server/domains/access-control/security/permissions";
 import { cn } from "@repo/ui/utils";
 import { Input } from "@repo/ui/inputs/scenes/input";
 import { CiMonitor } from "react-icons/ci";
-
-// TODO: Fix mock data imports
-// import {
-//   PERMISSION_ACTIONS,
-//   PERMISSION_TYPES,
-//   mockApplications,
-//   mockModules,
-//   mockPermissions,
-// } from "../lib/mock-data";
+import { getAllApplicationsServerAction } from "@/app/[locale]/(protected)/security/applications/actions";
 
 // Temporary mock data to allow build
 const PERMISSION_ACTIONS = ['CREATE', 'READ', 'UPDATE', 'DELETE', 'EXECUTE', 'VIEW', 'MANAGE', 'ADMIN', 'APPROVE', 'REJECT'] as const;
 const PERMISSION_TYPES = ['API', 'APPLICATION', 'UI', 'SYSTEM'] as const;
-const mockApplications: MockApplication[] = [{ id_application: 1, name: 'Admin Portal', route: '/admin', maintenance_mode: false, publication_date: new Date().toISOString(), deleted: false }];
-const mockModules: MockModule[] = [{ id: 1, name: 'Users', description: 'User management module', deleted: false }];
-const mockPermissions: IPermission[] = [];
 
-// Temporary types for mock data
-interface MockModule {
-  id: number;
-  name: string;
-  description: string;
-  deleted: boolean;
-}
-
-interface MockApplication {
+interface IApplicationData {
   id_application: number;
   name: string;
-  route: string;
-  maintenance_mode: boolean;
-  publication_date: string;
-  deleted: boolean;
+  description?: string;
 }
 
 interface IPermissionManagerProps {
@@ -125,7 +98,7 @@ const emptyFormData: ICreatePermission = {
   permission_type: "API",
   resource: "",
   action: "READ",
-  application_id: 1,
+  application_id: undefined,
   module_id: undefined,
   api_type: "REST",
   http_method: "GET",
@@ -164,9 +137,33 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
   const [openModal, setOpenModal] = useState(false);
   const [editingPermission, setEditingPermission] =
     useState<IPermission | null>(null);
-  const [selectedApplication, setSelectedApplication] = useState<number>(
-    mockApplications[0].id_application,
-  );
+  const [selectedApplication, setSelectedApplication] = useState<number>(0);
+  const [applicationsData, setApplicationsData] = useState<IApplicationData[]>([]);
+
+  // Load real applications on mount
+  useEffect(() => {
+    let cancelled = false;
+    const loadApplications = async () => {
+      try {
+        const apps = await getAllApplicationsServerAction();
+        if (!cancelled) {
+          setApplicationsData(apps as IApplicationData[]);
+          if (apps.length > 0 && selectedApplication === 0) {
+            setSelectedApplication(Number(apps[0].id_application));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load applications:", error);
+      }
+    };
+    loadApplications();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Load real modules for the selected application
+
 
   // Sync local state whenever the server-provided data changes (e.g. after router.refresh())
   useEffect(() => {
@@ -205,9 +202,6 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
   const [filterAction, setFilterAction] = useState<PermissionAction | "ALL">(
     "ALL",
   );
-  const [activeModuleTab, setActiveModuleTab] = useState<string>(
-    String(mockModules[0].id),
-  );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [formData, setFormData] = useState<ICreatePermission>({
     ...emptyFormData,
@@ -230,57 +224,9 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
     return filtered;
   }, [permissions, selectedApplication]);
 
-  // Group permissions by module for the selected application
-  const groupedByModule = useMemo(() => {
-    const grouped = new Map<
-      number,
-      { module: (typeof mockModules)[0]; permissions: IPermission[] }
-    >();
-
-    applicationPermissions.forEach((p) => {
-      const moduleId = p.module_id || 0;
-      const module = mockModules.find((m) => m.id === moduleId) || {
-        id: -1,
-        name: "Sin Modulo",
-        description: "",
-        deleted: false,
-      };
-
-      if (!grouped.has(moduleId)) {
-        grouped.set(moduleId, { module, permissions: [] });
-      }
-      grouped.get(moduleId)!.permissions.push(p);
-    });
-
-    return Array.from(grouped.values()).sort((a, b) =>
-      a.module.name.localeCompare(b.module.name),
-    );
-  }, [applicationPermissions]);
-
-  // Get modules that have permissions for this application
-  const availableModules = useMemo(() => {
-    return groupedByModule.map((g) => g.module);
-  }, [groupedByModule]);
-
-  // Auto-select first module when available modules change
-  useEffect(() => {
-    if (availableModules.length > 0) {
-      const currentModuleExists = availableModules.some(
-        (m) => String(m.id) === activeModuleTab
-      );
-      if (!currentModuleExists) {
-        setActiveModuleTab(String(availableModules[0].id));
-      }
-    }
-  }, [availableModules, activeModuleTab]);
-
-  // Filter permissions for the active module tab
+  // Filter permissions for the selected application
   const filteredPermissions = useMemo(() => {
-    const moduleId = parseInt(activeModuleTab);
-    const moduleGroup = groupedByModule.find((g) => Number(g.module.id) === moduleId);
-    if (!moduleGroup) return [];
-
-    return moduleGroup.permissions.filter((p) => {
+    return applicationPermissions.filter((p) => {
       const matchesSearch =
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -294,23 +240,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
         (filterStatus === "INACTIVE" && !p.deleted);
       return matchesSearch && matchesType && matchesAction && matchesStatus;
     });
-  }, [
-    groupedByModule,
-    activeModuleTab,
-    searchQuery,
-    filterType,
-    filterAction,
-    filterStatus,
-  ]);
-
-  // Count permissions per module for badges
-  const modulePermissionCounts = useMemo(() => {
-    const counts = new Map<number, number>();
-    groupedByModule.forEach((g) => {
-      counts.set(Number(g.module.id), g.permissions.length);
-    });
-    return counts;
-  }, [groupedByModule]);
+  }, [applicationPermissions, searchQuery, filterType, filterAction, filterStatus]);
 
   const totalFiltered = filteredPermissions.length;
   const totalApplication = applicationPermissions.length;
@@ -320,7 +250,6 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
     setFormData({
       ...emptyFormData,
       application_id: selectedApplication,
-      module_id: parseInt(activeModuleTab) || undefined,
     });
     setIsDialogOpen(true);
   };
@@ -416,11 +345,6 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
   const handleApplicationChange = (appId: string) => {
     const newAppId = parseInt(appId);
     setSelectedApplication(newAppId);
-    // Reset to first module of new application
-    const firstModule = groupedByModule[0]?.module;
-    if (firstModule) {
-      setActiveModuleTab(String(firstModule.id));
-    }
   };
 
   const clearFilters = () => {
@@ -477,13 +401,13 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                 Application
               </Label>
               <Select
-                value={String(selectedApplication)}
+                value={selectedApplication ? String(selectedApplication) : ""}
                 onValueChange={handleApplicationChange}>
                 <SelectTrigger className='mt-1 w-full max-w-xs bg-secondary border-border'>
                   <SelectValue placeholder='Select application' />
                 </SelectTrigger>
                 <SelectContent>
-                  {mockApplications.map((app) => (
+                  {applicationsData.map((app) => (
                     <SelectItem
                       key={app.id_application}
                       value={String(app.id_application)}>
@@ -582,8 +506,6 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
           {/* Stats */}
           <div className='flex items-center gap-4 text-sm text-muted-foreground'>
             <span>{totalFiltered} permissions shown</span>
-            <span className='text-border'>|</span>
-            <span>{availableModules.length} modules</span>
           </div>
         </div>
 
@@ -609,189 +531,147 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
           })}
         </div>
 
-        {/* Module Tabs with Permissions */}
-        {availableModules.length > 0 ? (
-          <Tabs
-            value={activeModuleTab}
-            onValueChange={setActiveModuleTab}
-            className='w-full'>
-            <TabsList className='flex flex-wrap h-auto gap-1 bg-secondary p-1'>
-              {availableModules.map((module) => (
-                <TabsTrigger
-                  key={module.id}
-                  value={String(module.id)}
-                  className='flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'>
-                  {module.name}
-                  <Badge
-                    variant='secondary'
-                    className='ml-1 h-5 min-w-5 px-1.5 text-xs'>
-                    {modulePermissionCounts.get(Number(module.id)) || 0}
-                  </Badge>
-                </TabsTrigger>
-              ))}
-            </TabsList>
+        {/* Permissions */}
+        {applicationPermissions.length > 0 ? (
+          <div className='rounded-lg border border-border bg-card overflow-hidden'>
+            <div className='flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-3'>
+              <h3 className='font-medium text-foreground'>Permissions</h3>
+              <div className='flex items-center gap-2'>
+                {PERMISSION_TYPES.map((type) => {
+                  const count = filteredPermissions.filter(
+                    (p) => p.permission_type === type,
+                  ).length;
+                  if (count === 0) return null;
+                  const config =
+                    PERMISSION_TYPE_CONFIG[type as PermissionType];
+                  return (
+                    <Badge
+                      key={type}
+                      variant='outline'
+                      className={config.bgColor}>
+                      {type}: {count}
+                    </Badge>
+                  );
+                })}
+              </div>
+            </div>
 
-            {availableModules.map((module) => (
-              <TabsContent
-                key={module.id}
-                value={String(module.id)}
-                className='mt-4'>
-                <div className='rounded-lg border border-border bg-card overflow-hidden'>
-                  {/* Module Header */}
-                  <div className='flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-3'>
-                    <div>
-                      <h3 className='font-medium text-foreground'>
-                        {module.name}
-                      </h3>
-                      <p className='text-sm text-muted-foreground'>
-                        {module.description}
-                      </p>
-                    </div>
-                    <div className='flex items-center gap-2'>
-                      {PERMISSION_TYPES.map((type) => {
-                        const count = filteredPermissions.filter(
-                          (p) => p.permission_type === type,
-                        ).length;
-                        if (count === 0) return null;
-                        const config =
-                          PERMISSION_TYPE_CONFIG[type as PermissionType];
-                        return (
-                          <Badge
-                            key={type}
-                            variant='outline'
-                            className={config.bgColor}>
-                            {type}: {count}
-                          </Badge>
-                        );
-                      })}
-                    </div>
-                  </div>
+            {/* Permissions List */}
+            <div className='divide-y divide-border'>
+              {filteredPermissions.length > 0 ? (
+                filteredPermissions.map((permission) => {
+                  const typeConfig =
+                    PERMISSION_TYPE_CONFIG[
+                      permission.permission_type as PermissionType
+                    ];
+                  const TypeIcon = typeConfig.icon;
 
-                  {/* Permissions List */}
-                  <div className='divide-y divide-border'>
-                    {filteredPermissions.length > 0 ? (
-                      filteredPermissions.map((permission) => {
-                        const typeConfig =
-                          PERMISSION_TYPE_CONFIG[
-                            permission.permission_type as PermissionType
-                          ];
-                        const TypeIcon = typeConfig.icon;
+                  return (
+                    <div
+                      key={permission.id_permission}
+                      className={cn(
+                        "flex items-center justify-between p-4 transition-colors hover:bg-secondary/30",
+                        permission.deleted && "opacity-50",
+                      )}>
+                      <div className='flex items-center gap-4 flex-1 min-w-0'>
+                        <div
+                          className={cn(
+                            "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border",
+                            typeConfig.bgColor,
+                          )}>
+                          <TypeIcon
+                            className={cn("h-5 w-5", typeConfig.color)}
+                          />
+                        </div>
 
-                        return (
-                          <div
-                            key={permission.id_permission}
-                            className={cn(
-                              "flex items-center justify-between p-4 transition-colors hover:bg-secondary/30",
-                              permission.deleted && "opacity-50",
-                            )}>
-                            <div className='flex items-center gap-4 flex-1 min-w-0'>
-                              <div
-                                className={cn(
-                                  "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border",
-                                  typeConfig.bgColor,
-                                )}>
-                                <TypeIcon
-                                  className={cn("h-5 w-5", typeConfig.color)}
-                                />
-                              </div>
-
-                              <div className='flex-1 min-w-0'>
-                                <div className='flex items-center gap-2 flex-wrap'>
-                                  <span className='font-medium text-foreground truncate'>
-                                    {permission.name}
-                                  </span>
-                                  <Badge
-                                    variant='outline'
-                                    className={
-                                      ACTION_COLORS[permission.action]
-                                    }>
-                                    {permission.action}
-                                  </Badge>
-                                  {permission.is_sensitive && (
-                                    <Badge
-                                      variant='outline'
-                                      className='bg-red-500/10 text-red-400 border-red-500/20'>
-                                      <FiAlertTriangle className='mr-1 h-3 w-3' />
-                                      Sensitive
-                                    </Badge>
-                                  )}
-                                </div>
-                                <p className='text-sm text-muted-foreground truncate mt-0.5'>
-                                  {permission.description ||
-                                    `Resource: ${permission.resource}`}
-                                </p>
-                                {permission.permission_type === "API" &&
-                                  permission.endpoint_path && (
-                                    <code className='text-xs text-muted-foreground bg-secondary/50 px-1.5 py-0.5 rounded mt-1 inline-block'>
-                                      {permission.http_method}{" "}
-                                      {permission.endpoint_path}
-                                    </code>
-                                  )}
-                              </div>
-                            </div>
-
-                            <div className='flex items-center gap-3'>
-                              {/* <Switch
-                                checked={permission.is_active}
-                                onCheckedChange={() =>
-                                  handleToggleActive(permission)
-                                }
-                              /> */}
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant='ghost'
-                                    size='icon'
-                                    className='h-8 w-8'>
-                                    <CgMoreVertical className='h-4 w-4' />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align='end'>
-                                  <DropdownMenuItem
-                                    onClick={() => handleEdit(permission)}>
-                                    <FiEdit2 className='mr-2 h-4 w-4' />
-                                    Edit
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem
-                                    onClick={() => handleDuplicate(permission)}>
-                                    <BiCopy className='mr-2 h-4 w-4' />
-                                    Duplicate
-                                  </DropdownMenuItem>
-                                  <DropdownMenuSeparator />
-                                  <DropdownMenuItem
-                                    onClick={() => handleDelete(permission)}
-                                    className='text-destructive focus:text-destructive'>
-                                    <BsTrash2 className='mr-2 h-4 w-4' />
-                                    Delete
-                                  </DropdownMenuItem>
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
+                        <div className='flex-1 min-w-0'>
+                          <div className='flex items-center gap-2 flex-wrap'>
+                            <span className='font-medium text-foreground truncate'>
+                              {permission.name}
+                            </span>
+                            <Badge
+                              variant='outline'
+                              className={
+                                ACTION_COLORS[permission.action]
+                              }>
+                              {permission.action}
+                            </Badge>
+                            {permission.is_sensitive && (
+                              <Badge
+                                variant='outline'
+                                className='bg-red-500/10 text-red-400 border-red-500/20'>
+                                <FiAlertTriangle className='mr-1 h-3 w-3' />
+                                Sensitive
+                              </Badge>
+                            )}
                           </div>
-                        );
-                      })
-                    ) : (
-                      <div className='flex flex-col items-center justify-center py-12 text-center'>
-                        <BiShield className='h-12 w-12 text-muted-foreground/50 mb-3' />
-                        <p className='text-muted-foreground'>
-                          No permissions found matching your filters
-                        </p>
-                        {hasActiveFilters && (
-                          <Button
-                            variant='link'
-                            size='sm'
-                            onClick={clearFilters}
-                            className='mt-2'>
-                            Clear filters
-                          </Button>
-                        )}
+                          <p className='text-sm text-muted-foreground truncate mt-0.5'>
+                            {permission.description ||
+                              `Resource: ${permission.resource}`}
+                          </p>
+                          {permission.permission_type === "API" &&
+                            permission.endpoint_path && (
+                              <code className='text-xs text-muted-foreground bg-secondary/50 px-1.5 py-0.5 rounded mt-1 inline-block'>
+                                {permission.http_method}{" "}
+                                {permission.endpoint_path}
+                              </code>
+                            )}
+                        </div>
                       </div>
-                    )}
-                  </div>
+
+                      <div className='flex items-center gap-3'>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant='ghost'
+                              size='icon'
+                              className='h-8 w-8'>
+                              <CgMoreVertical className='h-4 w-4' />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align='end'>
+                            <DropdownMenuItem
+                              onClick={() => handleEdit(permission)}>
+                              <FiEdit2 className='mr-2 h-4 w-4' />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => handleDuplicate(permission)}>
+                              <BiCopy className='mr-2 h-4 w-4' />
+                              Duplicate
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => handleDelete(permission)}
+                              className='text-destructive focus:text-destructive'>
+                              <BsTrash2 className='mr-2 h-4 w-4' />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className='flex flex-col items-center justify-center py-12 text-center'>
+                  <BiShield className='h-12 w-12 text-muted-foreground/50 mb-3' />
+                  <p className='text-muted-foreground'>
+                    No permissions found matching your filters
+                  </p>
+                  {hasActiveFilters && (
+                    <Button
+                      variant='link'
+                      size='sm'
+                      onClick={clearFilters}
+                      className='mt-2'>
+                      Clear filters
+                    </Button>
+                  )}
                 </div>
-              </TabsContent>
-            ))}
-          </Tabs>
+              )}
+            </div>
+          </div>
         ) : (
           <div className='flex flex-col items-center justify-center py-12 text-center rounded-lg border border-border bg-card'>
             <BiShield className='h-12 w-12 text-muted-foreground/50 mb-3' />

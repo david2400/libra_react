@@ -3,9 +3,29 @@
 import { applicationsRepository } from '@/server/domains/access-control/security/applications/repository';
 import { rolesRepository } from '@/server/domains/access-control/security/roles/repository';
 import { rolePermissionsRepository } from '@/server/domains/access-control/security/role_permissions/repository';
+import { permissionsRepository } from '@/server/domains/access-control/security/permissions/repository';
 import { ServerApiError, type ActionResultType } from '@/server/lib/types';
+import { revalidateCacheTag, accessControlTags } from '@/server/lib/cache-tags';
 import { IApplication } from '@/server/domains/access-control/security/applications';
 import { IRoleSearch } from '@/server/domains/access-control/security/roles';
+import type { IPermission } from '@/server/domains/access-control/security/permissions';
+
+// --- Permissions Catalog Actions ---------------------------------------------
+
+export const listPermissionsByApplicationAction = async (
+  applicationId: number,
+): Promise<IPermission[]> => {
+  try {
+    const response = await permissionsRepository.list({
+      application_id: applicationId,
+      per_page: 200,
+    });
+    const all = response?.content || [];
+    return all.filter((p: any) => Number(p.application_id) === Number(applicationId));
+  } catch (error) {
+    throw error;
+  }
+};
 
 // --- Applications Actions ----------------------------------------------------
 
@@ -118,15 +138,8 @@ export const listRolePermissionsAction = async (): Promise<ActionResultType<any[
 
 export const listPermissionsByRoleAction = async (roleId: string | number): Promise<ActionResultType<any[]>> => {
   try {
-    // For now, we'll get all permissions and filter by role_id
-    // In a real implementation, you might have a specific endpoint for this
-    const response = await rolePermissionsRepository.list();
-    const allPermissions = response.content || [];
-
-    // Filter permissions by role_id
-    const rolePermissions = allPermissions.filter((permission: any) =>
-      permission.role_id === roleId
-    );
+    const response = await rolePermissionsRepository.list({ roleId: Number(roleId) } as any);
+    const rolePermissions = response?.content || [];
 
     return { success: true, data: rolePermissions };
   } catch (error) {
@@ -164,7 +177,8 @@ export const updateRolePermissionAction = async (
       level: payload.level,
       is_active: payload.is_active
     };
-    const updatedPermission = await rolePermissionsRepository.update(roleId, permissionId, updatePayload);
+    const updatedPermission = await rolePermissionsRepository.update(permissionId, roleId, updatePayload);
+    await revalidateCacheTag(accessControlTags.rolePermissions());
     return { success: true, data: updatedPermission };
   } catch (error) {
     if (error instanceof ServerApiError) {
@@ -202,6 +216,7 @@ export const createRolePermissionAction = async (
       is_active: payload.is_active
     };
     const newPermission = await rolePermissionsRepository.create(roleId, permissionId, createPayload);
+    await revalidateCacheTag(accessControlTags.rolePermissions());
     return { success: true, data: newPermission };
   } catch (error) {
     if (error instanceof ServerApiError) {
@@ -218,6 +233,37 @@ export const createRolePermissionAction = async (
       success: false,
       error: {
         message: 'Failed to create role permission',
+        details: error
+      }
+    };
+  }
+};
+
+// --- Delete Role Permission Action -------------------------------------------
+
+export const deleteRolePermissionAction = async (
+  roleId: string | number,
+  permissionId: string | number,
+): Promise<ActionResultType<void>> => {
+  try {
+    await rolePermissionsRepository.delete(permissionId, roleId);
+    await revalidateCacheTag(accessControlTags.rolePermissions());
+    return { success: true, data: undefined };
+  } catch (error) {
+    if (error instanceof ServerApiError) {
+      return {
+        success: false,
+        error: {
+          message: error.message,
+          code: error.code,
+          details: error.details
+        }
+      };
+    }
+    return {
+      success: false,
+      error: {
+        message: 'Failed to delete role permission',
         details: error
       }
     };
@@ -245,7 +291,7 @@ export const bulkUpdateRolePermissionsAction = async (
           level: permission.level,
           is_active: permission.is_active
         };
-        const result = await rolePermissionsRepository.update(roleId, permission.permission_id, updatePayload);
+        const result = await rolePermissionsRepository.update(permission.permission_id, roleId, updatePayload);
         results.push({ success: true, data: result });
       } catch (error) {
         results.push({ success: false, error: String(error) });

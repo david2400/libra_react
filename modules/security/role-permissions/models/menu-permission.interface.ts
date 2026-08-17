@@ -1,16 +1,22 @@
-export interface MenuItem {
-  id: string;
-  name: string;
-  path: string;
-  icon: string;
-  children?: MenuItem[];
+import type { IPermission } from '@/server/domains/access-control/security/permissions';
+
+export type { IPermission };
+
+export type PermissionTargetType = 'role' | 'user';
+
+export interface PermissionTarget {
+  type: PermissionTargetType;
+  id: number;
 }
 
-export interface MenuPermission {
-  menu_id: string;
-  role_id: string;
-  can_view: boolean;
-  can_create: boolean;
-  can_edit: boolean;
-  can_delete: boolean;
+// Represents the assignment (or potential assignment) of a catalog IPermission
+// to either a role or a user, backed by the role_permissions / user_permission
+// backend domains (composite key: role_id|user_id + permission_id).
+export interface IPermissionAssignment {
+  permission_id: number;
+  role_id?: number;
+  user_id?: number;
+  level: string;
+  assigned: boolean;
 }
+

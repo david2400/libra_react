@@ -31,23 +31,39 @@ import { IRole } from '../roles';
 
 export const rolePermissionsRepository = {
   // List role-permissions
-  list: (params?: ListParams) => 
-    serverFetch.get<IPaginatedResponse<IRolePermission>>('/api/access_control/role-permissions', {
+  // NOTE: the backend may wrap the list response as { value: IRolePermission[], Count: number }
+  // instead of a Spring Page with content, so we unwrap it here.
+  list: async (params?: ListParams): Promise<IPaginatedResponse<IRolePermission>> => {
+    const result = await serverFetch.get<
+      IPaginatedResponse<IRolePermission> | { value: IRolePermission[]; Count: number } | IRolePermission[]
+    >('/api/access_control/role-permissions', {
       params,
       revalidate: 120,
       tags: [accessControlTags.rolePermissions()],
-    }),
+    });
+
+    if (Array.isArray(result)) {
+      return { content: result } as unknown as IPaginatedResponse<IRolePermission>;
+    }
+
+    if (result && typeof result === 'object' && 'value' in result) {
+      return { content: (result as any).value } as unknown as IPaginatedResponse<IRolePermission>;
+    }
+
+    return result as IPaginatedResponse<IRolePermission>;
+  },
 
   // Get role-permission by IDs
   getById: (roleId: string | number, permissionId: string | number) => 
-    serverFetch.get<IRolePermission>(`/api/access_control/role-permissions/${roleId}/${permissionId}`, {
+    serverFetch.get<IRolePermission>(`/api/access_control/role-permissions/${permissionId}/${roleId}`, {
       revalidate: 300,
       tags: [accessControlTags.rolePermission(roleId, permissionId)],
     }),
 
   // Get permissions by role
   getPermissionsByRole: (roleId: string | number) => 
-    serverFetch.get<IPermission[]>(`/api/access_control/role-permissions/role/${roleId}`, {
+    serverFetch.get<IRolePermission[]>('/api/access_control/role-permissions', {
+      params: { roleId: Number(roleId) } as any,
       revalidate: 120,
       tags: [accessControlTags.role(roleId)],
     }),
@@ -66,21 +82,25 @@ export const rolePermissionsRepository = {
       tags: [accessControlTags.role(roleId)],
     }),
 
-  // Create role-permission relationship
-  create: (roleId: string | number, permissionId: string | number, payload: ICreateRolePermission) => 
-    serverFetch.post<IRolePermission>(`/api/access_control/role-permissions/${roleId}/${permissionId}`, payload, {
+  // Assign or reactivate permission to role
+  create: (roleId: string | number, permissionId: string | number, _payload?: ICreateRolePermission) =>
+    serverFetch.post<IRolePermission>(`/api/access_control/role-permissions/role/${roleId}/permission/${permissionId}`, undefined, {
       revalidate: false,
     }),
 
   // Update role-permission relationship
-  update: (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermission) => 
-    serverFetch.put<IRolePermission>(`/api/access_control/role-permissions/${roleId}/${permissionId}`, payload, {
+  update: (permissionId: string | number, roleId: string | number, payload: IUpdateRolePermission) =>
+    serverFetch.put<IRolePermission>(`/api/access_control/role-permissions/${permissionId}/${roleId}`, {
+      roleId: Number(roleId),
+      permissionId: Number(permissionId),
+      level: payload.level,
+    }, {
       revalidate: false,
     }),
 
-  // Delete role-permission relationship
-  delete: (roleId: string | number, permissionId: string | number) => 
-    serverFetch.delete<void>(`/api/access_control/role-permissions/${roleId}/${permissionId}`, {
+  // Revoke permission from role
+  delete: (permissionId: string | number, roleId: string | number) =>
+    serverFetch.delete<void>(`/api/access_control/role-permissions/role/${roleId}/permission/${permissionId}`, {
       revalidate: false,
     }),
 } as const;

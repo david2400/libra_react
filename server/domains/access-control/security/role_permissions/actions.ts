@@ -52,7 +52,7 @@ export const createRolePermissionAction = async (roleId: string | number, permis
 
 export const updateRolePermissionAction = async (roleId: string | number, permissionId: string | number, payload: IUpdateRolePermission): Promise<ActionResultType<any>> => {
   try {
-    const rolePermission = await rolePermissionsRepository.update(roleId, permissionId, payload);
+    const rolePermission = await rolePermissionsRepository.update(permissionId, roleId, payload);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());
@@ -76,7 +76,7 @@ export const updateRolePermissionAction = async (roleId: string | number, permis
 
 export const deleteRolePermissionAction = async (roleId: string | number, permissionId: string | number): Promise<ActionResultType<void>> => {
   try {
-    await rolePermissionsRepository.delete(roleId, permissionId);
+    await rolePermissionsRepository.delete(permissionId, roleId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.rolePermissions());

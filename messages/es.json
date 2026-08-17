@@ -336,6 +336,44 @@
         "deleteSuccess": "Rol eliminado exitosamente"
       }
     },
+    "permissions": {
+      "title": "Permisos",
+      "description": "Gestión de Permisos",
+      "subtitle": "Administra los permisos del sistema",
+      "createButton": "Crear Permiso",
+      "editButton": "Editar Permiso",
+      "fields": {
+        "name": "Nombre",
+        "code": "Código",
+        "description": "Descripción",
+        "module": "Módulo",
+        "action": "Acción",
+        "module_aplication_id": "Módulo de Aplicación",
+        "permission_type": "Tipo de Permiso",
+        "resource": "Recurso",
+        "application_id": "Aplicación",
+        "module_id": "Módulo",
+        "api_type": "Tipo de API",
+        "http_method": "Método HTTP",
+        "endpoint_path": "Ruta del Endpoint",
+        "ui_component": "Componente UI",
+        "feature_flag": "Feature Flag",
+        "priority": "Prioridad",
+        "cache_ttl": "TTL de Caché",
+        "is_sensitive": "Sensible",
+        "metadata": "Metadatos"
+      },
+      "modal": {
+        "create_title": "Crear Permiso",
+        "edit_title": "Editar Permiso",
+        "edit_description": "Editar la información del permiso seleccionado"
+      },
+      "messages": {
+        "createSuccess": "Permiso creado exitosamente",
+        "updateSuccess": "Permiso actualizado exitosamente",
+        "deleteSuccess": "Permiso eliminado exitosamente"
+      }
+    },
     "modal": {
       "create_title": "Crear Empresa",
       "edit_title": "Editar Empresa"

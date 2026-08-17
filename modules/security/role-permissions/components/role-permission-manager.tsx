@@ -1,96 +1,52 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
+import { ColumnDef } from "@tanstack/react-table";
 import {
-  RiDashboardLine,
-  RiUserLine,
-  RiListUnordered,
   RiShieldUserLine,
-  RiGroupLine,
-  RiShoppingBagLine,
-  RiBookOpenLine,
-  RiArchiveLine,
-  RiFolderLine,
-  RiFileListLine,
-  RiTimeLine,
-  RiCheckLine,
-  RiArrowGoBackLine,
-  RiBarChartLine,
-  RiLineChartLine,
-  RiPieChartLine,
-  RiSettingsLine,
-  RiToolsLine,
-  RiNotificationLine,
-  RiPlugLine,
-  RiSearchLine,
-  RiArrowDownSLine,
-  RiArrowRightSLine,
   RiCheckboxCircleFill,
   RiCheckboxBlankCircleLine,
-  RiCheckboxIndeterminateLine,
-  RiSaveLine,
   RiRefreshLine,
-  RiFilterLine,
   RiCloseLine,
-  RiEyeLine,
-  RiAddLine,
-  RiEditLine,
-  RiDeleteBinLine,
   RiCheckDoubleLine,
   RiAppsLine,
   RiGlobalLine,
   RiDatabase2Line,
+  RiKeyLine,
+  RiLockLine,
 } from "react-icons/ri";
-import type { MenuItem, MenuPermission } from "../models/menu-permission.interface";
-import { menuItems, roles, initialPermissions } from "../mocks/data";
+import { DataTable } from "@repo/ui/table/scenes";
+import type {
+  IPermission,
+  PermissionTarget,
+} from "../models/menu-permission.interface";
 import { SearchableSelect } from "@repo/ui/inputs/scenes/select";
-import { IRoleSearch } from "@/server/domains/access-control/security/roles";
-import { IMenuSearch } from "@/server/domains/access-control/navigation/menus";
-import { listRolesByApplicationAction } from "../actions/role.actions";
-import { listMenusByApplicationAction } from "../actions/menu.actions";
-// import { getApplications } from "@/server/domains/access-control/security/applications";
+import type { IApplication } from "@/server/domains/access-control/security/applications";
+import type { IRole } from "@/server/domains/access-control/security/roles";
+import {
+  listApplicationsAction,
+  listRolesByApplicationAction,
+  listPermissionsByApplicationAction,
+  listPermissionsByRoleAction,
+  createRolePermissionAction,
+  deleteRolePermissionAction,
+} from "../actions/role.actions";
+import {
+  listPermissionsByUserAction,
+  createUserPermissionAction,
+  deleteUserPermissionAction,
+} from "../actions/user.actions";
+import { UserSearchableSelect } from "./user-searchable-select";
 
-// import { PermissionType } from "@/modules/security/permissions/models/permission.interface";
-
-// Local type for menu permission actions
-type MenuPermissionType = "view" | "create" | "edit" | "delete";
-
-const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  RiDashboardLine,
-  RiUserLine,
-  RiListUnordered,
-  RiShieldUserLine,
-  RiGroupLine,
-  RiShoppingBagLine,
-  RiBookOpenLine,
-  RiArchiveLine,
-  RiFolderLine,
-  RiFileListLine,
-  RiTimeLine,
-  RiCheckLine,
-  RiArrowGoBackLine,
-  RiBarChartLine,
-  RiLineChartLine,
-  RiPieChartLine,
-  RiSettingsLine,
-  RiToolsLine,
-  RiNotificationLine,
-  RiPlugLine,
-};
+const DEFAULT_LEVEL = "read";
 
 interface PermissionCheckboxProps {
   checked: boolean;
-  indeterminate?: boolean;
   onChange: () => void;
   disabled?: boolean;
 }
 
-function PermissionCheckbox({
-  checked,
-  indeterminate,
-  onChange,
-  disabled,
-}: PermissionCheckboxProps) {
+function PermissionCheckbox({ checked, onChange, disabled }: PermissionCheckboxProps) {
   return (
     <button
       onClick={onChange}
@@ -98,11 +54,9 @@ function PermissionCheckbox({
       className={`w-5 h-5 flex items-center justify-center rounded transition-all duration-200 ${disabled
         ? "opacity-50 cursor-not-allowed"
         : "cursor-pointer hover:scale-110"
-        } ${checked ? "text-primary" : indeterminate ? "text-warning" : "text-muted-foreground"}`}>
+        } ${checked ? "text-primary" : "text-muted-foreground"}`}>
       {checked ? (
         <RiCheckboxCircleFill className='w-5 h-5' />
-      ) : indeterminate ? (
-        <RiCheckboxIndeterminateLine className='w-5 h-5' />
       ) : (
         <RiCheckboxBlankCircleLine className='w-5 h-5' />
       )}
@@ -110,434 +64,328 @@ function PermissionCheckbox({
   );
 }
 
-interface MenuItemRowProps {
-  menu: MenuItem;
-  level: number;
-  expanded: Set<string>;
-  toggleExpand: (id: string) => void;
-  permissions: MenuPermission[];
-  selectedRole: string | null;
-  onPermissionChange: (
-    menuId: string,
-    type: MenuPermissionType,
-    value: boolean,
-  ) => void;
-  searchQuery: string;
+// Local working state for a single catalog permission against the selected target.
+interface PermissionRowState {
+  assigned: boolean;
+  level: string;
 }
 
-function MenuItemRow({
-  menu,
-  level,
-  expanded,
-  toggleExpand,
-  permissions,
-  selectedRole,
-  onPermissionChange,
-  searchQuery,
-}: MenuItemRowProps) {
-  const Icon = iconMap[menu.icon] || RiFolderLine;
-  const hasChildren = menu.children && menu.children.length > 0;
-  const isExpanded = expanded.has(menu.id);
-
-  const permission = permissions.find(
-    (p) => p.menu_id === menu.id && p.role_id === selectedRole,
-  );
-
-  const matchesSearch =
-    searchQuery === "" ||
-    menu.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    menu.path.toLowerCase().includes(searchQuery.toLowerCase());
-
-  const childrenMatch =
-    menu.children?.some(
-      (child) =>
-        child.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        child.path.toLowerCase().includes(searchQuery.toLowerCase()),
-    ) ?? false;
-
-  if (!matchesSearch && !childrenMatch && searchQuery !== "") {
-    return null;
-  }
-
-  // Calculate child permission states for indeterminate
-  const getChildrenPermissionState = (
-    type: MenuPermissionType,
-  ): "all" | "none" | "some" => {
-    if (!menu.children) return "none";
-    const childPerms = menu.children
-      .map((child) =>
-        permissions.find(
-          (p) => p.menu_id === child.id && p.role_id === selectedRole,
-        ),
-      )
-      .filter(Boolean);
-
-    if (childPerms.length === 0) return "none";
-
-    const key =
-      `can_${type}` as keyof MenuPermission;
-    const allChecked = childPerms.every((p) => p && p[key] === true);
-    const noneChecked = childPerms.every((p) => !p || p[key] === false);
-
-    if (allChecked) return "all";
-    if (noneChecked) return "none";
-    return "some";
-  };
-
-  return (
-    <>
-      <div
-        className={`group flex items-center gap-4 py-3 px-4 hover:bg-secondary/50 transition-colors border-b border-border/50 ${level > 0 ? "bg-secondary/20" : ""
-          }`}
-        style={{ paddingLeft: `${level * 24 + 16}px` }}>
-        {/* Expand/Collapse Button */}
-        <div className='w-5'>
-          {hasChildren ? (
-            <button
-              onClick={() => toggleExpand(menu.id)}
-              className='p-0.5 rounded hover:bg-secondary transition-colors'>
-              {isExpanded ? (
-                <RiArrowDownSLine className='w-4 h-4 text-muted-foreground' />
-              ) : (
-                <RiArrowRightSLine className='w-4 h-4 text-muted-foreground' />
-              )}
-            </button>
-          ) : (
-            <span className='w-4' />
-          )}
-        </div>
-
-        {/* Icon & Name */}
-        <div className='flex items-center gap-3 flex-1 min-w-[200px]'>
-          <div className='w-8 h-8 rounded-lg bg-secondary flex items-center justify-center'>
-            <Icon className='w-4 h-4 text-primary' />
-          </div>
-          <div>
-            <p className='text-sm font-medium text-foreground'>{menu.name}</p>
-            <p className='text-xs text-muted-foreground font-mono'>
-              {menu.path}
-            </p>
-          </div>
-        </div>
-
-        {/* IPermission Checkboxes */}
-        <div className='flex items-center gap-8'>
-          {(["view", "create", "edit", "delete"] as MenuPermissionType[]).map(
-            (type) => {
-              const key = `can${type.charAt(0).toUpperCase()}${type.slice(1)}` as keyof MenuPermission;
-              const checked = permission ? (permission[key] as any) : false;
-              const childState = hasChildren ? getChildrenPermissionState(type) : "none";
-              const indeterminate = hasChildren && childState === "some";
-
-              return (
-                <div key={type} className='w-12 flex justify-center'>
-                  <PermissionCheckbox
-                    checked={checked || (hasChildren && childState === "all")}
-                    indeterminate={indeterminate}
-                    onChange={() => onPermissionChange(menu.id, type, !checked)}
-                  />
-                </div>
-              );
-            },
-          )}
-        </div>
-      </div>
-
-      {/* Children */}
-      {hasChildren && isExpanded && (
-        <div className='animate-in slide-in-from-top-2 duration-200'>
-          {menu.children!.map((child) => (
-            <MenuItemRow
-              key={child.id}
-              menu={child}
-              level={level + 1}
-              expanded={expanded}
-              toggleExpand={toggleExpand}
-              permissions={permissions}
-              selectedRole={selectedRole}
-              onPermissionChange={onPermissionChange}
-              searchQuery={searchQuery}
-            />
-          ))}
-        </div>
-      )}
-    </>
-  );
+function matchesPermissionTarget(
+  p: any,
+  target: PermissionTarget | null,
+): boolean {
+  if (!target) return false;
+  return target.type === 'role'
+    ? p.role_id === target.id
+    : p.user_id === target.id;
 }
 
 export function RolePermissionManager() {
-  const [permissions, setPermissions] =
-    useState<MenuPermission[]>(initialPermissions);
-  const [selectedApplication, setSelectedApplication] = useState<number | null>(null);
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [expanded, setExpanded] = useState<Set<string>>(
-    new Set(menuItems.map((m) => m.id)),
+  const [applications, setApplications] = useState<IApplication[]>([]);
+  const [selectedApplication, setSelectedApplication] = useState<number | null>(
+    null,
   );
-  const [hasChanges, setHasChanges] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [roles, setRoles] = useState<IRole[]>([]);
+  const [selectedRole, setSelectedRole] = useState<number | null>(null);
+  const [selectedUser, setSelectedUser] = useState<number | null>(null);
+  const [permissionsCatalog, setPermissionsCatalog] = useState<IPermission[]>([]);
+  const [rowStates, setRowStates] = useState<Record<number, PermissionRowState>>({});
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [loadingIds, setLoadingIds] = useState<Set<number>>(new Set());
+  const [isBulkUpdating, setIsBulkUpdating] = useState(false);
+  const [isLoadingApps, setIsLoadingApps] = useState(true);
+  const [isLoadingRoles, setIsLoadingRoles] = useState(false);
+  const [isLoadingCatalog, setIsLoadingCatalog] = useState(false);
+  const [isLoadingAssignments, setIsLoadingAssignments] = useState(false);
 
-  // Real data from server actions
-  const [applications, setApplications] = useState<any[]>([]);
-  const [roles, setRoles] = useState<any[]>([]);
-  const [menus, setMenus] = useState<any[]>([]);
+  const selectedRoleData = roles.find((r) => r.id_role === selectedRole);
 
-  // Load applications on mount
+  const selectedTarget = useMemo<PermissionTarget | null>(
+    () =>
+      selectedRole
+        ? { type: "role" as const, id: selectedRole }
+        : selectedUser
+          ? { type: "user" as const, id: selectedUser }
+          : null,
+    [selectedRole, selectedUser],
+  );
+
   useEffect(() => {
-    const loadApplications = async () => {
-      try {
-        const { listApplicationsAction } = await import('../actions/role.actions');
-        const result = await listApplicationsAction();
-        console.log(result);
-        // Handle both possible response structures
-        setApplications(Array.isArray(result) ? result : []);
-
-      } catch (error) {
-        console.error('Error loading applications:', error);
-        setApplications([]);
-      }
-    };
-
     loadApplications();
   }, []);
 
-  // Load roles when application changes
+  const loadApplications = async () => {
+    try {
+      setIsLoadingApps(true);
+      const apps = await listApplicationsAction();
+      setApplications(Array.isArray(apps) ? apps : []);
+    } catch (error) {
+      console.error("Error loading applications:", error);
+      setApplications([]);
+    } finally {
+      setIsLoadingApps(false);
+    }
+  };
 
+  const loadRolesAndCatalog = async (applicationId: number) => {
+    try {
+      setIsLoadingRoles(true);
+      setIsLoadingCatalog(true);
 
-  // Get roles for selected application
-  const currentRoles = roles;
+      const [rolesData, catalogData] = await Promise.all([
+        listRolesByApplicationAction({ application_id: applicationId }),
+        listPermissionsByApplicationAction(applicationId),
+      ]);
 
-  // Reset role when application changes
+      const validRoles = Array.isArray(rolesData) ? rolesData : [];
+      const validCatalog = Array.isArray(catalogData) ? catalogData : [];
+
+      setRoles(validRoles);
+      setPermissionsCatalog(validCatalog);
+
+      if (validRoles.length > 0) {
+        setSelectedRole(validRoles[0].id_role);
+      } else {
+        setSelectedRole(null);
+      }
+      setSelectedUser(null);
+    } catch (error) {
+      console.error("Error loading roles and permissions catalog:", error);
+      setRoles([]);
+      setPermissionsCatalog([]);
+      setRowStates({});
+      setSelectedRole(null);
+      setSelectedUser(null);
+    } finally {
+      setIsLoadingRoles(false);
+      setIsLoadingCatalog(false);
+    }
+  };
+
+  const buildRowStates = (assignments: any[]): Record<number, PermissionRowState> => {
+    const map: Record<number, PermissionRowState> = {};
+    assignments.forEach((a) => {
+      const permissionId = Number(a.permission_id ?? a.permissionId);
+      map[permissionId] = {
+        assigned: true,
+        level: a.level ?? DEFAULT_LEVEL,
+      };
+    });
+    return map;
+  };
+
   const handleApplicationChange = (appId: number) => {
     setSelectedApplication(appId);
-    loadRoles({ application_id: appId });
-    loadMenus({ application_id: appId });
+    loadRolesAndCatalog(appId);
   };
 
-  const loadRoles = async (params: IRoleSearch) => {
+  const handleRoleChange = async (roleId: number) => {
+    setSelectedRole(roleId);
+    setSelectedUser(null);
+    setSaveError(null);
 
-    try {
-      console.log('Loading roles for application:', params);
-      const result = await listRolesByApplicationAction(params);
-      console.log('Loading roles for application:', result);
-      setRoles(result);
-      // Auto-select first role if available
-      // if (result.data.length > 0 && !selectedRole) {
-      //   setSelectedRole(result.data[0].id_role);
-      // }
-    } catch (error) {
-
+    if (!roleId) {
+      setRowStates({});
+      return;
     }
-  };
 
-  const loadMenus = async (params: IMenuSearch) => {
     try {
-      console.log('Loading menus for application:', params);
-      const result = await listMenusByApplicationAction(params);
-      console.log('Loading menus for application:', result);
-      setMenus(result);
-      // Auto-select first menu if available
-      // if (result.data.length > 0 && !selectedMenu) {
-      //   setSelectedMenu(result.data[0].id_menu);
-      // }
-    } catch (error) {
-      console.error('Failed to load menus:', error);
-    }
-  };
-
-  // Load permissions for a role
-  const loadPermissionsForRole = async (roleId: string) => {
-    if (!roleId) return;
-
-    setIsLoading(true);
-    try {
-      const { listPermissionsByRoleAction } = await import('../actions/role.actions');
+      setIsLoadingAssignments(true);
       const result = await listPermissionsByRoleAction(roleId);
 
       if (result.success) {
-        // Convert server permissions to MenuPermission format
-        const formattedPerms: MenuPermission[] = result.data.map(perm => ({
-          menu_id: perm.permission_id.toString(),
-          role_id: perm.role_id.toString(),
-          can_view: perm.is_active, // Simplified mapping
-          can_create: perm.is_active,
-          can_edit: perm.is_active,
-          can_delete: perm.is_active,
-        }));
-        setPermissions(formattedPerms);
+        setRowStates(buildRowStates(result.data ?? []));
+      } else {
+        console.error('Error loading role permissions:', result.error);
+        setRowStates({});
       }
     } catch (error) {
-      console.error('Error loading permissions:', error);
+      console.error('Error loading role permissions:', error);
+      setRowStates({});
     } finally {
-      setIsLoading(false);
+      setIsLoadingAssignments(false);
     }
   };
 
-  // Handle role change
-  const handleRoleChange = (roleId: string) => {
-    if (!roleId) return;
-    setSelectedRole(roleId);
-    loadPermissionsForRole(roleId);
-  };
+  const handleUserChange = async (userId: number) => {
+    setSelectedUser(userId);
+    setSelectedRole(null);
+    setSaveError(null);
 
-  // // Initialize permissions on component mount
-  // useEffect(() => {
-  //   if (currentRoles.length > 0 && currentRoles[0].id_role) {
-  //     loadPermissionsForRole(currentRoles[0].id_role);
-  //   }
-  // }, [selectedApplication]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (!userId) {
+      setRowStates({});
+      return;
+    }
 
-  const selectedRoleData = currentRoles.find((r) => r.id_role === selectedRole);
+    try {
+      setIsLoadingAssignments(true);
+      const result = await listPermissionsByUserAction(userId);
 
-  const toggleExpand = (id: string) => {
-    setExpanded((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
+      if (result.success) {
+        setRowStates(buildRowStates(result.data ?? []));
       } else {
-        newSet.add(id);
+        console.error('Error loading user permissions:', result.error);
+        setRowStates({});
       }
-      return newSet;
-    });
+    } catch (error) {
+      console.error('Error loading user permissions:', error);
+      setRowStates({});
+    } finally {
+      setIsLoadingAssignments(false);
+    }
   };
 
-  const expandAll = () => {
-    const allIds = new Set<string>();
-    menuItems.forEach((menu) => {
-      allIds.add(menu.id);
-      menu.children?.forEach((child) => allIds.add(child.id));
-    });
-    setExpanded(allIds);
+  const handleToggle = async (permissionId: number) => {
+    if (!selectedTarget || loadingIds.has(permissionId) || isBulkUpdating) return;
+
+    const current = rowStates[permissionId] ?? { assigned: false, level: DEFAULT_LEVEL };
+    const next = { ...current, assigned: !current.assigned };
+
+    setLoadingIds((prev) => new Set(prev).add(permissionId));
+    setSaveError(null);
+
+    try {
+      if (next.assigned) {
+        if (selectedTarget.type === "role") {
+          await createRolePermissionAction(selectedTarget.id, permissionId, { level: next.level });
+        } else {
+          await createUserPermissionAction(selectedTarget.id, permissionId, { level: next.level });
+        }
+      } else {
+        if (selectedTarget.type === "role") {
+          await deleteRolePermissionAction(selectedTarget.id, permissionId);
+        } else {
+          await deleteUserPermissionAction(selectedTarget.id, permissionId);
+        }
+      }
+      setRowStates((prev) => ({ ...prev, [permissionId]: next }));
+    } catch (error: any) {
+      setSaveError(error?.message || "No se pudo actualizar el permiso");
+    } finally {
+      setLoadingIds((prev) => {
+        const next = new Set(prev);
+        next.delete(permissionId);
+        return next;
+      });
+    }
   };
 
-  const collapseAll = () => {
-    setExpanded(new Set());
-  };
+  const grantAllPermissions = async () => {
+    if (!selectedTarget || isBulkUpdating) return;
+    const toAssign = permissionsCatalog
+      .filter((p) => !rowStates[p.id_permission]?.assigned)
+      .map((p) => p.id_permission);
+    if (toAssign.length === 0) return;
 
-  const handlePermissionChange = (
-    menuId: string,
-    type: MenuPermissionType,
-    value: boolean,
-  ) => {
-    setHasChanges(true);
-    setPermissions((prev) => {
-      const newPermissions = [...prev];
-      const existingIndex = newPermissions.findIndex(
-        (p) => p.menu_id === menuId && p.role_id === selectedRole,
+    setIsBulkUpdating(true);
+    setSaveError(null);
+    try {
+      await Promise.all(
+        toAssign.map((permissionId) =>
+          selectedTarget.type === "role"
+            ? createRolePermissionAction(selectedTarget.id, permissionId, { level: DEFAULT_LEVEL })
+            : createUserPermissionAction(selectedTarget.id, permissionId, { level: DEFAULT_LEVEL })
+        )
       );
-
-      const key =
-        `can_${type}` as keyof MenuPermission;
-
-      if (existingIndex !== -1) {
-        newPermissions[existingIndex] = {
-          ...newPermissions[existingIndex],
-          [key]: value,
-        };
-      } else {
-        newPermissions.push({
-          menu_id: menuId,
-          role_id: selectedRole || '',
-          can_view: type === "view" ? value : false,
-          can_create: type === "create" ? value : false,
-          can_edit: type === "edit" ? value : false,
-          can_delete: type === "delete" ? value : false,
-        });
-      }
-
-      // If parent, update all children
-      const parentMenu = menuItems.find((m) => m.id === menuId);
-      if (parentMenu?.children) {
-        parentMenu.children.forEach((child) => {
-          const childIndex = newPermissions.findIndex(
-            (p) => p.menu_id === child.id && p.role_id === selectedRole,
-          );
-          if (childIndex !== -1) {
-            newPermissions[childIndex] = {
-              ...newPermissions[childIndex],
-              [key]: value,
-            };
-          } else {
-            newPermissions.push({
-              menu_id: child.id,
-              role_id: selectedRole || '',
-              can_view: type === "view" ? value : false,
-              can_create: type === "create" ? value : false,
-              can_edit: type === "edit" ? value : false,
-              can_delete: type === "delete" ? value : false,
-            });
-          }
-        });
-      }
-
-      return newPermissions;
-    });
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    setHasChanges(false);
-  };
-
-  const handleReset = () => {
-    setPermissions(initialPermissions);
-    setHasChanges(false);
-  };
-
-  const grantAllPermissions = () => {
-    setHasChanges(true);
-    const allPermissions: MenuPermission[] = [];
-    menuItems.forEach((menu) => {
-      allPermissions.push({
-        menu_id: menu.id,
-        role_id: selectedRole || '',
-        can_view: true,
-        can_create: true,
-        can_edit: true,
-        can_delete: true,
+      setRowStates((prev) => {
+        const next = { ...prev };
+        toAssign.forEach((id) => (next[id] = { assigned: true, level: DEFAULT_LEVEL }));
+        return next;
       });
-      menu.children?.forEach((child) => {
-        allPermissions.push({
-          menu_id: child.id,
-          role_id: selectedRole || '',
-          can_view: true,
-          can_create: true,
-          can_edit: true,
-          can_delete: true,
-        });
-      });
-    });
-    setPermissions((prev) => {
-      const otherRoles = prev.filter((p) => p.role_id !== selectedRole);
-      return [...otherRoles, ...allPermissions];
-    });
+    } catch (error: any) {
+      setSaveError(error?.message || "No se pudieron asignar todos los permisos");
+    } finally {
+      setIsBulkUpdating(false);
+    }
   };
 
-  const revokeAllPermissions = () => {
-    setHasChanges(true);
-    setPermissions((prev) => prev.filter((p) => p.role_id !== selectedRole));
+  const revokeAllPermissions = async () => {
+    if (!selectedTarget || isBulkUpdating) return;
+    const toRevoke = permissionsCatalog
+      .filter((p) => rowStates[p.id_permission]?.assigned)
+      .map((p) => p.id_permission);
+    if (toRevoke.length === 0) return;
+
+    setIsBulkUpdating(true);
+    setSaveError(null);
+    try {
+      await Promise.all(
+        toRevoke.map((permissionId) =>
+          selectedTarget.type === "role"
+            ? deleteRolePermissionAction(selectedTarget.id, permissionId)
+            : deleteUserPermissionAction(selectedTarget.id, permissionId)
+        )
+      );
+      setRowStates((prev) => {
+        const next = { ...prev };
+        toRevoke.forEach((id) => (next[id] = { ...next[id], assigned: false }));
+        return next;
+      });
+    } catch (error: any) {
+      setSaveError(error?.message || "No se pudieron revocar todos los permisos");
+    } finally {
+      setIsBulkUpdating(false);
+    }
   };
 
   // Stats
   const stats = useMemo(() => {
-    const rolePermissions = permissions.filter(
-      (p) => p.role_id === selectedRole,
-    );
-    const totalMenus = menuItems.reduce(
-      (acc, m) => acc + 1 + (m.children?.length || 0),
-      0,
-    );
-    const viewCount = rolePermissions.filter((p) => p.can_view).length;
-    const createCount = rolePermissions.filter((p) => p.can_create).length;
-    const editCount = rolePermissions.filter((p) => p.can_edit).length;
-    const deleteCount = rolePermissions.filter((p) => p.can_delete).length;
+    const totalPermissions = permissionsCatalog.length;
+    const assignedCount = permissionsCatalog.filter((p) => rowStates[p.id_permission]?.assigned).length;
 
-    return { totalMenus, viewCount, createCount, editCount, deleteCount };
-  }, [permissions, selectedRole]);
+    return { totalPermissions, assignedCount };
+  }, [permissionsCatalog, rowStates]);
+
+  const columns: ColumnDef<IPermission>[] = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Permiso",
+        cell: ({ row }) => {
+          const permission = row.original;
+          return (
+            <div className='flex items-center gap-3'>
+              <div className='w-8 h-8 rounded-lg bg-secondary flex items-center justify-center shrink-0'>
+                <RiKeyLine className='w-4 h-4 text-primary' />
+              </div>
+              <div className='min-w-0'>
+                <p className='text-sm font-medium text-foreground truncate'>{permission.name}</p>
+                <p className='text-xs text-muted-foreground font-mono truncate'>
+                  {permission.resource} · {permission.action}
+                </p>
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        accessorKey: "permission_type",
+        header: "Tipo",
+        cell: ({ row }) => (
+          <span className='text-xs text-muted-foreground'>{row.original.permission_type}</span>
+        ),
+      },
+      {
+        id: "assigned",
+        header: "Asignado",
+        cell: ({ row }) => {
+          const permission = row.original;
+          const state = rowStates[permission.id_permission] ?? { assigned: false, level: DEFAULT_LEVEL };
+          const disabled = !selectedTarget || isLoadingAssignments || isBulkUpdating || loadingIds.has(permission.id_permission);
+          return (
+            <div className='w-16 flex justify-center shrink-0'>
+              <PermissionCheckbox
+                checked={state.assigned}
+                disabled={disabled}
+                onChange={() => handleToggle(permission.id_permission)}
+              />
+            </div>
+          );
+        },
+      },
+    ],
+    [rowStates, selectedTarget, isLoadingAssignments, isBulkUpdating, loadingIds, handleToggle],
+  );
 
   return (
     <div className='min-h-screen bg-background p-6'>
@@ -546,335 +394,261 @@ export function RolePermissionManager() {
         <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
           <div>
             <h1 className='text-2xl font-bold text-foreground'>
-              Permisos de Menú
+              Asignacion de Permisos
             </h1>
             <p className='text-muted-foreground mt-1'>
-              Configura los permisos de acceso para cada rol del sistema
+              Configura los permisos de acceso para roles o usuarios
             </p>
           </div>
           <div className='flex items-center gap-3'>
-            {hasChanges && (
-              <span className='text-sm text-warning flex items-center gap-1'>
-                <span className='w-2 h-2 bg-warning rounded-full animate-pulse' />
-                Cambios sin guardar
-              </span>
-            )}
             <button
-              onClick={handleReset}
-              disabled={!hasChanges}
+              onClick={() => selectedTarget && (selectedTarget.type === "role" ? handleRoleChange(selectedTarget.id) : handleUserChange(selectedTarget.id))}
+              disabled={!selectedTarget}
               className='flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
               <RiRefreshLine className='w-4 h-4' />
-              Restablecer
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={!hasChanges || isSaving}
-              className='flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
-              {isSaving ? (
-                <div className='w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin' />
-              ) : (
-                <RiSaveLine className='w-4 h-4' />
-              )}
-              {isSaving ? "Guardando..." : "Guardar Cambios"}
+              Actualizar
             </button>
           </div>
         </div>
 
-        {/* Application & Role Selector */}
-        <div className='grid grid-cols-1 lg:grid-cols-2 gap-4'>
-          {/* Application Selector */}
-          <div className='bg-card rounded-xl border border-border p-4'>
-            <div className='flex flex-col gap-4'>
-              <div>
-                <label className='text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2'>
-                  <RiAppsLine className='w-4 h-4' />
-                  Seleccionar Aplicación
-                </label>
-                <div className='relative'>
-                  {/* Searchable Select for Applications */}
-                  <SearchableSelect
-                    value={selectedApplication ? String(selectedApplication) : undefined}
-                    onValueChange={(value) => {
-                      console.log('Selected application:', value);
-                      handleApplicationChange(Number(value))
-                    }}
-                    disabled={applications.length === 0}
-                    placeholder='Seleccione una aplicación'
-                    searchPlaceholder='Buscar aplicación...'
-                    emptyMessage='No se encontraron aplicaciones'
-                    triggerClassName='!h-16 data-[size=default]:h-16 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
-                    options={applications.map((app) => ({
-                      value: String(app.id_application),
-                      keywords: app.code ?? '',
-                      label: (
-                        <div className='flex items-center gap-3'>
-                          <div className='w-8 h-8 rounded-lg flex items-center justify-center bg-[hsl(var(--primary)/0.12)]'>
-                            <RiGlobalLine className='w-4 h-4 text-[hsl(var(--primary))]' />
-                          </div>
-                          <div className='flex-1 text-left'>
-                            <p className='text-sm font-medium text-[hsl(var(--foreground))]'>
-                              {app.name}
-                            </p>
-                            {app.code && (
-                              <p className='text-xs text-[hsl(var(--muted-foreground))] font-mono mt-0.5'>
-                                {app.code}
-                              </p>
-                            )}
-                          </div>
+        {saveError && (
+          <div className='flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive'>
+            <RiCloseLine className='w-4 h-4 shrink-0' />
+            <span>{saveError}</span>
+          </div>
+        )}
+
+        {/* Application Selector */}
+        <div className='bg-card rounded-xl border border-border p-4'>
+          <div className='flex flex-col gap-4'>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2'>
+                <RiAppsLine className='w-4 h-4' />
+                Seleccionar Aplicación
+              </label>
+              <div className='relative'>
+                {/* Searchable Select for Applications */}
+                <SearchableSelect
+                  value={selectedApplication ? String(selectedApplication) : undefined}
+                  onValueChange={(value) => {
+                    console.log('Selected application:', value);
+                    handleApplicationChange(Number(value))
+                  }}
+                  disabled={applications.length === 0}
+                  placeholder='Seleccione una aplicación'
+                  searchPlaceholder='Buscar aplicación...'
+                  emptyMessage='No se encontraron aplicaciones'
+                  triggerClassName='!h-16 data-[size=default]:h-16 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
+                  options={applications.map((app) => ({
+                    value: String(app.id_application),
+                    label: (
+                      <div className='flex items-center gap-3'>
+                        <div className='w-8 h-8 rounded-lg flex items-center justify-center bg-[hsl(var(--primary)/0.12)]'>
+                          <RiGlobalLine className='w-4 h-4 text-[hsl(var(--primary))]' />
                         </div>
-                      ),
-                    }))}
+                        <div className='flex-1 text-left'>
+                          <p className='text-sm font-medium text-[hsl(var(--foreground))]'>
+                            {app.name}
+                          </p>
+                        </div>
+                      </div>
+                    ),
+                  }))}
+                />
+              </div>
+            </div>
+            <div className='border-t border-border pt-4'>
+              <div className='flex items-center gap-2 mb-3'>
+                <RiDatabase2Line className='w-4 h-4 text-muted-foreground' />
+                <p className='text-sm font-medium text-muted-foreground'>Aplicación seleccionada</p>
+              </div>
+              {selectedApplication && applications.find(a => a.id_application === selectedApplication) ? (
+                <div className='bg-primary/5 border border-primary/20 rounded-lg p-3'>
+                  <div className='flex items-center gap-3'>
+                    <div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center'>
+                      <RiGlobalLine className='w-5 h-5 text-primary' />
+                    </div>
+                    <div className='flex-1'>
+                      <p className='font-semibold text-foreground text-sm'>
+                        {applications.find(a => a.id_application === selectedApplication)?.name}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className='bg-muted/30 border border-muted rounded-lg p-3'>
+                  <div className='flex items-center gap-3 text-muted-foreground'>
+                    <div className='w-10 h-10 bg-muted rounded-lg flex items-center justify-center'>
+                      <RiAppsLine className='w-5 h-5' />
+                    </div>
+                    <div>
+                      <p className='font-medium text-sm'>Sin aplicación seleccionada</p>
+                      <p className='text-xs mt-0.5'>Selecciona una aplicación para continuar</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Target Selector */}
+        <div className='bg-card rounded-xl border border-border p-4'>
+          <div className='flex flex-col gap-4'>
+            <div className='flex items-center gap-2'>
+              <RiShieldUserLine className='w-4 h-4 text-muted-foreground' />
+              <label className='text-sm font-medium text-muted-foreground'>
+                Asignar permisos a
+              </label>
+            </div>
+
+            <div className='flex flex-col md:flex-row md:items-start gap-4'>
+              <div className='flex-1 space-y-4'>
+                <div>
+                  <label className='text-xs font-medium text-muted-foreground mb-1.5 block'>
+                    Rol
+                  </label>
+                  {isLoadingRoles ? (
+                    <div className='flex items-center gap-2 text-muted-foreground'>
+                      <div className='w-4 h-4 border-2 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin' />
+                      Cargando roles...
+                    </div>
+                  ) : roles.length === 0 ? (
+                    <p className='text-sm text-muted-foreground'>
+                      No hay roles disponibles para esta aplicación
+                    </p>
+                  ) : (
+                    <div className='flex flex-wrap gap-2'>
+                      {roles.map((role) => (
+                        <button
+                          key={role.id_role}
+                          onClick={() => handleRoleChange(role.id_role)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                            selectedRole === role.id_role
+                              ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                              : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
+                          }`}>
+                          <span className='font-medium'>{role.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <label className='text-xs font-medium text-muted-foreground mb-1.5 block'>
+                    Usuario
+                  </label>
+                  <UserSearchableSelect
+                    applicationId={selectedApplication}
+                    value={selectedUser}
+                    onChange={handleUserChange}
+                    disabled={!selectedApplication}
                   />
                 </div>
               </div>
-              <div className='border-t border-border pt-4'>
-                <div className='flex items-center gap-2 mb-3'>
-                  <RiDatabase2Line className='w-4 h-4 text-muted-foreground' />
-                  <p className='text-sm font-medium text-muted-foreground'>Aplicación seleccionada</p>
-                </div>
-                {selectedApplication && applications.find(a => a.id_application === selectedApplication) ? (
-                  <div className='bg-primary/5 border border-primary/20 rounded-lg p-3'>
-                    <div className='flex items-center gap-3'>
-                      <div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center'>
-                        <RiGlobalLine className='w-5 h-5 text-primary' />
-                      </div>
-                      <div className='flex-1'>
-                        <p className='font-semibold text-foreground text-sm'>
-                          {applications.find(a => a.id_application === selectedApplication)?.name}
-                        </p>
-                        {applications.find(a => a.id_application === selectedApplication)?.code && (
-                          <p className='text-xs text-primary font-mono mt-0.5'>
-                            {applications.find(a => a.id_application === selectedApplication)?.code}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className='bg-muted/30 border border-muted rounded-lg p-3'>
-                    <div className='flex items-center gap-3 text-muted-foreground'>
-                      <div className='w-10 h-10 bg-muted rounded-lg flex items-center justify-center'>
-                        <RiAppsLine className='w-5 h-5' />
-                      </div>
-                      <div>
-                        <p className='font-medium text-sm'>Sin aplicación seleccionada</p>
-                        <p className='text-xs mt-0.5'>Selecciona una aplicación para continuar</p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
 
-          {/* Role Selector */}
-          <div className='bg-card rounded-xl border border-border p-4'>
-            <div className='flex flex-col gap-4'>
-              <div>
-                <label className='text-sm font-medium text-muted-foreground mb-2 block'>
-                  Seleccionar Rol
-                </label>
-                <div className='flex flex-wrap gap-2'>
-                  {currentRoles.map((role) => (
-                    <button
-                      key={role.id_role}
-                      onClick={() => handleRoleChange(role.id_role)}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${selectedRole === role.id_role
-                        ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                        : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
-                        }`}>
-                      <span
-                        className='w-3 h-3 rounded-full'
-                        style={{ backgroundColor: role.color || '#6b7280' }}
-                      />
-                      <span className='font-medium'>{role.name}</span>
-                    </button>
-                  ))}
+              {selectedRoleData && (
+                <div className='md:border-l border-t md:border-t-0 border-border pt-4 md:pt-0 md:pl-4 min-w-[180px]'>
+                  <p className='text-sm text-muted-foreground'>Rol seleccionado</p>
+                  {isLoadingAssignments ? (
+                    <div className='flex items-center gap-2'>
+                      <div className='w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin' />
+                      <span className='text-sm'>Cargando permisos...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <p className='font-medium text-foreground'>
+                        {selectedRoleData.name}
+                      </p>
+                      <p className='text-xs text-muted-foreground mt-0.5'>
+                        {selectedRoleData.description}
+                      </p>
+                    </>
+                  )}
                 </div>
-              </div>
-              <div className='border-t border-border pt-4'>
-                <p className='text-sm text-muted-foreground'>Rol seleccionado</p>
-                <p className='font-medium text-foreground'>
-                  {selectedRoleData?.name || 'Sin rol seleccionado'}
-                </p>
-                <p className='text-xs text-muted-foreground mt-0.5'>
-                  {selectedRoleData?.description || 'Sin descripción'}
-                </p>
-              </div>
+              )}
+
+              {selectedUser && !selectedRoleData && (
+                <div className='md:border-l border-t md:border-t-0 border-border pt-4 md:pt-0 md:pl-4 min-w-[180px]'>
+                  <p className='text-sm text-muted-foreground'>Usuario seleccionado</p>
+                  <p className='font-medium text-foreground'>ID {selectedUser}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* Stats */}
-        <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <div className='bg-card rounded-xl border border-border p-4'>
             <div className='flex items-center gap-2 text-muted-foreground mb-1'>
-              <RiFolderLine className='w-4 h-4' />
-              <span className='text-xs font-medium'>Total Menús</span>
+              <RiLockLine className='w-4 h-4' />
+              <span className='text-xs font-medium'>Total Permisos</span>
             </div>
             <p className='text-2xl font-bold text-foreground'>
-              {stats.totalMenus}
+              {stats.totalPermissions}
             </p>
           </div>
           <div className='bg-card rounded-xl border border-border p-4'>
             <div className='flex items-center gap-2 text-primary mb-1'>
-              <RiEyeLine className='w-4 h-4' />
-              <span className='text-xs font-medium'>Ver</span>
+              <RiCheckboxCircleFill className='w-4 h-4' />
+              <span className='text-xs font-medium'>Asignados</span>
             </div>
             <p className='text-2xl font-bold text-foreground'>
-              {stats.viewCount}
-            </p>
-          </div>
-          <div className='bg-card rounded-xl border border-border p-4'>
-            <div className='flex items-center gap-2 text-blue-400 mb-1'>
-              <RiAddLine className='w-4 h-4' />
-              <span className='text-xs font-medium'>Crear</span>
-            </div>
-            <p className='text-2xl font-bold text-foreground'>
-              {stats.createCount}
-            </p>
-          </div>
-          <div className='bg-card rounded-xl border border-border p-4'>
-            <div className='flex items-center gap-2 text-warning mb-1'>
-              <RiEditLine className='w-4 h-4' />
-              <span className='text-xs font-medium'>Editar</span>
-            </div>
-            <p className='text-2xl font-bold text-foreground'>
-              {stats.editCount}
-            </p>
-          </div>
-          <div className='bg-card rounded-xl border border-border p-4'>
-            <div className='flex items-center gap-2 text-destructive mb-1'>
-              <RiDeleteBinLine className='w-4 h-4' />
-              <span className='text-xs font-medium'>Eliminar</span>
-            </div>
-            <p className='text-2xl font-bold text-foreground'>
-              {stats.deleteCount}
+              {stats.assignedCount}
             </p>
           </div>
         </div>
 
         {/* Main Content */}
-        <div className='bg-card rounded-xl border border-border overflow-hidden'>
-          {/* Toolbar */}
-          <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-b border-border bg-secondary/30'>
-            {/* Search */}
-            <div className='relative flex-1 max-w-md'>
-              <RiSearchLine className='absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground' />
-              <input
-                type='text'
-                placeholder='Buscar menú...'
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className='w-full pl-10 pr-10 py-2 bg-input border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50'
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className='absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground'>
-                  <RiCloseLine className='w-4 h-4' />
-                </button>
+        <div className='bg-card rounded-xl border border-border overflow-hidden p-4'>
+          {isLoadingCatalog ? (
+            <div className='flex items-center justify-center py-12 text-muted-foreground'>
+              <div className='flex flex-col items-center gap-3'>
+                <div className='w-8 h-8 border-4 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin' />
+                <p>Cargando permisos...</p>
+              </div>
+            </div>
+          ) : permissionsCatalog.length === 0 ? (
+            <div className='flex items-center justify-center py-12 text-muted-foreground'>
+              <p>No hay permisos disponibles para esta aplicación</p>
+            </div>
+          ) : !selectedTarget ? (
+            <div className='flex items-center justify-center py-12 text-muted-foreground'>
+              <p>Selecciona un rol o usuario para gestionar permisos</p>
+            </div>
+          ) : isLoadingAssignments ? (
+            <div className='flex items-center justify-center py-12 text-muted-foreground'>
+              <div className='flex flex-col items-center gap-3'>
+                <div className='w-8 h-8 border-4 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin' />
+                <p>Cargando asignaciones...</p>
+              </div>
+            </div>
+          ) : (
+            <DataTable
+              data={permissionsCatalog}
+              columns={columns}
+              headerTable={() => (
+                <div className='flex items-center justify-end gap-2 pb-2'>
+                  <button
+                    onClick={grantAllPermissions}
+                    disabled={!selectedTarget || isBulkUpdating}
+                    className='flex items-center gap-1 px-3 py-1.5 text-sm bg-primary/20 text-primary hover:bg-primary/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+                    <RiCheckDoubleLine className='w-4 h-4' />
+                    Otorgar Todo
+                  </button>
+                  <button
+                    onClick={revokeAllPermissions}
+                    disabled={!selectedTarget || isBulkUpdating}
+                    className='flex items-center gap-1 px-3 py-1.5 text-sm bg-destructive/20 text-destructive hover:bg-destructive/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+                    <RiCloseLine className='w-4 h-4' />
+                    Revocar Todo
+                  </button>
+                </div>
               )}
-            </div>
-
-            {/* Actions */}
-            <div className='flex items-center gap-2'>
-              <button
-                onClick={expandAll}
-                className='flex items-center gap-1 px-3 py-1.5 text-sm bg-secondary hover:bg-secondary/80 rounded-lg transition-colors text-secondary-foreground'>
-                <RiArrowDownSLine className='w-4 h-4' />
-                Expandir
-              </button>
-              <button
-                onClick={collapseAll}
-                className='flex items-center gap-1 px-3 py-1.5 text-sm bg-secondary hover:bg-secondary/80 rounded-lg transition-colors text-secondary-foreground'>
-                <RiArrowRightSLine className='w-4 h-4' />
-                Colapsar
-              </button>
-              <div className='w-px h-6 bg-border mx-2' />
-              <button
-                onClick={grantAllPermissions}
-                className='flex items-center gap-1 px-3 py-1.5 text-sm bg-primary/20 text-primary hover:bg-primary/30 rounded-lg transition-colors'>
-                <RiCheckDoubleLine className='w-4 h-4' />
-                Otorgar Todo
-              </button>
-              <button
-                onClick={revokeAllPermissions}
-                className='flex items-center gap-1 px-3 py-1.5 text-sm bg-destructive/20 text-destructive hover:bg-destructive/30 rounded-lg transition-colors'>
-                <RiCloseLine className='w-4 h-4' />
-                Revocar Todo
-              </button>
-            </div>
-          </div>
-
-          {/* Table Header */}
-          <div className='flex items-center gap-4 py-3 px-4 bg-secondary/50 border-b border-border text-sm font-medium text-muted-foreground'>
-            <div className='w-5' />
-            <div className='flex-1 min-w-[200px]'>Menú</div>
-            <div className='flex items-center gap-8'>
-              <div className='w-12 flex justify-center items-center gap-1'>
-                <RiEyeLine className='w-4 h-4' />
-                Ver
-              </div>
-              <div className='w-12 flex justify-center items-center gap-1'>
-                <RiAddLine className='w-4 h-4' />
-                Crear
-              </div>
-              <div className='w-12 flex justify-center items-center gap-1'>
-                <RiEditLine className='w-4 h-4' />
-                Editar
-              </div>
-              <div className='w-12 flex justify-center items-center gap-1'>
-                <RiDeleteBinLine className='w-4 h-4' />
-                Eliminar
-              </div>
-            </div>
-          </div>
-
-          {/* Table Body */}
-          <div className='max-h-[calc(100vh-500px)] overflow-y-auto'>
-            {menuItems.map((menu) => (
-              <MenuItemRow
-                key={menu.id}
-                menu={menu}
-                level={0}
-                expanded={expanded}
-                toggleExpand={toggleExpand}
-                permissions={permissions}
-                selectedRole={selectedRole}
-                onPermissionChange={handlePermissionChange}
-                searchQuery={searchQuery}
-              />
-            ))}
-          </div>
-
-          {/* Footer */}
-          <div className='flex items-center justify-between p-4 border-t border-border bg-secondary/30'>
-            <p className='text-sm text-muted-foreground'>
-              {stats.viewCount +
-                stats.createCount +
-                stats.editCount +
-                stats.deleteCount}{" "}
-              permisos asignados para{" "}
-              <span className='font-medium text-foreground'>
-                {selectedRoleData?.name || 'Sin rol'}
-              </span>
-            </p>
-            <div className='flex items-center gap-2'>
-              <span className='flex items-center gap-1 text-xs text-muted-foreground'>
-                <RiCheckboxCircleFill className='w-4 h-4 text-primary' />
-                Permitido
-              </span>
-              <span className='flex items-center gap-1 text-xs text-muted-foreground'>
-                <RiCheckboxIndeterminateLine className='w-4 h-4 text-warning' />
-                Parcial
-              </span>
-              <span className='flex items-center gap-1 text-xs text-muted-foreground'>
-                <RiCheckboxBlankCircleLine className='w-4 h-4' />
-                Denegado
-              </span>
-            </div>
-          </div>
+            />
+          )}
         </div>
       </div>
     </div>

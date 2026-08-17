@@ -5,11 +5,13 @@ import {
   updateApplicationAction,
   deleteApplicationAction,
   getApplications,
+  getModulesByApplication,
 } from '@/server/domains/access-control/security/applications';
 import type {
   IApplication,
   ICreateApplication,
   IUpdateApplication,
+  IModuleApplication,
 } from '@/server/domains/access-control/security/applications';
 
 export async function createApplicationServerAction(payload: ICreateApplication) {
@@ -68,4 +70,15 @@ export async function getAllApplicationsServerAction(): Promise<IApplication[]> 
     return [];
   }
 
+}
+
+export async function getModulesByApplicationServerAction(applicationId: string | number): Promise<IModuleApplication[]> {
+  try {
+    const result = await getModulesByApplication(applicationId);
+
+    return Array.isArray(result) ? result : [];
+  } catch (error) {
+    console.error("Failed to fetch modules:", error);
+    return [];
+  }
 }
