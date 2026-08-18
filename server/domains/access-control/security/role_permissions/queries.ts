@@ -1,96 +1,81 @@
 ﻿import 'server-only';
 import { cache } from 'react';
 
-import { 
-  rolePermissionsRepository, 
+import {
+  rolePermissionsRepository,
   rolePermissionStatsRepository,
-  rolePermissionBulkRepository,
-  rolePermissionValidationRepository,
   rolePermissionActivityRepository,
   rolePermissionInheritanceRepository,
   rolePermissionConflictRepository,
-  rolePermissionExportRepository
 } from './repository';
-import { accessControlTags } from '@/server/lib/cache-tags';
-import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
-import type { 
-  IRolePermission, 
-  IRolePermissionStats,
-  IRolePermissionOverview,
-  IBulkRolePermissionPayload,
-  IBulkRolePermissionResponse,
+import type { ListParams } from '@/server/lib/types';
+import type {
+
   IRolePermissionValidationResult,
-  IRolePermissionValidationRequest,
-  IRolePermissionActivity,
-  IRolePermissionActivityFilter,
-  IRolePermissionExportRequest,
-  IRolePermissionExportResponse,
-  IRolePermissionInheritanceTree,
-  IRolePermissionConflict,
-  IRolePermissionConflictResolution,
+
 } from './types';
 
 // --- IRole-IPermission Relationships Queries ---------------------------------
 
-export const getRolePermissions = cache((params?: ListParams) => 
+export const getRolePermissions = cache((params?: ListParams) =>
   rolePermissionsRepository.list(params)
 );
 
-export const getRolePermissionById = cache((roleId: string | number, permissionId: string | number) => 
+export const getRolePermissionById = cache((roleId: string | number, permissionId: string | number) =>
   rolePermissionsRepository.getById(roleId, permissionId)
 );
 
-export const getPermissionsByRole = cache((roleId: string | number) => 
+export const getPermissionsByRole = cache((roleId: string | number) =>
   rolePermissionsRepository.getPermissionsByRole(roleId)
 );
 
-export const getRolesByPermission = cache((permissionId: string | number) => 
+export const getRolesByPermission = cache((permissionId: string | number) =>
   rolePermissionsRepository.getRolesByPermission(permissionId)
 );
 
-export const getActivePermissionsForRole = cache((roleId: string | number) => 
+export const getActivePermissionsForRole = cache((roleId: string | number) =>
   rolePermissionsRepository.getActivePermissions(roleId)
 );
 
 // --- IRole-IPermission Statistics Queries ---------------------------------
 
-export const getRolePermissionStats = cache((roleId: string | number, permissionId: string | number) => 
+export const getRolePermissionStats = cache((roleId: string | number, permissionId: string | number) =>
   rolePermissionStatsRepository.getStats(roleId, permissionId)
 );
 
-export const getAllRolePermissionStats = cache(() => 
+export const getAllRolePermissionStats = cache(() =>
   rolePermissionStatsRepository.getAllStats()
 );
 
-export const getRolePermissionOverview = cache((roleId: string | number, permissionId: string | number) => 
+export const getRolePermissionOverview = cache((roleId: string | number, permissionId: string | number) =>
   rolePermissionStatsRepository.getOverview(roleId, permissionId)
 );
 
 // --- IRole-IPermission Inheritance Queries ---------------------------------
 
-export const getInheritedPermissionsForRole = cache((roleId: string | number) => 
+export const getInheritedPermissionsForRole = cache((roleId: string | number) =>
   rolePermissionInheritanceRepository.get_inherited_permissions(roleId)
 );
 
-export const getRolePermissionInheritanceTree = cache((roleId: string | number) => 
+export const getRolePermissionInheritanceTree = cache((roleId: string | number) =>
   rolePermissionInheritanceRepository.get_inheritance_tree(roleId)
 );
 
 // --- IRole-IPermission Activity Queries ---------------------------------
 
-export const getRolePermissionActivities = cache((params?: ListParams) => 
+export const getRolePermissionActivities = cache((params?: ListParams) =>
   rolePermissionActivityRepository.list(params)
 );
 
-export const getActivitiesByRole = cache((roleId: string | number, params?: ListParams) => 
+export const getActivitiesByRole = cache((roleId: string | number, params?: ListParams) =>
   rolePermissionActivityRepository.get_by_role(roleId, params)
 );
 
-export const getActivitiesByPermission = cache((permissionId: string | number, params?: ListParams) => 
+export const getActivitiesByPermission = cache((permissionId: string | number, params?: ListParams) =>
   rolePermissionActivityRepository.get_by_permission(permissionId, params)
 );
 
-export const getRecentRolePermissionActivities = cache((roleId: string | number, limit?: number) => 
+export const getRecentRolePermissionActivities = cache((roleId: string | number, limit?: number) =>
   rolePermissionActivityRepository.getRecent(roleId, limit)
 );
 
@@ -118,7 +103,7 @@ export const getRoleWithPermissions = cache(async (roleId: string | number) => {
     getInheritedPermissionsForRole(roleId),
     getRecentRolePermissionActivities(roleId, 10)
   ]);
-  
+
   return {
     role_id: roleId,
     permissions,
@@ -137,7 +122,7 @@ export const getPermissionWithRoles = cache(async (permissionId: string | number
     getRolesByPermission(permissionId),
     getActivitiesByPermission(permissionId, { per_page: 10 })
   ]);
-  
+
   return {
     permission_id: permissionId,
     roles,
@@ -152,11 +137,11 @@ export const getRolePermissionDashboard = cache(async () => {
     getRolePermissions({ per_page: 100 }),
     getAllRolePermissionStats()
   ]);
-  
+
   // Combine data for dashboard
   const dashboardData = rolePermissions.content.map((rolePermission: any) => {
     const stats = allStats.find(s => s.role_id === rolePermission.role_id && s.permission_id === rolePermission.permission_id);
-    
+
     return {
       ...rolePermission,
       stats: stats || {
@@ -167,7 +152,7 @@ export const getRolePermissionDashboard = cache(async () => {
       }
     };
   });
-  
+
   return {
     role_permissions: dashboardData,
     summary: {
@@ -183,11 +168,11 @@ export const getRolePermissionUsagePatterns = cache(async (roleId: string | numb
   const [permissions, activities, stats] = await Promise.all([
     getPermissionsByRole(roleId),
     getActivitiesByRole(roleId, { per_page: days * 24 }), // Assuming hourly checks
-    getAllRolePermissionStats().then(allStats => 
+    getAllRolePermissionStats().then(allStats =>
       allStats.filter(s => s.role_id === roleId)
     )
   ]);
-  
+
   // Process usage data
   const usagePatterns = activities.content
     .filter((activity: any) => activity.activity_type === 'permission_used')
@@ -197,12 +182,12 @@ export const getRolePermissionUsagePatterns = cache(async (roleId: string | numb
       description: activity.description,
       metadata: activity.metadata
     }));
-  
+
   // Group by permission
   const permissionUsagePatterns = permissions.map((permission: any) => {
     const permissionActivities = usagePatterns.filter(up => up.permission_id === permission.id_permission);
     const permissionStats = stats.find(s => s.permission_id === permission.id);
-    
+
     return {
       permission,
       usage_count: permissionActivities.length,
@@ -210,7 +195,7 @@ export const getRolePermissionUsagePatterns = cache(async (roleId: string | numb
       usage_frequency: permissionActivities.length / days // uses per day
     };
   });
-  
+
   return {
     role_id: roleId,
     patterns: permissionUsagePatterns.sort((a, b) => b.usage_count - a.usage_count),
@@ -228,12 +213,12 @@ export const getRolePermissionInheritanceAnalysis = cache(async (roleId: string 
     getRolePermissionInheritanceTree(roleId),
     getPermissionsByRole(roleId)
   ]);
-  
+
   // Analyze inheritance
   const inheritedPermissions = inheritanceTree.inherited_permissions;
   const directPermissionIds = directPermissions.map((p: any) => p.id_permission);
   const inheritedPermissionIds = inheritedPermissions.map((ip: any) => ip.permission.id_permission);
-  
+
   const analysis = {
     direct_permissions: directPermissions.length,
     inherited_permissions: inheritedPermissions.length,
@@ -248,7 +233,7 @@ export const getRolePermissionInheritanceAnalysis = cache(async (roleId: string 
       return acc;
     }, {} as Record<string | number, number>)
   };
-  
+
   return {
     role_id: roleId,
     inheritance_tree: inheritanceTree,
@@ -265,7 +250,7 @@ export const getRolePermissionConflictAnalysis = cache(async (roleId: string | n
   const [conflicts] = await Promise.all([
     rolePermissionConflictRepository.detect_conflicts(roleId)
   ]);
-  
+
   // Analyze conflicts
   const conflictAnalysis = {
     total_conflicts: conflicts.length,
@@ -283,7 +268,7 @@ export const getRolePermissionConflictAnalysis = cache(async (roleId: string | n
       return acc;
     }, {} as Record<string, number>)
   };
-  
+
   return {
     role_id: roleId,
     conflicts,
@@ -299,7 +284,7 @@ export const getRolePermissionValidationSummary = cache(async (roleId: string | 
     // This would call the validation repository
     Promise.resolve([] as IRolePermissionValidationResult[])
   ]);
-  
+
   const summary = {
     total_validations: validationResults.length,
     valid_count: validationResults.filter(v => v.is_valid).length,
@@ -307,7 +292,7 @@ export const getRolePermissionValidationSummary = cache(async (roleId: string | 
     error_count: validationResults.reduce((sum, v) => sum + v.errors.length, 0),
     warning_count: validationResults.reduce((sum, v) => sum + v.warnings.length, 0)
   };
-  
+
   return {
     role_id: roleId,
     validation_results: validationResults,
@@ -321,7 +306,7 @@ export const getRolePermissionMatrixAnalysis = cache(async (params?: ListParams)
   const [rolePermissions] = await Promise.all([
     getRolePermissions({ per_page: 1000 }) // Get comprehensive matrix
   ]);
-  
+
   // Analyze matrix data
   const uniqueRoles = new Set(rolePermissions.content.map((rp: any) => rp.role_id));
   const uniquePermissions = new Set(rolePermissions.content.map((rp: any) => rp.permission_id));
@@ -336,7 +321,7 @@ export const getRolePermissionMatrixAnalysis = cache(async (params?: ListParams)
     average_roles_per_permission: uniquePermissions.size > 0 ? rolePermissions.total_elements / uniquePermissions.size : 0,
     assignment_density: (uniqueRoles.size * uniquePermissions.size) > 0 ? (rolePermissions.total_elements / (uniqueRoles.size * uniquePermissions.size)) * 100 : 0
   };
-  
+
   // Group by resource type
   const byResource = rolePermissions.content.reduce((acc: any, item: any) => {
     const resource = item.permission?.resource || 'unknown';

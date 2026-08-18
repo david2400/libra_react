@@ -64,7 +64,7 @@ export const rolePermissionsRepository = {
   getPermissionsByRole: (roleId: string | number) => 
     serverFetch.get<IRolePermission[]>('/api/access_control/role-permissions', {
       params: { roleId: Number(roleId) } as any,
-      revalidate: 120,
+      revalidate: false,
       tags: [accessControlTags.role(roleId)],
     }),
 
@@ -82,26 +82,31 @@ export const rolePermissionsRepository = {
       tags: [accessControlTags.role(roleId)],
     }),
 
-  // Assign or reactivate permission to role
-  create: (roleId: string | number, permissionId: string | number, _payload?: ICreateRolePermission) =>
-    serverFetch.post<IRolePermission>(`/api/access_control/role-permissions/role/${roleId}/permission/${permissionId}`, undefined, {
+  // Create role-permission relationship
+  create: (roleId: string | number, permissionId: string | number, payload: ICreateRolePermission) =>
+    serverFetch.post<IRolePermission>('/api/access_control/role-permissions', {
+      role_id: Number(roleId),
+      permission_id: Number(permissionId),
+      level: payload.level,
+      is_active: payload.is_active ?? true,
+    }, {
       revalidate: false,
     }),
 
   // Update role-permission relationship
   update: (permissionId: string | number, roleId: string | number, payload: IUpdateRolePermission) =>
     serverFetch.put<IRolePermission>(`/api/access_control/role-permissions/${permissionId}/${roleId}`, {
-      roleId: Number(roleId),
-      permissionId: Number(permissionId),
+      role_id: Number(roleId),
+      permission_id: Number(permissionId),
       level: payload.level,
-      isActive: payload.is_active,
+      is_active: payload.is_active,
     }, {
       revalidate: false,
     }),
 
-  // Revoke permission from role
+  // Delete role-permission relationship
   delete: (permissionId: string | number, roleId: string | number) =>
-    serverFetch.delete<void>(`/api/access_control/role-permissions/role/${roleId}/permission/${permissionId}`, {
+    serverFetch.delete<void>(`/api/access_control/role-permissions/${permissionId}/${roleId}`, {
       revalidate: false,
     }),
 } as const;

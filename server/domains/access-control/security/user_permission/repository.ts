@@ -40,7 +40,7 @@ export const userPermissionsRepository = {
     // Get permissions by user
     getPermissionsByUser: (userId: string | number) =>
         serverFetch.get<IUserPermission[]>(`/api/access_control/user-permissions/user/${userId}`, {
-            revalidate: 120,
+            revalidate: false,
             tags: [accessControlTags.user(userId)],
         }),
 
@@ -51,26 +51,33 @@ export const userPermissionsRepository = {
             tags: [accessControlTags.permission(permissionId)],
         }),
 
-    // Assign or reactivate permission to user
-    create: (userId: string | number, permissionId: string | number, _payload?: ICreateUserPermission) =>
-        serverFetch.post<IUserPermission>(`/api/access_control/user-permissions/user/${userId}/permission/${permissionId}`, undefined, {
+    // Create user-permission relationship
+    create: (userId: string | number, permissionId: string | number, payload: ICreateUserPermission) =>
+        serverFetch.post<IUserPermission>('/api/access_control/user-permissions', {
+            user_id: Number(userId),
+            permission_id: Number(permissionId),
+            level: payload.level,
+            is_active: payload.is_active ?? true,
+            expires_at: payload.expires_at,
+        }, {
             revalidate: false,
+            headers: { 'X-User-Id': '1' },
         }),
 
     // Update user-permission relationship
     update: (userId: string | number, permissionId: string | number, payload: IUpdateUserPermission) =>
         serverFetch.put<IUserPermission>(`/api/access_control/user-permissions/${userId}/${permissionId}`, {
             level: payload.level,
-            isActive: payload.is_active,
-            expiresAt: payload.expires_at,
+            is_active: payload.is_active,
+            expires_at: payload.expires_at,
         }, {
             revalidate: false,
             headers: { 'X-User-Id': '1' },
         }),
 
-    // Revoke permission from user
+    // Delete user-permission relationship
     delete: (userId: string | number, permissionId: string | number) =>
-        serverFetch.delete<void>(`/api/access_control/user-permissions/user/${userId}/permission/${permissionId}`, {
+        serverFetch.delete<void>(`/api/access_control/user-permissions/${userId}/${permissionId}`, {
             revalidate: false,
         }),
 } as const;

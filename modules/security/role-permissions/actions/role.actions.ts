@@ -72,23 +72,7 @@ export const listRolesAction = async (): Promise<ActionResultType<any[]>> => {
     const roles = response.content || [];
     return { success: true, data: roles };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to load roles',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -116,23 +100,7 @@ export const listRolePermissionsAction = async (): Promise<ActionResultType<any[
     const permissions = response.content || [];
     return { success: true, data: permissions };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to load role permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -143,23 +111,7 @@ export const listPermissionsByRoleAction = async (roleId: string | number): Prom
 
     return { success: true, data: rolePermissions };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to load permissions for role',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -181,23 +133,7 @@ export const updateRolePermissionAction = async (
     await revalidateCacheTag(accessControlTags.rolePermissions());
     return { success: true, data: updatedPermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update role permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -219,26 +155,7 @@ export const createRolePermissionAction = async (
     await revalidateCacheTag(accessControlTags.rolePermissions());
     return { success: true, data: newPermission };
   } catch (error) {
-    if (error instanceof ServerApiError && error.status === 409) {
-      return updateRolePermissionAction(roleId, permissionId, { level: payload.level, is_active: true });
-    }
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create role permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -253,23 +170,7 @@ export const deleteRolePermissionAction = async (
     await revalidateCacheTag(accessControlTags.rolePermissions());
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete role permission',
-        details: error
-      }
-    };
+    throw error;
   }
 };
 
@@ -303,22 +204,6 @@ export const bulkUpdateRolePermissionsAction = async (
 
     return { success: true, data: results };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details
-        }
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to bulk update role permissions',
-        details: error
-      }
-    };
+    throw error;
   }
 };

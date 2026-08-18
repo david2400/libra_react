@@ -66,23 +66,7 @@ export const listUsersByApplicationAction = async (
 
     return { success: true, data: filtered };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        },
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to load users',
-        details: error,
-      },
-    };
+    throw error;
   }
 };
 
@@ -92,27 +76,14 @@ export const listPermissionsByUserAction = async (
   userId: string | number,
 ): Promise<ActionResultType<any[]>> => {
   try {
-    const userPermissions = await userPermissionsRepository.getPermissionsByUser(userId);
+    const response = await userPermissionsRepository.getPermissionsByUser(userId);
+    const userPermissions = Array.isArray(response)
+      ? response
+      : (response as any)?.content || (response as any)?.value || [];
 
     return { success: true, data: userPermissions };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        },
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to load permissions for user',
-        details: error,
-      },
-    };
+    throw error;
   }
 };
 
@@ -133,26 +104,7 @@ export const createUserPermissionAction = async (
     await revalidateCacheTag(accessControlTags.userPermissions());
     return { success: true, data: newPermission };
   } catch (error) {
-    if (error instanceof ServerApiError && error.status === 409) {
-      return updateUserPermissionAction(userId, permissionId, { level: payload.level, is_active: true });
-    }
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        },
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to create user permission',
-        details: error,
-      },
-    };
+    throw error;
   }
 };
 
@@ -171,23 +123,7 @@ export const updateUserPermissionAction = async (
     await revalidateCacheTag(accessControlTags.userPermissions());
     return { success: true, data: updatedPermission };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        },
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to update user permission',
-        details: error,
-      },
-    };
+    throw error;
   }
 };
 
@@ -200,22 +136,6 @@ export const deleteUserPermissionAction = async (
     await revalidateCacheTag(accessControlTags.userPermissions());
     return { success: true, data: undefined };
   } catch (error) {
-    if (error instanceof ServerApiError) {
-      return {
-        success: false,
-        error: {
-          message: error.message,
-          code: error.code,
-          details: error.details,
-        },
-      };
-    }
-    return {
-      success: false,
-      error: {
-        message: 'Failed to delete user permission',
-        details: error,
-      },
-    };
+    throw error;
   }
 };

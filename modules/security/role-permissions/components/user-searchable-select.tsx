@@ -27,7 +27,7 @@ interface UserOption {
 interface UserSearchableSelectProps {
   applicationId: number | null | undefined;
   value: number | null;
-  onChange: (userId: number) => void;
+  onChange: (userId: number | null) => void;
   disabled?: boolean;
   placeholder?: string;
   searchPlaceholder?: string;
@@ -48,7 +48,7 @@ function getUserFullName(user?: UserOption): string {
 }
 
 function getUserIdentifier(user?: UserOption): string {
-  return user?.client?.card_id || user?.username || '';
+  return user?.client?.card_id || '';
 }
 
 export function UserSearchableSelect({
@@ -102,8 +102,8 @@ export function UserSearchableSelect({
 
   return (
     <Select
-      value={value ? String(value) : undefined}
-      onValueChange={(v) => onChange(Number(v))}
+      value={value !== null ? String(value) : ''}
+      onValueChange={(v) => onChange(v ? Number(v) : null)}
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen(nextOpen);

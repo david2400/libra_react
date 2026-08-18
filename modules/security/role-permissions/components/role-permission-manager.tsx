@@ -9,10 +9,13 @@ import {
   RiRefreshLine,
   RiCloseLine,
   RiCheckDoubleLine,
+  RiCheckLine,
   RiAppsLine,
   RiGlobalLine,
   RiDatabase2Line,
   RiKeyLine,
+  RiUserStarLine,
+  RiUserLine,
   RiLockLine,
 } from "react-icons/ri";
 import { DataTable } from "@repo/ui/table/scenes";
@@ -143,12 +146,9 @@ export function RolePermissionManager() {
       setRoles(validRoles);
       setPermissionsCatalog(validCatalog);
 
-      if (validRoles.length > 0) {
-        setSelectedRole(validRoles[0].id_role);
-      } else {
-        setSelectedRole(null);
-      }
+      setSelectedRole(null);
       setSelectedUser(null);
+      setRowStates({});
     } catch (error) {
       console.error("Error loading roles and permissions catalog:", error);
       setRoles([]);
@@ -162,12 +162,17 @@ export function RolePermissionManager() {
     }
   };
 
-  const buildRowStates = (assignments: any[]): Record<number, PermissionRowState> => {
+  const buildRowStates = (assignments: any): Record<number, PermissionRowState> => {
     const map: Record<number, PermissionRowState> = {};
-    assignments.forEach((a) => {
+    const items = Array.isArray(assignments)
+      ? assignments
+      : assignments?.content || assignments?.value || [];
+    items.forEach((a: any) => {
       const permissionId = Number(a.permission_id ?? a.permissionId);
+      const isActive = a.is_active ?? a.isActive ?? true;
+      const assigned = !a.deleted && Boolean(isActive);
       map[permissionId] = {
-        assigned: true,
+        assigned,
         level: a.level ?? DEFAULT_LEVEL,
       };
     });
@@ -190,24 +195,25 @@ export function RolePermissionManager() {
     }
 
     try {
+      setRowStates({});
       setIsLoadingAssignments(true);
       const result = await listPermissionsByRoleAction(roleId);
 
       if (result.success) {
         setRowStates(buildRowStates(result.data ?? []));
       } else {
-        console.error('Error loading role permissions:', result.error);
+        setSaveError(result.error?.message ?? 'Error al cargar permisos del rol');
         setRowStates({});
       }
-    } catch (error) {
-      console.error('Error loading role permissions:', error);
+    } catch (error: any) {
+      setSaveError(error?.message ?? 'Error al cargar permisos del rol');
       setRowStates({});
     } finally {
       setIsLoadingAssignments(false);
     }
   };
 
-  const handleUserChange = async (userId: number) => {
+  const handleUserChange = async (userId: number | null) => {
     setSelectedUser(userId);
     setSelectedRole(null);
     setSaveError(null);
@@ -218,17 +224,18 @@ export function RolePermissionManager() {
     }
 
     try {
+      setRowStates({});
       setIsLoadingAssignments(true);
       const result = await listPermissionsByUserAction(userId);
 
       if (result.success) {
         setRowStates(buildRowStates(result.data ?? []));
       } else {
-        console.error('Error loading user permissions:', result.error);
+        setSaveError(result.error?.message ?? 'Error al cargar permisos del usuario');
         setRowStates({});
       }
-    } catch (error) {
-      console.error('Error loading user permissions:', error);
+    } catch (error: any) {
+      setSaveError(error?.message ?? 'Error al cargar permisos del usuario');
       setRowStates({});
     } finally {
       setIsLoadingAssignments(false);
@@ -513,8 +520,9 @@ export function RolePermissionManager() {
             <div className='flex flex-col md:flex-row md:items-start gap-4'>
               <div className='flex-1 space-y-4'>
                 <div>
-                  <label className='text-xs font-medium text-muted-foreground mb-1.5 block'>
-                    Rol
+                  <label className='text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5'>
+                    <RiUserStarLine className='w-3.5 h-3.5' />
+                    Seleccionar Rol
                   </label>
                   {isLoadingRoles ? (
                     <div className='flex items-center gap-2 text-muted-foreground'>
@@ -526,19 +534,45 @@ export function RolePermissionManager() {
                       No hay roles disponibles para esta aplicación
                     </p>
                   ) : (
-                    <div className='flex flex-wrap gap-2'>
-                      {roles.map((role) => (
-                        <button
-                          key={role.id_role}
-                          onClick={() => handleRoleChange(role.id_role)}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                            selectedRole === role.id_role
-                              ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                              : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
-                          }`}>
-                          <span className='font-medium'>{role.name}</span>
-                        </button>
-                      ))}
+                    <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2'>
+                      {roles.map((role) => {
+                        const isSelected = selectedRole === role.id_role;
+                        return (
+                          <button
+                            key={role.id_role}
+                            onClick={() => handleRoleChange(role.id_role)}
+                            className={`group relative flex items-center gap-2 p-2 rounded-lg border text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/60 ${
+                              isSelected
+                                ? 'border-primary bg-primary text-primary-foreground shadow-md'
+                                : 'border-border bg-card text-foreground hover:border-primary/50 hover:bg-secondary/40'
+                            }`}>
+                            <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-colors ${
+                              isSelected
+                                ? 'bg-primary-foreground/20 text-primary-foreground'
+                                : 'bg-secondary text-muted-foreground group-hover:text-foreground'
+                            }`}>
+                              <RiUserStarLine className='w-4 h-4' />
+                            </div>
+                            <div className='min-w-0 flex-1'>
+                              <p className='font-medium text-xs truncate'>{role.name}</p>
+                              {isSelected ? (
+                                <span className='inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground/90'>
+                                  <RiCheckLine className='w-3 h-3' /> Seleccionado
+                                </span>
+                              ) : role.description ? (
+                                <p className='text-[10px] text-muted-foreground truncate'>{role.description}</p>
+                              ) : (
+                                <p className='text-[10px] text-muted-foreground/60 italic'>Sin descripción</p>
+                              )}
+                            </div>
+                            {isSelected && (
+                              <div className='w-5 h-5 rounded-full bg-primary-foreground/20 flex items-center justify-center shrink-0'>
+                                <RiCheckLine className='w-3 h-3 text-primary-foreground' />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -556,33 +590,66 @@ export function RolePermissionManager() {
                 </div>
               </div>
 
-              {selectedRoleData && (
-                <div className='md:border-l border-t md:border-t-0 border-border pt-4 md:pt-0 md:pl-4 min-w-[180px]'>
-                  <p className='text-sm text-muted-foreground'>Rol seleccionado</p>
-                  {isLoadingAssignments ? (
-                    <div className='flex items-center gap-2'>
-                      <div className='w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin' />
-                      <span className='text-sm'>Cargando permisos...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <p className='font-medium text-foreground'>
-                        {selectedRoleData.name}
-                      </p>
-                      <p className='text-xs text-muted-foreground mt-0.5'>
-                        {selectedRoleData.description}
-                      </p>
-                    </>
-                  )}
+              <div className='md:border-l border-t md:border-t-0 border-border pt-4 md:pt-0 md:pl-4 min-w-[220px]'>
+                <p className='text-xs font-medium text-muted-foreground mb-2'>
+                  {selectedTarget ? 'Objetivo seleccionado' : 'Ningún objetivo seleccionado'}
+                </p>
+                <div className='flex items-start gap-3'>
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                    selectedTarget
+                      ? 'bg-primary/10 text-primary'
+                      : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {selectedTarget?.type === 'role' ? (
+                      <RiUserStarLine className='w-6 h-6' />
+                    ) : selectedTarget?.type === 'user' ? (
+                      <RiUserLine className='w-6 h-6' />
+                    ) : (
+                      <RiUserStarLine className='w-6 h-6' />
+                    )}
+                  </div>
+                  <div className='min-w-0'>
+                    {selectedRoleData ? (
+                      isLoadingAssignments ? (
+                        <div className='flex items-center gap-2 py-2'>
+                          <div className='w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin' />
+                          <span className='text-sm text-muted-foreground'>Cargando permisos...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <p className='font-semibold text-foreground text-sm truncate'>
+                            {selectedRoleData.name}
+                          </p>
+                          <p className='text-xs text-muted-foreground mt-0.5 truncate'>
+                            {selectedRoleData.description || 'Sin descripción'}
+                          </p>
+                          <p className='text-xs text-primary mt-1.5 font-medium'>
+                            {stats.assignedCount} de {stats.totalPermissions} permisos
+                          </p>
+                        </>
+                      )
+                    ) : selectedUser ? (
+                      <>
+                        <p className='font-semibold text-foreground text-sm truncate'>
+                          Usuario ID {selectedUser}
+                        </p>
+                        <p className='text-xs text-muted-foreground mt-0.5'>
+                          Permisos directos del usuario
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className='font-medium text-foreground text-sm'>
+                          Selecciona un rol o usuario
+                        </p>
+                        <p className='text-xs text-muted-foreground mt-0.5'>
+                          Para ver y gestionar sus permisos
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
-              )}
-
-              {selectedUser && !selectedRoleData && (
-                <div className='md:border-l border-t md:border-t-0 border-border pt-4 md:pt-0 md:pl-4 min-w-[180px]'>
-                  <p className='text-sm text-muted-foreground'>Usuario seleccionado</p>
-                  <p className='font-medium text-foreground'>ID {selectedUser}</p>
-                </div>
-              )}
+              </div>
             </div>
           </div>
         </div>
