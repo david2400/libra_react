@@ -43,48 +43,35 @@ import {
 // import { IApplication } from "@/server/domains/access-control/security/applications";
 // import { IApplicationCategory } from "@/server/domains/access-control/security/application_categories";
 
-// Temporary types to allow build
-interface IUser {
-  id_user?: number;
-  id?: number;
-  name?: string;
-  username?: string;
-  avatar?: string;
-  department?: string;
-  role?: string;
-  status?: string;
-  company_id?: number;
-  assignedApps?: number[];
-  client?: { name?: string };
+
+function getClientFullName(client?: IUser['client']) {
+  if (!client) return '';
+  const fullName = [
+    client.first_name,
+    client.second_name,
+    client.first_last_name,
+    client.second_last_name,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .trim();
+  return fullName || client.card_id || '';
 }
 
-interface IApplication {
-  id_application: number;
-  name: string;
-  description?: string;
-  application_category_id?: number | null;
-  route?: string;
-  maintenance_mode?: boolean;
-  publication_date?: string;
-  deleted?: boolean;
-  status?: string;
-  color?: string;
-  category?: IApplicationCategory;
-}
 
-interface IApplicationCategory {
-  id_application_category?: number;
-  name?: string;
-  icon?: string;
-}
 import { useApplicationData } from "../hooks/use-application-data";
 import { IUserApplication } from "../models/user-application.interface";
-import { getUsersServerAction } from "@/app/[locale]/(protected)/account/user-companies/actions";
 import {
   getUserApplicationsByUserServerAction,
-  createUserApplicationServerAction,
+  assignApplicationToUserServerAction,
   deleteUserApplicationServerAction,
 } from "@/app/[locale]/(protected)/security/user-applications/actions";
+import { getCompanyApplicationsByCompanyServerAction } from "@/app/[locale]/(protected)/security/company-applications/actions";
+import { getAllCompaniesServerAction } from "@/app/[locale]/(protected)/account/companies/actions";
+import { getCompanyActiveUsersServerAction } from "@/app/[locale]/(protected)/account/user-companies/actions";
+import { IApplication } from "../../applications/models/application.interface";
+import { IApplicationCategory } from "../../applications-category/models/applicationCategory.interface";
+import { IUser } from "@/server/domains/access-control/account/users";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HiViewGrid,
@@ -104,14 +91,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   HiServer,
 };
 
-const addOneYear = (date: Date) => {
-  const next = new Date(date);
-  next.setFullYear(next.getFullYear() + 1);
-  return next;
-};
-
-const toISODate = (date: Date) => date.toISOString().slice(0, 10);
-
 export function UserApplicationsManager() {
   // Data from custom hook
   const {
@@ -119,20 +98,57 @@ export function UserApplicationsManager() {
     categories,
     isLoadingApps,
     isLoadingCategories,
-    loadApplications,
-    loadCategories,
-    loadData,
   } = useApplicationData();
 
-  const [users, setUsers] = useState<IUser[]>([]);
-  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [isLoadingCompanies, setIsLoadingCompanies] = useState(true);
+  const [selectedCompany, setSelectedCompany] = useState<any | null>(null);
 
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+
+  // Load companies on mount
+  useEffect(() => {
+    const loadCompanies = async () => {
+      try {
+        setIsLoadingCompanies(true);
+        const result = await getAllCompaniesServerAction();
+        setCompanies(Array.isArray(result) ? result : []);
+      } catch (error) {
+        console.error("Error loading companies:", error);
+        setCompanies([]);
+      } finally {
+        setIsLoadingCompanies(false);
+      }
+    };
+    loadCompanies();
+  }, []);
+
+  // Load users when selected company changes
   useEffect(() => {
     const loadUsers = async () => {
+      if (!selectedCompany?.id_company) {
+        setUsers([]);
+        setSelectedUser(null);
+        return;
+      }
       try {
         setIsLoadingUsers(true);
-        const result = await getUsersServerAction();
-        setUsers(Array.isArray(result) ? (result as IUser[]) : []);
+        const companyUsers = await getCompanyActiveUsersServerAction(selectedCompany.id_company);
+        const mapped = (Array.isArray(companyUsers) ? companyUsers : [])
+          .map((uc: any) => {
+            const user = uc?.user ?? {
+              id_user: uc?.user_id ?? uc?.id_user,
+              username: uc?.username ?? uc?.user_name ?? uc?.name,
+              client: uc?.client ?? (uc?.user?.client ? uc.user.client : undefined),
+            };
+            return {
+              ...user,
+              company_id: selectedCompany.id_company,
+            };
+          })
+          .filter((user: IUser) => user.id_user != null);
+        setUsers(mapped);
       } catch (error) {
         console.error("Error loading users:", error);
         setUsers([]);
@@ -141,8 +157,8 @@ export function UserApplicationsManager() {
       }
     };
     loadUsers();
-  }, []);
-  
+  }, [selectedCompany]);
+
   // UI states
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
   const [userApplications, setUserApplications] = useState<Record<number, IUserApplication[]>>({});
@@ -151,6 +167,8 @@ export function UserApplicationsManager() {
   const [filterMode, setFilterMode] = useState<"all" | "assigned" | "unassigned">("all");
   const [pendingAppIds, setPendingAppIds] = useState<Set<number>>(new Set());
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [companyApplications, setCompanyApplications] = useState<any[]>([]);
+  const [isLoadingCompanyApps, setIsLoadingCompanyApps] = useState(false);
 
   const setPending = (appId: number, pending: boolean) => {
     setPendingAppIds((prev) => {
@@ -176,50 +194,85 @@ export function UserApplicationsManager() {
           [userId]: (data || []) as IUserApplication[],
         }));
       } catch (error) {
-        console.error("Error cargando aplicaciones del usuario:", error);
+        console.error("Error cargando asignaciones del usuario:", error);
+      }
+    };
+    const loadCompanyApplications = async () => {
+      const companyId = selectedCompany?.id_company ?? selectedUser?.company_id;
+      if (!companyId) {
+        setCompanyApplications([]);
+        return;
+      }
+      try {
+        setIsLoadingCompanyApps(true);
+        const result = await getCompanyApplicationsByCompanyServerAction(companyId);
+        setCompanyApplications(Array.isArray(result) ? result : []);
+      } catch (error) {
+        console.error("Error cargando aplicaciones de la empresa:", error);
+        setCompanyApplications([]);
+      } finally {
+        setIsLoadingCompanyApps(false);
       }
     };
     loadUserApplications();
-  }, [selectedUser]);
+    loadCompanyApplications();
+  }, [selectedUser, selectedCompany]);
 
   const currentAssignments = selectedUser?.id_user
     ? (userApplications[selectedUser.id_user] || [])
     : [];
-  const currentAppIds = useMemo(
-    () => currentAssignments.map((ua) => ua.application_id),
+  const currentCompanyApplicationIds = useMemo(
+    () => currentAssignments.map((ua) => ua.company_application_id).filter(Boolean),
     [currentAssignments]
   );
 
-  const filteredApps = useMemo(() => {
-    return (applications as IApplication[]).filter((app) => {
+  const companyApplicationItems = useMemo(() => {
+    return (companyApplications as any[]).map((ca) => {
+      const app = (applications as IApplication[]).find(
+        (a) => a.id_application === Number(ca.application_id ?? (ca as any).applicationId),
+      );
+      return {
+        ...app,
+        id_company_application: Number(ca.id_company_application ?? (ca as any).idCompanyApplication),
+        id_application: Number(ca.application_id ?? (ca as any).applicationId),
+        name: app?.name ?? `Aplicación ${ca.application_id}`,
+        description: app?.description ?? '',
+        application_category_id: app?.application_category_id ?? null,
+      } as IApplication;
+    });
+  }, [companyApplications, applications]);
+
+  const filteredCompanyApplications = useMemo(() => {
+    return (companyApplicationItems as IApplication[]).filter((app: any) => {
       const matchesSearch =
         app.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (app.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false);
       const matchesCategory =
         selectedCategory === "all" || app.application_category_id === selectedCategory;
-      const isAssigned = currentAppIds.includes(app.id_application);
+      const isAssigned = currentCompanyApplicationIds.includes(app.id_company_application);
       const matchesFilter =
         filterMode === "all" ||
         (filterMode === "assigned" && isAssigned) ||
         (filterMode === "unassigned" && !isAssigned);
       return matchesSearch && matchesCategory && matchesFilter;
     });
-  }, [applications, searchQuery, selectedCategory, currentAppIds, filterMode]);
+  }, [companyApplicationItems, searchQuery, selectedCategory, currentCompanyApplicationIds, filterMode]);
 
-  const toggleApp = async (app: IApplication) => {
+  const toggleApp = async (app: any) => {
     const userId = selectedUser?.id_user;
     if (!userId) {
       showError("Selecciona un usuario antes de asignar o remover una aplicación");
       return;
     }
 
+    const companyApplicationId = Number((app as any).id_company_application);
     const appId = Number(app.id_application);
-    if (!Number.isFinite(appId) || !Number.isFinite(userId)) {
+    if (!Number.isFinite(companyApplicationId) || !Number.isFinite(userId)) {
       showError("No se pudo identificar el usuario o la aplicación");
       return;
     }
 
-    const existing = currentAssignments.find((ua) => ua.application_id === appId);
+    const existing = currentAssignments.find((ua) => ua.company_application_id === companyApplicationId);
 
     setPending(appId, true);
     try {
@@ -236,15 +289,7 @@ export function UserApplicationsManager() {
           ),
         }));
       } else {
-        const today = new Date();
-        const created = await createUserApplicationServerAction({
-          user_id: userId,
-          application_id: appId,
-          license_start_date: toISODate(today),
-          license_end_date: toISODate(addOneYear(today)),
-          is_active: true,
-          access_level: 'USER',
-        });
+        const created = await assignApplicationToUserServerAction(userId, companyApplicationId);
         if (created) {
           setUserApplications((prev) => ({
             ...prev,
@@ -270,23 +315,15 @@ export function UserApplicationsManager() {
       return;
     }
 
-    const missing = (applications as IApplication[])
-      .map((app) => ({ app, appId: Number(app.id_application) }))
-      .filter(({ appId }) => Number.isFinite(appId) && !currentAppIds.includes(appId));
+    const missing = (companyApplicationItems as any[])
+      .map((item) => ({ item, companyApplicationId: Number(item.id_company_application), appId: Number(item.id_application) }))
+      .filter(({ companyApplicationId }) => Number.isFinite(companyApplicationId) && !currentCompanyApplicationIds.includes(companyApplicationId));
 
     missing.forEach(({ appId }) => setPending(appId, true));
     try {
-      const today = new Date();
       const created = await Promise.all(
-        missing.map(({ appId }) =>
-          createUserApplicationServerAction({
-            user_id: userId,
-            application_id: appId,
-            license_start_date: toISODate(today),
-            license_end_date: toISODate(addOneYear(today)),
-            is_active: true,
-            access_level: 'USER',
-          })
+        missing.map(({ companyApplicationId }) =>
+          assignApplicationToUserServerAction(userId, companyApplicationId)
         )
       );
       setUserApplications((prev) => ({
@@ -308,7 +345,12 @@ export function UserApplicationsManager() {
     if (!userId) return;
     const toRemove = currentAssignments.filter((ua) => Number.isFinite(ua.id_user_application));
 
-    toRemove.forEach((ua) => setPending(ua.application_id, true));
+    toRemove.forEach((ua) => {
+      const item = (companyApplicationItems as any[]).find(
+        (i: any) => i.id_company_application === ua.company_application_id,
+      );
+      setPending(item?.id_application ?? ua.company_application_id, true);
+    });
     try {
       await Promise.all(
         toRemove.map((ua) => deleteUserApplicationServerAction(ua.id_user_application))
@@ -317,7 +359,12 @@ export function UserApplicationsManager() {
     } catch (error: any) {
       showError(error?.message || "No se pudieron remover las aplicaciones");
     } finally {
-      toRemove.forEach((ua) => setPending(ua.application_id, false));
+      toRemove.forEach((ua) => {
+        const item = (companyApplicationItems as any[]).find(
+          (i: any) => i.id_company_application === ua.company_application_id,
+        );
+        setPending(item?.id_application ?? ua.company_application_id, false);
+      });
     }
   };
 
@@ -339,29 +386,29 @@ export function UserApplicationsManager() {
   };
 
   const stats = useMemo(() => {
-    const assigned = currentAppIds.length;
-    const total = applications.length;
+    const assigned = currentCompanyApplicationIds.length;
+    const total = (companyApplicationItems as any[]).length;
     const byCategory = (categories as IApplicationCategory[])
       .filter((c) => !!c.id_application_category)
       .map((cat) => {
-        const catApps = (applications as IApplication[]).filter(
-          (app) => app.application_category_id === cat.id_application_category,
+        const catApps = (companyApplicationItems as any[]).filter(
+          (app: any) => app.application_category_id === cat.id_application_category,
         );
         return {
           ...cat,
-          count: catApps.filter((app) => currentAppIds.includes(app.id_application)).length,
+          count: catApps.filter((app: any) => currentCompanyApplicationIds.includes(app.id_company_application)).length,
           total: catApps.length,
         };
       });
     return { assigned, total, byCategory };
-  }, [currentAppIds, applications, categories]);
+  }, [currentCompanyApplicationIds, companyApplicationItems, categories]);
 
   const getIcon = (iconName?: string) => {
     const IconComponent = iconMap[iconName || ''];
     return IconComponent || HiViewGrid;
   };
 
-  const loading = isLoadingApps || isLoadingCategories || isLoadingUsers;
+  const loading = isLoadingApps || isLoadingCategories || isLoadingCompanies || isLoadingUsers || isLoadingCompanyApps;
 
   return (
     <div className='min-h-screen bg-background p-6'>
@@ -390,12 +437,42 @@ export function UserApplicationsManager() {
         </div>
 
         <div className='grid grid-cols-1 gap-6 lg:grid-cols-4'>
-          {/* Sidebar - User Selection */}
-          <div className='lg:col-span-1'>
+          {/* Sidebar - Company/User Selection */}
+          <div className='lg:col-span-1 space-y-4'>
+            {/* Company Selector */}
+            <div className='rounded-xl border border-border bg-card p-4'>
+              <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
+                Empresa
+              </h3>
+              <Select
+                value={selectedCompany ? String(selectedCompany.id_company) : ""}
+                onValueChange={(value) => {
+                  const id = Number(value);
+                  const company = companies.find((c) => c.id_company === id) || null;
+                  setSelectedCompany(company);
+                }}
+                disabled={isLoadingCompanies || companies.length === 0}>
+                <SelectTrigger className='mt-1 w-full bg-secondary border-border h-12 text-base py-3'>
+                  <SelectValue placeholder='Seleccionar empresa...' />
+                </SelectTrigger>
+                <SelectContent>
+                  {companies
+                    .filter((company) => company.id_company != null)
+                    .map((company) => (
+                      <SelectItem
+                        key={company.id_company}
+                        value={String(company.id_company)}>
+                        {company.name || `Empresa ${company.id_company}`}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* User Selector */}
             <div className='rounded-xl border border-border bg-card p-4'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
-                Usuario Seleccionado
+                Usuario
               </h3>
               <Select
                 value={selectedUser ? String(selectedUser.id_user) : ""}
@@ -404,9 +481,9 @@ export function UserApplicationsManager() {
                   const user = users.find((u) => u.id_user === id) || null;
                   setSelectedUser(user);
                 }}
-                disabled={isLoadingUsers || users.length === 0}>
+                disabled={isLoadingUsers || !selectedCompany || users.length === 0}>
                 <SelectTrigger className='mt-1 w-full bg-secondary border-border h-12 text-base py-3'>
-                  <SelectValue placeholder='Seleccionar usuario...' />
+                  <SelectValue placeholder={selectedCompany ? 'Seleccionar usuario...' : 'Seleccione una empresa'} />
                 </SelectTrigger>
                 <SelectContent>
                   {users
@@ -416,7 +493,7 @@ export function UserApplicationsManager() {
                         key={user.id_user}
                         value={String(user.id_user)}>
                         <span className='flex items-center gap-2'>
-                          {user.username} {user.client?.name ? `- ${user.client.name}` : ""}
+                          {user.username + " - " + getClientFullName(user.client)}
                         </span>
                       </SelectItem>
                     ))}
@@ -428,15 +505,21 @@ export function UserApplicationsManager() {
                 {selectedUser && (
                   <>
                     <div className='flex items-center justify-between text-sm'>
-                      <span className='text-muted-foreground'>Email</span>
+                      <span className='text-muted-foreground'>Usuario</span>
                       <span className='text-foreground'>
-                        {selectedUser?.username || 'N/A'}
+                        {selectedUser?.username || `Usuario ${selectedUser.id_user}`}
                       </span>
                     </div>
                     <div className='flex items-center justify-between text-sm'>
-                      <span className='text-muted-foreground'>Departamento</span>
+                      <span className='text-muted-foreground'>Empresa</span>
                       <span className='text-foreground'>
-                        {selectedUser?.company_id ? `Company ${selectedUser.company_id}` : 'N/A'}
+                        {selectedCompany?.name || `Company ${selectedUser?.company_id || ''}`}
+                      </span>
+                    </div>
+                    <div className='flex items-center justify-between text-sm'>
+                      <span className='text-muted-foreground'>Cliente</span>
+                      <span className='text-foreground'>
+                        {getClientFullName(selectedUser?.client) || `Cliente ${selectedUser?.client?.card_id || ''}`}
                       </span>
                     </div>
                   </>
@@ -466,13 +549,13 @@ export function UserApplicationsManager() {
 
               <div className='mt-4 space-y-2'>
                 {stats.byCategory.slice(0, 4).map((cat) => {
-                  const Icon = getIcon(cat.icon);
+                  // const Icon = getIcon(cat.icon);
                   return (
                     <div
                       key={cat.id_application_category}
                       className='flex items-center justify-between text-sm'>
                       <div className='flex items-center gap-2'>
-                        <Icon className='h-4 w-4 text-muted-foreground' />
+                        {/* <Icon className='h-4 w-4 text-muted-foreground' /> */}
                         <span className='text-muted-foreground'>
                           {cat.name}
                         </span>
@@ -534,11 +617,10 @@ export function UserApplicationsManager() {
                     <button
                       key={mode}
                       onClick={() => setFilterMode(mode)}
-                      className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
-                        filterMode === mode
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}>
+                      className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${filterMode === mode
+                        ? "bg-primary text-primary-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                        }`}>
                       {mode === "all"
                         ? "Todas"
                         : mode === "assigned"
@@ -554,26 +636,24 @@ export function UserApplicationsManager() {
             <div className='mb-4 flex flex-wrap gap-2'>
               <button
                 onClick={() => setSelectedCategory("all")}
-                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  selectedCategory === "all"
-                    ? "bg-primary text-primary-foreground"
-                    : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                }`}>
+                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${selectedCategory === "all"
+                  ? "bg-primary text-primary-foreground"
+                  : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                  }`}>
                 <HiViewGrid className='h-4 w-4' />
                 Todas
               </button>
               {(categories as IApplicationCategory[]).map((category) => {
-                const Icon = getIcon(category.icon);
+                // const Icon = getIcon(category.icon);
                 return (
                   <button
                     key={category.id_application_category}
                     onClick={() => setSelectedCategory(category.id_application_category ?? "all")}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                      selectedCategory === category.id_application_category
-                        ? "bg-primary text-primary-foreground"
-                        : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                    }`}>
-                    <Icon className='h-4 w-4' />
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${selectedCategory === category.id_application_category
+                      ? "bg-primary text-primary-foreground"
+                      : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                      }`}>
+                    {/* <Icon className='h-4 w-4' /> */}
                     {category.name}
                   </button>
                 );
@@ -587,14 +667,14 @@ export function UserApplicationsManager() {
               </div>
             ) : (
               <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
-                {filteredApps.map((app) => {
-                  const isAssigned = currentAppIds.includes(app.id_application);
+                {filteredCompanyApplications.map((app: any) => {
+                  const isAssigned = currentCompanyApplicationIds.includes(app.id_company_application);
                   const category = (categories as IApplicationCategory[]).find(
                     (c) => c.id_application_category === app.application_category_id,
                   );
                   return (
                     <ApplicationCard
-                      key={app.id_application}
+                      key={app.id_company_application}
                       app={app}
                       isAssigned={isAssigned}
                       isPending={pendingAppIds.has(app.id_application)}
@@ -606,7 +686,7 @@ export function UserApplicationsManager() {
               </div>
             )}
 
-            {!loading && filteredApps.length === 0 && (
+            {!loading && filteredCompanyApplications.length === 0 && (
               <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16'>
                 <HiSearch className='mb-4 h-12 w-12 text-muted-foreground' />
                 <p className='text-lg font-medium text-foreground'>
@@ -631,7 +711,7 @@ function ApplicationCard({
   onToggle,
   categoryName,
 }: {
-  app: IApplication;
+  app: any;
   isAssigned: boolean;
   isPending: boolean;
   onToggle: () => void;
@@ -639,11 +719,10 @@ function ApplicationCard({
 }) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${
-        isAssigned
-          ? "border-primary/50 bg-primary/5"
-          : "border-border bg-card hover:border-primary/30"
-      }`}>
+      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${isAssigned
+        ? "border-primary/50 bg-primary/5"
+        : "border-border bg-card hover:border-primary/30"
+        }`}>
       <div className='p-4'>
         <div className='flex items-start gap-4'>
           {/* Icon */}
@@ -670,11 +749,10 @@ function ApplicationCard({
           <button
             onClick={onToggle}
             disabled={isPending}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${
-              isAssigned
-                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
-            }`}>
+            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${isAssigned
+              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+              : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
+              }`}>
             {isPending ? (
               "..."
             ) : isAssigned ? (

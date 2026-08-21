@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import {
   RiDashboardLine,
   RiUserLine,
+  RiUserStarLine,
   RiListUnordered,
   RiShieldUserLine,
   RiGroupLine,
@@ -68,6 +69,8 @@ import {
 } from "@/server/domains/access-control/navigation/menu_permissions/actions";
 import type { IBulkMenuPermissionItem } from "../models/menu-permission.interface";
 import { UserSearchableSelect } from "./user-searchable-select";
+import { getAllCompaniesServerAction } from "@/app/[locale]/(protected)/account/companies/actions";
+import { getCompanyApplicationsByCompanyServerAction } from "@/app/[locale]/(protected)/security/company-applications/actions";
 
 // Local type for menu permission actions
 type MenuPermissionType = "view" | "create" | "edit" | "delete";
@@ -298,6 +301,10 @@ function MenuItemRow({
 }
 
 export function MenuPermissionsManager() {
+  const [companies, setCompanies] = useState<any[]>([]);
+  const [selectedCompany, setSelectedCompany] = useState<any | null>(null);
+  const [companyApplications, setCompanyApplications] = useState<any[]>([]);
+  const [allApplications, setAllApplications] = useState<IApplication[]>([]);
   const [applications, setApplications] = useState<IApplication[]>([]);
   const [selectedApplication, setSelectedApplication] = useState<number | null>(
     null,
@@ -313,6 +320,7 @@ export function MenuPermissionsManager() {
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [hasChanges, setHasChanges] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoadingCompanies, setIsLoadingCompanies] = useState(true);
   const [isLoadingApps, setIsLoadingApps] = useState(true);
   const [isLoadingRoles, setIsLoadingRoles] = useState(false);
   const [isLoadingMenus, setIsLoadingMenus] = useState(false);
@@ -331,26 +339,89 @@ export function MenuPermissionsManager() {
   );
 
   useEffect(() => {
-    loadApplications();
+    loadAllApplications();
+    loadCompanies();
   }, []);
 
-  const loadApplications = async () => {
+  const loadAllApplications = async () => {
     try {
       setIsLoadingApps(true);
       const apps = await listApplicationsAction();
       console.log("Apps received:", apps);
 
       if (apps && Array.isArray(apps)) {
-        setApplications(apps);
+        setAllApplications(apps);
       } else {
         console.error("Apps is not an array:", apps);
-        setApplications([]);
+        setAllApplications([]);
       }
     } catch (error) {
       console.error("Error loading applications:", error);
-      setApplications([]);
+      setAllApplications([]);
     } finally {
       setIsLoadingApps(false);
+    }
+  };
+
+  const loadCompanies = async () => {
+    try {
+      setIsLoadingCompanies(true);
+      const result = await getAllCompaniesServerAction();
+      console.log("Companies received:", result);
+
+      if (result && Array.isArray(result)) {
+        setCompanies(result);
+      } else {
+        console.error("Companies is not an array:", result);
+        setCompanies([]);
+      }
+    } catch (error) {
+      console.error("Error loading companies:", error);
+      setCompanies([]);
+    } finally {
+      setIsLoadingCompanies(false);
+    }
+  };
+
+  const handleCompanyChange = async (companyId: number) => {
+    // Reset all downstream state when company changes
+    setSelectedApplication(null);
+    setSelectedRole(null);
+    setSelectedUser(null);
+    setRoles([]);
+    setMenuItems([]);
+    setPermissions([]);
+    setOriginalPermissions([]);
+    setApplications([]);
+    setCompanyApplications([]);
+    setHasChanges(false);
+    setSaveError(null);
+
+    const company = companies.find((c: any) => c.id_company === companyId) || null;
+    setSelectedCompany(company);
+
+    if (!companyId) {
+      return;
+    }
+
+    try {
+      const result = await getCompanyApplicationsByCompanyServerAction(companyId);
+      const companyApps = Array.isArray(result) ? result : [];
+      setCompanyApplications(companyApps);
+
+      const allowedAppIds = new Set(
+        companyApps
+          .map((ca: any) => Number(ca.application_id ?? (ca as any).applicationId))
+          .filter(Boolean),
+      );
+
+      setApplications(
+        allApplications.filter((app) => allowedAppIds.has(app.id_application)),
+      );
+    } catch (error) {
+      console.error("Error loading company applications:", error);
+      setCompanyApplications([]);
+      setApplications([]);
     }
   };
 
@@ -373,12 +444,11 @@ export function MenuPermissionsManager() {
       setRoles(validRoles);
       setMenuItems(transformMenusToMenuItems(validMenus));
 
-      if (validRoles.length > 0) {
-        setSelectedRole(validRoles[0].id_role);
-      } else {
-        setSelectedRole(null);
-      }
+      setSelectedRole(null);
       setSelectedUser(null);
+      setPermissions([]);
+      setOriginalPermissions([]);
+      setHasChanges(false);
 
       const menuIds = validMenus.map((m) => m.id_menu.toString());
       setExpanded(new Set(menuIds));
@@ -456,10 +526,13 @@ export function MenuPermissionsManager() {
     setSelectedRole(roleId);
     setSelectedUser(null);
     setHasChanges(false); // Reset changes when switching roles
+    setSaveError(null);
 
     // Load permissions for the selected role
     if (roleId) {
       try {
+        setPermissions([]);
+        setOriginalPermissions([]);
         setIsLoadingPermissions(true);
         console.log('Loading permissions for role:', roleId);
 
@@ -477,12 +550,12 @@ export function MenuPermissionsManager() {
           setPermissions(transformedPermissions);
           setOriginalPermissions(transformedPermissions);
         } else {
-          console.error('Error loading permissions:', permissionsResult.error);
+          setSaveError(permissionsResult.error?.message ?? 'Error al cargar permisos del rol');
           setPermissions([]);
           setOriginalPermissions([]);
         }
-      } catch (error) {
-        console.error('Error loading permissions:', error);
+      } catch (error: any) {
+        setSaveError(error?.message ?? 'Error al cargar permisos del rol');
         setPermissions([]);
         setOriginalPermissions([]);
       } finally {
@@ -495,13 +568,16 @@ export function MenuPermissionsManager() {
     }
   };
 
-  const handleUserChange = async (userId: number) => {
+  const handleUserChange = async (userId: number | null) => {
     setSelectedUser(userId);
     setSelectedRole(null);
     setHasChanges(false);
+    setSaveError(null);
 
     if (userId) {
       try {
+        setPermissions([]);
+        setOriginalPermissions([]);
         setIsLoadingPermissions(true);
         console.log('Loading permissions for user:', userId);
 
@@ -519,12 +595,12 @@ export function MenuPermissionsManager() {
           setPermissions(transformedPermissions);
           setOriginalPermissions(transformedPermissions);
         } else {
-          console.error('Error loading permissions:', permissionsResult.error);
+          setSaveError(permissionsResult.error?.message ?? 'Error al cargar permisos del usuario');
           setPermissions([]);
           setOriginalPermissions([]);
         }
-      } catch (error) {
-        console.error('Error loading permissions:', error);
+      } catch (error: any) {
+        setSaveError(error?.message ?? 'Error al cargar permisos del usuario');
         setPermissions([]);
         setOriginalPermissions([]);
       } finally {
@@ -816,9 +892,45 @@ export function MenuPermissionsManager() {
 
         {/* Application Selector */}
         <div className='bg-card rounded-xl border border-border p-4'>
-          <div className='flex flex-col gap-4'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
-              <label className='text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2'>
+              <label className='text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2'>
+                <RiArchiveLine className='w-4 h-4' />
+                Seleccionar Empresa
+              </label>
+              <div className='relative'>
+                {/* Searchable Select for Companies */}
+                <SearchableSelect
+                  value={selectedCompany ? String(selectedCompany.id_company) : undefined}
+                  onValueChange={(value) => {
+                    console.log('Selected company:', value);
+                    handleCompanyChange(Number(value));
+                  }}
+                  disabled={companies.length === 0}
+                  placeholder='Seleccione una empresa'
+                  searchPlaceholder='Buscar empresa...'
+                  emptyMessage='No se encontraron empresas'
+                  triggerClassName='!h-12 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
+                  options={companies.map((company) => ({
+                    value: String(company.id_company),
+                    label: (
+                      <div className='flex items-center gap-3'>
+                        <div className='w-8 h-8 rounded-lg flex items-center justify-center bg-[hsl(var(--primary)/0.12)]'>
+                          <RiArchiveLine className='w-4 h-4 text-[hsl(var(--primary))]' />
+                        </div>
+                        <div className='flex-1 text-left'>
+                          <p className='text-sm font-medium text-[hsl(var(--foreground))]'>
+                            {company.name}
+                          </p>
+                        </div>
+                      </div>
+                    ),
+                  }))}
+                />
+              </div>
+            </div>
+            <div>
+              <label className='text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2'>
                 <RiAppsLine className='w-4 h-4' />
                 Seleccionar Aplicación
               </label>
@@ -830,11 +942,11 @@ export function MenuPermissionsManager() {
                     console.log('Selected application:', value);
                     handleApplicationChange(Number(value))
                   }}
-                  disabled={applications.length === 0}
+                  disabled={!selectedCompany || applications.length === 0}
                   placeholder='Seleccione una aplicación'
                   searchPlaceholder='Buscar aplicación...'
                   emptyMessage='No se encontraron aplicaciones'
-                  triggerClassName='!h-16 data-[size=default]:h-16 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
+                  triggerClassName='!h-12 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
                   options={applications.map((app) => ({
                     value: String(app.id_application),
                     // keywords: app.route ?? '',
@@ -859,43 +971,7 @@ export function MenuPermissionsManager() {
                 />
               </div>
             </div>
-            <div className='border-t border-border pt-4'>
-              <div className='flex items-center gap-2 mb-3'>
-                <RiDatabase2Line className='w-4 h-4 text-muted-foreground' />
-                <p className='text-sm font-medium text-muted-foreground'>Aplicación seleccionada</p>
-              </div>
-              {selectedApplication && applications.find(a => a.id_application === selectedApplication) ? (
-                <div className='bg-primary/5 border border-primary/20 rounded-lg p-3'>
-                  <div className='flex items-center gap-3'>
-                    <div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center'>
-                      <RiGlobalLine className='w-5 h-5 text-primary' />
-                    </div>
-                    <div className='flex-1'>
-                      <p className='font-semibold text-foreground text-sm'>
-                        {applications.find(a => a.id_application === selectedApplication)?.name}
-                      </p>
-                      {/* {applications.find(a => a.id_application === selectedApplication)?.route && ( */}
-                        <p className='text-xs text-primary font-mono mt-0.5'>
-                          {/* {applications.find(a => a.id_application === selectedApplication)?.route} */}
-                        </p>
-                      {/* )} */}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className='bg-muted/30 border border-muted rounded-lg p-3'>
-                  <div className='flex items-center gap-3 text-muted-foreground'>
-                    <div className='w-10 h-10 bg-muted rounded-lg flex items-center justify-center'>
-                      <RiAppsLine className='w-5 h-5' />
-                    </div>
-                    <div>
-                      <p className='font-medium text-sm'>Sin aplicación seleccionada</p>
-                      <p className='text-xs mt-0.5'>Selecciona una aplicación para continuar</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+            
           </div>
         </div>
 
@@ -912,8 +988,9 @@ export function MenuPermissionsManager() {
             <div className='flex flex-col md:flex-row md:items-start gap-4'>
               <div className='flex-1 space-y-4'>
                 <div>
-                  <label className='text-xs font-medium text-muted-foreground mb-1.5 block'>
-                    Rol
+                  <label className='text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1.5'>
+                    <RiUserStarLine className='w-3.5 h-3.5' />
+                    Seleccionar Rol
                   </label>
                   {isLoadingRoles ? (
                     <div className='flex items-center gap-2 text-muted-foreground'>
@@ -925,19 +1002,45 @@ export function MenuPermissionsManager() {
                       No hay roles disponibles para esta aplicación
                     </p>
                   ) : (
-                    <div className='flex flex-wrap gap-2'>
-                      {roles.map((role) => (
-                        <button
-                          key={role.id_role}
-                          onClick={() => handleRoleChange(role.id_role)}
-                          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                            selectedRole === role.id_role
-                              ? "bg-primary text-primary-foreground shadow-lg scale-105"
-                              : "bg-secondary hover:bg-secondary/80 text-secondary-foreground"
-                          }`}>
-                          <span className='font-medium'>{role.name}</span>
-                        </button>
-                      ))}
+                    <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2'>
+                      {roles.map((role) => {
+                        const isSelected = selectedRole === role.id_role;
+                        return (
+                          <button
+                            key={role.id_role}
+                            onClick={() => handleRoleChange(role.id_role)}
+                            className={`group relative flex items-center gap-2 p-2 rounded-lg border text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/60 ${
+                              isSelected
+                                ? 'border-green-600 bg-green-500 text-white shadow-md ring-2 ring-green-500/70'
+                                : 'border-border bg-card text-foreground hover:border-green-500/50 hover:bg-green-50/40'
+                            }`}>
+                            <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-colors ${
+                              isSelected
+                                ? 'bg-white/20 text-white'
+                                : 'bg-secondary text-muted-foreground group-hover:text-foreground'
+                            }`}>
+                              <RiUserStarLine className='w-4 h-4' />
+                            </div>
+                            <div className='min-w-0 flex-1'>
+                              <p className='font-medium text-xs truncate'>{role.name}</p>
+                              {isSelected ? (
+                                <span className='inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-white/90'>
+                                  <RiCheckLine className='w-3 h-3' /> Seleccionado
+                                </span>
+                              ) : role.description ? (
+                                <p className='text-[10px] text-muted-foreground truncate'>{role.description}</p>
+                              ) : (
+                                <p className='text-[10px] text-muted-foreground/60 italic'>Sin descripción</p>
+                              )}
+                            </div>
+                            {isSelected && (
+                              <div className='w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0'>
+                                <RiCheckLine className='w-3 h-3 text-white' />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -947,41 +1050,73 @@ export function MenuPermissionsManager() {
                     Usuario
                   </label>
                   <UserSearchableSelect
-                    applicationId={selectedApplication}
+                    companyId={selectedCompany?.id_company}
                     value={selectedUser}
                     onChange={handleUserChange}
-                    disabled={!selectedApplication}
+                    disabled={!selectedCompany}
                   />
                 </div>
               </div>
 
-              {selectedRoleData && (
-                <div className='md:border-l border-t md:border-t-0 border-border pt-4 md:pt-0 md:pl-4 min-w-[180px]'>
-                  <p className='text-sm text-muted-foreground'>Rol seleccionado</p>
-                  {isLoadingPermissions ? (
-                    <div className='flex items-center gap-2'>
-                      <div className='w-4 h-4 border-2 border-primary/30 border-t-primary rounded-full animate-spin' />
-                      <span className='text-sm'>Cargando permisos...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <p className='font-medium text-foreground'>
-                        {selectedRoleData.name}
-                      </p>
-                      <p className='text-xs text-muted-foreground mt-0.5'>
-                        {selectedRoleData.description}
-                      </p>
-                    </>
-                  )}
+              <div className='md:border-l border-t md:border-t-0 border-border pt-4 md:pt-0 md:pl-4 min-w-[220px]'>
+                <p className='text-xs font-medium text-muted-foreground mb-2'>
+                  {selectedTarget ? 'Objetivo seleccionado' : 'Ningún objetivo seleccionado'}
+                </p>
+                <div className='flex items-start gap-3'>
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
+                    selectedTarget?.type === 'role'
+                      ? 'bg-green-100 text-green-600'
+                      : selectedTarget?.type === 'user'
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-muted text-muted-foreground'
+                  }`}>
+                    {selectedTarget?.type === 'role' ? (
+                      <RiUserStarLine className='w-6 h-6' />
+                    ) : selectedTarget?.type === 'user' ? (
+                      <RiUserLine className='w-6 h-6' />
+                    ) : (
+                      <RiUserStarLine className='w-6 h-6' />
+                    )}
+                  </div>
+                  <div className='min-w-0'>
+                    {selectedRoleData ? (
+                      isLoadingPermissions ? (
+                        <div className='flex items-center gap-2 py-2'>
+                          <div className='w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin' />
+                          <span className='text-sm text-muted-foreground'>Cargando permisos...</span>
+                        </div>
+                      ) : (
+                        <>
+                          <p className='font-semibold text-foreground text-sm truncate'>
+                            {selectedRoleData.name}
+                          </p>
+                          <p className='text-xs text-muted-foreground mt-0.5 truncate'>
+                            {selectedRoleData.description || 'Sin descripción'}
+                          </p>
+                        </>
+                      )
+                    ) : selectedUser ? (
+                      <>
+                        <p className='font-semibold text-foreground text-sm truncate'>
+                          Usuario ID {selectedUser}
+                        </p>
+                        <p className='text-xs text-muted-foreground mt-0.5'>
+                          Permisos de menú directos
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className='font-medium text-foreground text-sm'>
+                          Selecciona un rol o usuario
+                        </p>
+                        <p className='text-xs text-muted-foreground mt-0.5'>
+                          Para ver y gestionar permisos de menú
+                        </p>
+                      </>
+                    )}
+                  </div>
                 </div>
-              )}
-
-              {selectedUser && !selectedRoleData && (
-                <div className='md:border-l border-t md:border-t-0 border-border pt-4 md:pt-0 md:pl-4 min-w-[180px]'>
-                  <p className='text-sm text-muted-foreground'>Usuario seleccionado</p>
-                  <p className='font-medium text-foreground'>ID {selectedUser}</p>
-                </div>
-              )}
+              </div>
             </div>
           </div>
         </div>

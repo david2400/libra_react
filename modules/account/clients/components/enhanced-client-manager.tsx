@@ -45,15 +45,14 @@ interface IEnhancedClientManagerProps {
   userCompanies?: ICompany[];
 }
 
-const StatusBadge = ({ status }: { status: string }) => {
-  const isActive = status === "active" || status === "Activo";
+const StatusBadge = ({ status }: { status: boolean }) => {
+  const isActive = !status;
   return (
     <span
-      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-        isActive
-          ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-          : "bg-slate-100 text-slate-700 border-slate-200"
-      }`}
+      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${isActive
+        ? "bg-emerald-100 text-emerald-800 border-emerald-200"
+        : "bg-slate-100 text-slate-700 border-slate-200"
+        }`}
     >
       <div className="flex items-center gap-1.5">
         <div className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-emerald-600" : "bg-slate-500"}`} />
@@ -91,7 +90,7 @@ const UserChip = ({ user, onUnlink }: { user: IUser; onUnlink?: () => void }) =>
       <span className="text-sm font-medium text-blue-900 dark:text-blue-100">
         {user.username}
       </span>
-      <StatusBadge status={user.status || "inactive"} />
+      <StatusBadge status={user.deleted} />
       {onUnlink && (
         <button
           onClick={onUnlink}
@@ -104,15 +103,15 @@ const UserChip = ({ user, onUnlink }: { user: IUser; onUnlink?: () => void }) =>
   );
 };
 
-const UsersSection = ({ 
-  client, 
-  users, 
-  onUserCreated, 
-  onUserUpdated, 
-  onUserDeleted 
-}: { 
-  client: IClient; 
-  users: IUser[]; 
+const UsersSection = ({
+  client,
+  users,
+  onUserCreated,
+  onUserUpdated,
+  onUserDeleted
+}: {
+  client: IClient;
+  users: IUser[];
   onUserCreated?: (user: IUser) => void;
   onUserUpdated?: (user: IUser) => void;
   onUserDeleted?: (userId: number) => void;
@@ -152,7 +151,7 @@ const UsersSection = ({
           Agregar Usuario
         </Buttons>
       </div>
-      
+
       <div className="flex flex-wrap gap-2">
         {clientUsers.map((user) => (
           <UserChip
@@ -177,7 +176,7 @@ const UsersSection = ({
             <p className="text-sm text-muted-foreground mb-4">
               Selecciona un usuario existente para asignar a {`${client.first_name} ${client.first_last_name}`.trim()}
             </p>
-            
+
             <div className="space-y-2 max-h-60 overflow-y-auto">
               {users.filter(u => !u.client_id).map((user) => (
                 <div
@@ -199,7 +198,7 @@ const UsersSection = ({
                         <p className="text-xs text-muted-foreground">ID: {user.id_user}</p>
                       </div>
                     </div>
-                    <StatusBadge status={user.status || "inactive"} />
+                    <StatusBadge status={user.deleted} />
                   </div>
                 </div>
               ))}
@@ -221,18 +220,18 @@ const UsersSection = ({
   );
 };
 
-const StatsCard = ({ 
-  title, 
-  value, 
-  change, 
-  icon: Icon, 
-  trend 
-}: { 
-  title: string; 
-  value: number | string; 
-  change?: number; 
-  icon: any; 
-  trend?: 'up' | 'down' | 'neutral'; 
+const StatsCard = ({
+  title,
+  value,
+  change,
+  icon: Icon,
+  trend
+}: {
+  title: string;
+  value: number | string;
+  change?: number;
+  icon: any;
+  trend?: 'up' | 'down' | 'neutral';
 }) => {
   const trendColors = {
     up: 'text-emerald-600 bg-emerald-50',
@@ -306,7 +305,7 @@ export const EnhancedClientManager = ({
     ).length;
     const totalUsers = filteredUsers.length;
     const activeUsers = filteredUsers.filter((u) => u.status === "active").length;
-    const clientsWithUsers = filteredClients.filter(client => 
+    const clientsWithUsers = filteredClients.filter(client =>
       users.some(user => user.client_id === client.id_client)
     ).length;
 
@@ -344,8 +343,8 @@ export const EnhancedClientManager = ({
       filtered = filtered.filter(client => {
         const fullName = `${client.first_name} ${client.first_last_name}`.toLowerCase();
         const cardId = `${client.type_id} ${client.card_id}`.toLowerCase();
-        return fullName.includes(searchTerm.toLowerCase()) || 
-               cardId.includes(searchTerm.toLowerCase());
+        return fullName.includes(searchTerm.toLowerCase()) ||
+          cardId.includes(searchTerm.toLowerCase());
       });
     }
 
@@ -385,7 +384,7 @@ export const EnhancedClientManager = ({
           const fullName = `${client.first_name} ${client.second_name || ""} ${client.first_last_name} ${client.second_last_name || ""}`.trim();
           const userCount = getUserCountByClient(client.id_client!);
           const isExpanded = expandedRows.has(client.id_client!);
-          
+
           return (
             <div className="space-y-3">
               <div className="flex items-center gap-3">
@@ -393,7 +392,7 @@ export const EnhancedClientManager = ({
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <p className="font-medium text-slate-900 dark:text-slate-100">{fullName}</p>
-                    <StatusBadge status={client.status || "inactive"} />
+                    <StatusBadge status={client.deleted} />
                   </div>
                   <p className="text-sm text-slate-500 dark:text-slate-400">
                     {client.type_id}: {client.card_id}
@@ -406,7 +405,7 @@ export const EnhancedClientManager = ({
                   <HiOutlineEllipsisVertical className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                 </button>
               </div>
-              
+
               {/* Expandable Users Section */}
               {isExpanded && (
                 <div className="pl-13 border-l-2 border-border/40">
@@ -414,10 +413,10 @@ export const EnhancedClientManager = ({
                     client={client}
                     users={users}
                     onUserCreated={(user) => setUsers(prev => [...prev, user])}
-                    onUserUpdated={(user) => setUsers(prev => 
+                    onUserUpdated={(user) => setUsers(prev =>
                       prev.map(u => u.id_user === user.id_user ? user : u)
                     )}
-                    onUserDeleted={(userId) => setUsers(prev => 
+                    onUserDeleted={(userId) => setUsers(prev =>
                       prev.filter(u => u.id_user !== userId)
                     )}
                   />
@@ -451,17 +450,16 @@ export const EnhancedClientManager = ({
         cell: ({ row }) => {
           const client = row.original;
           const userCount = getUserCountByClient(client.id_client!);
-          
+
           return (
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5">
                 <HiOutlineUsers className="h-4 w-4 text-slate-400" />
                 <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                    userCount > 0
-                      ? "bg-blue-100 text-blue-800 border-blue-200"
-                      : "bg-gray-100 text-gray-600 border-gray-200"
-                  }`}
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${userCount > 0
+                    ? "bg-blue-100 text-blue-800 border-blue-200"
+                    : "bg-gray-100 text-gray-600 border-gray-200"
+                    }`}
                 >
                   {userCount}
                 </span>
@@ -480,8 +478,8 @@ export const EnhancedClientManager = ({
       },
       {
         header: "Estado",
-        accessorKey: "status",
-        cell: ({ row }) => <StatusBadge status={row.original.status || "inactive"} />,
+        accessorKey: "deleted",
+        cell: ({ row }) => <StatusBadge status={row.original.deleted} />,
       },
       {
         id: "actions",
@@ -649,11 +647,10 @@ export const EnhancedClientManager = ({
               <button
                 key={tab.key}
                 onClick={() => setSelectedTab(tab.key)}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
-                  selectedTab === tab.key
-                    ? "border-primary text-primary"
-                    : "border-transparent text-muted-foreground hover:text-foreground"
-                }`}
+                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${selectedTab === tab.key
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 {tab.label}
               </button>

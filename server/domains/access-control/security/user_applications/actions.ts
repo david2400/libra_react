@@ -62,19 +62,7 @@ export const deleteUserApplicationAction = async (id: string | number): Promise<
 
 export const assignApplicationToUserAction = async (userId: string | number, applicationId: string | number): Promise<ActionResultType<any>> => {
   try {
-    const today = new Date();
-    const end = new Date();
-    end.setFullYear(today.getFullYear() + 1);
-    const toISODate = (date: Date) => date.toISOString().slice(0, 10);
-    const payload: ICreateUserApplication = {
-      user_id: Number(userId),
-      application_id: Number(applicationId),
-      license_start_date: toISODate(today),
-      license_end_date: toISODate(end),
-      is_active: true,
-      access_level: 'USER',
-    };
-    const userApplication = await userApplicationsRepository.assignApplication(payload);
+    const userApplication = await userApplicationsRepository.assignApplication(userId, applicationId);
     
     // Revalidate cache tags
     await revalidateCacheTag(accessControlTags.userApplications());
@@ -130,22 +118,8 @@ export const deactivateUserLicenseAction = async (userId: string | number, appli
 
 export const bulkAssignApplicationsAction = async (userId: string | number, applicationIds: (string | number)[]): Promise<ActionResultType<any>> => {
   try {
-    const today = new Date();
-    const end = new Date();
-    end.setFullYear(today.getFullYear() + 1);
-    const toISODate = (date: Date) => date.toISOString().slice(0, 10);
     const results = await Promise.allSettled(
-      applicationIds.map(appId => {
-        const payload: ICreateUserApplication = {
-          user_id: Number(userId),
-          application_id: Number(appId),
-          license_start_date: toISODate(today),
-          license_end_date: toISODate(end),
-          is_active: true,
-          access_level: 'USER',
-        };
-        return userApplicationsRepository.assignApplication(payload);
-      })
+      applicationIds.map(appId => userApplicationsRepository.assignApplication(userId, appId))
     );
     
     const successful = results.filter(r => r.status === 'fulfilled').length;

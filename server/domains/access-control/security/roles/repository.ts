@@ -21,10 +21,9 @@ export const rolesRepository = {
       revalidate: 120,
       tags: [accessControlTags.roles()],
     }),
-  // List roles
+  // Search roles
   getRoles: (params: IRoleSearch) =>
-    serverFetch.post<IRole[]>('/api/access_control/roles/search', {
-      params,
+    serverFetch.post<IRole[]>('/api/access_control/roles/search', params, {
       revalidate: 120,
       tags: [accessControlTags.roles()],
     }),

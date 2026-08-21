@@ -72,12 +72,11 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
                   {userCount} {userCount === 1 ? "usuario" : "usuarios"}
                 </span>
                 <span
-                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                    client.status === "active"
+                  className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${!client.deleted
                       ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                       : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                  }`}>
-                  {client.status === "active" ? "Activo" : "Inactivo"}
+                    }`}>
+                  {!client.deleted ? "Activo" : "Inactivo"}
                 </span>
               </div>
             </div>
@@ -89,21 +88,19 @@ export const ClientDetailModal: React.FC<ClientDetailModalProps> = ({
           <div className="flex px-6">
             <button
               onClick={() => setActiveTab("info")}
-              className={`relative flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-                activeTab === "info"
+              className={`relative flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${activeTab === "info"
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}>
+                }`}>
               <HiOutlineInformationCircle className="h-4 w-4" />
               Información del Cliente
             </button>
             <button
               onClick={() => setActiveTab("users")}
-              className={`relative flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
-                activeTab === "users"
+              className={`relative flex items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${activeTab === "users"
                   ? "border-primary text-primary"
                   : "border-transparent text-muted-foreground hover:text-foreground"
-              }`}>
+                }`}>
               <HiOutlineUsers className="h-4 w-4" />
               Gestionar Usuarios
               {userCount > 0 && (

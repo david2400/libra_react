@@ -1,0 +1,1314 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Essenza Access Control API",
+    "description": "API para gestión de control de acceso, permisos, roles, usuarios y navegación",
+    "contact": {
+      "name": "Essenza Development Team",
+      "email": "dev@essenza.com"
+    },
+    "license": {
+      "name": "Proprietary",
+      "url": "https://essenza.com/license"
+    },
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Default Server"
+    }
+  ],
+  "paths": {
+    "/api/access_control/menus/{id}": {
+      "get": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Get menu by ID",
+        "description": "Returns a menu by its ID",
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Menu"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Menu"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Update menu",
+        "description": "Updates an existing menu by ID",
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Menu"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Menu"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Delete menu",
+        "description": "Deletes a menu by ID",
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found"
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/access_control/menu-permissions/{id}": {
+      "get": {
+        "tags": [
+          "Menu Permissions"
+        ],
+        "summary": "Get menu permission by ID",
+        "description": "Returns a menu permission by its ID",
+        "operationId": "getById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuPermission"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuPermission"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Menu Permissions"
+        ],
+        "summary": "Update menu permission",
+        "description": "Updates an existing menu permission by ID",
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMenuPermissionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuPermission"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuPermission"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Menu Permissions"
+        ],
+        "summary": "Delete menu permission",
+        "description": "Deletes a menu permission by ID",
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "Not found"
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/access_control/menus": {
+      "get": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "List menus",
+        "description": "Returns all menus. Optional filters: name, parentId",
+        "operationId": "getAll",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "parentId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Menu"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Create menu",
+        "description": "Creates a new menu",
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Menu"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Menu"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/menus/search": {
+      "post": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Search menus",
+        "description": "Search menus by example with multiple criteria",
+        "operationId": "search",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MenuSearchDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Menu"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/menu-permissions": {
+      "get": {
+        "tags": [
+          "Menu Permissions"
+        ],
+        "summary": "List all menu permissions",
+        "description": "Returns all menu permissions",
+        "operationId": "getAll_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuPermission"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Menu Permissions"
+        ],
+        "summary": "Create menu permission",
+        "description": "Creates a new menu permission",
+        "operationId": "create_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMenuPermissionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuPermission"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MenuPermission"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/menu-permissions/search": {
+      "post": {
+        "tags": [
+          "Menu Permissions"
+        ],
+        "summary": "Search menu permissions",
+        "description": "Search menu permissions by example with multiple criteria",
+        "operationId": "search_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MenuPermissionSearchDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuPermission"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/menu-permissions/bulk": {
+      "post": {
+        "tags": [
+          "bulk-menu-permission-controller"
+        ],
+        "summary": "Create or update menu permissions in bulk",
+        "description": "Create new menu permissions or update existing ones in a single operation",
+        "operationId": "createOrUpdateBulk",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkMenuPermissionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Menu permissions processed successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuPermission"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input data",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuPermission"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "bulk-menu-permission-controller"
+        ],
+        "summary": "Delete menu permissions in bulk",
+        "description": "Delete multiple menu permissions by their IDs",
+        "operationId": "deleteBulk",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer",
+                  "format": "int64"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Menu permissions deleted successfully"
+          },
+          "400": {
+            "description": "Invalid IDs provided"
+          }
+        }
+      }
+    },
+    "/api/access_control/menus/{id}/children": {
+      "get": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Get children of a menu",
+        "description": "Returns direct children of a menu",
+        "operationId": "getChildren",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Menu"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/menus/roots": {
+      "get": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Get root menus",
+        "description": "Returns all root menus (no parent)",
+        "operationId": "getRootMenus",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Menu"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/menus/by-user/{userId}": {
+      "get": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Get menus by user",
+        "description": "Returns all menus accessible by a specific user based on their roles",
+        "operationId": "getMenusByUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Menu"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/menus/by-role/{roleId}": {
+      "get": {
+        "tags": [
+          "Menus"
+        ],
+        "summary": "Get menus by role",
+        "description": "Returns all menus accessible by a specific role",
+        "operationId": "getMenusByRole",
+        "parameters": [
+          {
+            "name": "roleId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Menu"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/access_control/menu-permissions/menu/{menuId}": {
+      "get": {
+        "tags": [
+          "Menu Permissions"
+        ],
+        "summary": "Get menu permissions by menu ID",
+        "description": "Returns all menu permissions for a specific menu",
+        "operationId": "getByMenuId",
+        "parameters": [
+          {
+            "name": "menuId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MenuPermission"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateMenuDto": {
+        "required": [
+          "idMenu",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentMenuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "idMenu": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Application": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idApplication": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "maintenanceMode": {
+            "type": "boolean"
+          },
+          "publicationDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "applicationCategoryId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Menu": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idMenu": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "application": {
+            "$ref": "#/components/schemas/Application"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentMenuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "parentMenu": {
+            "$ref": "#/components/schemas/Menu"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateMenuPermissionDto": {
+        "required": [
+          "idMenuPermission",
+          "menuId"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "menuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conditions": {
+            "type": "string"
+          },
+          "cacheTtl": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createPermission": {
+            "type": "boolean"
+          },
+          "updatePermission": {
+            "type": "boolean"
+          },
+          "deletePermission": {
+            "type": "boolean"
+          },
+          "consultPermission": {
+            "type": "boolean"
+          },
+          "idMenuPermission": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "MenuPermission": {
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idMenuPermission": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "menuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "menu": {
+            "$ref": "#/components/schemas/Menu"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conditions": {
+            "type": "string"
+          },
+          "cacheTtl": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createPermission": {
+            "type": "boolean"
+          },
+          "updatePermission": {
+            "type": "boolean"
+          },
+          "deletePermission": {
+            "type": "boolean"
+          },
+          "consultPermission": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateMenuDto": {
+        "required": [
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentMenuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MenuSearchDto": {
+        "type": "object",
+        "properties": {
+          "idMenu": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "order": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "parentMenuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "visible": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateMenuPermissionDto": {
+        "required": [
+          "menuId"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "menuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conditions": {
+            "type": "string"
+          },
+          "cacheTtl": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createPermission": {
+            "type": "boolean"
+          },
+          "updatePermission": {
+            "type": "boolean"
+          },
+          "deletePermission": {
+            "type": "boolean"
+          },
+          "consultPermission": {
+            "type": "boolean"
+          }
+        }
+      },
+      "MenuPermissionSearchDto": {
+        "type": "object",
+        "properties": {
+          "idMenuPermission": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "menuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "permissionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createPermission": {
+            "type": "boolean"
+          },
+          "updatePermission": {
+            "type": "boolean"
+          },
+          "deletePermission": {
+            "type": "boolean"
+          },
+          "consultPermission": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BulkMenuPermissionDto": {
+        "required": [
+          "menuPermissions"
+        ],
+        "type": "object",
+        "properties": {
+          "menuPermissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MenuPermissionOperationDto"
+            }
+          }
+        }
+      },
+      "MenuPermissionOperationDto": {
+        "required": [
+          "menuId"
+        ],
+        "type": "object",
+        "properties": {
+          "deleted": {
+            "type": "boolean"
+          },
+          "usrCrea": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "usrMod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "idMenuPermission": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "menuId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "roleId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "conditions": {
+            "type": "string"
+          },
+          "cacheTtl": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createPermission": {
+            "type": "boolean"
+          },
+          "updatePermission": {
+            "type": "boolean"
+          },
+          "deletePermission": {
+            "type": "boolean"
+          },
+          "consultPermission": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer Authentication": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

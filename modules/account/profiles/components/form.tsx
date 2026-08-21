@@ -20,7 +20,7 @@ import {
   createProfileServerAction,
   updateProfileServerAction,
 } from "@/app/[locale]/(protected)/account/profiles/actions";
-import { updateUserServerAction } from "@/app/[locale]/(protected)/account/users/actions";
+import { updateUserAction as updateUserServerAction } from "@/app/[locale]/(protected)/account/users/actions";
 
 const FormBase = ({
   initialValues,

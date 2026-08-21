@@ -9,7 +9,7 @@ import {
   SelectSearch,
   SelectTrigger,
 } from '@repo/ui/inputs/scenes/select';
-import { listUsersByApplicationAction } from '../actions/user.actions';
+import { getCompanyActiveUsersServerAction } from '@/app/[locale]/(protected)/account/user-companies/actions';
 import { useDebounce } from '../hooks/use-debounce';
 
 interface UserOption {
@@ -25,9 +25,9 @@ interface UserOption {
 }
 
 interface UserSearchableSelectProps {
-  applicationId: number | null | undefined;
+  companyId: number | null | undefined;
   value: number | null;
-  onChange: (userId: number) => void;
+  onChange: (userId: number | null) => void;
   disabled?: boolean;
   placeholder?: string;
   searchPlaceholder?: string;
@@ -52,7 +52,7 @@ function getUserIdentifier(user?: UserOption): string {
 }
 
 export function UserSearchableSelect({
-  applicationId,
+  companyId,
   value,
   onChange,
   disabled,
@@ -67,29 +67,58 @@ export function UserSearchableSelect({
   const debouncedSearch = useDebounce(search, 400);
 
   const loadUsers = useCallback(async () => {
-    if (!applicationId) return;
+    if (!companyId) return;
     setIsLoading(true);
 
-    const result = await listUsersByApplicationAction({
-      application_id: applicationId,
-      search: debouncedSearch,
-      per_page: 40,
-    });
+    const result = await getCompanyActiveUsersServerAction(companyId);
 
-    if (result.success && Array.isArray(result.data)) {
-      setUsers(result.data);
+    if (result && Array.isArray(result)) {
+      const mapped: UserOption[] = result
+        .map((uc: any) => {
+          const user =
+            uc?.user ??
+            ({
+              id_user: uc?.user_id ?? uc?.id_user,
+              username:
+                uc?.username ??
+                uc?.user_name ??
+                uc?.name ??
+                `Usuario ${uc?.user_id ?? ''}`,
+              client:
+                uc?.client ??
+                (uc?.user?.client ? uc.user.client : undefined),
+            } as any);
+          return user as UserOption;
+        })
+        .filter((user: UserOption) => user.id_user != null);
+      setUsers(mapped);
     } else {
       setUsers([]);
     }
 
     setIsLoading(false);
-  }, [applicationId, debouncedSearch]);
+  }, [companyId]);
 
   useEffect(() => {
     if (open) {
       loadUsers();
     }
-  }, [open, applicationId, debouncedSearch, loadUsers]);
+  }, [open, companyId, loadUsers]);
+
+  const filteredUsers = useMemo(() => {
+    if (!debouncedSearch) return users;
+    const query = debouncedSearch.toLowerCase();
+    return users.filter((user) => {
+      const fullName = getUserFullName(user).toLowerCase();
+      const identifier = getUserIdentifier(user).toLowerCase();
+      const username = user.username.toLowerCase();
+      return (
+        fullName.includes(query) ||
+        identifier.includes(query) ||
+        username.includes(query)
+      );
+    });
+  }, [users, debouncedSearch]);
 
   const selectedUser = useMemo(
     () => users.find((u) => u.id_user === value),
@@ -102,14 +131,14 @@ export function UserSearchableSelect({
 
   return (
     <Select
-      value={value ? String(value) : undefined}
-      onValueChange={(v) => onChange(Number(v))}
+      value={value !== null ? String(value) : ''}
+      onValueChange={(v) => onChange(v ? Number(v) : null)}
       open={open}
       onOpenChange={(nextOpen) => {
         setOpen(nextOpen);
         if (nextOpen) setSearch('');
       }}
-      disabled={disabled || !applicationId}
+      disabled={disabled || !companyId}
     >
       <SelectTrigger className='w-full h-11 px-3'>
         <span className='flex items-center gap-2 truncate text-sm'>
@@ -133,7 +162,7 @@ export function UserSearchableSelect({
               <RiLoader2Line className='w-4 h-4 animate-spin' />
               <span className='text-sm'>Cargando usuarios...</span>
             </div>
-          ) : users.length === 0 ? (
+          ) : filteredUsers.length === 0 ? (
             <div className='flex flex-col items-center gap-2 px-3 py-8 text-center'>
               <div className='flex size-12 items-center justify-center rounded-full bg-muted'>
                 <RiUserLine className='size-5 text-muted-foreground' />
@@ -141,7 +170,7 @@ export function UserSearchableSelect({
               <p className='text-sm font-medium text-foreground'>{emptyMessage}</p>
             </div>
           ) : (
-            users.map((user) => {
+            filteredUsers.map((user) => {
               const label = `${getUserFullName(user)} - ${getUserIdentifier(user)}`;
               return (
                 <SelectItem

@@ -18,8 +18,9 @@ import type {
   IUpdateUserCompany,
   IUserCompanyListParams,
 } from '@/server/domains/access-control/account/user-companies';
-import { getUsers } from '@/server/domains/access-control/account/users';
+import { getUsers, IUser } from '@/server/domains/access-control/account/users';
 import { getCompanies } from '@/server/domains/access-control/account/companies';
+import { IUserApplication } from '@/modules/security/user-application/models/user-application.interface';
 
 export async function createUserCompanyServerAction(payload: ICreateUserCompany) {
   try {
@@ -113,7 +114,7 @@ export async function getCompanyActiveUsersServerAction(companyId: number): Prom
 
 
 
-export async function getUsersServerAction() {
+export async function getUsersServerAction(): Promise<IUser[]> {
   try {
     const result = await getUsers({ per_page: 100 });
     console.log('Users result:', result);

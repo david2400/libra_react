@@ -16,6 +16,15 @@
       "saveModuleApplication": "Crear Módulo de Aplicación",
       "saveCompanyApplication": "Crear Aplicación de Empresa"
     },
+    "account": {
+      "users": {
+        "fields": {
+          "username": "Nombre de Usuario",
+          "password": "Contraseña",
+          "clientId": "Cliente"
+        }
+      }
+    },
     "security": {
       "modulesApplications": {
         "fields": {

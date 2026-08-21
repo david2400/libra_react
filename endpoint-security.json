@@ -1190,7 +1190,7 @@
         }
       }
     },
-    "/api/access_control/api/user-applications/user/{userId}/application/{applicationId}/deactivate": {
+    "/api/access_control/api/user-applications/user/{userId}/application/{companyApplicationId}/deactivate": {
       "put": {
         "tags": [
           "User Applications Management"
@@ -1209,7 +1209,7 @@
             }
           },
           {
-            "name": "applicationId",
+            "name": "companyApplicationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -1242,7 +1242,7 @@
         }
       }
     },
-    "/api/access_control/api/user-applications/user/{userId}/application/{applicationId}/activate": {
+    "/api/access_control/api/user-applications/user/{userId}/application/{companyApplicationId}/activate": {
       "put": {
         "tags": [
           "User Applications Management"
@@ -1261,7 +1261,7 @@
             }
           },
           {
-            "name": "applicationId",
+            "name": "companyApplicationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -2347,7 +2347,7 @@
         }
       }
     },
-    "/api/access_control/api/user-applications/user/{userId}/application/{applicationId}": {
+    "/api/access_control/api/user-applications/user/{userId}/application/{companyApplicationId}": {
       "post": {
         "tags": [
           "User Applications Management"
@@ -2366,7 +2366,7 @@
             }
           },
           {
-            "name": "applicationId",
+            "name": "companyApplicationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -3044,7 +3044,7 @@
         }
       }
     },
-    "/api/access_control/api/user-applications/{userId}/{applicationId}": {
+    "/api/access_control/api/user-applications/{userId}/{companyApplicationId}": {
       "get": {
         "tags": [
           "User Applications Management"
@@ -3063,7 +3063,7 @@
             }
           },
           {
-            "name": "applicationId",
+            "name": "companyApplicationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -3113,7 +3113,7 @@
             }
           },
           {
-            "name": "applicationId",
+            "name": "companyApplicationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -3321,7 +3321,7 @@
         }
       }
     },
-    "/api/access_control/api/user-applications/check/{userId}/{applicationId}": {
+    "/api/access_control/api/user-applications/check/{userId}/{companyApplicationId}": {
       "get": {
         "tags": [
           "User Applications Management"
@@ -3340,7 +3340,7 @@
             }
           },
           {
-            "name": "applicationId",
+            "name": "companyApplicationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -3373,7 +3373,7 @@
         }
       }
     },
-    "/api/access_control/api/user-applications/application/{applicationId}": {
+    "/api/access_control/api/user-applications/application/{companyApplicationId}": {
       "get": {
         "tags": [
           "User Applications Management"
@@ -3383,7 +3383,7 @@
         "operationId": "findByApplicationId",
         "parameters": [
           {
-            "name": "applicationId",
+            "name": "companyApplicationId",
             "in": "path",
             "required": true,
             "schema": {
@@ -3497,6 +3497,16 @@
               }
             }
           },
+          "200": {
+            "description": "User permissions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationPermission"
+                }
+              }
+            }
+          },
           "404": {
             "description": "User not found or no permissions",
             "content": {
@@ -3506,16 +3516,6 @@
                   "items": {
                     "$ref": "#/components/schemas/ApplicationPermission"
                   }
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "User permissions retrieved successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ApplicationPermission"
                 }
               }
             }
@@ -3748,7 +3748,7 @@
       },
       "UpdateRoleDto": {
         "required": [
-          "applicationId",
+          "companyApplicationId",
           "description",
           "idRole",
           "manageUsers",
@@ -3790,7 +3790,7 @@
           "approvalWorkflow": {
             "type": "string"
           },
-          "applicationId": {
+          "companyApplicationId": {
             "type": "integer",
             "format": "int64"
           },
@@ -3841,7 +3841,7 @@
           "approvalWorkflow": {
             "type": "string"
           },
-          "applicationId": {
+          "companyApplicationId": {
             "type": "integer",
             "format": "int64"
           }
@@ -4386,16 +4386,16 @@
           "metadata": {
             "type": "string"
           },
-          "applicationPermission": {
-            "type": "boolean"
-          },
-          "systemPermission": {
+          "apiPermission": {
             "type": "boolean"
           },
           "uiPermission": {
             "type": "boolean"
           },
-          "apiPermission": {
+          "systemPermission": {
+            "type": "boolean"
+          },
+          "applicationPermission": {
             "type": "boolean"
           }
         }
@@ -4654,7 +4654,7 @@
       "UpdateUserApplicationDto": {
         "required": [
           "accessLevel",
-          "applicationId",
+          "companyApplicationId",
           "idUserApplication",
           "userId"
         ],
@@ -4683,7 +4683,7 @@
             "type": "integer",
             "format": "int64"
           },
-          "applicationId": {
+          "companyApplicationId": {
             "type": "integer",
             "format": "int64"
           },
@@ -4743,7 +4743,7 @@
             "type": "integer",
             "format": "int64"
           },
-          "applicationId": {
+          "companyApplicationId": {
             "type": "integer",
             "format": "int64"
           },
@@ -4852,7 +4852,7 @@
       },
       "CreateRoleDto": {
         "required": [
-          "applicationId",
+          "companyApplicationId",
           "description",
           "manageUsers",
           "name"
@@ -4893,7 +4893,7 @@
           "approvalWorkflow": {
             "type": "string"
           },
-          "applicationId": {
+          "companyApplicationId": {
             "type": "integer",
             "format": "int64"
           }
@@ -4937,7 +4937,7 @@
           "requiresApproval": {
             "type": "boolean"
           },
-          "applicationId": {
+          "companyApplicationId": {
             "type": "integer",
             "format": "int64"
           }
@@ -5372,7 +5372,7 @@
       "CreateUserApplicationDto": {
         "required": [
           "accessLevel",
-          "applicationId",
+          "companyApplicationId",
           "userId"
         ],
         "type": "object",
@@ -5400,7 +5400,7 @@
             "type": "integer",
             "format": "int64"
           },
-          "applicationId": {
+          "companyApplicationId": {
             "type": "integer",
             "format": "int64"
           },

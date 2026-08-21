@@ -87,3 +87,29 @@ export async function getCompanyApplicationsServerAction(): Promise<ICompanyAppl
     throw error;
   }
 }
+
+export async function getCompanyApplicationsByCompanyServerAction(companyId: number): Promise<ICompanyApplication[]> {
+  try {
+    const { getApplicationsByCompany } = await import('@/server/domains/access-control/security/company_applications/queries');
+    const result = await getApplicationsByCompany(companyId);
+
+    return Array.isArray(result)
+      ? result
+      : (result as any)?.content || [];
+
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getCompanyApplicationByIdServerAction(id: number): Promise<ICompanyApplication | null> {
+  try {
+    const { getCompanyApplicationById } = await import('@/server/domains/access-control/security/company_applications/queries');
+    const result = await getCompanyApplicationById(id);
+
+    return result || null;
+
+  } catch (error) {
+    return null;
+  }
+}

@@ -541,14 +541,14 @@ export function RolePermissionManager() {
                           <button
                             key={role.id_role}
                             onClick={() => handleRoleChange(role.id_role)}
-                            className={`group relative flex items-center gap-2 p-2 rounded-lg border text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary/60 ${
+                            className={`group relative flex items-center gap-2 p-2 rounded-lg border text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/60 ${
                               isSelected
-                                ? 'border-primary bg-primary text-primary-foreground shadow-md'
-                                : 'border-border bg-card text-foreground hover:border-primary/50 hover:bg-secondary/40'
+                                ? 'border-green-600 bg-green-500 text-white shadow-md ring-2 ring-green-500/70'
+                                : 'border-border bg-card text-foreground hover:border-green-500/50 hover:bg-green-50/40'
                             }`}>
                             <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-colors ${
                               isSelected
-                                ? 'bg-primary-foreground/20 text-primary-foreground'
+                                ? 'bg-white/20 text-white'
                                 : 'bg-secondary text-muted-foreground group-hover:text-foreground'
                             }`}>
                               <RiUserStarLine className='w-4 h-4' />
@@ -556,7 +556,7 @@ export function RolePermissionManager() {
                             <div className='min-w-0 flex-1'>
                               <p className='font-medium text-xs truncate'>{role.name}</p>
                               {isSelected ? (
-                                <span className='inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground/90'>
+                                <span className='inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-white/90'>
                                   <RiCheckLine className='w-3 h-3' /> Seleccionado
                                 </span>
                               ) : role.description ? (
@@ -566,8 +566,8 @@ export function RolePermissionManager() {
                               )}
                             </div>
                             {isSelected && (
-                              <div className='w-5 h-5 rounded-full bg-primary-foreground/20 flex items-center justify-center shrink-0'>
-                                <RiCheckLine className='w-3 h-3 text-primary-foreground' />
+                              <div className='w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0'>
+                                <RiCheckLine className='w-3 h-3 text-white' />
                               </div>
                             )}
                           </button>
@@ -596,9 +596,11 @@ export function RolePermissionManager() {
                 </p>
                 <div className='flex items-start gap-3'>
                   <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-                    selectedTarget
-                      ? 'bg-primary/10 text-primary'
-                      : 'bg-muted text-muted-foreground'
+                    selectedTarget?.type === 'role'
+                      ? 'bg-green-100 text-green-600'
+                      : selectedTarget?.type === 'user'
+                        ? 'bg-primary/10 text-primary'
+                        : 'bg-muted text-muted-foreground'
                   }`}>
                     {selectedTarget?.type === 'role' ? (
                       <RiUserStarLine className='w-6 h-6' />
@@ -623,7 +625,7 @@ export function RolePermissionManager() {
                           <p className='text-xs text-muted-foreground mt-0.5 truncate'>
                             {selectedRoleData.description || 'Sin descripción'}
                           </p>
-                          <p className='text-xs text-primary mt-1.5 font-medium'>
+                          <p className='text-xs text-green-600 mt-1.5 font-medium'>
                             {stats.assignedCount} de {stats.totalPermissions} permisos
                           </p>
                         </>

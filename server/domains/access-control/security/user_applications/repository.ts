@@ -11,7 +11,6 @@ import type { ListParams, IPaginatedResponse } from '@/server/lib/types';
 
 // --- User Applications Repository ---------------------------------------------
 
-
 export const userApplicationsRepository = {
   // List all user applications
   list: (params?: ListParams) =>
@@ -44,7 +43,7 @@ export const userApplicationsRepository = {
   // Update user application
   update: async (id: string | number, payload: IUpdateUserApplication) => {
     console.log('[user-applications:update] payload:', JSON.stringify(payload));
-    const userApplication = await serverFetch.put<IUserApplication>(`/api/access_control/api/user-applications/${id}`, payload, {
+    const userApplication = await serverFetch.put<IUserApplication>('/api/access_control/api/user-applications', payload, {
       revalidate: false,
     });
     return userApplication;
@@ -68,19 +67,16 @@ export const userApplicationsRepository = {
   // Get active applications by user
   getActiveByUser: (userId: string | number) =>
     serverFetch
-      .get<IUserApplication[]>(`/api/access_control/api/user-applications/user/${userId}`, {
+      .get<IUserApplication[]>(`/api/access_control/api/user-applications/user/${userId}/active`, {
         revalidate: 120,
         tags: [accessControlTags.userApplications()],
       })
-      .then((res) => {
-        const apps = Array.isArray(res) ? res : [];
-        return apps.filter((app: any) => app.is_active ?? app.isActive);
-      }),
+      .then((res) => (Array.isArray(res) ? res : [])),
 
-  // Assign application to user (quick assign)
-  assignApplication: (payload: ICreateUserApplication) =>
+  // Assign or reactivate application to user
+  assignApplication: (userId: string | number, companyApplicationId: string | number) =>
     serverFetch
-      .post<IUserApplication>('/api/access_control/api/user-applications', payload, {
+      .post<IUserApplication>(`/api/access_control/api/user-applications/user/${userId}/application/${companyApplicationId}`, undefined, {
         revalidate: false,
       }),
 
@@ -93,17 +89,17 @@ export const userApplicationsRepository = {
       .then((data) => data),
 
   // Activate application license
-  activateLicense: (userId: string | number, applicationId: string | number) =>
+  activateLicense: (userId: string | number, companyApplicationId: string | number) =>
     serverFetch
-      .put<IUserApplication>(`/api/access_control/api/user-applications/user/${userId}/application/${applicationId}/activate`, {}, {
+      .put<IUserApplication>(`/api/access_control/api/user-applications/user/${userId}/application/${companyApplicationId}/activate`, undefined, {
         revalidate: false,
       })
       .then((data) => data),
 
   // Deactivate application license
-  deactivateLicense: (userId: string | number, applicationId: string | number) =>
+  deactivateLicense: (userId: string | number, companyApplicationId: string | number) =>
     serverFetch
-      .put<IUserApplication>(`/api/access_control/api/user-applications/user/${userId}/application/${applicationId}/deactivate`, {}, {
+      .put<IUserApplication>(`/api/access_control/api/user-applications/user/${userId}/application/${companyApplicationId}/deactivate`, undefined, {
         revalidate: false,
       })
       .then((data) => data),

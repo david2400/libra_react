@@ -46,11 +46,13 @@ export const RegisterRole = ({ }: IFormAddProps = {}) => {
     description: "",
     manage_users: false,
     requires_approval: false,
-    application_id: 0, // Temporary value, will be updated when user selects an application
+    company_id: 0,
+    company_application_id: 0,
     // approval_workflow: {},
   };
 
   const handleSubmit: SubmitHandler<IRoleCreateRequest> = async (values) => {
+    console.log(values);
     try {
       await createRoleServerAction(values);
       await Swal.fire({
@@ -87,10 +89,11 @@ export const UpdateRole = ({
   const tMessages = useTranslations("messages");
 
   const handleSubmit: SubmitHandler<IRoleUpdateRequest> = async (values) => {
+    console.log(values);
     try {
       const id = initialValues?.id_role
       if (!id) return;
-      
+
       await updateRoleServerAction(id, values);
       await Swal.fire({
         title: t("updateSuccess"),
@@ -112,9 +115,15 @@ export const UpdateRole = ({
     return null;
   }
 
+  const defaultValues: IRoleUpdateRequest = {
+    ...initialValues,
+    company_id: initialValues.company_id ?? 0,
+    company_application_id: initialValues.company_application_id ?? 0,
+  };
+
   return (
     <FormBase
-      initialValues={initialValues}
+      initialValues={defaultValues}
       onSubmit={handleSubmit}
       validationSchema={validationRole()}
     />

@@ -1,6 +1,7 @@
 import 'server-only';
 import type { ListParams, IPaginatedResponse, IAuditInfo } from '@/server/lib/types';
 import { IApplication } from '../applications';
+import { IUser } from '../../account/users';
 
 // --- IUserApplication Types -------------------------------------------------------------
 
@@ -8,10 +9,11 @@ import { IApplication } from '../applications';
 
 export interface ICreateUserApplication {
   user_id: number;
-  application_id: number;
-  license_start_date: string;
-  license_end_date: string;
-  is_active: boolean;
+  application_id?: number;
+  company_application_id: number;
+  license_start_date?: string;
+  license_end_date?: string;
+  is_active?: boolean;
   access_level?: string;
   subscription_type?: string;
   auto_renew?: boolean;
@@ -24,12 +26,14 @@ export interface IUpdateUserApplication extends ICreateUserApplication {
 
 
 export interface IUserApplication extends IUpdateUserApplication {
-  // user?: IUser;
+  user?: IUser;
   // application?: IApplication;
 }
+
 export interface IUserApplicationParams extends ListParams {
   user_id?: number;
   application_id?: number;
+  company_application_id?: number;
   is_active?: boolean;
   subscription_type?: string;
   access_level?: string;

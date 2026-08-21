@@ -9,7 +9,8 @@ export const validationRole = () => {
     description: z.string().min(1, { message: v.required }),
     manage_users: z.boolean(),
     requires_approval: z.boolean().optional(),
-    application_id: z.number().min(1, { message: v.required }),
+    company_id: z.coerce.number().min(1, { message: v.required }),
+    company_application_id: z.coerce.number().min(1, { message: v.required }),
     // approval_workflow: z.record(z.any()).optional(),
     // status: z.string().min(1, { message: v.required }),
   });

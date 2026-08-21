@@ -45,6 +45,10 @@ const ClientsPage: NextPage = async () => {
         userData = usersResponse.data;
       }
     }
+
+    if (clientResponse) {
+      clientData = clientResponse;
+    }
   } catch (error) {
     console.error("Error loading users:", error);
   }

@@ -18,8 +18,8 @@ import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
-  createUserServerAction,
-  updateUserServerAction,
+  createUserAction as createUserServerAction,
+  updateUserAction as updateUserServerAction,
 } from "@/app/[locale]/(protected)/account/users/actions";
 
 const FormBase = ({

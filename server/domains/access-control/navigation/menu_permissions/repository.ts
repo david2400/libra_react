@@ -11,7 +11,6 @@ import type {
   IMenuPermissionValidationResult,
   IMenuPermissionValidationRequest,
   IMenuPermissionActivity,
-  IMenuPermissionActivityFilter,
   IMenuPermissionExportRequest,
   IMenuPermissionExportResponse,
   IMenuPermissionInheritance,
@@ -85,7 +84,7 @@ export const menuPermissionsRepository = {
 
   getMenusPermission: (params: IMenuPermissionSearch) =>
     serverFetch.post<IMenuPermission[]>('/api/access_control/menu-permissions/search', params, {
-      revalidate: 120,
+      revalidate: false,
       tags: [accessControlTags.menuPermissions()],
     }),
 } as const;

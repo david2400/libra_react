@@ -8,7 +8,9 @@ export interface ICreateRole {
   name: string;
   description?: string;
   manage_users: boolean;
-  application_id: number;
+  application_id?: number;
+  company_id: number;
+  company_application_id: number;
   requires_approval?: boolean;
   approval_workflow?: JSON;
 }
@@ -31,6 +33,7 @@ export interface IRoleSearch {
   description?: string;
   manage_users?: boolean;
   application_id?: number;
+  company_application_id?: number;
   requires_approval?: boolean;
   approval_workflow?: JSON;
 }
