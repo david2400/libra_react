@@ -67,24 +67,9 @@ export const ApplicationManager = ({
             <span className='font-semibold text-foreground'>
               {info.row.original.name}
             </span>
-            {/* {info.row.original.version && (
-              <span className='text-xs text-muted-foreground'>
-                v{info.row.original.version}
-              </span>
-            )} */}
           </div>
         ),
       },
-      // {
-      //   accessorKey: "baseUrl",
-      //   header: t("fields.baseUrl"),
-      //   cell: (info) => (
-      //     <span className='text-sm font-mono'>
-      //       {info.getValue<string>() || "-"}
-      //     </span>
-      //   ),
-      // },
-
       {
         accessorKey: "description",
         header: t("fields.description"),
@@ -94,15 +79,14 @@ export const ApplicationManager = ({
           </span>
         ),
       },
-
       {
         accessorKey: "maintenance_mode",
         header: t("fields.maintenance_mode"),
         cell: ({ row }) => {
           const isMaintenance = row.original.maintenance_mode;
           const statusColor = isMaintenance
-            ? "bg-yellow-100 text-yellow-800"
-            : "bg-green-100 text-green-800";
+            ? "bg-[hsl(var(--warning)/0.15)] text-[hsl(var(--warning))]"
+            : "bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))]";
           const status = isMaintenance ? "maintenance" : "active";
           return (
             <span
@@ -136,19 +120,16 @@ export const ApplicationManager = ({
       icon: HiOutlineSquares2X2,
       label: "Total de aplicaciones",
       value: metrics.totalApplications,
-      accent: "from-cyan-500/40 to-blue-500/40 text-cyan-700",
     },
     {
       icon: HiOutlineSquares2X2,
       label: "Aplicaciones activas",
       value: metrics.activeApps,
-      accent: "from-emerald-500/40 to-teal-500/40 text-emerald-700",
     },
     {
       icon: HiOutlineSquares2X2,
       label: "En mantenimiento",
       value: metrics.maintenanceApps,
-      accent: "from-amber-500/40 to-orange-500/40 text-amber-700",
     },
   ];
 
@@ -158,46 +139,43 @@ export const ApplicationManager = ({
 
   return (
     <section className='mx-auto flex w-full flex-col gap-6 px-6'>
-      <article className='rounded-3xl border border-border/40 bg-gradient-to-br from-cyan-600 via-blue-500 to-indigo-500 px-8 py-10 text-white shadow-2xl'>
-        <header className='space-y-4'>
-          <span className='inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-white/75'>
-            {t("title")}
-          </span>
-          <div className='space-y-2'>
-            <h1 className='text-4xl font-semibold leading-tight'>
+      <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+          <div>
+            <h1 className='text-3xl font-bold tracking-tight text-foreground'>
               {t("description")}
             </h1>
-            <p className='text-white/80'>
+            <p className='mt-1.5 text-base text-muted-foreground'>
               Gestiona las aplicaciones del ecosistema y sus configuraciones.
             </p>
           </div>
           <Buttons
             color='success'
-            className='inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-3 text-sm font-semibold text-primary transition hover:-translate-y-0.5 hover:bg-white'
+            className='inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90'
             onClick={() => setOpenModal(true)}>
             <HiOutlinePlusCircle className='h-4 w-4' />
             {tActions("saveApplication")}
           </Buttons>
-        </header>
-      </article>
+        </div>
 
-      <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {summaryCards.map((card) => (
-          <div
-            key={card.label}
-            className={`rounded-2xl border border-border/40 bg-gradient-to-br ${card.accent} px-5 py-4 shadow-sm backdrop-blur`}>
-            <div className='flex items-center justify-between text-sm font-semibold text-white/80'>
-              <span>{card.label}</span>
-              <card.icon className='h-5 w-5 text-white/70' />
+        <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+          {summaryCards.map((card) => (
+            <div
+              key={card.label}
+              className='bg-card border border-border rounded-2xl shadow-sm p-6 transition-all duration-200 hover:shadow-md'>
+              <div className='flex items-center justify-between text-sm font-semibold text-muted-foreground'>
+                <span>{card.label}</span>
+                <card.icon className='h-5 w-5 text-primary' />
+              </div>
+              <p className='mt-2 text-2xl font-semibold text-foreground'>
+                {card.value}
+              </p>
             </div>
-            <p className='mt-2 text-2xl font-semibold text-white'>
-              {card.value}
-            </p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <DataTable data={application} columns={columns} className='py-2' />
+        <DataTable data={application} columns={columns} className='py-2' />
+      </div>
 
       <Modal
         size='lg'

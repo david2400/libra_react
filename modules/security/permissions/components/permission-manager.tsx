@@ -112,16 +112,16 @@ const emptyFormData: ICreatePermission = {
 };
 
 const ACTION_COLORS: Record<PermissionAction, string> = {
-  CREATE: "bg-green-500/20 text-green-400 border-green-500/30",
-  READ: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-  UPDATE: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  DELETE: "bg-red-500/20 text-red-400 border-red-500/30",
-  EXECUTE: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  VIEW: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30",
-  MANAGE: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
-  ADMIN: "bg-pink-500/20 text-pink-400 border-pink-500/30",
-  APPROVE: "bg-teal-500/20 text-teal-400 border-teal-500/30",
-  REJECT: "bg-rose-500/20 text-rose-400 border-rose-500/30",
+  CREATE: "bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] border border-[hsl(var(--success)/0.30)]",
+  READ: "bg-[hsl(var(--info)/0.15)] text-[hsl(var(--info))] border border-[hsl(var(--info)/0.30)]",
+  UPDATE: "bg-[hsl(var(--warning)/0.15)] text-[hsl(var(--warning))] border border-[hsl(var(--warning)/0.30)]",
+  DELETE: "bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] border border-[hsl(var(--destructive)/0.30)]",
+  EXECUTE: "bg-[hsl(var(--primary)/0.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.30)]",
+  VIEW: "bg-[hsl(var(--info)/0.15)] text-[hsl(var(--info))] border border-[hsl(var(--info)/0.30)]",
+  MANAGE: "bg-[hsl(var(--primary)/0.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.30)]",
+  ADMIN: "bg-[hsl(var(--primary)/0.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.30)]",
+  APPROVE: "bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] border border-[hsl(var(--success)/0.30)]",
+  REJECT: "bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] border border-[hsl(var(--destructive)/0.30)]",
 };
 
 export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
@@ -366,16 +366,20 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
         {/* Header */}
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
           <div>
-            <h1 className='text-2xl font-semibold text-foreground'>
+            <h1 className='text-3xl font-bold tracking-tight text-foreground'>
               Permissions
             </h1>
-            <p className='mt-1 text-sm text-muted-foreground'>
+            <p className='mt-1.5 text-base text-muted-foreground'>
               Manage individual permissions with types: API, APPLICATION, UI,
               SYSTEM
             </p>
           </div>
           <div className='flex items-center gap-2'>
-            <Button variant='outline' size='sm' onClick={handleModalClose}>
+            <Button
+              variant='outline'
+              size='sm'
+              onClick={handleModalClose}
+              className='bg-card border-border hover:bg-secondary'>
               <BiPlus className='mr-2 h-4 w-4' />
               New Permission
             </Button>
@@ -383,7 +387,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
               size='sm'
               onClick={handleSave}
               disabled={!hasChanges}
-              className='bg-primary text-primary-foreground hover:bg-primary/90'>
+              className='bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all duration-200'>
               <BiSave className='mr-2 h-4 w-4' />
               Save Changes
             </Button>
@@ -391,7 +395,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
         </div>
 
         {/* Application Selector */}
-        <div className='flex flex-col gap-4 rounded-lg border border-border bg-card p-4'>
+        <div className='bg-card border border-border rounded-2xl shadow-sm p-6'>
           <div className='flex items-center gap-3'>
             <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 border border-primary/20'>
               <LuBuilding2 className='h-5 w-5 text-primary' />
@@ -403,7 +407,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
               <Select
                 value={selectedApplication ? String(selectedApplication) : ""}
                 onValueChange={handleApplicationChange}>
-                <SelectTrigger className='mt-1 w-full max-w-xs bg-secondary border-border'>
+                <SelectTrigger className='mt-1 w-full max-w-xs h-12 rounded-xl border-border bg-card focus:ring-2 focus:ring-ring/30 focus:border-ring'>
                   <SelectValue placeholder='Select application' />
                 </SelectTrigger>
                 <SelectContent>
@@ -437,7 +441,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                 placeholder='Search permissions...'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className='pl-9 bg-secondary border-border'
+                className='pl-9 h-12 rounded-xl border-border bg-card focus:ring-2 focus:ring-ring/30 focus:border-ring'
               />
             </div>
 
@@ -447,7 +451,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                 onValueChange={(v) =>
                   setFilterType(v as PermissionType | "ALL")
                 }>
-                <SelectTrigger className='w-36 bg-secondary border-border'>
+                <SelectTrigger className='w-36 h-12 rounded-xl border-border bg-card focus:ring-2 focus:ring-ring/30 focus:border-ring'>
                   <FiFilter className='mr-2 h-4 w-4' />
                   <SelectValue placeholder='Type' />
                 </SelectTrigger>
@@ -466,7 +470,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                 onValueChange={(v) =>
                   setFilterAction(v as PermissionAction | "ALL")
                 }>
-                <SelectTrigger className='w-36 bg-secondary border-border'>
+                <SelectTrigger className='w-36 h-12 rounded-xl border-border bg-card focus:ring-2 focus:ring-ring/30 focus:border-ring'>
                   <SelectValue placeholder='Action' />
                 </SelectTrigger>
                 <SelectContent>
@@ -484,7 +488,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                 onValueChange={(v) =>
                   setFilterStatus(v as "ALL" | "ACTIVE" | "INACTIVE")
                 }>
-                <SelectTrigger className='w-32 bg-secondary border-border'>
+                <SelectTrigger className='w-32 h-12 rounded-xl border-border bg-card focus:ring-2 focus:ring-ring/30 focus:border-ring'>
                   <SelectValue placeholder='Status' />
                 </SelectTrigger>
                 <SelectContent>
@@ -495,7 +499,11 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
               </Select>
 
               {hasActiveFilters && (
-                <Button variant='ghost' size='sm' onClick={clearFilters}>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  onClick={clearFilters}
+                  className='bg-card border-border hover:bg-secondary'>
                   <BiX className='mr-1 h-4 w-4' />
                   Clear
                 </Button>
@@ -510,7 +518,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
         </div>
 
         {/* Permission Type Legend */}
-        <div className='flex flex-wrap items-center gap-3 rounded-lg border border-border bg-card p-4'>
+        <div className='flex flex-wrap items-center gap-3 bg-card border border-border rounded-2xl p-6'>
           <span className='text-sm font-medium text-foreground'>Types:</span>
           {PERMISSION_TYPES.map((type) => {
             const config = PERMISSION_TYPE_CONFIG[type as PermissionType];
@@ -533,8 +541,8 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
 
         {/* Permissions */}
         {applicationPermissions.length > 0 ? (
-          <div className='rounded-lg border border-border bg-card overflow-hidden'>
-            <div className='flex items-center justify-between border-b border-border bg-secondary/30 px-4 py-3'>
+          <div className='bg-card border border-border rounded-2xl overflow-hidden'>
+            <div className='flex items-center justify-between border-b border-border px-6 py-4'>
               <h3 className='font-medium text-foreground'>Permissions</h3>
               <div className='flex items-center gap-2'>
                 {PERMISSION_TYPES.map((type) => {
@@ -570,7 +578,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                     <div
                       key={permission.id_permission}
                       className={cn(
-                        "flex items-center justify-between p-4 transition-colors hover:bg-secondary/30",
+                        "flex items-center justify-between p-6 transition-colors hover:bg-secondary/40",
                         permission.deleted && "opacity-50",
                       )}>
                       <div className='flex items-center gap-4 flex-1 min-w-0'>
@@ -599,7 +607,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                             {permission.is_sensitive && (
                               <Badge
                                 variant='outline'
-                                className='bg-red-500/10 text-red-400 border-red-500/20'>
+                                className='bg-[hsl(var(--destructive)/0.10)] text-[hsl(var(--destructive))] border-[hsl(var(--destructive)/0.20)]'>
                                 <FiAlertTriangle className='mr-1 h-3 w-3' />
                                 Sensitive
                               </Badge>
@@ -654,17 +662,17 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
                   );
                 })
               ) : (
-                <div className='flex flex-col items-center justify-center py-12 text-center'>
+                <div className='flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 text-center'>
                   <BiShield className='h-12 w-12 text-muted-foreground/50 mb-3' />
                   <p className='text-muted-foreground'>
                     No permissions found matching your filters
                   </p>
                   {hasActiveFilters && (
                     <Button
-                      variant='link'
+                      variant='outline'
                       size='sm'
                       onClick={clearFilters}
-                      className='mt-2'>
+                      className='mt-2 bg-card border-border hover:bg-secondary'>
                       Clear filters
                     </Button>
                   )}
@@ -673,7 +681,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
             </div>
           </div>
         ) : (
-          <div className='flex flex-col items-center justify-center py-12 text-center rounded-lg border border-border bg-card'>
+          <div className='flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 text-center bg-card'>
             <BiShield className='h-12 w-12 text-muted-foreground/50 mb-3' />
             <p className='text-muted-foreground'>
               No permissions for this application
@@ -682,7 +690,7 @@ export const PermissionManager = ({ initialData }: IPermissionManagerProps) => {
               variant='outline'
               size='sm'
               onClick={handleModalClose}
-              className='mt-4'>
+              className='mt-4 bg-card border-border hover:bg-secondary'>
               <BiPlus className='mr-2 h-4 w-4' />
               Create First Permission
             </Button>

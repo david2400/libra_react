@@ -408,10 +408,10 @@ export function RolePermissionManager() {
         {/* Header */}
         <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
           <div>
-            <h1 className='text-2xl font-bold text-foreground'>
+            <h1 className='text-3xl font-bold tracking-tight text-foreground'>
               Asignacion de Permisos
             </h1>
-            <p className='text-muted-foreground mt-1'>
+            <p className='mt-1.5 text-base text-muted-foreground'>
               Configura los permisos de acceso para roles o usuarios
             </p>
           </div>
@@ -419,7 +419,7 @@ export function RolePermissionManager() {
             <button
               onClick={() => selectedTarget && (selectedTarget.type === "role" ? handleRoleChange(selectedTarget.id) : handleUserChange(selectedTarget.id))}
               disabled={!selectedTarget}
-              className='flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+              className='flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border hover:bg-secondary transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
               <RiRefreshLine className='w-4 h-4' />
               Actualizar
             </button>
@@ -434,7 +434,7 @@ export function RolePermissionManager() {
         )}
 
         {/* Application Selector */}
-        <div className='bg-card rounded-xl border border-border p-4'>
+        <div className='bg-card border border-border rounded-2xl shadow-sm p-6'>
           <div className='flex flex-col gap-4'>
             <div>
               <label className='text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2'>
@@ -453,7 +453,7 @@ export function RolePermissionManager() {
                   placeholder='Seleccione una aplicación'
                   searchPlaceholder='Buscar aplicación...'
                   emptyMessage='No se encontraron aplicaciones'
-                  triggerClassName='!h-16 data-[size=default]:h-16 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
+                  triggerClassName='h-12 px-3 rounded-xl border border-border bg-card shadow-sm hover:shadow-md transition-all duration-300 focus:ring-2 focus:ring-ring/30 focus:border-ring *:data-[slot=select-value]:line-clamp-none'
                   options={applications.map((app) => ({
                     value: String(app.id_application),
                     label: (
@@ -478,9 +478,9 @@ export function RolePermissionManager() {
                 <p className='text-sm font-medium text-muted-foreground'>Aplicación seleccionada</p>
               </div>
               {selectedApplication && applications.find(a => a.id_application === selectedApplication) ? (
-                <div className='bg-primary/5 border border-primary/20 rounded-lg p-3'>
+                <div className='bg-card border border-primary/20 rounded-2xl p-4'>
                   <div className='flex items-center gap-3'>
-                    <div className='w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center'>
+                    <div className='w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center'>
                       <RiGlobalLine className='w-5 h-5 text-primary' />
                     </div>
                     <div className='flex-1'>
@@ -491,9 +491,9 @@ export function RolePermissionManager() {
                   </div>
                 </div>
               ) : (
-                <div className='bg-muted/30 border border-muted rounded-lg p-3'>
+                <div className='bg-card border border-border rounded-2xl p-4'>
                   <div className='flex items-center gap-3 text-muted-foreground'>
-                    <div className='w-10 h-10 bg-muted rounded-lg flex items-center justify-center'>
+                    <div className='w-10 h-10 bg-secondary rounded-xl flex items-center justify-center'>
                       <RiAppsLine className='w-5 h-5' />
                     </div>
                     <div>
@@ -508,7 +508,7 @@ export function RolePermissionManager() {
         </div>
 
         {/* Target Selector */}
-        <div className='bg-card rounded-xl border border-border p-4'>
+        <div className='bg-card border border-border rounded-2xl shadow-sm p-6'>
           <div className='flex flex-col gap-4'>
             <div className='flex items-center gap-2'>
               <RiShieldUserLine className='w-4 h-4 text-muted-foreground' />
@@ -541,14 +541,14 @@ export function RolePermissionManager() {
                           <button
                             key={role.id_role}
                             onClick={() => handleRoleChange(role.id_role)}
-                            className={`group relative flex items-center gap-2 p-2 rounded-lg border text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/60 ${
+                            className={`group relative flex items-center gap-2 p-2 rounded-lg border text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring/30 ${
                               isSelected
-                                ? 'border-green-600 bg-green-500 text-white shadow-md ring-2 ring-green-500/70'
-                                : 'border-border bg-card text-foreground hover:border-green-500/50 hover:bg-green-50/40'
+                                ? 'bg-primary text-primary-foreground border-primary shadow-sm ring-2 ring-ring/30'
+                                : 'border-border bg-card text-foreground hover:border-primary/50 hover:bg-secondary'
                             }`}>
-                            <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-colors ${
+                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
                               isSelected
-                                ? 'bg-white/20 text-white'
+                                ? 'bg-primary-foreground/20 text-primary-foreground'
                                 : 'bg-secondary text-muted-foreground group-hover:text-foreground'
                             }`}>
                               <RiUserStarLine className='w-4 h-4' />
@@ -556,7 +556,7 @@ export function RolePermissionManager() {
                             <div className='min-w-0 flex-1'>
                               <p className='font-medium text-xs truncate'>{role.name}</p>
                               {isSelected ? (
-                                <span className='inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-white/90'>
+                                <span className='inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground/90'>
                                   <RiCheckLine className='w-3 h-3' /> Seleccionado
                                 </span>
                               ) : role.description ? (
@@ -566,8 +566,8 @@ export function RolePermissionManager() {
                               )}
                             </div>
                             {isSelected && (
-                              <div className='w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0'>
-                                <RiCheckLine className='w-3 h-3 text-white' />
+                              <div className='w-5 h-5 rounded-full bg-primary-foreground/20 flex items-center justify-center shrink-0'>
+                                <RiCheckLine className='w-3 h-3 text-primary-foreground' />
                               </div>
                             )}
                           </button>
@@ -597,10 +597,10 @@ export function RolePermissionManager() {
                 <div className='flex items-start gap-3'>
                   <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
                     selectedTarget?.type === 'role'
-                      ? 'bg-green-100 text-green-600'
+                      ? 'bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))]'
                       : selectedTarget?.type === 'user'
                         ? 'bg-primary/10 text-primary'
-                        : 'bg-muted text-muted-foreground'
+                        : 'bg-secondary text-muted-foreground'
                   }`}>
                     {selectedTarget?.type === 'role' ? (
                       <RiUserStarLine className='w-6 h-6' />
@@ -625,7 +625,7 @@ export function RolePermissionManager() {
                           <p className='text-xs text-muted-foreground mt-0.5 truncate'>
                             {selectedRoleData.description || 'Sin descripción'}
                           </p>
-                          <p className='text-xs text-green-600 mt-1.5 font-medium'>
+                          <p className='text-xs text-[hsl(var(--success))] mt-1.5 font-medium'>
                             {stats.assignedCount} de {stats.totalPermissions} permisos
                           </p>
                         </>
@@ -658,7 +658,7 @@ export function RolePermissionManager() {
 
         {/* Stats */}
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-          <div className='bg-card rounded-xl border border-border p-4'>
+          <div className='bg-card border border-border rounded-2xl shadow-sm p-6'>
             <div className='flex items-center gap-2 text-muted-foreground mb-1'>
               <RiLockLine className='w-4 h-4' />
               <span className='text-xs font-medium'>Total Permisos</span>
@@ -667,8 +667,8 @@ export function RolePermissionManager() {
               {stats.totalPermissions}
             </p>
           </div>
-          <div className='bg-card rounded-xl border border-border p-4'>
-            <div className='flex items-center gap-2 text-primary mb-1'>
+          <div className='bg-card border border-border rounded-2xl shadow-sm p-6'>
+            <div className='flex items-center gap-2 text-[hsl(var(--success))] mb-1'>
               <RiCheckboxCircleFill className='w-4 h-4' />
               <span className='text-xs font-medium'>Asignados</span>
             </div>
@@ -679,24 +679,24 @@ export function RolePermissionManager() {
         </div>
 
         {/* Main Content */}
-        <div className='bg-card rounded-xl border border-border overflow-hidden p-4'>
+        <div className='bg-card border border-border rounded-2xl shadow-sm overflow-hidden p-6'>
           {isLoadingCatalog ? (
-            <div className='flex items-center justify-center py-12 text-muted-foreground'>
+            <div className='flex items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 text-muted-foreground'>
               <div className='flex flex-col items-center gap-3'>
                 <div className='w-8 h-8 border-4 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin' />
                 <p>Cargando permisos...</p>
               </div>
             </div>
           ) : permissionsCatalog.length === 0 ? (
-            <div className='flex items-center justify-center py-12 text-muted-foreground'>
+            <div className='flex items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 text-muted-foreground'>
               <p>No hay permisos disponibles para esta aplicación</p>
             </div>
           ) : !selectedTarget ? (
-            <div className='flex items-center justify-center py-12 text-muted-foreground'>
+            <div className='flex items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 text-muted-foreground'>
               <p>Selecciona un rol o usuario para gestionar permisos</p>
             </div>
           ) : isLoadingAssignments ? (
-            <div className='flex items-center justify-center py-12 text-muted-foreground'>
+            <div className='flex items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 text-muted-foreground'>
               <div className='flex flex-col items-center gap-3'>
                 <div className='w-8 h-8 border-4 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin' />
                 <p>Cargando asignaciones...</p>
@@ -711,14 +711,14 @@ export function RolePermissionManager() {
                   <button
                     onClick={grantAllPermissions}
                     disabled={!selectedTarget || isBulkUpdating}
-                    className='flex items-center gap-1 px-3 py-1.5 text-sm bg-primary/20 text-primary hover:bg-primary/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+                    className='flex items-center gap-1 px-3 py-1.5 text-sm bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'>
                     <RiCheckDoubleLine className='w-4 h-4' />
                     Otorgar Todo
                   </button>
                   <button
                     onClick={revokeAllPermissions}
                     disabled={!selectedTarget || isBulkUpdating}
-                    className='flex items-center gap-1 px-3 py-1.5 text-sm bg-destructive/20 text-destructive hover:bg-destructive/30 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+                    className='flex items-center gap-1 px-3 py-1.5 text-sm bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-xl shadow-sm transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'>
                     <RiCloseLine className='w-4 h-4' />
                     Revocar Todo
                   </button>

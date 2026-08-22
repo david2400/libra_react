@@ -127,8 +127,8 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
           <span
             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
               row.original.is_active !== false
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
+                ? "bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))]"
+                : "bg-[hsl(var(--warning))] text-[hsl(var(--warning-foreground))]"
             }`}>
             {row.original.is_active !== false ? "Activa" : "Inactiva"}
           </span>
@@ -173,22 +173,21 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
 
   return (
     <section className='mx-auto flex w-full flex-col gap-6 px-6'>
-      <article className='rounded-3xl border border-border/40 bg-gradient-to-br from-slate-600 via-gray-500 to-zinc-500 px-8 py-10 text-white shadow-2xl'>
+      <article className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
         <header className='space-y-4'>
-          <span className='inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-white/75'>
+          <span className='inline-flex w-fit items-center gap-2 rounded-full bg-secondary px-3 py-1 text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
             {t("title")}
           </span>
           <div className='space-y-2'>
-            <h1 className='text-4xl font-semibold leading-tight'>
+            <h1 className='text-3xl font-bold tracking-tight text-foreground'>
               {t("description")}
             </h1>
-            <p className='text-white/80'>
+            <p className='mt-1.5 text-base text-muted-foreground'>
               Gestiona las empresas y sus datos corporativos.
             </p>
           </div>
           <Buttons
-            color='success'
-            className='inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-3 text-sm font-semibold text-primary transition hover:-translate-y-0.5 hover:bg-white'
+            className='inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90'
             onClick={() => setOpenModal(true)}>
             <HiOutlinePlusCircle className='h-4 w-4' />
             {tActions("saveCompany")}
@@ -200,19 +199,21 @@ export const CompanyManager = ({ initialData }: ICompanyManagerProps) => {
         {summaryCards.map((card) => (
           <div
             key={card.label}
-            className={`rounded-2xl border border-border/40 bg-gradient-to-br ${card.accent} px-5 py-4 shadow-sm backdrop-blur`}>
-            <div className='flex items-center justify-between text-sm font-semibold text-white/80'>
+            className='rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md'>
+            <div className='flex items-center justify-between text-sm font-semibold text-muted-foreground'>
               <span>{card.label}</span>
-              <card.icon className='h-5 w-5 text-white/70' />
+              <card.icon className='h-5 w-5 text-muted-foreground' />
             </div>
-            <p className='mt-2 text-2xl font-semibold text-white'>
+            <p className='mt-2 text-2xl font-semibold text-foreground'>
               {card.value}
             </p>
           </div>
         ))}
       </div>
 
-      <DataTable data={companies} columns={columns} className='py-2' />
+      <div className='rounded-2xl border border-border bg-card p-6 shadow-sm'>
+        <DataTable data={companies} columns={columns} />
+      </div>
 
       <Modal
         size='lg'

@@ -417,10 +417,10 @@ export function UserApplicationsManager() {
         <div className='mb-8'>
           <div className='flex items-center justify-between'>
             <div>
-              <h1 className='text-2xl font-semibold text-foreground'>
+              <h1 className='text-3xl font-bold tracking-tight text-foreground'>
                 Asignar Aplicaciones
               </h1>
-              <p className='mt-1 text-sm text-muted-foreground'>
+              <p className='mt-1.5 text-base text-muted-foreground'>
                 Gestiona las aplicaciones asignadas a cada usuario
               </p>
             </div>
@@ -428,7 +428,7 @@ export function UserApplicationsManager() {
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing || !selectedUser}
-                className='flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50'>
+                className='flex items-center gap-2 rounded-xl bg-card border border-border px-4 py-2 text-sm font-medium text-foreground transition-all duration-200 hover:bg-secondary hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-50'>
                 <HiRefresh className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
                 Actualizar
               </button>
@@ -440,7 +440,7 @@ export function UserApplicationsManager() {
           {/* Sidebar - Company/User Selection */}
           <div className='lg:col-span-1 space-y-4'>
             {/* Company Selector */}
-            <div className='rounded-xl border border-border bg-card p-4'>
+            <div className='bg-card border border-border rounded-2xl shadow-sm p-6'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Empresa
               </h3>
@@ -452,7 +452,7 @@ export function UserApplicationsManager() {
                   setSelectedCompany(company);
                 }}
                 disabled={isLoadingCompanies || companies.length === 0}>
-                <SelectTrigger className='mt-1 w-full bg-secondary border-border h-12 text-base py-3'>
+                <SelectTrigger className='mt-1 w-full h-12 rounded-xl border-border bg-card focus:ring-2 focus:ring-ring/30 focus:border-ring text-base py-3'>
                   <SelectValue placeholder='Seleccionar empresa...' />
                 </SelectTrigger>
                 <SelectContent>
@@ -470,7 +470,7 @@ export function UserApplicationsManager() {
             </div>
 
             {/* User Selector */}
-            <div className='rounded-xl border border-border bg-card p-4'>
+            <div className='bg-card border border-border rounded-2xl shadow-sm p-6'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Usuario
               </h3>
@@ -482,7 +482,7 @@ export function UserApplicationsManager() {
                   setSelectedUser(user);
                 }}
                 disabled={isLoadingUsers || !selectedCompany || users.length === 0}>
-                <SelectTrigger className='mt-1 w-full bg-secondary border-border h-12 text-base py-3'>
+                <SelectTrigger className='mt-1 w-full h-12 rounded-xl border-border bg-card focus:ring-2 focus:ring-ring/30 focus:border-ring text-base py-3'>
                   <SelectValue placeholder={selectedCompany ? 'Seleccionar usuario...' : 'Seleccione una empresa'} />
                 </SelectTrigger>
                 <SelectContent>
@@ -528,7 +528,7 @@ export function UserApplicationsManager() {
             </div>
 
             {/* Stats */}
-            <div className='mt-4 rounded-xl border border-border bg-card p-4'>
+            <div className='mt-4 bg-card border border-border rounded-2xl shadow-sm p-6'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Resumen de Asignaciones
               </h3>
@@ -570,7 +570,7 @@ export function UserApplicationsManager() {
             </div>
 
             {/* Quick Actions */}
-            <div className='mt-4 rounded-xl border border-border bg-card p-4'>
+            <div className='mt-4 bg-card border border-border rounded-2xl shadow-sm p-6'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Acciones Rapidas
               </h3>
@@ -578,14 +578,14 @@ export function UserApplicationsManager() {
                 <button
                   onClick={assignAll}
                   disabled={!selectedUser}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-50'>
+                  className='flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiPlus className='h-4 w-4' />
                   Asignar Todas
                 </button>
                 <button
                   onClick={removeAll}
                   disabled={!selectedUser}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20 disabled:cursor-not-allowed disabled:opacity-50'>
+                  className='flex w-full items-center justify-center gap-2 rounded-xl bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground shadow-sm transition-all duration-200 hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiMinus className='h-4 w-4' />
                   Remover Todas
                 </button>
@@ -605,7 +605,7 @@ export function UserApplicationsManager() {
                   placeholder='Buscar aplicaciones...'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className='w-full rounded-lg border border-border bg-card py-2 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
+                  className='w-full h-12 rounded-xl border border-border bg-card py-2 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-2 focus:ring-ring/30'
                 />
               </div>
 
@@ -617,9 +617,9 @@ export function UserApplicationsManager() {
                     <button
                       key={mode}
                       onClick={() => setFilterMode(mode)}
-                      className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${filterMode === mode
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground"
+                      className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 ${filterMode === mode
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
                         }`}>
                       {mode === "all"
                         ? "Todas"
@@ -636,8 +636,8 @@ export function UserApplicationsManager() {
             <div className='mb-4 flex flex-wrap gap-2'>
               <button
                 onClick={() => setSelectedCategory("all")}
-                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${selectedCategory === "all"
-                  ? "bg-primary text-primary-foreground"
+                className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${selectedCategory === "all"
+                  ? "bg-primary text-primary-foreground shadow-sm"
                   : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
                   }`}>
                 <HiViewGrid className='h-4 w-4' />
@@ -649,8 +649,8 @@ export function UserApplicationsManager() {
                   <button
                     key={category.id_application_category}
                     onClick={() => setSelectedCategory(category.id_application_category ?? "all")}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${selectedCategory === category.id_application_category
-                      ? "bg-primary text-primary-foreground"
+                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${selectedCategory === category.id_application_category
+                      ? "bg-primary text-primary-foreground shadow-sm"
                       : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
                       }`}>
                     {/* <Icon className='h-4 w-4' /> */}
@@ -662,7 +662,7 @@ export function UserApplicationsManager() {
 
             {/* Applications Grid */}
             {loading ? (
-              <div className='flex items-center justify-center rounded-xl border border-border bg-card py-16'>
+              <div className='flex items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 bg-card'>
                 <p className='text-sm text-muted-foreground'>Cargando aplicaciones...</p>
               </div>
             ) : (
@@ -687,7 +687,7 @@ export function UserApplicationsManager() {
             )}
 
             {!loading && filteredCompanyApplications.length === 0 && (
-              <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16'>
+              <div className='flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 bg-card'>
                 <HiSearch className='mb-4 h-12 w-12 text-muted-foreground' />
                 <p className='text-lg font-medium text-foreground'>
                   No se encontraron aplicaciones
@@ -719,17 +719,16 @@ function ApplicationCard({
 }) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${isAssigned
+      className={`group relative overflow-hidden rounded-2xl border shadow-sm transition-all duration-200 hover:shadow-md ${isAssigned
         ? "border-primary/50 bg-primary/5"
         : "border-border bg-card hover:border-primary/30"
         }`}>
-      <div className='p-4'>
+      <div className='p-6'>
         <div className='flex items-start gap-4'>
           {/* Icon */}
           <div
-            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl'
-            style={{ backgroundColor: "#3B82F620" }}>
-            <HiViewGrid className='h-6 w-6' />
+            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10'>
+            <HiViewGrid className='h-6 w-6 text-primary' />
           </div>
 
           {/* Content */}
@@ -749,9 +748,9 @@ function ApplicationCard({
           <button
             onClick={onToggle}
             disabled={isPending}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${isAssigned
+            className={`flex items-center gap-2 rounded-xl px-3 py-1.5 text-sm font-medium shadow-sm transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${isAssigned
               ? "bg-primary text-primary-foreground hover:bg-primary/90"
-              : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
+              : "bg-card border-border hover:bg-secondary text-muted-foreground hover:text-foreground"
               }`}>
             {isPending ? (
               "..."

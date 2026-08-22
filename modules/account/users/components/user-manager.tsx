@@ -41,12 +41,12 @@ const StatusBadge = ({ status }: { status: string }) => {
   return (
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${isActive
-        ? "bg-emerald-100 text-emerald-800 border-emerald-200"
-        : "bg-slate-100 text-slate-700 border-slate-200"
+        ? "bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))]"
+        : "bg-[hsl(var(--info))] text-[hsl(var(--info-foreground))]"
         }`}
     >
       <div className="flex items-center gap-1.5">
-        <div className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-emerald-600" : "bg-slate-500"}`} />
+        <div className={`h-1.5 w-1.5 rounded-full ${isActive ? "bg-[hsl(var(--success))]" : "bg-muted-foreground"}`} />
         {isActive ? "Activo" : "Inactivo"}
       </div>
     </span>
@@ -106,17 +106,17 @@ const StatsCard = ({
   trend?: 'up' | 'down' | 'neutral';
 }) => {
   const trendColors = {
-    up: 'text-emerald-600 bg-emerald-50',
-    down: 'text-red-600 bg-red-50',
-    neutral: 'text-slate-600 bg-slate-50'
+    up: 'bg-[hsl(var(--success))] text-[hsl(var(--success-foreground))]',
+    down: 'bg-[hsl(var(--destructive))] text-[hsl(var(--destructive-foreground))]',
+    neutral: 'bg-secondary text-foreground'
   };
 
   return (
-    <div className="rounded-2xl border border-border/40 bg-gradient-to-br from-slate-50 to-slate-100 p-6 shadow-sm hover:shadow-md transition-shadow duration-200 dark:from-slate-800 dark:to-slate-900">
+    <div className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md">
       <div className="flex items-center justify-between">
         <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{title}</p>
-          <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          <p className="text-2xl font-bold text-foreground">{value}</p>
           {change !== undefined && (
             <div className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${trendColors[trend || 'neutral']}`}>
               {trend === 'up' && <Icon className="h-3 w-3 mr-1" />}
@@ -124,8 +124,8 @@ const StatsCard = ({
             </div>
           )}
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-800">
-          <Icon className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary">
+          <Icon className="h-6 w-6 text-muted-foreground" />
         </div>
       </div>
     </div>
@@ -242,8 +242,8 @@ export const UserManager = ({
             <div className="flex items-center gap-3">
               <UserAvatar user={user} />
               <div>
-                <p className="font-medium text-slate-900 dark:text-slate-100">{user.username}</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">ID: {user.id_user}</p>
+                <p className="font-medium text-foreground">{user.username}</p>
+                <p className="text-sm text-muted-foreground">ID: {user.id_user}</p>
               </div>
             </div>
           );
@@ -259,11 +259,11 @@ export const UserManager = ({
             <div className="flex items-center gap-2">
               {companyName ? (
                 <>
-                  <HiOutlineBuildingOffice2 className="h-4 w-4 text-slate-400" />
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{companyName}</span>
+                  <HiOutlineBuildingOffice2 className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium text-foreground">{companyName}</span>
                 </>
               ) : (
-                <span className="text-sm text-slate-400">-</span>
+                <span className="text-sm text-muted-foreground">-</span>
               )}
             </div>
           );
@@ -277,12 +277,12 @@ export const UserManager = ({
           if (!client) {
             return (
               <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-full border-2 border-dashed border-slate-300 flex items-center justify-center">
-                  <HiOutlineUserCircle className="h-4 w-4 text-slate-400" />
+                <div className="h-8 w-8 rounded-full border-2 border-dashed border-border flex items-center justify-center">
+                  <HiOutlineUserCircle className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <div>
-                  <p className="text-sm text-slate-500">Sin asignar</p>
-                  <p className="text-xs text-slate-400">Click para asignar</p>
+                  <p className="text-sm text-muted-foreground">Sin asignar</p>
+                  <p className="text-xs text-muted-foreground">Click para asignar</p>
                 </div>
               </div>
             );
@@ -294,10 +294,10 @@ export const UserManager = ({
                 {`${client.first_name?.charAt(0)}${client.first_last_name?.charAt(0)}`.toUpperCase()}
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                <p className="text-sm font-medium text-foreground">
                   {`${client.first_name} ${client.first_last_name}`.trim()}
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-muted-foreground">
                   {client.type_id}: {client.card_id}
                 </p>
               </div>
@@ -375,32 +375,31 @@ export const UserManager = ({
   return (
     <section className="mx-auto flex w-full flex-col gap-6 px-6">
       {/* Header */}
-      <header className="rounded-2xl border border-border/40 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 px-8 py-8 shadow-2xl dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+      <header className="rounded-2xl border border-border bg-card p-6 shadow-sm">
         <div className="flex items-start justify-between">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500">
-                <HiOutlineUsers className="h-6 w-6 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary">
+                <HiOutlineUsers className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white">Gestión de Usuarios</h1>
-                <p className="text-sm text-slate-300">Administra usuarios del sistema y sus asignaciones a clientes</p>
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">Gestión de Usuarios</h1>
+                <p className="mt-1.5 text-base text-muted-foreground">Administra usuarios del sistema y sus asignaciones a clientes</p>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <Buttons
-              variant="outline"
               size="sm"
               onClick={handleRefresh}
               disabled={isLoading}
-              className="text-white border-white/20 hover:bg-white/10"
+              className="bg-card border border-border text-foreground shadow-sm transition-all duration-200 hover:bg-secondary"
             >
               <HiOutlineArrowPath className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
               Actualizar
             </Buttons>
             <Buttons
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-white shadow-lg transition hover:shadow-xl"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90"
               onClick={() => setOpenModal(true)}
             >
               <HiOutlinePlusCircle className="h-4 w-4" />
@@ -452,13 +451,13 @@ export const UserManager = ({
 
           {/* Search */}
           <div className="relative">
-            <HiOutlineMagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <HiOutlineMagnifyingGlass className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               placeholder="Buscar por nombre, empresa o cliente..."
               value={searchTerm}
               onChange={(e: any) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-input bg-background rounded-md text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="h-12 w-full rounded-xl border border-border bg-card pl-10 pr-4 text-base text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/30 focus:border-ring focus:outline-none"
             />
           </div>
 
@@ -468,9 +467,9 @@ export const UserManager = ({
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setSelectedClientFilter(null)}
-                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${selectedClientFilter === null
-                  ? "bg-blue-100 text-blue-800 border-blue-200"
-                  : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 ${selectedClientFilter === null
+                  ? "bg-primary text-primary-foreground"
+                  : "border border-border bg-card text-muted-foreground hover:border-primary/50"
                   }`}
               >
                 Todos los clientes
@@ -479,9 +478,9 @@ export const UserManager = ({
                 <button
                   key={client.id_client}
                   onClick={() => setSelectedClientFilter(client.id_client!)}
-                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors flex items-center gap-2 ${selectedClientFilter === client.id_client
-                    ? "bg-purple-100 text-purple-800 border-purple-200"
-                    : "bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200"
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-200 flex items-center gap-2 ${selectedClientFilter === client.id_client
+                    ? "bg-primary text-primary-foreground"
+                    : "border border-border bg-card text-muted-foreground hover:border-primary/50"
                     }`}
                 >
                   <span>{`${client.first_name} ${client.first_last_name}`.trim()}</span>
@@ -506,9 +505,9 @@ export const UserManager = ({
               <button
                 key={tab.key}
                 onClick={() => setSelectedTab(tab.key)}
-                className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${selectedTab === tab.key
-                  ? "border-primary text-primary"
-                  : "border-transparent text-muted-foreground hover:text-foreground"
+                className={`rounded-xl px-4 py-2 text-sm font-medium transition-all duration-200 ${selectedTab === tab.key
+                  ? "bg-primary text-primary-foreground"
+                  : "border border-border bg-card text-muted-foreground hover:border-primary/50"
                   }`}
               >
                 {tab.label}
@@ -519,7 +518,7 @@ export const UserManager = ({
       </div>
 
       {/* Data Table */}
-      <div className="rounded-2xl border border-border/40 bg-card shadow-sm">
+      <div className="rounded-2xl border border-border bg-card shadow-sm">
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-foreground">Usuarios</h2>
@@ -545,7 +544,7 @@ export const UserManager = ({
           ) : displayUsers.length > 0 ? (
             <DataTable data={displayUsers} columns={columns} />
           ) : (
-            <div className="flex flex-col items-center justify-center py-12">
+            <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-12">
               <HiOutlineUsers className="h-12 w-12 text-muted-foreground mb-4" />
               <h3 className="text-lg font-medium text-foreground mb-2">
                 No se encontraron usuarios

@@ -334,10 +334,10 @@ export const CompanyApplicationManager = ({
         <div className='mb-8'>
           <div className='flex items-center justify-between'>
             <div>
-              <h1 className='text-2xl font-semibold text-foreground'>
+              <h1 className='text-3xl font-bold tracking-tight text-foreground'>
                 Asignar Aplicaciones
               </h1>
-              <p className='mt-1 text-sm text-muted-foreground'>
+              <p className='mt-1.5 text-base text-muted-foreground'>
                 Gestiona las aplicaciones asignadas a cada empresa
               </p>
             </div>
@@ -345,7 +345,7 @@ export const CompanyApplicationManager = ({
               <button
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className='flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50'>
+                className='flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-foreground shadow-sm transition-all duration-200 hover:bg-secondary hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50'>
                 <HiRefresh className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
                 Actualizar
               </button>
@@ -357,7 +357,7 @@ export const CompanyApplicationManager = ({
           {/* Sidebar - Company Selection */}
           <div className='lg:col-span-1'>
             {/* Company Selector */}
-            <div className='rounded-xl border border-border bg-card p-4'>
+            <div className='rounded-2xl border border-border bg-card shadow-sm p-6 transition-all duration-200 hover:shadow-md'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Empresa Seleccionada
               </h3>
@@ -370,7 +370,7 @@ export const CompanyApplicationManager = ({
                   setSelectedCompany(company);
                 }}
                 disabled={companiesData.loading || companiesData.data.length === 0}>
-                <SelectTrigger className='mt-1 w-full bg-secondary border-border h-12 text-base py-3'>
+                <SelectTrigger className='mt-1 w-full h-12 rounded-xl border-border bg-card text-base focus:ring-2 focus:ring-ring/30 focus:border-ring'>
                   <SelectValue placeholder='Seleccionar empresa...' />
                 </SelectTrigger>
                 <SelectContent>
@@ -400,7 +400,7 @@ export const CompanyApplicationManager = ({
             </div>
 
             {/* Stats */}
-            <div className='mt-4 rounded-xl border border-border bg-card p-4'>
+            <div className='mt-4 rounded-2xl border border-border bg-card shadow-sm p-6 transition-all duration-200 hover:shadow-md'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Resumen de Asignaciones
               </h3>
@@ -444,7 +444,7 @@ export const CompanyApplicationManager = ({
             </div>
 
             {/* Quick Actions */}
-            <div className='mt-4 rounded-xl border border-border bg-card p-4'>
+            <div className='mt-4 rounded-2xl border border-border bg-card shadow-sm p-6 transition-all duration-200 hover:shadow-md'>
               <h3 className='mb-3 text-sm font-medium text-muted-foreground'>
                 Acciones Rápidas
               </h3>
@@ -452,14 +452,14 @@ export const CompanyApplicationManager = ({
                 <button
                   onClick={assignAll}
                   disabled={!selectedCompany}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-50'>
+                  className='flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiPlus className='h-4 w-4' />
                   Asignar Todas
                 </button>
                 <button
                   onClick={removeAll}
                   disabled={!selectedCompany}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20 disabled:cursor-not-allowed disabled:opacity-50'>
+                  className='flex w-full items-center justify-center gap-2 rounded-lg bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground shadow-sm transition-all duration-200 hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiMinus className='h-4 w-4' />
                   Remover Todas
                 </button>
@@ -470,12 +470,12 @@ export const CompanyApplicationManager = ({
           {/* Main Content - Applications Grid */}
           <div className='lg:col-span-3'>
             {!selectedCompany ? (
-              <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16'>
+              <div className='flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-12 text-center'>
                 <HiUserGroup className='mb-4 h-12 w-12 text-muted-foreground' />
                 <p className='text-lg font-medium text-foreground'>
                   Selecciona una empresa
                 </p>
-                <p className='mt-1 text-sm text-muted-foreground'>
+                <p className='mt-1.5 text-base text-muted-foreground'>
                   Elige una empresa para gestionar sus aplicaciones asignadas
                 </p>
               </div>
@@ -491,19 +491,19 @@ export const CompanyApplicationManager = ({
                       placeholder='Buscar aplicaciones...'
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className='w-full rounded-lg border border-border bg-card py-2 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
+                      className='w-full h-12 rounded-xl border-border bg-card py-2 pl-10 pr-4 text-foreground placeholder:text-muted-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring'
                     />
                   </div>
 
                   {/* Filter Mode */}
                   <div className='flex items-center gap-2'>
                     <HiFilter className='h-5 w-5 text-muted-foreground' />
-                    <div className='flex rounded-lg border border-border bg-card p-1'>
+                    <div className='flex gap-2 rounded-2xl border border-border bg-card p-1.5'>
                       {(["all", "assigned", "unassigned"] as const).map((mode) => (
                         <button
                           key={mode}
                           onClick={() => setFilterMode(mode)}
-                          className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${filterMode === mode
+                          className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${filterMode === mode
                               ? "bg-primary text-primary-foreground"
                               : "text-muted-foreground hover:text-foreground"
                             }`}>
@@ -522,7 +522,7 @@ export const CompanyApplicationManager = ({
                 <div className='mb-4 flex flex-wrap gap-2'>
                   <button
                     onClick={() => setSelectedCategory("all")}
-                    className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${selectedCategory === "all"
+                    className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${selectedCategory === "all"
                         ? "bg-primary text-primary-foreground"
                         : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
                       }`}>
@@ -537,7 +537,7 @@ export const CompanyApplicationManager = ({
                         onClick={() =>
                           setSelectedCategory(category.id_application_category ?? "all")
                         }
-                        className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${selectedCategory === category.id_application_category
+                        className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${selectedCategory === category.id_application_category
                             ? "bg-primary text-primary-foreground"
                             : "border border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground"
                           }`}>
@@ -550,11 +550,11 @@ export const CompanyApplicationManager = ({
 
                 {/* Applications Grid */}
                 {loading ? (
-                  <div className='flex items-center justify-center rounded-xl border border-border bg-card py-16'>
+                  <div className='flex items-center justify-center rounded-2xl border border-border bg-card shadow-sm p-12'>
                     <p className='text-sm text-muted-foreground'>Cargando aplicaciones...</p>
                   </div>
                 ) : (
-                  <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3'>
+                  <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3'>
                     {filteredApps.map((app) => {
                       const isAssigned = currentAppIds.includes(app.id_application);
                       const category = (categories as IApplicationCategory[]).find(
@@ -575,12 +575,12 @@ export const CompanyApplicationManager = ({
                 )}
 
                 {!loading && filteredApps.length === 0 && (
-                  <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16'>
+                  <div className='flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-12 text-center'>
                     <HiSearch className='mb-4 h-12 w-12 text-muted-foreground' />
                     <p className='text-lg font-medium text-foreground'>
                       No se encontraron aplicaciones
                     </p>
-                    <p className='mt-1 text-sm text-muted-foreground'>
+                    <p className='mt-1.5 text-base text-muted-foreground'>
                       Intenta ajustar los filtros de búsqueda
                     </p>
                   </div>
@@ -609,17 +609,15 @@ function ApplicationCard({
 }) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${isAssigned
+      className={`group relative overflow-hidden rounded-2xl border shadow-sm transition-all duration-200 hover:shadow-md ${isAssigned
           ? "border-primary/50 bg-primary/5"
           : "border-border bg-card hover:border-primary/30"
         }`}>
-      <div className='p-4'>
+      <div className='p-6'>
         <div className='flex items-start gap-4'>
           {/* Icon */}
-          <div
-            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl'
-            style={{ backgroundColor: "#3B82F620" }}>
-            <HiViewGrid className='h-6 w-6' />
+          <div className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--primary)/0.12)]'>
+            <HiViewGrid className='h-6 w-6 text-primary' />
           </div>
 
           {/* Content */}
@@ -633,13 +631,13 @@ function ApplicationCard({
 
         {/* Toggle Button */}
         <div className='mt-4 flex items-center justify-between'>
-          <span className='text-xs text-muted-foreground capitalize'>
+          <span className='inline-flex items-center rounded-full bg-[hsl(var(--secondary))] px-2.5 py-0.5 text-xs font-medium text-secondary-foreground capitalize'>
             {categoryName || "Sin categoría"}
           </span>
           <button
             onClick={onToggle}
             disabled={isPending}
-            className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 ${isAssigned
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${isAssigned
                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
                 : "border border-border bg-secondary text-secondary-foreground hover:border-primary hover:text-primary"
               }`}>

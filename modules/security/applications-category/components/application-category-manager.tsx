@@ -186,7 +186,7 @@ function SortableMenuItem({
         className={cn(
           "group flex items-center gap-2 border-l-2 bg-card transition-all",
           isDragging && "opacity-50 border-primary/50 shadow-lg z-10",
-          !isDragging && "hover:bg-secondary/50",
+          !isDragging && "hover:bg-secondary/40 transition-colors",
           depthColor,
           isCompactMode ? "py-1.5 px-2" : "py-2.5 px-3",
           depth > 0 && "ml-2",
@@ -562,19 +562,21 @@ export const ApplicationCategoryManager = ({
         {/* Header */}
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
           <div>
-            <h1 className='text-2xl font-semibold text-foreground'>
+            <h1 className='text-3xl font-bold tracking-tight text-foreground'>
               Categoria Application
             </h1>
-            <p className='mt-1 text-sm text-muted-foreground'>
+            <p className='mt-1.5 text-base text-muted-foreground'>
               Build hierarchical menus with up to 16+ levels of nesting.
             </p>
           </div>
           <div className='flex items-center gap-2'>
-            <Button variant='outline' size='sm' onClick={handleModalClose}>
+            <Button
+              size='sm'
+              onClick={handleModalClose}
+              className='bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all duration-200'>
               <HiPlus className='mr-2 h-4 w-4' />
               Add Categoria Application
             </Button>
-
           </div>
         </div>
 
@@ -586,7 +588,7 @@ export const ApplicationCategoryManager = ({
               placeholder='Search menus...'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className='pl-9 bg-secondary border-border'
+              className='pl-9 h-12 rounded-xl border-border bg-card focus:ring-2 focus:ring-ring/30 focus:border-ring'
             />
           </div>
 
@@ -594,7 +596,11 @@ export const ApplicationCategoryManager = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant='outline' size='sm' onClick={expandAll}>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={expandAll}
+                    className='bg-card border-border hover:bg-secondary'>
                     <LuMaximize2 className='h-4 w-4' />
                   </Button>
                 </TooltipTrigger>
@@ -602,7 +608,11 @@ export const ApplicationCategoryManager = ({
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant='outline' size='sm' onClick={collapseAll}>
+                  <Button
+                    variant='outline'
+                    size='sm'
+                    onClick={collapseAll}
+                    className='bg-card border-border hover:bg-secondary'>
                     <LuMinimize2 className='h-4 w-4' />
                   </Button>
                 </TooltipTrigger>
@@ -611,9 +621,11 @@ export const ApplicationCategoryManager = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    variant={isCompactMode ? "default" : "outline"}
                     size='sm'
-                    onClick={() => setIsCompactMode(!isCompactMode)}>
+                    onClick={() => setIsCompactMode(!isCompactMode)}
+                    className={isCompactMode
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all duration-200'
+                      : 'bg-card border-border hover:bg-secondary'}>
                     <HiChevronRight className='h-4 w-4' />
                   </Button>
                 </TooltipTrigger>
@@ -626,7 +638,7 @@ export const ApplicationCategoryManager = ({
         </div>
 
         {/* Stats Bar */}
-        <div className='flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4'>
+        <div className='bg-card border border-border rounded-2xl shadow-sm p-6'>
 
           <div className='flex items-center gap-4 ml-auto text-sm text-muted-foreground'>
             <span>
@@ -669,7 +681,7 @@ export const ApplicationCategoryManager = ({
         )}
 
         {/* Menu Tree */}
-        <div className='rounded-lg border border-border bg-card overflow-hidden'>
+        <div className='bg-card border border-border rounded-2xl overflow-hidden shadow-sm'>
           <DndContext
             id='menu-manager-dnd'
             sensors={sensors}
@@ -715,9 +727,9 @@ export const ApplicationCategoryManager = ({
           </DndContext>
 
           {filteredMenus.length === 0 && (
-            <div className='flex flex-col items-center justify-center py-12 text-muted-foreground'>
-              <HiSearch className='h-8 w-8 mb-2' />
-              <p>No menus found.</p>
+            <div className='flex flex-col items-center justify-center border-2 border-dashed border-border rounded-2xl p-12 text-muted-foreground text-center'>
+              <HiSearch className='h-12 w-12 mb-3' />
+              <p className='text-foreground font-medium'>No menus found</p>
             </div>
           )}
         </div>

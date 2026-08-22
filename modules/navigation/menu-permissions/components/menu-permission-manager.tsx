@@ -119,7 +119,7 @@ function PermissionCheckbox({
         disabled
           ? "opacity-50 cursor-not-allowed"
           : "cursor-pointer hover:scale-110"
-      } ${checked ? "text-primary" : indeterminate ? "text-warning" : "text-muted-foreground"}`}>
+      } ${checked ? "text-primary" : indeterminate ? "text-[hsl(var(--warning))]" : "text-muted-foreground"}`}>
       {checked ? (
         <RiCheckboxCircleFill className='w-5 h-5' />
       ) : indeterminate ? (
@@ -217,7 +217,7 @@ function MenuItemRow({
   return (
     <>
       <div
-        className={`group flex items-center gap-4 py-3 px-4 hover:bg-secondary/50 transition-colors border-b border-border/50 ${
+        className={`group flex items-center gap-4 py-3 px-4 transition-all duration-200 hover:bg-secondary/50 border-b border-border/50 ${
           level > 0 ? "bg-secondary/20" : ""
         }`}
         style={{ paddingLeft: `${level * 24 + 16}px` }}>
@@ -848,31 +848,31 @@ export function MenuPermissionsManager() {
         {/* Header */}
         <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
           <div>
-            <h1 className='text-2xl font-bold text-foreground'>
+            <h1 className='text-3xl font-bold tracking-tight text-foreground'>
               Permisos de Menú
             </h1>
-            <p className='text-muted-foreground mt-1'>
+            <p className='text-muted-foreground mt-1.5 text-base'>
               Configura los permisos de acceso para roles o usuarios
             </p>
           </div>
           <div className='flex items-center gap-3'>
             {hasChanges && (
-              <span className='text-sm text-warning flex items-center gap-1'>
-                <span className='w-2 h-2 bg-warning rounded-full animate-pulse' />
+              <span className='text-sm text-[hsl(var(--warning))] flex items-center gap-1'>
+                <span className='w-2 h-2 bg-[hsl(var(--warning))] rounded-full animate-pulse' />
                 Cambios sin guardar
               </span>
             )}
             <button
               onClick={handleReset}
               disabled={!hasChanges}
-              className='flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+              className='flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'>
               <RiRefreshLine className='w-4 h-4' />
               Restablecer
             </button>
             <button
               onClick={handleSave}
               disabled={!hasChanges || isSaving}
-              className='flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed'>
+              className='flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'>
               {isSaving ? (
                 <div className='w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin' />
               ) : (
@@ -891,7 +891,7 @@ export function MenuPermissionsManager() {
         )}
 
         {/* Application Selector */}
-        <div className='bg-card rounded-xl border border-border p-4'>
+        <div className='bg-card rounded-2xl border border-border shadow-sm p-6'>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div>
               <label className='text-sm font-medium text-muted-foreground mb-2 flex items-center gap-2'>
@@ -910,7 +910,7 @@ export function MenuPermissionsManager() {
                   placeholder='Seleccione una empresa'
                   searchPlaceholder='Buscar empresa...'
                   emptyMessage='No se encontraron empresas'
-                  triggerClassName='!h-12 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
+                  triggerClassName='!h-12 px-3 rounded-xl border border-border bg-card shadow-sm hover:shadow-md transition-all duration-200 focus:ring-2 focus:ring-ring/30 focus:border-ring *:data-[slot=select-value]:line-clamp-none'
                   options={companies.map((company) => ({
                     value: String(company.id_company),
                     label: (
@@ -946,7 +946,7 @@ export function MenuPermissionsManager() {
                   placeholder='Seleccione una aplicación'
                   searchPlaceholder='Buscar aplicación...'
                   emptyMessage='No se encontraron aplicaciones'
-                  triggerClassName='!h-12 px-3 rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 *:data-[slot=select-value]:line-clamp-none'
+                  triggerClassName='!h-12 px-3 rounded-xl border border-border bg-card shadow-sm hover:shadow-md transition-all duration-200 focus:ring-2 focus:ring-ring/30 focus:border-ring *:data-[slot=select-value]:line-clamp-none'
                   options={applications.map((app) => ({
                     value: String(app.id_application),
                     // keywords: app.route ?? '',
@@ -976,7 +976,7 @@ export function MenuPermissionsManager() {
         </div>
 
         {/* Target Selector */}
-        <div className='bg-card rounded-xl border border-border p-4'>
+        <div className='bg-card rounded-2xl border border-border shadow-sm p-6'>
           <div className='flex flex-col gap-4'>
             <div className='flex items-center gap-2'>
               <RiShieldUserLine className='w-4 h-4 text-muted-foreground' />
@@ -1009,14 +1009,14 @@ export function MenuPermissionsManager() {
                           <button
                             key={role.id_role}
                             onClick={() => handleRoleChange(role.id_role)}
-                            className={`group relative flex items-center gap-2 p-2 rounded-lg border text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500/60 ${
+                            className={`group relative flex items-center gap-2 p-2 rounded-lg border text-left transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring/30 ${
                               isSelected
-                                ? 'border-green-600 bg-green-500 text-white shadow-md ring-2 ring-green-500/70'
-                                : 'border-border bg-card text-foreground hover:border-green-500/50 hover:bg-green-50/40'
+                                ? 'border-primary bg-primary text-primary-foreground shadow-sm ring-2 ring-ring/30'
+                                : 'border-border bg-card text-muted-foreground hover:border-primary/50 hover:bg-primary/5'
                             }`}>
                             <div className={`w-8 h-8 rounded-md flex items-center justify-center shrink-0 transition-colors ${
                               isSelected
-                                ? 'bg-white/20 text-white'
+                                ? 'bg-primary-foreground/20 text-primary-foreground'
                                 : 'bg-secondary text-muted-foreground group-hover:text-foreground'
                             }`}>
                               <RiUserStarLine className='w-4 h-4' />
@@ -1024,7 +1024,7 @@ export function MenuPermissionsManager() {
                             <div className='min-w-0 flex-1'>
                               <p className='font-medium text-xs truncate'>{role.name}</p>
                               {isSelected ? (
-                                <span className='inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-white/90'>
+                                <span className='inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground/90'>
                                   <RiCheckLine className='w-3 h-3' /> Seleccionado
                                 </span>
                               ) : role.description ? (
@@ -1035,7 +1035,7 @@ export function MenuPermissionsManager() {
                             </div>
                             {isSelected && (
                               <div className='w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0'>
-                                <RiCheckLine className='w-3 h-3 text-white' />
+                                <RiCheckLine className='w-3 h-3 text-primary-foreground' />
                               </div>
                             )}
                           </button>
@@ -1065,7 +1065,7 @@ export function MenuPermissionsManager() {
                 <div className='flex items-start gap-3'>
                   <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
                     selectedTarget?.type === 'role'
-                      ? 'bg-green-100 text-green-600'
+                      ? 'bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))]'
                       : selectedTarget?.type === 'user'
                         ? 'bg-primary/10 text-primary'
                         : 'bg-muted text-muted-foreground'
@@ -1082,7 +1082,7 @@ export function MenuPermissionsManager() {
                     {selectedRoleData ? (
                       isLoadingPermissions ? (
                         <div className='flex items-center gap-2 py-2'>
-                          <div className='w-4 h-4 border-2 border-green-500/30 border-t-green-500 rounded-full animate-spin' />
+                          <div className='w-4 h-4 border-2 border-[hsl(var(--success)/0.3)] border-t-[hsl(var(--success))] rounded-full animate-spin' />
                           <span className='text-sm text-muted-foreground'>Cargando permisos...</span>
                         </div>
                       ) : (
@@ -1124,7 +1124,7 @@ export function MenuPermissionsManager() {
         
         {/* Stats */}
         <div className='grid grid-cols-2 md:grid-cols-5 gap-4'>
-          <div className='bg-card rounded-xl border border-border p-4'>
+          <div className='bg-card rounded-2xl border border-border shadow-sm p-6'>
             <div className='flex items-center gap-2 text-muted-foreground mb-1'>
               <RiFolderLine className='w-4 h-4' />
               <span className='text-xs font-medium'>Total Menús</span>
@@ -1133,7 +1133,7 @@ export function MenuPermissionsManager() {
               {stats.totalMenus}
             </p>
           </div>
-          <div className='bg-card rounded-xl border border-border p-4'>
+          <div className='bg-card rounded-2xl border border-border shadow-sm p-6'>
             <div className='flex items-center gap-2 text-primary mb-1'>
               <RiEyeLine className='w-4 h-4' />
               <span className='text-xs font-medium'>Ver</span>
@@ -1142,8 +1142,8 @@ export function MenuPermissionsManager() {
               {stats.viewCount}
             </p>
           </div>
-          <div className='bg-card rounded-xl border border-border p-4'>
-            <div className='flex items-center gap-2 text-blue-400 mb-1'>
+          <div className='bg-card rounded-2xl border border-border shadow-sm p-6'>
+            <div className='flex items-center gap-2 text-[hsl(var(--info))] mb-1'>
               <RiAddLine className='w-4 h-4' />
               <span className='text-xs font-medium'>Crear</span>
             </div>
@@ -1151,8 +1151,8 @@ export function MenuPermissionsManager() {
               {stats.createCount}
             </p>
           </div>
-          <div className='bg-card rounded-xl border border-border p-4'>
-            <div className='flex items-center gap-2 text-warning mb-1'>
+          <div className='bg-card rounded-2xl border border-border shadow-sm p-6'>
+            <div className='flex items-center gap-2 text-[hsl(var(--warning))] mb-1'>
               <RiEditLine className='w-4 h-4' />
               <span className='text-xs font-medium'>Editar</span>
             </div>
@@ -1160,7 +1160,7 @@ export function MenuPermissionsManager() {
               {stats.editCount}
             </p>
           </div>
-          <div className='bg-card rounded-xl border border-border p-4'>
+          <div className='bg-card rounded-2xl border border-border shadow-sm p-6'>
             <div className='flex items-center gap-2 text-destructive mb-1'>
               <RiDeleteBinLine className='w-4 h-4' />
               <span className='text-xs font-medium'>Eliminar</span>
@@ -1172,7 +1172,7 @@ export function MenuPermissionsManager() {
         </div>
 
         {/* Main Content */}
-        <div className='bg-card rounded-xl border border-border overflow-hidden'>
+        <div className='bg-card rounded-2xl border border-border shadow-sm overflow-hidden'>
           {/* Toolbar */}
           <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 border-b border-border bg-secondary/30'>
             {/* Search */}
@@ -1183,7 +1183,7 @@ export function MenuPermissionsManager() {
                 placeholder='Buscar menú...'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className='w-full pl-10 pr-10 py-2 bg-input border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50'
+                className='w-full h-11 pl-10 pr-10 rounded-xl border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring'
               />
               {searchQuery && (
                 <button
@@ -1198,26 +1198,26 @@ export function MenuPermissionsManager() {
             <div className='flex items-center gap-2'>
               <button
                 onClick={expandAll}
-                className='flex items-center gap-1 px-3 py-1.5 text-sm bg-secondary hover:bg-secondary/80 rounded-lg transition-colors text-secondary-foreground'>
+                className='flex items-center gap-1 px-4 py-2 text-sm rounded-lg border border-border bg-card text-secondary-foreground shadow-sm transition-all duration-200 hover:bg-secondary'>
                 <RiArrowDownSLine className='w-4 h-4' />
                 Expandir
               </button>
               <button
                 onClick={collapseAll}
-                className='flex items-center gap-1 px-3 py-1.5 text-sm bg-secondary hover:bg-secondary/80 rounded-lg transition-colors text-secondary-foreground'>
+                className='flex items-center gap-1 px-4 py-2 text-sm rounded-lg border border-border bg-card text-secondary-foreground shadow-sm transition-all duration-200 hover:bg-secondary'>
                 <RiArrowRightSLine className='w-4 h-4' />
                 Colapsar
               </button>
               <div className='w-px h-6 bg-border mx-2' />
               <button
                 onClick={grantAllPermissions}
-                className='flex items-center gap-1 px-3 py-1.5 text-sm bg-primary/20 text-primary hover:bg-primary/30 rounded-lg transition-colors'>
+                className='flex items-center gap-1 px-4 py-2 text-sm rounded-lg bg-primary text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90'>
                 <RiCheckDoubleLine className='w-4 h-4' />
                 Otorgar Todo
               </button>
               <button
                 onClick={revokeAllPermissions}
-                className='flex items-center gap-1 px-3 py-1.5 text-sm bg-destructive/20 text-destructive hover:bg-destructive/30 rounded-lg transition-colors'>
+                className='flex items-center gap-1 px-4 py-2 text-sm rounded-lg bg-destructive text-destructive-foreground shadow-sm transition-all duration-200 hover:bg-destructive/90'>
                 <RiCloseLine className='w-4 h-4' />
                 Revocar Todo
               </button>
@@ -1258,12 +1258,16 @@ export function MenuPermissionsManager() {
                 </div>
               </div>
             ) : menuItems.length === 0 ? (
-              <div className='flex items-center justify-center py-12 text-muted-foreground'>
-                <p>No hay menús disponibles para esta aplicación</p>
+              <div className='flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-12 text-center text-muted-foreground'>
+                <RiFolderLine className='mb-4 h-12 w-12 opacity-50' />
+                <p className='text-lg font-medium text-foreground'>No hay menús disponibles</p>
+                <p className='mt-1.5 text-sm'>Selecciona otra aplicación para continuar</p>
               </div>
             ) : !selectedTarget ? (
-              <div className='flex items-center justify-center py-12 text-muted-foreground'>
-                <p>Selecciona un rol o usuario para gestionar permisos</p>
+              <div className='flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-12 text-center text-muted-foreground'>
+                <RiShieldUserLine className='mb-4 h-12 w-12 opacity-50' />
+                <p className='text-lg font-medium text-foreground'>Ningún objetivo seleccionado</p>
+                <p className='mt-1.5 text-sm'>Elige un rol o usuario para gestionar sus permisos</p>
               </div>
             ) : (
               menuItems.map((menu) => (
@@ -1306,7 +1310,7 @@ export function MenuPermissionsManager() {
                 Permitido
               </span>
               <span className='flex items-center gap-1 text-xs text-muted-foreground'>
-                <RiCheckboxIndeterminateLine className='w-4 h-4 text-warning' />
+                <RiCheckboxIndeterminateLine className='w-4 h-4 text-[hsl(var(--warning))]' />
                 Parcial
               </span>
               <span className='flex items-center gap-1 text-xs text-muted-foreground'>

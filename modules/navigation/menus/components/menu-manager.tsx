@@ -620,15 +620,15 @@ export const MenuManager = ({
         {/* Header */}
         <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
           <div>
-            <h1 className='text-2xl font-semibold text-foreground'>
+            <h1 className='text-3xl font-bold tracking-tight text-foreground'>
               Menu Builder
             </h1>
-            <p className='mt-1 text-sm text-muted-foreground'>
+            <p className='mt-1.5 text-base text-muted-foreground'>
               Build hierarchical menus with up to 16+ levels of nesting.
             </p>
           </div>
           <div className='flex items-center gap-2'>
-            <Button variant='outline' size='sm' onClick={handleModalClose}>
+            <Button size='sm' onClick={handleModalClose} className='bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all duration-200 rounded-xl'>
               <HiPlus className='mr-2 h-4 w-4' />
               Add Menu
             </Button>
@@ -644,7 +644,7 @@ export const MenuManager = ({
               placeholder='Search menus...'
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className='pl-9 bg-secondary border-border'
+              className='h-12 w-full rounded-xl border border-border bg-card pl-9 text-base text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/30 focus:border-ring'
             />
           </div>
 
@@ -652,7 +652,7 @@ export const MenuManager = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant='outline' size='sm' onClick={expandAll}>
+                  <Button size='sm' onClick={expandAll} className='bg-card border border-border text-foreground hover:bg-secondary shadow-sm transition-all duration-200'>
                     <LuMaximize2 className='h-4 w-4' />
                   </Button>
                 </TooltipTrigger>
@@ -660,7 +660,7 @@ export const MenuManager = ({
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button variant='outline' size='sm' onClick={collapseAll}>
+                  <Button size='sm' onClick={collapseAll} className='bg-card border border-border text-foreground hover:bg-secondary shadow-sm transition-all duration-200'>
                     <LuMinimize2 className='h-4 w-4' />
                   </Button>
                 </TooltipTrigger>
@@ -669,9 +669,11 @@ export const MenuManager = ({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
-                    variant={isCompactMode ? "default" : "outline"}
                     size='sm'
-                    onClick={() => setIsCompactMode(!isCompactMode)}>
+                    onClick={() => setIsCompactMode(!isCompactMode)}
+                    className={isCompactMode
+                      ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm transition-all duration-200'
+                      : 'bg-card border border-border text-foreground hover:bg-secondary shadow-sm transition-all duration-200'}>
                     <HiChevronRight className='h-4 w-4' />
                   </Button>
                 </TooltipTrigger>
@@ -684,7 +686,7 @@ export const MenuManager = ({
         </div>
 
         {/* Stats Bar */}
-        <div className='flex flex-wrap items-center gap-4 rounded-lg border border-border bg-card p-4'>
+        <div className='flex flex-wrap items-center gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm'>
           <div className='flex items-center gap-2'>
             <HiFolder className='h-5 w-5 text-muted-foreground' />
             <span className='text-sm font-medium text-foreground'>
@@ -749,7 +751,7 @@ export const MenuManager = ({
         )}
 
         {/* Menu Tree */}
-        <div className='rounded-lg border border-border bg-card overflow-hidden'>
+        <div className='rounded-2xl border border-border bg-card shadow-sm overflow-hidden'>
           <DndContext
             id='menu-manager-dnd'
             sensors={sensors}
@@ -795,7 +797,7 @@ export const MenuManager = ({
           </DndContext>
 
           {filteredMenus.length === 0 && (
-            <div className='flex flex-col items-center justify-center py-12 text-muted-foreground'>
+            <div className='flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-12 text-muted-foreground'>
               <HiSearch className='h-8 w-8 mb-2' />
               <p>No menus found.</p>
             </div>

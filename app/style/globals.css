@@ -27,6 +27,14 @@
   --destructive-foreground: 0 0% 100%;
   --destructive-border: 0 84% 42%;
   --radius: 0.9rem;
+
+  /* THEME TOKENS - Change these to adjust the global palette */
+  --success: 142 71% 45%;
+  --success-foreground: 0 0% 100%;
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+  --info: 200 80% 55%;
+  --info-foreground: 0 0% 100%;
 }
 
 .dark {
@@ -51,6 +59,14 @@
   --destructive: 0 62% 40%;
   --destructive-foreground: 0 0% 100%;
   --destructive-border: 0 62% 26%;
+
+  /* THEME TOKENS - Dark mode */
+  --success: 142 70% 50%;
+  --success-foreground: 0 0% 0%;
+  --warning: 38 92% 55%;
+  --warning-foreground: 0 0% 0%;
+  --info: 200 80% 60%;
+  --info-foreground: 0 0% 0%;
 }
 
 * {

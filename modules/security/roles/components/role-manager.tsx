@@ -28,12 +28,10 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
 
   const metrics = useMemo(() => {
     const activeRoles = initialData.filter((role) => role.deleted !== false).length;
-    // const totalPermissions = initialData.reduce((acc, role) => acc + (role.permissions?.length || 0), 0);
 
     return {
       totalRoles: initialData.length,
       activeRoles,
-      // totalPermissions,
     };
   }, [initialData]);
 
@@ -67,28 +65,20 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
         accessorKey: "description",
         header: t("fields.description"),
         cell: (info) => (
-          <span className='text-sm'>{info.getValue<string>() || "-"}</span>
+          <span className='text-sm text-muted-foreground'>{info.getValue<string>() || "-"}</span>
         ),
       },
-      // {
-      //   accessorKey: "permissions",
-      //   header: "Permisos",
-      //   cell: ({ row }) => (
-      //     <span className='text-sm'>
-      //       {row.original.permissions?.length || 0} permisos
-      //     </span>
-      //   ),
-      // },
       {
         header: "Status",
         accessorKey: "deleted",
         cell: ({ row }) => (
           <div className='flex items-center'>
             <span
-              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${row.original.deleted == false
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-                }`}>
+              className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                row.original.deleted == false
+                  ? "bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))]"
+                  : "bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))]"
+              }`}>
               {row.original.deleted == false ? "Active" : "Inactive"}
             </span>
           </div>
@@ -121,73 +111,61 @@ export const RoleManager = ({ initialData }: IRoleManagerProps) => {
       icon: HiOutlineShieldCheck,
       label: "Total de roles",
       value: metrics.totalRoles,
-      accent: "from-indigo-500/40 to-violet-500/40 text-indigo-700",
     },
     {
       icon: HiOutlineShieldCheck,
       label: "Roles activos",
       value: metrics.activeRoles,
-      accent: "from-emerald-500/40 to-teal-500/40 text-emerald-700",
     },
-    // {
-    //   icon: HiOutlineShieldCheck,
-    //   label: "Total permisos",
-    //   value: metrics.totalPermissions,
-    //   accent: "from-amber-500/40 to-orange-500/40 text-amber-700",
-    // },
   ];
 
   useEffect(() => {
     setRoles(initialData);
   }, [initialData]);
 
-
   return (
     <section className='mx-auto flex w-full flex-col gap-6 px-6'>
-      <article className='rounded-3xl border border-border/40 bg-gradient-to-br from-blue-600 via-indigo-500 to-purple-500 px-8 py-10 text-white shadow-2xl'>
-        <header className='space-y-4'>
-          <span className='inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold uppercase tracking-[0.35em] text-white/75'>
-            {t("title")}
-          </span>
-          <div className='space-y-2'>
-            <h1 className='text-4xl font-semibold leading-tight'>
+      <div className='flex flex-col gap-6'>
+        <div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
+          <div>
+            <h1 className='text-3xl font-bold tracking-tight text-foreground'>
               {t("description")}
             </h1>
-            <p className='text-white/80'>
+            <p className='mt-1.5 text-base text-muted-foreground'>
               Gestiona los roles del sistema y sus permisos asociados.
             </p>
           </div>
           <Buttons
             color='success'
-            className='inline-flex items-center gap-2 rounded-full bg-white/90 px-5 py-3 text-sm font-semibold text-primary transition hover:-translate-y-0.5 hover:bg-white'
+            className='inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90'
             onClick={() => setOpenModal(true)}>
             <HiOutlinePlusCircle className='h-4 w-4' />
             {tActions("saveRole")}
           </Buttons>
-        </header>
-      </article>
+        </div>
 
-      <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-        {summaryCards.map((card) => (
-          <div
-            key={card.label}
-            className={`rounded-2xl border border-border/40 bg-gradient-to-br ${card.accent} px-5 py-4 shadow-sm backdrop-blur`}>
-            <div className='flex items-center justify-between text-sm font-semibold text-white/80'>
-              <span>{card.label}</span>
-              <card.icon className='h-5 w-5 text-white/70' />
+        <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+          {summaryCards.map((card) => (
+            <div
+              key={card.label}
+              className='bg-card border border-border rounded-2xl shadow-sm p-6 transition-all duration-200 hover:shadow-md'>
+              <div className='flex items-center justify-between text-sm font-semibold text-muted-foreground'>
+                <span>{card.label}</span>
+                <card.icon className='h-5 w-5 text-primary' />
+              </div>
+              <p className='mt-2 text-2xl font-semibold text-foreground'>
+                {card.value}
+              </p>
             </div>
-            <p className='mt-2 text-2xl font-semibold text-white'>
-              {card.value}
-            </p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <DataTable
-        data={roles}
-        columns={columns}
-        className='py-2'
-      />
+        <DataTable
+          data={roles}
+          columns={columns}
+          className='py-2'
+        />
+      </div>
 
       <Modal
         size='lg'

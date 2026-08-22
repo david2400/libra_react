@@ -287,10 +287,10 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
         <div className='mb-8'>
           <div className='flex items-center justify-between'>
             <div>
-              <h1 className='text-2xl font-semibold text-foreground'>
+              <h1 className='text-3xl font-bold tracking-tight text-foreground'>
                 Asignar Empresas a Usuarios
               </h1>
-              <p className='mt-1 text-sm text-muted-foreground'>
+              <p className='mt-1.5 text-base text-muted-foreground'>
                 Gestiona las empresas asignadas a cada usuario
               </p>
             </div>
@@ -356,7 +356,7 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
                   setSelectedUser(user);
                 }}
                 disabled={filteredUsers.length === 0}>
-                <SelectTrigger className='mt-1 w-full bg-secondary border-border h-12 text-base py-3'>
+                <SelectTrigger className='mt-1 w-full h-12 rounded-xl border border-border bg-card text-base'>
                   <SelectValue placeholder='Seleccionar usuario...' />
                 </SelectTrigger>
                 <SelectContent>
@@ -420,14 +420,14 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
                 <button
                   onClick={assignAll}
                   disabled={!selectedUser}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-primary/20 disabled:cursor-not-allowed disabled:opacity-50'>
+                  className='flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition-all duration-200 hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiPlus className='h-4 w-4' />
                   Asignar Todas
                 </button>
                 <button
                   onClick={removeAll}
                   disabled={!selectedUser}
-                  className='flex w-full items-center justify-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm font-medium text-destructive transition-colors hover:bg-destructive/20 disabled:cursor-not-allowed disabled:opacity-50'>
+                  className='flex w-full items-center justify-center gap-2 rounded-xl bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground shadow-sm transition-all duration-200 hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-50'>
                   <HiMinus className='h-4 w-4' />
                   Remover Todas
                 </button>
@@ -444,7 +444,7 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
                   placeholder='Buscar empresas...'
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className='w-full rounded-lg border border-border bg-card py-2 pl-10 pr-4 text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary'
+                  className='h-12 w-full rounded-xl border border-border bg-card pl-10 pr-4 text-base text-foreground placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/30 focus:border-ring focus:outline-none'
                 />
               </div>
 
@@ -455,9 +455,9 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
                     <button
                       key={mode}
                       onClick={() => setFilterMode(mode)}
-                      className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${filterMode === mode
+                      className={`rounded-xl px-3 py-1.5 text-sm font-medium transition-all duration-200 ${filterMode === mode
                           ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:text-foreground"
+                          : "border border-border bg-card text-muted-foreground hover:border-primary/50"
                         }`}>
                       {mode === "all"
                         ? "Todas"
@@ -487,7 +487,7 @@ export function UserCompaniesManager(props?: UserCompaniesManagerProps) {
             </div>
 
             {filteredCompanies.length === 0 && (
-              <div className='flex flex-col items-center justify-center rounded-xl border border-border bg-card py-16'>
+              <div className='flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border p-12'>
                 <HiSearch className='mb-4 h-12 w-12 text-muted-foreground' />
                 <p className='text-lg font-medium text-foreground'>
                   No se encontraron empresas
@@ -519,15 +519,15 @@ function CompanyCard({
 }) {
   return (
     <div
-      className={`group relative overflow-hidden rounded-xl border transition-all duration-200 ${isAssigned
-          ? "border-primary/50 bg-primary/5"
-          : "border-border bg-card hover:border-primary/30"
+      className={`group relative overflow-hidden rounded-2xl border bg-card p-6 shadow-sm transition-all duration-200 hover:shadow-md ${isAssigned
+          ? "border-primary/50"
+          : "border-border hover:border-primary/50"
         }`}>
-      <div className='p-4'>
+      <div>
         <div className='flex items-start gap-4'>
           <div
-            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-500/20'>
-            <HiOfficeBuilding className='h-6 w-6 text-blue-500' />
+            className='flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-secondary'>
+            <HiOfficeBuilding className='h-6 w-6 text-primary' />
           </div>
 
           <div className='min-w-0 flex-1'>
